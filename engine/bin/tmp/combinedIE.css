@@ -1,0 +1,2890 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+	margin: 0px;
+	padding: 0px;
+	font-family: Arial, Helvetica, sans-serif;
+overflow-x:hidden;
+overflow-y: auto;
+	background-color:#EAEAEA;
+
+}
+
+
+@font-face {
+  font-family: "Deftone";
+  src: url("/img/deftone.ttf");
+}
+
+ @font-face {
+   font-family: 'DeftoneStylus-Regular';
+   src: url('/img/deftone.eot');
+   src: url('/img/deftone.eot?#iefix')
+     format('embedded-opentype'),url('/img/deftone.woff')
+     format('woff'),url('/img/deftone.ttf')
+     format('truetype'),url('/img/deftone.svg#DeftoneStylus-Regular')
+     format('svg');
+ }
+
+ h1 {
+	font-weight: normal;
+	font-size: 24px;
+	color: #484848;
+}
+
+
+th {
+  color: #666666;
+  font-size: 1.2em;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  text-align: right;
+  text-transform: none;
+  vertical-align: top;
+}
+td {
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  text-transform: none;
+}
+
+#footer {
+	background-color: #212121;
+	position: fixed;
+	width: 100%;
+	height: 70px;
+	bottom: 0;
+	left: 0;
+}
+
+.font_white {
+  color: #FFF;
+}
+
+.font_gold {
+  color: #fef0a3;
+}
+
+a.tzine,a.tzine:visited {
+	background: url("/img/tzine.png") no-repeat right top;
+	border: none;
+	color: #FCFCFC;
+	font-size: 12px;
+	height: 70px;
+	left: 50%;
+	line-height: 31px;
+	margin: 23px 0 0 110px;
+	position: absolute;
+	top: 0;
+	width: 290px;
+}
+
+.tri {
+	border-color: transparent transparent #212121;
+	border-style: solid;
+	border-width: 20px 17px;
+	height: 0;
+	left: 50%;
+	margin: -40px 0 0 -400px;
+	position: absolute;
+	top: 0;
+	width: 0;
+}
+
+
+
+a,a:visited {
+	text-decoration: none;
+	outline: none;
+  color: #FEF0A3;
+	/*border-bottom: 1px dotted #97cae6;*/
+	/*color: #97cae6;*/
+}
+
+a:hover {
+	border-bottom: 1px dashed transparent;
+}
+
+
+fieldset, img {
+  border-color: transparent;
+  border-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+
+.clear {
+	clear: both;
+}
+
+
+#bt_webcam{
+position:absolute!important;
+}
+
+
+#bt_feedback {
+  display:none;
+  position: fixed;
+  bottom: 120px;
+  right: 0px;
+  z-index:9999;
+  cursor: pointer;
+
+
+}
+
+
+
+.float_left {
+  float: left;
+}
+
+
+#all {
+	/*position: absolute;*/
+
+
+  overflow: hidden;
+  width:100%;
+}
+
+#top {
+  background-color: #fcf4b3;
+	background-image: url("/img/images/top_bg_tile.jpg");
+	background-repeat:repeat-x;
+  height:80px;
+
+
+	-moz-box-shadow: 0px 0px 20px #888;
+	-webkit-box-shadow: 0px 0px 20px #888;
+	box-shadow: 0px 0px 20px #888;
+
+  /**
+   * New additions for making whole page scrollable
+   */
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+}
+
+.top_channel {
+
+  color:#261d06;
+
+
+
+  font-family:"Deftone", 'DeftoneStylus-Regular', "Arial", "Helvetica", "sans-serif";
+  color:#C00;
+  font-size:2.2em;
+  /*text-shadow: 0px 0px 4px #fff ;*/
+  font-weight: normal;
+  text-shadow:
+    2px 2px 0px #fff,
+    -2px -2px 0px #fff,
+    4px -2px 0px #fff,
+    -4px 2px 0px #fff,
+    1px 1px 5px #000;
+
+	border-radius: 12px;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+
+}
+
+#top_container {
+  height: 80px;
+}
+
+#top_left_items {
+  height:80px;
+  z-index:2;
+  width: 200px;
+}
+#top_left_items span {
+  margin-left: 20px;
+}
+#top_center_items {
+  margin-top: 26px;
+  margin-left: 60px;
+  float: left;
+}
+
+#top_right_items {
+	float: right;
+	clear: none;
+  /*
+  position: fixed;
+  top: 0px;
+
+
+  */
+  height:70px;
+  min-width: 450px;
+  z-index:1;
+
+  margin-top: 5px;
+  margin-right: 8px;
+
+  right: 0px;
+
+}
+
+.top_button_container {
+  float:right;
+  margin-top: 13px;
+  margin-right: 8px;
+}
+
+.top_button {
+  background:url("/img/btn_bg.png") repeat-x scroll;
+  background-color: #FFDA91;
+
+  color: #faf5d2;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+  padding: 0px 20px 0px 12px;
+  letter-spacing: 0.3pt;
+  cursor: pointer;
+
+  -moz-background-inline-policy:continuous;
+
+  /*
+  -moz-box-shadow: 10px 10px 5px #888;
+  -webkit-box-shadow: 10px 10px 5px #888;
+  */
+  box-shadow: -1px -2px 3px #888,
+    1px 1px 3px #888;
+
+  background-position: 0 -57px;
+  height: 43px;
+
+
+
+}
+.top_button_hover{
+  background-position: 0 -44px !important;
+}
+
+.deftone_title {
+	font-size: 2.6em;
+  word-spacing: 0.1em;
+  font-family:"Deftone", 'DeftoneStylus-Regular', "Arial", "Helvetica", "sans-serif";
+  color: #fef0a3 !important;
+}
+
+#snappers {
+	background: url("/img/images/snappers.png");
+	float: right;
+	width: 60px;
+	height: 30px;
+	background-repeat: no-repeat;
+	color: #FFF;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 18px;
+	text-align: center;
+}
+
+.social {
+	float: right;
+	margin: 8px;
+  margin-right: 0px;
+}
+
+#main {
+  /**
+   * No longer needed to have an inside scroll, page scrolls now
+	overflow-y: scroll;
+  height: 450px
+  */
+	padding-bottom: 60px;
+	padding-right: 10px;
+	background-color: #eaeaea;
+
+  margin-top: 80px;
+
+
+}
+.main_pages {
+  padding: 0px 30px 0px 30px;
+}
+
+.main_pages h2 {
+  font-weight: bold;
+  margin: 15px 0px 15px 0px;
+}
+.main_pages h3 {
+  margin-top: 15px;
+}
+
+.link {
+    cursor: pointer;
+    /*color:#0000CC;*/
+    text-shadow: none;
+    color: #FEF0A3;
+    /*
+    color: #149264;
+    font-weight:bold;
+    */
+}
+
+/**
+ * When links are on white background
+ * we make them blue
+ */
+.link_on_white {
+  color: #0134c5 !important;
+
+}
+.drag {
+    cursor:move;
+
+}
+
+
+
+#foot {
+	height: 66px;
+	background-color: #1e1705;
+	background-image: url("/img/images/bottom_bg.gif");
+	padding-top: 15px;
+	-moz-box-shadow: 0px 0px 20px #888;
+	-webkit-box-shadow: 0px 0px 20px #888;
+	box-shadow: 0px 0px 20px #888;
+	position:fixed;
+	bottom:0px;
+	width:100%;
+}
+.beige_text{
+color:#fef0a3;
+}
+
+
+#lame_chat_overlay {
+  position:fixed;
+  height: 60px;
+  width: 660px;
+  bottom: 15px;
+  left: 10px;
+  margin-left: 90px;
+  display: none;
+  z-index: 10;
+
+}
+
+
+.initial {
+	color: #b5b5b5 !important;
+}
+
+.dialog {
+  display: none;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-image: url("/img/images/trans_bg.png");
+  z-index: 500;
+}
+.dialog_box {
+	margin: auto;
+	margin-top: 130px;
+	width: 529px;
+
+  border: solid 5px #000;
+	background-color: #FFF;
+}
+.dialog_header {
+  height: 40px;
+  background-color: #000;
+  color: #fff;
+  padding: 0px 0px 0 10px;
+  font-weight: bold;
+}
+.dialog_message {
+  position: relative;
+  top: 9px;
+  font-size: 1.05em;
+  letter-spacing: 0.05em;
+
+}
+.dialog_content {
+  height: 61px;
+  text-align: center;
+  padding-top: 19px;
+}
+.dialog_content .btn {
+  margin-left: 15px;
+}
+
+.overlay {
+  display: none;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-image: url("/img/images/trans_bg.png");
+  z-index: 300;
+}
+
+
+
+.overlay_box {
+	margin: auto;
+	margin-top: 30px;
+
+  background-image: url("/img/images/overlay_bg.gif");
+	width: 429px;
+  /*
+  Leave out so it get's it's height naturaly
+	height: 500px;
+  */
+  /*
+	width: 500px;
+	heigth: 550px;
+  */
+  border: solid 5px #FFF;
+
+	background-color: #FFF;
+
+
+}
+
+#overlay_box {
+  background-image: url("/img/images/overlay_bg.gif");
+	width: 429px;
+	height: 500px;
+}
+
+
+
+.overlay_box_header {
+	color: #FFF;
+  height: 90px;
+  margin: auto;
+
+}
+
+#overlay_box_header {
+  /*background-image: url("/img/images/overlay_bg_top.gif");*/
+}
+
+.overlay_title_center {
+  left: -15px;
+	top: -45px;
+  position: relative;
+}
+.overlay_title {
+ position: relative;
+ left: -85px;
+ top: -35px;
+}
+
+.overlay_title_text {
+  font-size: 2em;
+  word-spacing: 0.1em;
+  color: #fef0a3 !important;
+  font-weight: bold;
+}
+
+.overlay_box_main {
+	padding: 10px;
+  width: 409px;
+
+
+}
+#snappers_num {
+  margin-right: 10px;
+}
+
+.overlay_btn_footer {
+  height: 60px;
+  padding-top: 20px;
+  padding-right: 93px;
+
+}
+
+.overlay_btn_footer .btn {
+  float:right;
+  margin-left: 10px;
+}
+#overlay_box_main {
+  overflow-y: scroll;
+  height: 300px;
+}
+
+
+
+/*
+#overlay_box_footer{
+	background-image:url("/img/images/overlay_bg_bottom.gif");
+	height:50px;
+	background-position:bottom;
+}
+*/
+.overlay_x {
+	float: right;
+	position: relative;
+	top: -20px;
+	left: 20px;
+}
+
+
+.overlay_footer_share {
+  height: 25px;
+  margin-top: 10px;
+  margin-left: 40px;
+}
+
+
+.cam_overlay_narative {
+
+  padding: 10px;
+  color: #fff;
+  height: 56px;
+  text-align: center;
+}
+.cam_overlay_success {
+  display: none;
+  padding: 10px;
+  color: #fff;
+  height: 56px;
+  text-align: center;
+
+}
+
+#cam_overlay {
+  display:none;
+}
+.cam_overlay_highlight {
+  color: #0F0;
+  font-weight: 700;
+}
+
+
+#cam_overlay_downarrow {
+  display:none;
+  position:fixed;
+  top: 310px;
+  /*left: 410px;*/
+  color: #0F0;
+  font-size: 3em;
+  z-index: 9998;
+  font-weight: bolder;
+  left: 280px;
+  z-index:450;
+
+}
+#cam_overlay_leftarrow {
+  display:none;
+  position: fixed;
+  top: 217px;
+  margin-left: 330px;
+  width: 80px;
+  height: 60px;
+  text-align: center;
+  z-index:300;
+}
+
+.cam_overlay_leftarrow_text {
+  color: #fff;
+  padding-left: 5px;
+
+}
+.cam_overlay_leftarrow_arrow {
+  color: #0F0;
+  font-size: 3em;
+  margin-top: -18px;
+}
+
+
+.cam_overlay_settings {
+  height: 30px;
+  font-size: 0.9em;
+  color: #fff;
+  text-align: center;
+  margin-top: 15px;
+
+}
+.cam_overlay_cam_holder {
+	width: 220px;
+	height: 165px;
+}
+#chatbox_videofeed {
+	width: 220px;
+	height: 165px;
+
+	overflow: hidden;
+  margin: auto;
+  z-index: -100;
+
+  top: 207px;
+
+
+  position: fixed;
+
+	border: solid 1px #CCC;
+	-moz-box-shadow: 0px 0px 20px #888;
+	-webkit-box-shadow: 0px 0px 20px #888;
+	box-shadow: 0px 0px 20px #888;
+	background-color: #FFF;
+}
+
+.chatbox_videofeed_modal {
+  top: 210px;
+}
+
+
+
+.logo_diag {
+	position: relative;
+	top: -30px;
+	left: -30px;
+
+}
+
+/**
+ *
+ * OLD STYLES
+ */
+#header_master {
+	height: 70px;
+}
+
+#master_feed_chat {
+	float: left;
+	min-width: 400px;
+	max-width: 600px;
+	background: #fff;
+	border-right: 2px solid #996666;
+	margin-right: 15px;
+}
+
+#master_feed {
+	overflow: auto;
+	margin-bottom: 70px;
+	height: 300px;
+}
+
+.master_feeditem {
+	height: 75px;
+	background: #ececec;
+}
+
+.feeditem_photo {
+	float: left;
+	width: 60px;
+	height: 60px;
+}
+
+.feeditem_photo_image {
+	width: 70px;
+	height: 70px;
+}
+
+.feeditem_feed {
+	padding-left: 85px;
+	padding-right: 10px;
+}
+
+#master_chatbox {
+	height: 70px;
+	position: absolute;
+	bottom: 0;
+}
+
+#rightside {
+	border: 1px solid #999;
+	height: 500px;
+}
+
+#webcam_movie {
+
+}
+
+#chatbox_form_master {
+	float: left;
+}
+
+#chatbox_textarea {
+	width: 350px;
+	height: 36px;
+	border: 1px solid #CCC;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 8px;
+	-webkit-box-shadow: 0 1px white;
+	-moz-box-shadow: 0 1px white;
+	box-shadow: 0 1px white;
+	color: #222;
+	font: 14px/18px "Helvetica Neue", Arial, sans-serif;
+	outline: none;
+	overflow-x: hidden;
+	overflow-y: auto;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+
+}
+
+
+
+
+
+
+.share{
+  margin-top:3%;
+  color:#fdf7c6;
+  font-size:0.8em;
+}
+
+#frame_overlay_box {
+  width: 820px;
+}
+
+#frame_overlay_comments_master {
+
+  width: 400px;
+  float: left;
+}
+
+#frame_overlay_box_main {
+  padding: 0px 0px 20px;
+
+  width: 800px;
+  margin-top: 15px;
+}
+
+
+#frame_overlay_user {
+  float: left;
+  margin-top: 12px;
+}
+
+#frame_overlay_share {
+  height: 25px;
+
+  float:left;
+  margin-top: 35px;
+  margin-left: 60px;
+}
+
+.frame_overlay_share_text {
+  float: left;
+  color: #fff;
+  font-weight: bold;
+}
+
+.frame_overlay_photo_master {
+  text-align: center;
+  margin: 0px 30px 0px 20px;
+  float: left;
+}
+#frame_overlay_photo {
+  border:solid 12px #FFF;
+  margin: auto;
+
+}
+
+
+
+
+.frame_overlay_box_header {
+  height: 100px;
+}
+.frame_overlay_box_header .logo_diag {
+  float: left;
+}
+
+
+.frame_overlay_share_btn {
+  float:left;
+  vertical-align: top;
+}
+.frame_overlay_tw , .frame_overlay_fb, .frame_overlay_share_like {
+  float:left;
+  margin-left: 15px;
+}
+
+.frame_overlay_user_text{
+width: 320px;
+height:60px;
+  border:solid 12px #FFF;
+  border-top: 0px;
+  margin:auto;
+background-color:#fff;
+color:#000;
+font-size:1em;
+text-align: center;
+vertical-align: middle;
+}
+
+
+
+
+.frame_overlay_close {
+  padding: 30px 36px 10px 10px;
+  height: 40px;
+
+  text-align:right;
+  vertical-align: top;
+
+}
+
+.frame_overlay_close .btn {
+  position: relative;
+  top: -33px;
+}
+
+
+
+
+
+.header_title {
+  float:right;
+  color:#261d06;
+  padding-right:80px;
+  margin-top: 18px;
+  color:#C00 !important;
+  text-shadow: 2px 2px 0px #fff,
+    -2px -2px 0px #fff,
+    4px -2px 0px #fff,
+    -4px 2px 0px #fff,
+    1px 1px 5px #000;
+}
+
+
+.text_gray {
+ color: #777777;
+}
+
+.text_black {
+  color: #000 !important;
+}
+
+/**
+ * TUT STYLES
+ *
+ */
+
+.small_overlay_box {
+  display: none;
+	margin: auto;
+  background-color: #3c2c0a;
+  border: solid 5px #FFF;
+	position: absolute;
+	top: 40px;
+  z-index: 300;
+}
+
+.tut_photo_master {
+  text-align: center;
+  margin: 20px;
+  float: left;
+  border:solid 12px #FFF;
+}
+.tut_text {
+  margin:auto;
+background-color:#fff;
+color:#000;
+font-size:0.8em;
+text-align: center;
+vertical-align: middle;
+padding-top: 5px;
+width: 188px;
+}
+
+
+
+.small_overlay_box_main {
+	padding: 0px;
+	position: relative;
+	top: -30px;
+
+}
+
+#tut_x {
+ 	float: right;
+	position: relative;
+	top: -20px;
+	left: 20px;
+}
+
+.tut_commands{
+  margin: 0 20px 0 20px;
+}
+
+.tut_cmd_left {
+  float: left;
+}
+.tut_cmd_right {
+  float: right;
+}/**
+ * The Hover box that appears after an action, right bellow the action
+*/
+
+
+#master_alert {
+  position: fixed;
+  z-index: 5000;
+  width:100%;
+  top:0px;
+  padding: 0px;
+  margin: 0px;
+  border:0px;
+  left:0px;
+}
+#master_alert div.alert_box {
+  position:relative;
+  margin-left:10px;
+  margin-right: 10px;
+}
+
+
+.alert_box_master {
+  display:none;
+  position: absolute;
+  z-index:5000;
+}
+
+.alert_content_master{
+
+  border:solid 3px #9A0007;
+  border-top:0px;
+  -moz-border-radius-bottomleft:10px;
+  -moz-border-radius-bottomright:10px;
+  -webkit-border-bottom-right-radius:10px;
+  -webkit-border-bottom-left-radius:10px;
+  padding:5px;
+  background: #000;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-left:20px;
+  margin-right:20px;
+}
+.alert_box {
+
+}
+.alert_footer {
+  clear:both;
+  margin-left:20px;
+  padding:5px;
+  -moz-border-radius: 4px; -webkit-border-radius: 4px;
+  border:solid 1px #CCC;
+  margin-top:15px;
+  float:left;
+}
+.alert_box_master_static {
+  position: relative !important;
+  border: 0px !important;
+}
+.alert_box_master_inline {
+  background: inherit !important;
+  padding:0px !important;
+  margin-right: 0px !important;
+}
+
+.alert_box_cont_main {
+  margin-top:6px;
+  margin-bottom:6px;
+  text-align:left;
+  margin-left: 10px;
+  margin-right: 10px;
+  float:left;
+  clear:both;
+
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 20px;
+  padding-right:20px;
+}
+
+.alert_box_cont_main_inline {
+  padding: 4px !important;
+  margin: 0px !important;
+}
+
+.alert_box_cont_img {
+  float:left;
+
+}
+.alert_box_cont_msg {
+  padding-left: 10px;
+}
+.alert_success {
+  border: 2px #006914 solid !important;
+  background: #c2ff67 !important;
+}
+.alert_info {
+  border: 2px #0300ca solid !important;
+  background: #dbe1ff !important;
+}
+.alert_error {
+  border: 2px #f47377 solid !important;
+  background: #ffccc8 !important;
+}
+.alert_warning {
+  border: 2px #ffda26 solid !important;
+  background: #fffece !important;
+}
+.alert_warning_title {
+  background: #ffda26 !important;
+}
+
+
+
+/*
+    Document   : icons
+    Created on : Jun 11, 2011, 12:51:12 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description: Will contain all icons and images included in our master icon png file
+
+*/
+
+
+.ui_ico_tw_large {
+    background-position:-0px -43px;
+    height:43px;
+    width:193px;
+}
+
+.ui_ico_fb_large {
+    background-position:-0px -0px;
+    height:43px;
+    width:212px;
+}
+
+.ui_ico_camera_lens {
+    background-position:-37px -245px;
+    height:32px;
+    width:32px;
+}
+.ui_ico_camera_lens_glow {
+    background-position:-37px -277px;
+    height:42px;
+    width:42px;
+}
+
+.ui_ico_twitter_plus{
+width:73px;
+height:55px;
+background-position:139px 164px;
+}
+.ui_ico_facebook_plus{
+width:73px;
+height:55px;
+background-position:139px 114px;
+}
+
+.ui_ico_boothchat_diagonal{
+width:135px;
+height:112px;
+background-position:4px 100px;
+}
+
+.ui_ico_snappers_text{
+width:142px;
+height:88px;
+background-position:97px 19px;
+}
+
+.ui_ico_snappers_btn{
+width:96px;
+height:57px;
+background-position:57px 207px;
+}
+
+
+.ui_ico_boothchat_logo{
+width:140px;
+height:34px;
+background-position:60px 342px;
+}
+
+.ui_ico_arrow_previous{
+width:29px;
+height:29px;
+background-position:142px 400px;
+}
+
+.ui_ico_arrow_next{
+width:29px;
+height:29px;
+background-position:57px 400px;
+}
+
+.ui_ico_fb_share{
+width:57px;
+height:18px;
+background-position:0px -201px;
+}
+
+.ui_ico_popup {
+  width: 10px;
+  height: 10px;
+  background-position:0px -219px;
+  vertical-align: top !important;
+}
+
+.ui_ico_feedback {
+width:37px;
+height:116px;
+background-position:0px -229px;
+display: none;
+margin: 0px !important;
+
+}
+
+.ui_ico_fb_16_bw {
+width:16px;
+height:16px;
+background-position:-37px -229px;
+}
+.ui_ico_tw_16_bw {
+width:16px;
+height:16px;
+background-position:-53px -229px;
+}
+
+.ui_ico_sphere_13_cyan {
+width:13px;
+height:13px;
+background-position:-57px -201px;
+}
+
+
+.ui_ico {
+	background-image:url("/img/images/icons-master.png");
+	background-repeat:no-repeat;
+	display:inline-block;
+	outline:medium none;
+	overflow:hidden;
+	vertical-align:bottom;
+    margin-bottom:0;
+    margin-right:4px;
+    margin-top:0;
+}
+/*
+    Document   : mainChatBody
+    Created on : Jun 24, 2011, 4:22:11 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description:
+        Stylesheets that are exclusively for the main chat area (frames)
+*/
+
+
+
+#main_history {
+  margin: 15px 0 40px 0;
+}
+
+#main_history_loader {
+  display: none;
+  margin: auto;
+  text-align: center;
+}
+
+#main_history_login {
+  margin: auto;
+  text-align: center;
+  width: 500px;
+  height: 50px;
+  background-color: #777;
+  -moz-box-shadow: 0px 0px 20px #888;
+	-webkit-box-shadow: 0px 0px 20px #888;
+	box-shadow: 0px 0px 20px #888;
+  padding: 15px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.item {
+	float: left;
+	width: 188px;
+	height: 188px;
+	padding: 8px;
+	margin: 15px;
+	border: solid 1px #CCC;
+	-moz-box-shadow: 0px 0px 20px #888;
+	-webkit-box-shadow: 0px 0px 20px #888;
+	box-shadow: 0px 0px 20px #888;
+	background-color: #FFF;
+}
+
+.item_onover {
+  display:none;
+  position:relative;
+  float: left;
+  height: 30px;
+  width: 178px;
+  color: #fff;
+  font-size: 13px;
+  padding: 5px;
+  margin-top: -188px;
+  background-image: url("/img/images/trans_bg.png");
+}
+
+.item_onover span {
+  float: left;
+  margin-top:8px;
+}
+.item_onover a {
+  float: left;
+  padding-left: 4px;
+  padding-top: 3px;
+}
+
+.item_goto {
+  float:right !important;
+  color: #fff !important;
+  padding-top: 6px !important;
+}
+
+.item_goto .ui_ico {
+  float: right !important;
+  margin-top: 0px !important;
+  margin-left: 2px;
+}
+
+.item_text_container {
+  height: 50px;
+  position:relative;
+  float:left;
+	width: 188px;
+  margin-top: -45px;
+}
+.item_text {
+	/*
+  position: relative;
+
+  */
+  background-image: url("/img/bg/bg_1x1_white.png");
+
+	color: #000;
+  word-wrap: break-word;
+	font-size: 11px;
+  padding: 5px;
+  text-align: center;
+}
+
+.item_comments_count {
+  background-image: url("/img/bg/bg_yellow.png");
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+
+  font-size: 0.7em;
+  padding-left: 6px;
+  padding-right: 3px;
+  position: relative;
+  float: right;
+  margin-top: -70px;
+
+
+  display: none;
+}
+
+.item_text_height {
+  height: 40px;
+}
+
+.item_username {
+	float: left;
+	color: #FFF;
+	font-size: 13px;
+	/*background-image: url("/img/images/username_bg.gif");
+	background-repeat: repeat-x;
+ */
+  background-color: #a20b13;
+	padding: 2px 8px 5px 8px;
+	margin-top: 4px;
+	height: 14px;
+	-moz-box-shadow: 0px 0px 5px #888;
+	-webkit-box-shadow: 0px 0px 5px #888;
+	box-shadow: 0px 0px 5px #888;
+}
+
+.item_time {
+	float: right;
+	color: #FFF;
+	font-size: 11px;
+	background-image: url("/img/images/time_bg.gif");
+	background-repeat: no-repeat;
+	padding: 4px 8px 3px 20px;
+	margin-top: 4px;
+	height: 12px;
+	font-style: italic;
+	-moz-box-shadow: 0px 0px 5px #888;
+	-webkit-box-shadow: 0px 0px 5px #888;
+	box-shadow: 0px 0px 5px #888;
+	font-style: italic;
+}
+
+.item_photo {
+  /*
+  margin: auto;
+  padding: 4px 0px;
+  height: 176px;
+  width: 176px;
+  overflow:hidden;
+  */
+}
+
+.user_mention {
+  color: #0084B4 !important;
+
+}
+.booth_mention {
+  color: #CC0000 !important;
+}
+
+.main_empty_booth {
+  text-align: center;
+  padding-top: 30px;
+}
+.main_empty_booth h2{
+	color:#484747;
+	font-family: 'Francois One', sans-serif;
+	font-size:48px;
+  margin-bottom: 10px;
+}
+.main_empty_booth h3{
+color:#848383;
+width:700px;
+margin:auto;
+font-weight:normal;
+font-size:22px;
+margin-bottom:50px;
+}/*
+    Document   : footer
+    Created on : Jun 27, 2011, 2:58:11 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+#chatText {
+  margin: 0px;
+  padding: 2px 40px 2px 2px;
+  font-size : 24px !important;
+  color: #6a0005;
+  width: 460px;
+  height: 40px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 15px #888 inset;
+  -moz-box-shadow: 0px 0px 15px #888 inset;
+  box-shadow: 0px 0px 15px #888 inset;
+  border: solid 1px #666;
+  float: left;
+  margin-right: 10px;
+  margin-top: 4px;
+  outline: none;
+}
+
+#chat_container {
+  height: 60px;
+  padding-left: 30px;
+  width: 910px;
+  overflow: hidden;
+}
+
+#chat_user, #chat_message {
+  height: 60px;
+  float: left;
+}
+#foot object {
+  float: left;
+  margin-right: 10px;
+}
+
+.chat_counter {
+  position: fixed;
+  width: 100px;
+  text-align: right;
+  margin-left: 470px;
+  margin-top: 20px;
+  color: #b5b5b5;
+}
+.chat_counter_lev1 {color:#ffe505 !important;}
+.chat_counter_lev2 {color:#f09505 !important;}
+.chat_counter_over {color:#ff0000 !important;}
+
+#foot input {
+  float: left;
+}
+
+
+#chat_user_image {
+  text-align: right;
+  margin: 6px 15px 0 15px;
+  height: 35px;
+  width: 35px;
+  overflow: hidden;
+  -moz-border-radius: 4px; -webkit-border-radius: 4px;
+
+}
+
+#chat_user_name {
+  height: 13px;
+
+  font-size: 11px;
+  color: #fff;
+  width: 65px;
+
+  overflow: hidden;
+  text-align: center;
+}
+
+#cam_monitor {
+  position: fixed;
+  display:none;
+  float:left;
+  height: 230px;
+  width: 210px;
+  /*bottom: 82px;*/
+  left: 600px;
+  border: 2px solid #fdf7c6;
+  -webkit-box-shadow:inset 0px 0px 10px #000 , 0px 0px 10px #000;
+  -moz-box-shadow:inset 0px 0px 10px #000 , 0px 0px 10px #000;
+  background-color: #3c2c0a;
+
+}
+
+#cam_monitor_title {
+
+  overflow: hidden;
+  text-align: center;
+  height: 45px;
+  margin-top: 5px;
+}
+
+
+.chat_user_menu_footnote {
+  margin: 27px 10px 0px 10px;
+  color: #999;
+  font-size: 0.7em;
+  width: 190px;
+}
+#cam_monitor_camholder {
+  width: 210px;
+  height: 85px;
+  margin-top: 35px;
+}
+#cam_monitor_camholder span {
+  margin-left: 20px;
+
+}
+
+.foot_fine_print{
+  float:right;
+  color: #999;
+  font-size: 0.6em;
+  position:fixed;
+  bottom: 0px;
+  right: 10px;
+  padding: 2px;
+  padding-right: 5px;
+
+}
+.foot_fine_print a, .foot_fine_print a:visited{
+  color: #999 !important;
+  text-decoration: underline;
+}
+
+
+#chat_cam_lens {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+#chat_cam_lens_glow {
+  display:none;
+  margin-top: 5px;
+  margin-left: 5px;
+
+}
+
+
+/**
+ * Notification badge
+*/
+#chat_user_notify {
+  display:none;
+  position: absolute;
+  height: 14px;
+  min-width: 12px;
+  background-color: #9A0007;
+  color: #FFF;/**#FEF0A3;*/
+  font-size: 12px;
+  margin-left: 37px;
+  margin-top: -2px;
+  text-align: center;
+
+  padding: 2px 3px 1px 2px;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+
+
+}/*
+    Document   : forms
+    Created on : Jun 28, 2011, 2:47:26 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+/**
+ * textarea element default decoration
+*/
+.textarea {
+  font-family: Arial, Helvetica, sans-serif;
+  /*
+	outline-color: #c2ff67;
+	outline-style: solid;
+	outline-width: 3px;
+	*/
+  outline:none;
+  -moz-border-radius: 3px; -webkit-border-radius: 3px;
+  cursor:text;
+  letter-spacing:normal;
+  line-height:normal !important;
+  text-align:start;
+  text-indent:0;
+  text-rendering:optimizelegibility;
+  text-shadow:none;
+  text-transform:none;
+  word-spacing:normal;
+  border:1px solid #000;
+  font-size:17px;
+  padding:5px;
+  padding-bottom: 6px;
+  resize: none;
+}
+
+
+
+.btn {
+  /*-moz-background-clip:border;*/
+  -moz-background-inline-policy:continuous;
+  /*-moz-background-origin:padding;*/
+
+
+
+  background:url("/img/btn_bg.png") repeat-x scroll;
+
+  -moz-border-radius: 4px; -webkit-border-radius: 4px;
+  height: 19px;
+  padding: 1px 15px 0  15px;
+  background-position: 0 -79px;
+
+  border:solid 1px #b12a1c;
+  background-color:#9a0007;
+
+  color:#faf5d2 ;
+  cursor:pointer;
+  line-height:14px;
+  margin:0;
+  overflow:hidden;
+  text-align:center;
+  /*
+    font-family: Helvetica Neue, Arial, Helvetica, FreeSans, sans-serif;
+    font-size: 13px;
+	*/
+  font:14px/15px Arial, Helvetica, FreeSans, sans-serif;
+
+  font-weight: bold;
+  text-shadow:-1px -1px  2px #000000;
+  letter-spacing: 0.02em;
+  display:inline-block;
+}
+
+.btn_gray {
+  background-color: #DDDDDD !important;
+  border-color: #BBB #BBB #999 !important;
+  color: #333 !important;
+  text-shadow:0px 0px 0px #FFF !important;
+  background-position: 0 -64px !important;
+}
+
+.btn_m, .btn_35 { /* medium button */
+  -moz-border-radius: 8px; -webkit-border-radius: 8px;
+  padding: 7px 20px 0  20px;
+  background-position: 0 0;
+  height: 28px;
+  font-size:1.2em;
+  font-weight: bold;
+  line-height:20px !important;
+
+}
+
+.btn_l, .btn_45 { /* large button */
+
+  -moz-border-radius: 8px; -webkit-border-radius: 8px;
+  height: 30px;
+  padding: 15px 20px 0  20px;
+  background-position: 0 -90px;
+
+
+  font-size:1.5em;
+  line-height:24px !important;
+}
+
+.form_single_left {
+  padding-top: 15px;
+  white-space: nowrap;
+  width: 30%;
+  color: #000000;
+  text-align: right;
+}
+.form_single_right {
+  padding-left: 6px;
+  padding-top: 15px;
+  width: 70%;
+  color: #000000;
+}
+
+.textfield {
+  border: 1px solid #999999;
+  border-radius: 4px 4px 4px 4px;
+  cursor: text;
+  font-family: Helvetica Neue,Arial,Helvetica,FreeSans,sans-serif;
+  font-size: 17px;
+  letter-spacing: normal;
+  line-height: normal !important;
+  outline: medium none;
+  padding: 5px 5px 6px;
+  text-align: start;
+  text-indent: 0;
+  text-rendering: optimizelegibility;
+  text-shadow: none;
+  text-transform: none;
+  word-spacing: normal;
+}/*
+    Document   : users
+    Created on : Jun 28, 2011, 3:00:29 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+
+/**
+ * USER PROFILE
+ *
+*/
+
+#user_prof {
+  z-index: 500;
+}
+
+#user_prof_main_top {
+  min-height: 100px;
+  width: 330px;
+  margin: auto;
+
+}
+
+#user_prof_loading {
+  margin-top: 20px;
+  margin-left: 50px;
+}
+
+#user_prof_notfound, #user_prof_loading {
+  display:none;
+  color: #fff;
+  font-weight: bold;
+}
+
+.msg_textarea {
+  display:block;
+  float:right;
+}
+/** User menu, prv messages, right pane */
+.user_msg_textarea {
+  display:block;
+}
+.msg_btn {
+  display:block;
+  clear:left;
+  float:right;
+  margin-top: 10px;
+}
+
+.msg_loader {
+  float: right;
+
+  margin-top: 10px;
+  margin-right: 10px;
+  display:none;
+
+}
+
+.msg_success {
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+  color: #00e800;
+  display: none;
+}
+.msg_error {
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
+  color: #e80000;
+  display: none;
+
+}
+
+.msg_counter {
+  position: relative;
+  margin-left: 290px;
+  margin-top: -23px;
+  font-size: 1.3em;
+  font-weight: bolder;
+  color: #fff;
+}
+.user_msg_counter {
+  color: #999;
+  margin-left: 350px;
+
+}
+.user_prof_footer {
+  width: 330px;
+  margin: auto;
+  height: 50px;
+  padding-top: 40px;
+}
+
+
+
+/**
+ * USER MENU
+ *
+*/
+
+
+#user_menu_box{
+  width: 900px;
+  background-image: none;
+  background-color: #3c2c0a;
+}
+
+#user_menu_title {
+  top: 0px;
+  left: 480px;
+  width: 400px;
+  text-align: right;
+}
+
+
+.um_tab_master {
+  position: relative;
+  padding: 10px;
+  top: -40px;
+}
+/**
+ * The global content of tabbar, contains all the tabs
+*/
+#um_tab_main_content {
+  width: 870px;
+  height: 300px; /** variable **/
+  background-color: #fff;
+  color: #fff;
+  overflow-x:hidden;
+  overflow-y: auto;
+  padding: 0px;
+  text-align: left;
+}
+
+/**
+ * The master container of the messages tab
+ */
+#um_tab_messages_content {
+  background-color: #FFF;
+
+}
+
+#um_tab_msg_left_loader {
+  width: 50px;
+  margin: auto;
+  margin-top: 30px;
+}
+#um_tab_msg_left_nomessage {
+ display:none;
+ margin-top: 30px;
+ text-align: center;
+ color: #999;
+ font-size: 1.2em;
+ font-weight: 200;
+}
+
+#um_tab_msg_left {
+  width: 400px;
+  float:left;
+  display: inline-block;
+  z-index: 4;
+  position:relative;
+  min-height: 300px; /** variable */
+
+}
+
+#um_tab_msg_left_items {
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, .5);
+  -moz-box-shadow: 3px 3px 4px rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 3px 3px 4px rgba(0, 0, 0, .5);
+  margin-bottom: 10px;
+}
+
+#um_tab_msg_right {
+  position: fixed;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  width: 100%;
+
+  top: 86px;
+
+}
+.pane_right_master {
+  position: relative;
+  min-width: 870px;
+  max-width: 870px;
+  margin: 0px auto 0px auto;
+}
+.pane_right_slave {
+  position:relative;
+  top: 0;
+  height: 400px; /** variable */
+  width: 450px;
+  left: 400px;
+  overflow: hidden;
+}
+
+.pane_right_inner {
+  height: 100%;
+  margin-left: 10px;
+}
+
+.pane_right_header {
+  background-color: #F4F4F4;
+  padding: 16px 10px 6px 20px;
+  font-size: 16px;
+  color: #999;
+  font-weight: 300;
+  text-shadow: 0 1px 0 white;
+  border-bottom: 1px solid #EEE;
+  height: 120px;
+
+}
+.pane_right_content {
+  height: 400px; /** variable */
+  overflow-y: auto;
+  position: relative;
+  padding-bottom: 30px;
+}
+
+.pane_right_content .msg_item {
+
+}
+
+
+
+
+
+#um_tab_msg_left_header {
+  height: 30px;
+  background-color: #EEE;
+  vertical-align: middle;
+  color: #444;
+  padding-left: 10px;
+  padding-top: 8px;
+  box-shadow: 3px 0px 4px rgba(0, 0, 0, .5);
+  -moz-box-shadow: 3px 0px 4px rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 3px 0px 4px rgba(0, 0, 0, .5);
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+}
+
+.msg_item {
+  min-height: 48px;
+  clear:both;
+  border-bottom: 1px solid #EBEBEB;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+/** On msg item hover */
+.msg_item_hover {
+  background-color: #f9e9e4;
+  border-bottom: 1px solid #efcabe !important;
+  border-top: 1px solid #deb9ae !important;
+}
+
+.msg_item_selected {
+
+  background-color: #EEE;
+  border-bottom: 1px solid #CCC !important;
+  border-top: 1px solid #CCC !important;
+  outline: none;
+}
+
+
+.msg_item_photo {
+  float: left;
+  margin: 8px 10px;
+}
+.msg_item_name {
+  float: left;
+  padding-top: 6px;
+  font-size: 15px;
+}
+.msg_item_name strong {
+  color: #000;
+}
+.msg_item_name b {
+  color: #999;
+  padding-left: 10px;
+}
+
+
+.msg_item_content {
+  padding-top: 25px;
+  margin-left: 68px;
+}
+
+#um_tab_msg_left_items .msg_item .msg_item_content {
+  margin-left: 48px !important;
+}
+
+.msg_item_message {
+  color: #000;
+  font-size: 13px;
+  line-height: 17px;
+  font-weight: normal;
+}
+.msg_item_total {
+  color: #999;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  margin-top: -25px;
+  min-width: 30px;
+  font-size: 20px;
+  font-weight: 300;
+  margin-right: 30px;
+  line-height: 5px;
+  height: 20px;
+}
+.msg_item_unread {
+  position: absolute;
+  right: 0;
+  margin-top: -29px;
+  margin-right: 10px;
+  display: none;
+}
+
+
+.msg_item_total_hover {
+  color: #b73600 !important;
+  font-weight: 700 !important;
+}
+
+
+.msg_item_date_delete {
+}
+.msg_item_date {
+  color: #999;
+
+  font-size: 11px;
+}
+
+.msg_item_delete , .msg_item_delete:visited {
+  color: #0084B4;
+  padding-left: 5px;
+  font-size: 11px;
+  visibility: hidden;
+  text-decoration: none;
+
+}
+
+.msg_item_delete:hover {
+  text-decoration: underline;
+}
+
+
+
+.um_content_left {
+  width: 450px;
+  float: left;
+}
+.um_content_right {
+  width: 400px;
+  float: left;
+}
+
+.um_content_right_btn {
+  float: right;
+  margin-top: 20px;
+
+}
+
+
+/**
+ * Request E-mail modal
+ *
+ */
+
+ .getmail_main {
+   margin: auto;
+   width: 330px;
+
+ }
+ .getmail_title {
+   font-size: 1.2em;
+   color: #fff;
+ }
+
+ .getmail_footnote {
+   font-size: 0.8em;
+   color: #fff;
+
+ }
+
+ #getmail_submit {
+
+ }
+
+ .getmail_footer {
+   float: right;
+   margin-top: 20px;
+   height: 50px;
+ }
+
+ #alerts_title {
+   color: #444;
+   margin-top: 10px;
+   margin-left: 117px;
+ }/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: attila@google.com (Attila Bodis) */
+
+/*
+ * Styles used by goog.ui.RoundedTabRenderer.
+ */
+.goog-rounded-tab {
+	border: 0;
+	cursor: pointer;
+	padding: 0;
+}
+
+.goog-tab-bar-top .goog-rounded-tab,.goog-tab-bar-bottom .goog-rounded-tab
+	{
+	float: left;
+	margin: 0 4px 0 0;
+}
+
+.goog-tab-bar-start .goog-rounded-tab,.goog-tab-bar-end .goog-rounded-tab
+	{
+	margin: 0 0 4px 0;
+}
+
+.goog-rounded-tab-caption {
+	border: 0;
+	color: #fef0a3;
+  font-weight: bold;
+  letter-spacing: 0.025em;
+	margin: 0;
+	padding: 4px 8px;
+}
+
+.goog-rounded-tab-caption,.goog-rounded-tab-inner-edge,.goog-rounded-tab-outer-edge
+	{
+	background: #600004;
+	border-right: 1px solid #9A0007;
+}
+
+.goog-rounded-tab-inner-edge,.goog-rounded-tab-outer-edge {
+	font-size: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* State: Hover */
+.goog-rounded-tab-hover .goog-rounded-tab-caption,.goog-rounded-tab-hover .goog-rounded-tab-inner-edge,.goog-rounded-tab-hover .goog-rounded-tab-outer-edge
+	{
+	background-color: #9A0007;
+	border-right: 1px solid #BB1225;
+}
+
+/* State: Disabled */
+.goog-rounded-tab-disabled .goog-rounded-tab-caption,.goog-rounded-tab-disabled .goog-rounded-tab-inner-edge,.goog-rounded-tab-disabled .goog-rounded-tab-outer-edge
+	{
+	background: #ccc;
+	border-right: 1px solid #ccc;
+}
+
+/* State: Selected */
+.goog-rounded-tab-selected .goog-rounded-tab-caption,.goog-rounded-tab-selected .goog-rounded-tab-inner-edge,.goog-rounded-tab-selected .goog-rounded-tab-outer-edge
+	{
+	background: #9A0007 !important; /* Selected trumps hover. */
+	border-right: 1px solid #BB1225 !important;
+}
+
+/*
+ * Styles for horizontal (top or bottom) tabs.
+ */
+.goog-tab-bar-top .goog-rounded-tab {
+	vertical-align: bottom;
+}
+
+.goog-tab-bar-bottom .goog-rounded-tab {
+	vertical-align: top;
+}
+
+.goog-tab-bar-top .goog-rounded-tab-outer-edge,.goog-tab-bar-bottom .goog-rounded-tab-outer-edge
+	{
+	margin: 0 3px;
+}
+
+.goog-tab-bar-top .goog-rounded-tab-inner-edge,.goog-tab-bar-bottom .goog-rounded-tab-inner-edge
+	{
+	margin: 0 1px;
+}
+
+/*
+ * Styles for vertical (start or end) tabs.
+ */
+.goog-tab-bar-start .goog-rounded-tab-table,.goog-tab-bar-end .goog-rounded-tab-table
+	{
+	width: 100%;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-inner-edge {
+	margin-left: 1px;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-outer-edge {
+	margin-left: 3px;
+}
+
+.goog-tab-bar-end .goog-rounded-tab-inner-edge {
+	margin-right: 1px;
+}
+
+.goog-tab-bar-end .goog-rounded-tab-outer-edge {
+	margin-right: 3px;
+}
+
+/*
+ * Overrides for start tabs.
+ */
+.goog-tab-bar-start .goog-rounded-tab-table,.goog-tab-bar-end .goog-rounded-tab-table
+	{
+	width: 12ex; /* TODO(attila): Make this work for variable width. */
+}
+
+.goog-tab-bar-start .goog-rounded-tab-caption,.goog-tab-bar-start .goog-rounded-tab-inner-edge,.goog-tab-bar-start .goog-rounded-tab-outer-edge
+	{
+	border-left: 1px solid #003;
+	border-right: 0;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-hover .goog-rounded-tab-caption,.goog-tab-bar-start .goog-rounded-tab-hover .goog-rounded-tab-inner-edge,.goog-tab-bar-start .goog-rounded-tab-hover .goog-rounded-tab-outer-edge
+	{
+	border-left: 1px solid #369 !important;
+	border-right: 0 !important;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-selected .goog-rounded-tab-outer-edge,.goog-tab-bar-start .goog-rounded-tab-selected .goog-rounded-tab-inner-edge,.goog-tab-bar-start .goog-rounded-tab-selected .goog-rounded-tab-caption
+	{
+	border-left: 1px solid #036 !important;
+	border-right: 0 !important;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-disabled .goog-rounded-tab-outer-edge,.goog-tab-bar-start .goog-rounded-tab-disabled .goog-rounded-tab-inner-edge,.goog-tab-bar-start .goog-rounded-tab-disabled .goog-rounded-tab-caption
+	{
+	border-left: 1px solid #ccc !important;
+	border-right: 0 !important;
+}/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: attila@google.com (Attila Bodis) */
+/* Author: eae@google.com (Emil A. Eklund) */
+
+/*
+ * Styles used by goog.ui.TabRenderer.
+ */
+.goog-tab {
+	background: #ddd;
+	border: 1px solid #369;
+	color: #333;
+	cursor: default;
+	padding: 4px 8px;
+	position: relative;
+}
+
+.goog-tab-bar-top .goog-tab {
+	border-bottom: 0;
+	float: left;
+	margin: 1px 4px 0 0;
+}
+
+.goog-tab-bar-bottom .goog-tab {
+	border-top: 0;
+	float: left;
+	margin: 0 4px 1px 0;
+}
+
+.goog-tab-bar-start .goog-tab {
+	border-right: 0;
+	margin: 0 0 4px 1px;
+}
+
+.goog-tab-bar-end .goog-tab {
+	border-left: 0;
+	margin: 0 1px 4px 0;
+}
+
+/* State: Hover */
+.goog-tab-hover {
+	background: #eee;
+}
+
+/* State: Disabled */
+.goog-tab-disabled {
+	background: #ccc;
+	border-color: #ccc;
+	color: #fff;
+}
+
+/* State: Selected */
+.goog-tab-selected {
+	background: #fff !important; /* Selected trumps hover. */
+}
+
+/*
+ * Shift selected tabs 1px towards the contents (and compensate via margin and
+ * padding) to visually merge the borders of the tab with the borders of the
+ * content area.
+ */
+.goog-tab-bar-top .goog-tab-selected {
+	margin-top: 0;
+	padding-bottom: 5px;
+	top: 1px;
+}
+
+.goog-tab-bar-bottom .goog-tab-selected {
+	margin-bottom: 0;
+	padding-top: 5px;
+	top: -1px;
+}
+
+.goog-tab-bar-start .goog-tab-selected {
+	left: 1px;
+	margin-left: 0;
+	padding-right: 9px;
+}
+
+.goog-tab-bar-end .goog-tab-selected {
+	left: -1px;
+	margin-right: 0;
+	padding-left: 9px;
+}/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: attila@google.com (Attila Bodis) */
+/* Author: eae@google.com (Emil A. Eklund) */
+
+
+.goog-tab-content {
+  border: 5px solid #9A0007;
+  padding: 5px;
+  -moz-border-radius-bottomleft:4px;
+  -moz-border-radius-bottomright:4px;
+  -moz-border-radius-topright:4px;
+  -webkit-border-bottom-right-radius:4px;
+  -webkit-border-bottom-left-radius:4px;
+  -webkit-border-top-left-radius:4px;
+
+}
+
+/*
+ * Styles used by goog.ui.TabBarRenderer.
+ */
+.goog-tab-bar {
+	border: 0;
+	cursor: default;
+	list-style: none;
+	margin: 0;
+	outline: none;
+	padding: 0;
+	position: relative;
+}
+
+.goog-tab-bar-clear {
+	clear: both;
+	height: 0;
+	overflow: hidden;
+}
+
+.goog-tab-bar-start {
+	float: left;
+}
+
+.goog-tab-bar-end {
+	float: right;
+}
+
+/*
+ * IE6-only hacks to fix the gap between the floated tabs and the content.
+ * IE7 and later will ignore these.
+ */
+/* @if user.agent ie6 */
+* html .goog-tab-bar-start {
+	margin-right: -3px;
+}
+
+* html .goog-tab-bar-end {
+	margin-left: -3px;
+}
+/* @endif */
+
+#home_master {
+	background-color: #fff6b7;
+	background-image: url("/img/home_images/home_bg.png");
+	background-repeat: no-repeat;
+	background-position: center top;
+	margin-top:0px;
+}
+
+#home_all {
+	margin-top: 140px;
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+	text-shadow: #666 -1px 1px 1px, #fff 1px -1px 1px;
+}
+
+#connect {
+clear: both;
+width:418px;
+margin:auto;
+text-align:center;
+}
+
+#master_loader{
+text-align:center;
+}
+
+#master_loader_image{
+margin:auto;
+margin-top:0px;
+}
+.loader_text{
+  text-align: center;
+  color: #fff;
+}
+
+
+
+
+
+.input_field {
+	margin: 0px;
+	color: #6a0005;
+	width: 200px;
+	height: 40px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-box-shadow: 0px 0px 15px #888 inset;
+	-moz-box-shadow: 0px 0px 15px #888 inset;
+	box-shadow: 0px 0px 15px #888 inset;
+	border: solid 1px #666;
+	float: left;
+	margin-right: 10px;
+	margin-top: 4px;
+	outline: none;
+}
+
+#home_title {
+	font-size: 20px;
+	font-weight: normal;
+	/*
+	left: 50%;
+	margin-left: -400px;
+	*/
+	padding: 25px 0;
+	/*
+	position: absolute;
+	width: 480px;
+
+	*/
+	width:100%;
+	float:left;
+
+	text-align:center;
+
+}
+
+.initial {
+	color: #b5b5b5 !important;
+}
+
+
+
+/**
+ * CSS Document
+ * Public User Profile styles
+ * @createdate 19/10/2010
+ * $Id:  $
+ */
+
+/**
+ * Top header with user details div
+ */
+.pup_header {}
+
+/**
+ * Contains the user name, photo, nickname, etc
+ */
+.pup_basic_info {
+  margin-top: 15px;
+	display: inline-block;
+}
+
+/**
+ * Main user photo image tag
+ */
+.pup_photo_main  {
+
+}
+
+/**
+ * Contains all the details, nickname, bio, etc
+ *
+ */
+.pup_details {
+
+}
+
+/**
+ * Full name style
+ */
+.pup_fname_cont{
+	margin:0;
+    padding:0;
+}
+.pup_fullname {
+	/* font-size:30px; */
+	font-size: 2.35em;
+	font-weight:bold;
+	line-height:36px;
+	margin:0;
+	padding:0;
+	display:inline;
+	margin-right:5px;
+	color: #444444;
+}
+/**
+ * Contains nickname and location
+ */
+.pup_nickloc {
+	line-height: 26px;
+}
+.pup_nickname {
+	font-size: 20px;
+	font-weight:bold;
+	margin-right:6px;
+	padding:2px 0;
+	color: #ededed;
+}
+.pup_location{
+	font-size:15px;
+  font-weight: bold;
+	line-height:22px;
+	padding:0;
+  color: #ededed;
+}
+.pup_bio{
+	color:#fff;
+	font-family:serif;
+	font-size:20px;
+	font-style:italic;
+	line-height:22px;
+
+}
+.pup_web{
+	line-height:20px;
+    font-size:13px !important;
+    font-weight: bold;
+
+}
+
+/**
+ * The toolbar seperating the header user details
+ * with the streams. Contains button controls
+ */
+.pup_toolbar{
+
+	-moz-border-radius:4px; -webkit-border-radius: 4px;
+	background:none repeat scroll 0 0 #F4F4F4;
+	clear:both;
+	display:block;
+	height:36px;
+	margin:0 10px 15px;
+	padding:4px 10px;
+}
+
+/**
+ * Contains the 'follow' or unfollow buttons
+ *
+ */
+.pup_follow_state {
+	float:left;
+	margin-top: 4px;
+}
+
+
+.user_prof_header {
+  width: 300px;
+  position: relative;
+  overflow: hidden;
+  top: -75px;
+  left: 110px;
+  height: 60px;
+
+}
+
+#user_prof_title {
+  white-space: nowrap;
+}
+
+
+.user_prof_title_container {
+  position:relative;
+  left: 60px;
+  top: -34px;
+}
+.user_prof_photo_container {
+
+}
+
+
+.prof_close {
+
+  float: right;
+}
+
+
+#user_prof_main_msg {
+  height: 120px;
+  width: 330px;
+  margin:auto;
+  padding-top: 30px;
+}
+
+
+.profile_miniphoto {
+
+}
+
+.profile {
+  float: left;
+  width: 153px;
+  padding: 10px;
+  margin: 10px;
+  background-image: url("/img/images/profile_bg.png");
+  background-repeat: no-repeat;
+}
+.profile_location {
+  color: #FFF;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+div.profile img {
+  float: left;
+  margin-left: 6px;
+}
+
+.profile_name {
+  padding: 3px;
+  padding-left: 10px;
+  color: #FFF;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+
+}
+
+.profile_social {
+  padding: 4px 8px 0 0;
+  width: 85px;
+  overflow: hidden;
+  position: relative;
+  top: 10px;
+  left: 10px;
+
+}
+.profile_social a {
+  display:none;
+}
+/*
+    Document   : notifications.css
+    Created on : Aug 24, 2011, 8:50:53 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*
+   Notifications menu
+*/
+
+
+#um_tab_notify {
+}
+
+.notify_title {
+  float:left;
+}
+
+#um_tab_notify_badge {
+
+  display:none;
+    background-color: #BB1225;
+    border-radius: 8px 8px 8px 8px;
+    font-size: 12px;
+    height: 14px;
+    margin-right: 8px;
+
+    min-width: 12px;
+    padding: 2px 3px 1px 2px;
+
+    text-align: center;
+    float:left;
+
+}
+
+
+#um_tab_notify_content {
+  color: #000;
+  padding: 10px
+}
+#notify_loader {
+  width: 50px;
+  margin: auto;
+  margin-top: 30px;
+}
+
+#notify_nomessages {
+  margin-top: 30px;
+  margin-left: 10px;
+}
+
+.notify_header {
+  padding: 10px;
+  size: 1.3em;
+  border-bottom: 1px solid #AAA;
+  color: #1C2A47;
+}
+#notify_item_master {
+  margin-top: 15px;
+}
+#notify_templates {
+  display:none;
+}
+
+.notify_item{
+  border-bottom: 1px solid #E9E9E9;
+  padding: 5px 0 5px 0;
+  font-size: 0.86em;
+}
+
+.notify_item_date {
+  color: gray;
+}
+
+.notify_item_user {
+  color: #0134c5 !important;
+  padding-right: 5px;
+}
+
+.notify_item_frametext {
+  padding-left: 5px;
+  color: #0134c5 !important;
+}/*
+    Document   : boothBrowse
+    Created on : Oct 14, 2011, 6:15:52 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+
+#browse_booths_box {
+  width: 700px;
+  background-image: none;
+  background-color: #3c2c0a;
+}
+
+.bb_title {
+  position: relative;
+  left: 120px;
+  top: -80px;
+}
+
+#browse_booths_main {
+  padding: 10px;
+
+}
+
+.bb_enter_master {
+  margin-bottom: 10px;
+  height: 40px;
+  clear:both;
+}
+.bb_enter_title {
+  font-size: 14pt;
+  color: #fff;
+}
+#bb_enter_input {
+  word-spacing: normal;
+  text-indent: 23px;
+  margin-top: -24px;
+  float: left;
+  font-size: 23px;
+  padding: 0 0 3px;
+
+}
+.bb_enter_dash {
+  position: relative;
+  left: 10px;
+  color: #777;
+  font-weight: bold;
+  font-size: 16pt;
+  top: 6px;
+  width:15px;
+}
+
+#bb_enter_btn {
+  float: left;
+  margin-top: -25px;
+  margin-left: 10px;
+}
+.bb_enter_controls {
+
+  margin-top: 6px;
+}
+
+
+
+#bb_loader, #bb_error {
+  margin-top: 50px;
+  color: #fff;
+  clear: both;
+}
+
+
+/**
+ * The Booth Browse - Browse styles
+ * All browse columns are here
+ *
+ */
+
+ .bb_browse_master {
+   clear:both;
+    margin-top: 40px;
+    min-height: 300px;
+ }
+
+ .bb_browse_column {
+   width: 200px;
+   float: left;
+   min-height: 100px;
+    margin-right: 20px;
+ }
+
+ .bb_browse_title {
+    border-bottom: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: bold;
+ }
+
+ .bb_browse_item_master {
+   margin: auto;
+ }
+ .bb_no_booths {
+   padding-top: 10px;
+   color: #fff;
+ }
+ .bb_browse_link {
+   color: #fff;
+ }
+
+ .bb_browse_item {
+   clear:both;
+   height: 40px;
+   padding-top: 10px;
+ }
+
+ .bb_browse_item_boothname {
+   color: #FEF0A3;
+ }
+ .bb_browse_item_note {
+   color: #FFF;
+   font-size: 12px;
+ }

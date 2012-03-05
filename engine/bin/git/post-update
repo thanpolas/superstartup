@@ -1,0 +1,93 @@
+#!/bin/sh
+###
+### Automatically push to production and beta installations
+###
+
+git-update-server-info
+
+### Get current branch that was pushed
+ref=$1
+
+###
+### SETTINGS AND PATHS
+###
+
+### Set branches that we will trigger on
+master="refs/heads/master"
+beta="refs/heads/beta"
+
+### Set paths here
+masterPath="/home/116255/users/.home/domains/boothchat.com"
+betaPath="/home/116255/users/.home/domains/beeeta.boothchat.com"
+
+### Set where CI's environment PHP file is (included by index.php)
+### This file should be included in the .gitignore file to avoid
+### merge conflicts. We overwrite this file on each push
+envFile="/html/php/env.php"
+
+### Set the location of the post-update script. git repo will ln -s to this
+postUpdate="/engine/bin/git/post-update"
+
+### Set string to echo on environment file depending on environment
+envPHPmaster="<?php define('ENVIRONMENT', 'production'); ?>"
+envPHPbeta="<?php define('ENVIRONMENT', 'testing'); ?>"
+
+###
+### SCRIPT STARTS HERE
+###
+
+
+### Check if we got 'beta' or 'master' branches pushed
+### and update live installations
+
+echo "*** Checking out if pushed branch is beta or master"
+
+if [ "$ref" = "$master" ]
+then
+  echo "*** MASTER branch pushed. Deploying on master site"
+
+
+  cd $masterPath
+  env -i git reset --hard
+  ### Secure environment after the reset
+  echo $envPHPmaster > $masterPath$envFile
+
+  env -i git pull grid master
+  ### Secure environment after the pull
+  echo $envPHPmaster > $masterPath$envFile
+
+  ### Make post-update executable, git repo's hook is linked
+  ### to this file
+  chmod a+x $masterPath$postUpdate
+
+  echo "*** MASTER DEPLOYED"
+
+fi
+
+
+###
+### Go for the beta, checkout the git command to fit your own needs
+###
+if [ "$ref" = "$beta" ]
+then
+  echo "*** BETA branch pushed. Deploying on beta site"
+
+  cd $betaPath
+  env -i git reset --hard
+  ### Secure environment after the reset
+  echo $envPHPbeta > $betaPath$envFile
+
+  env -i git pull grid beta
+  ### Secure environment after the pull
+  echo $envPHPbeta > $betaPath$envFile
+
+  ### Make post-update executable, git repo's hook is linked
+  ### to this file
+  chmod a+x $betaPath$postUpdate
+
+  echo "*** BETA DEPLOYED"
+
+fi
+
+##
+
