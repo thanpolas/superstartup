@@ -49,13 +49,23 @@ core.error = function (e)
         var msg = e.message;
         var source = e.sourceURL;
     } else {
+      if (e.fileName) {
         var filename = e.fileName;
         var line = e.lineNumber;
         var msg = e.message;
         var source = '';
+      } else {
+        var filename = '';
+        var line = '';
+        var msg = e.message;
+        var source = '';
+      }
     }
     log.severe('Error! name:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source);
-    if (core.WEB && console) console.debug('Error! name:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source);
+    if (core.WEB && console) { 
+      console.debug('Error! name:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source);
+    }
+    
 }; // method core.error
 
 
