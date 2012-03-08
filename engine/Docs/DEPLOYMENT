@@ -1,0 +1,47 @@
+For automatic deployment to work we assume you have shell access and git on your server.
+
+We also assume that your "main" git repo exists in your server.
+
+We have created two possible deployments, one master (Production) and one beta (Testing). When you push on the 'master' branch you are pushing to production. If you create a branch named 'beta' and push it to the server it will deploy to the Testing site instead. You may create whatever login you wish by editing the file in: engine/bin/git/post-update. Bellow we explain how to setup autodeployment for your Production and you can follow the same instructions to setup the Testing site.
+
+1. Create the "bare" clone named example.git:
+Before we can push our local Git repository to the our server, we have to create a bare clone. A default Git repository assumes that you'll be using it as your working directory, so Git stores the actual bare repository files in a .git directory alongside all the project files. Remote repositories do not need copies of the files on the filesystem unlike working copies. This is what "bare" means to Git -- just the repository itself.
+
+cd ..
+git clone --bare superstartup superstartup.git
+touch superstartup.git/git-daemon-export-ok
+
+
+2. Copy the repo to your server
+scp -r superstartup.git serveradmin%superstartup.org@superstartup.org:got/superstartup.org.git
+
+3. Login to your server to continue setup on the git repo
+ssh serveradmin%superstartup.org@superstartup.org
+cd git/superstartup.git
+git --bare update-server-info
+cd hooks
+vi post-update
+chmod a+x post-update
+
+With "vi post-update" we wish to create the post-update file. Paste the contents of file: engine/bin/git/post-update after you have properly edited it.
+
+4. Initialize your git repo on your live website
+The bare git repo we just created cannot be used as a website. We need to create the repo and pull from the bare repo we just created. The structure of superstartup framework assumes that the folder "html" is your DocumentRoot, so change directory to one folder behind your document root and start initializing your git repo:
+cd /one/path/behind/your/DocumentRoot
+git init
+git remote add grid /full/path/to/git/superstartup.git
+git fetch grid
+git pull grid
+
+5. Tie everything up
+All we need to do now is tie everything up with a symbolic link so we won't have to bother with the git repo again:
+cd ~/git/superstartup.git/hooks
+rm -f post-update
+ln -s ~/domains/superstartup.org/engine/bin/git/post-update post-update
+chmod a+x ~/domains/superstartup.org/engine/bin/git/post-update
+
+
+--
+You are done. Now every time you push to the server the 'master' branch your website will automatically deploy to production. Follow the same instructions for your live Testing website by pushing to the 'beta' branch. 
+
+Beware of any DB updates you have done, they must be applied before you push your new changes.
