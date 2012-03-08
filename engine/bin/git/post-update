@@ -17,8 +17,8 @@ master="refs/heads/master"
 beta="refs/heads/beta"
 
 ### Set paths here
-masterPath="/home/116255/users/.home/domains/boothchat.com"
-betaPath="/home/116255/users/.home/domains/beeeta.boothchat.com"
+masterPath="/home/116255/users/.home/domains/superstartup.org"
+betaPath="/home/116255/users/.home/domains/beta.superstartup.org"
 
 ### Set where CI's environment PHP file is (included by index.php)
 ### This file should be included in the .gitignore file to avoid
