@@ -4,7 +4,6 @@
  *
  */
     $config['facebook_app_id'] = '186392014808053';
-    $config['facebook_api_key'] = '';
     $config['facebook_secret'] = 'a701467d70044259e62c06934fc204cb';
 		
 		// these parameters are used in our page header

@@ -3,13 +3,13 @@
 if (!defined('BASEPATH'))
   exit('No direct script access allowed');
 
-include_once APPPATH . 'libraries/core/User/FBapi/fbexception.php';
-require APPPATH . 'libraries/core/User/FBapi/facebook.php';
+require APPPATH . 'libraries/core/User/FBapi/src/facebook.php';
 
 class Fb {
 
   private $ci = null;
   public $client = null;
+	// will store the FB user id
   private $user_id = null;
 
   /**
@@ -35,8 +35,8 @@ class Fb {
    * @var Array
    */
   private $userData = null;
-  private $session = null;
   private $req_perms = '';
+
   /**
    * Switch that determines if we are connected to FB
    *
@@ -50,7 +50,6 @@ class Fb {
     $this->ci->load->config('facebook');
 
     $app_id = $this->ci->config->item('facebook_app_id');
-    $api_key = $this->ci->config->item('facebook_api_key');
     $secret_key = $this->ci->config->item('facebook_secret');
     /*
      * All perms
@@ -70,50 +69,10 @@ class Fb {
     $this->client = new Facebook(array(
                 'appId' => $app_id,
                 'secret' => $secret_key,
-                'req_perms' => $this->req_perms,
                 'cookie' => true,
             ));
 
 
-    /**
-     *
-     * Obsolete [for now] code, there was a problem when
-     * we tried to log out the user via FB PHP SDK
-     * we now do it over the FB JS SDK so we'll see if that breaks
-
-    //Codeigniter Session & facebook cookies don't get along well
-    if ($session) {
-      try {
-
-        $this->user_id = $this->client->getUser();
-
-      } catch (FacebookApiException $e) {
-        $cookie_name = 'fbs_' . $app_id;
-        $dom = '.' . $_SERVER['HTTP_HOST'];
-        if (array_key_exists($cookie_name, $_COOKIE)) {
-          setcookie($cookie_name, null, time() - 4200, '/', $dom);
-          unset($_COOKIE[$cookie_name]);
-        }
-
-        if (array_key_exists($cookie_name, $_REQUEST)) {
-          unset($_REQUEST[$cookie_name]);
-        }
-
-        $cookies = array($api_key . '_expires', $api_key . '_session_key', $api_key . '_ss', $api_key . '_user', $api_key, 'base_domain_' . $api_key);
-        foreach ($cookies as $var) {
-          if (array_key_exists($var, $_COOKIE)) {
-            setcookie($var, null, time() - 4200, '/', $dom);
-            unset($_COOKIE[$var]);
-          }
-
-          if (array_key_exists($var, $_REQUEST)) {
-            unset($_REQUEST[$var]);
-          }
-        }
-      }
-    }
-     *
-     */
   }
 
   /**
@@ -133,11 +92,11 @@ class Fb {
     // if it is still valid until we make an API call using the session. A session
     // can become invalid if it has already expired (should not be getting the
     // session back in this case) or if the user logged out of Facebook.
-    $this->session = $this->client->getSession();
-
+    //$this->session = $this->client->getSession();
+		$this->user_id = $this->client->getUser();
 
     // Session based API call.
-    if ($this->session) {
+    if ($this->user_id) {
         try {
 
             // load user data object to check verified bit
@@ -146,7 +105,6 @@ class Fb {
             }
 
             // make core assignments
-            $this->user_id = $this->client->getUser();
             $this->isConnected = true;
         } catch (FacebookApiException $e) {
           raise_error($e);
@@ -159,7 +117,7 @@ class Fb {
 /**
  * Fetch the user data object from Facebook
  *
- * We store the recieved data object in $this->userData
+ * We store the received data object in $this->userData
  *
  * @return array
  */

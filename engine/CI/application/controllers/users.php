@@ -151,7 +151,6 @@ class Users extends CI_Controller {
     $fb_user = $this->fb->loadUserObject();
 
     $user = $this->user->get($fb_user['id'], true, SOURCE_FB);
-
     // set the newuser switch to off
     $newuser = false;
     // check if we didn't find user (new user)
@@ -174,7 +173,6 @@ class Users extends CI_Controller {
 
     //Login & Redirect home
     $this->user->login($user['userId'], SOURCE_FB, $newuser);
-    //$this->load->view('users/redirect_home');
 
     // login success, send the user his/her data object
     $return = array('user' => $this->user->get_public());

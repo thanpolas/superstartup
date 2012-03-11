@@ -1374,10 +1374,6 @@ class User extends CI_Model {
       }
     }
 
-    // reset notifications
-    $this->load->model('core/notify');
-    $this->notify->clear();
-
     // notify perm cook data
     $this->load->model('core/userperm');
     $this->userperm->userLogin($this->userData, $newuser);

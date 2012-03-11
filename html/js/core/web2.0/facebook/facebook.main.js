@@ -225,10 +225,9 @@ core.fb.getInitialLoginStatus = function (response)
 
     // store the result
     c.fb.db.haveInitialAuthStatus = true;
-    console.debug(response);
 
-    if (response['session']) {
-      log.info('FACEBOOK We are CONNECTED. status:' + response.status + ' privs:' + response['perms']);
+    if (c.fb.isAuthedFromResponse(response)) {
+      log.info('FACEBOOK We are CONNECTED.');
       c.web2.collectInitialAuthChecks(c.STATIC.SOURCES.FB, true);
       // validate the auth with our server
       c.fb.local.checkFacebookAuth(function(state){
@@ -300,7 +299,6 @@ core.fb.sessionChange = function (response)
 {
   try {
     var c = core;
-    var g = goog;
     var log = c.log('core.fb.sessionChange');
 
 
@@ -325,7 +323,7 @@ core.fb.sessionChange = function (response)
     */
 
 
-    if (response.session) {
+    if (c.fb.isAuthedFromResponse(response)) {
       // A user has logged in, and a new cookie has been saved
       // check if already logged in
       if (c.isAuthed())
@@ -354,7 +352,7 @@ core.fb.sessionChange = function (response)
  * @param {object} response the FB response object
  * @return {boolean} if we are authed or not
  */
-core.fb.isAuthedFromResponce = function(response)
+core.fb.isAuthedFromResponse = function(response)
 {
   try {
     if('connected' == response.status)
@@ -384,7 +382,7 @@ core.fb.loginListener = function (response, opt_callback)
 
     var callback = opt_callback || function (){};
 
-    if (c.db.isAuthedFromResponce(response)) {
+    if (c.fb.isAuthedFromResponse(response)) {
       c.fb.local.loginSubmit(callback);
     } else
       callback(false);
