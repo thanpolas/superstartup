@@ -51,6 +51,9 @@ web.myapp.initialise = function()
     // bind login buttons for FB/TW
     w.user.login.bindLogin();
     
+    // subscribe to the auth state master event hook
+    c.web2.events.addEventListener('initAuthState', w.myapp.authState);
+    
   } catch (e) {
     core.error(e);
   }  
@@ -58,3 +61,40 @@ web.myapp.initialise = function()
 
 // bind to the framework's ready event
 core.ready.addFunc('ready', web.myapp.initialise);
+
+
+
+/**
+ * Triggers when the master auth event hook changes state
+ *
+ * @param {boolean} state If we are authed or not
+ * @return {void}
+ */
+web.myapp.authState = function(state)
+{
+  try {
+
+    var w = web, c = core, j = jQuery, g = goog;
+
+    var log = c.log('web.myapp.authState');  
+    
+    log.info('Auth event is ready. State:' + state);
+    
+    if (state) {
+      // user is authed, get his data object...
+      var u = c.user.getUserDataObject();
+      // now update our page...
+      j('#auth_state h3').text('User Authed');
+      j('#auth_state_content h4').text('The user data object');
+      j('#user_data_object').text(g.debug.deepExpose(u));
+    } else {
+      j('#auth_state h3').text('Not Authed');
+      j('#auth_state_content h4').text('');
+      j('#user_data_object').text('');
+      
+    }
+    
+  } catch (e) {
+    core.error(e);
+  }  
+};

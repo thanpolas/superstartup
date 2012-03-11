@@ -301,7 +301,7 @@ core.fb.sessionChange = function (response)
     var c = core;
     var log = c.log('core.fb.sessionChange');
 
-
+    console.debug(response);
     log.info('Init. response.perms:' + response.perms);
     log.info('Init. response.session.expose:' + g.debug.expose(response.session));
     /**
@@ -642,13 +642,6 @@ core.fb.hasPerm = function (value, callback)
     var log = c.log('core.fb.hasPerm');
 
     log.info('Init for:' + value);
-
-    // error from Titanium:
-    //[ERROR] Facebook dialog failed with error = Error Domain=NSURLErrorDomain Code=-999 "The operation couldn’t be completed. (NSURLErrorDomain error -999.)" UserInfo=0xd1e5610 {NSErrorFailingURLKey=http://www.facebook.com/connect/uiserver.php?app_id=166214506731719&next=fbconnect%3Asuccess&display=touch&locale=en_US&perms=publish_stream&fbconnect=1&method=permissions.request, NSErrorFailingURLStringKey=http://wwc.facebook.com/connect/uiserver.php?app_id=166214506731719&next=fbconnect%3Asuccess&display=touch&locale=en_US&perms=publish_stream&fbconnect=1&method=permissions.request}
-
-
-
-
 
     // check if on mobile
     if (c.MOBILE) {

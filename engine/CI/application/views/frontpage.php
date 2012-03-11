@@ -32,7 +32,17 @@ $ci->load->view('header', $headerVars);
 	  <span id="login_facebook_front" class="ui_ico_fb_large ui_ico link _login_fb"></span>
 	  <span id="login_twitter_front" class="ui_ico_tw_large ui_ico link _login_tw"></span>		
 	</div>
-	<div id="js_kitchensink">
+	<div id="auth_state">
+		<h2>Auth State</h2>
+		<br />
+		<h3>Not Authed</h3>
+		<div id="auth_state_content">
+			<h4></h4>
+			<br />
+			<pre>
+				<span id="user_data_object"></span>
+			</pre>
+		</div>
 	</div>
 </div>
 </div>

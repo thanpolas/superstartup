@@ -308,9 +308,9 @@ core.web2.getExtSources = function ()
  * we integrade for auth. These are set at: core.web2.db.supportedSources
  * On startup we check the auth states for these sources
  *
- * As each external source responces it calls this function
+ * As each external source responds it calls this function
  *
- * There is an initial state (initState) which is the responce
+ * There is an initial state (initState) which is the response
  * as we get it from the external source. And if true we expect
  * another call with an endState which let's us know if
  * our server honors this authentication request
@@ -418,7 +418,7 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
 
             if (g.isNull(checkObj.endState)) {
                 // core server auth validation pending...
-                log.info('endState is null exiting');
+                log.fine('endState is null exiting');
                 return;
             }
 
