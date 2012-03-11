@@ -27,6 +27,7 @@
 goog.provide('web');
 
 goog.require('web.system');
+goog.require('web.cookies');
 
 goog.require('core');
 
@@ -35,12 +36,18 @@ goog.require('goog.debug.FancyWindow');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.LogManager');
 
+
+// Add your required files from here on...
+goog.require('web.myapp');
+
 /**
  * Our global variables
  *
  * @type {object}
  */
-web.db = {}
+web.db = {
+  fbClicked: false
+}
 
 /**
  * If visitor is accessing our page from a mobile device
@@ -72,9 +79,19 @@ web.INIT = function () {
 
   log.info('Init');
 
+  var win = window;
+  c.db.URL = win.location.protocol + '//' + win.location.hostname;
+
   // execute the tag lander to parse injected JS instructions from
   // the server
   w.system.tagLanderParse();
+  
+  // Init the core framework
+  c.Init();
+
+  // initialize the web2.0 (FB/Twitter)
+  // AUTH BALL IS HERE
+  c.fb.InitWeb();  
 
 }; // web.INIT
 

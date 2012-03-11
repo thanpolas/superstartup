@@ -126,7 +126,44 @@ try {
  */
 core.READY = false;
 
+/**
+ * Global db (hash of values)
+ *
+ */
+core.db = {};
 
+/**
+ * The geowarp Init function should be called whenever
+ * our environment is loaded and ready.
+ *
+ * We will fire the web 2.0 APIs
+ * and start the initAuthstate timeout
+ *
+ * @return {void}
+ */
+core.Init = function ()
+{
+    var g = goog;
+    var c = core;
+
+    c.ready('main');
+    c.ready.addCheck('main', 'loaded');
+    
+    // the ready trigger for every other functionality beyond the framework
+    c.ready('ready');
+    c.ready.addCheck('ready', 'alldone');
+    // for now this watch is finished at the end of taglander parse...
+
+
+    c.web2.events.addEvent('initAuthState', function (state){
+      // we don't care for the state, just state that we are finished
+
+    });
+
+    c.READY = true;
+    c.ready.check('main', 'loaded');
+
+}; // function core.Init
 
 /**
  * Wrapper for goog.array.find
@@ -544,47 +581,7 @@ core.isAuthed = function () {
  */
 core.copy = function (val){return val;};
 
-/**
- * Global db for geowarp
- *
- */
-core.db = {};
 
-/**
- * The geowarp Init function should be called whenever
- * our environment is loaded and ready.
- *
- * We will fire the web 2.0 APIs
- * and start the initAuthstate timeout
- *
- * @return {void}
- */
-core.Init = function ()
-{
-    var g = goog;
-    var w = core;
-
-    w.ready('main');
-    w.ready.addCheck('main', 'loaded');
-
-
-    w.web2.events.addEvent('initAuthState', function (state){
-      // we don't care for the state, just state that we are finished
-
-    });
-
-
-
-
-    w.db.URL = (w.ONSERVER ? 'http://boothchat.com' :
-        (w.PREPROD ? 'http://beeeta.boothchat.com' : 'http://chat.local')
-    );
-
-    w.READY = true;
-
-    w.ready.check('main', 'loaded');
-
-}; // function core.Init
 
 /**
  * Checks if a value (needle) is within the provided other parameters

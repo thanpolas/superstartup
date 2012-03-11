@@ -221,10 +221,12 @@ web.system.tagLanderParse = function()
           case 56:
             log.info('ACTION 56 :: Perm Cook metadata');
             c.metadata.newObject(obj['obj']);
-
-
+          break;
         }
       }
+      
+      // trigger ready watch for rest of fucntionality
+      c.ready.check('ready', 'alldone');
       } catch (e) {
         core.error(e);
       }
@@ -240,6 +242,9 @@ web.system.tagLanderParse = function()
     } else {
       _parse();
     }
+    
+    
+    
 
 
     return;

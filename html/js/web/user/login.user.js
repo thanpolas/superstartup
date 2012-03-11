@@ -207,18 +207,21 @@ web.user.login.bindLogin = function()
         var elId = j(this).attr('id');
         log.info('Facebook login clicked:' + elId);
 
-        if (!c.throttle('fb_login_click', 3000, true))
+        if (!c.throttle('fb_login_click', 3000, true)) {
+          log.info('Execution canceled by throttler');
           return;
+        }
 
         // check if facebook ready
         if (!c.fb.haveAuthStatus()) {
-          if (w.ui.db.fbClicked) {
+          if (w.db.fbClicked) {
             return;
           }
-          w.ui.db.fbClicked = true;
+          log.info('Facebook library not ready yet, created a listener and we now wait...');
+          w.db.fbClicked = true;
           // listen for FB auth event...
           c.ready.addFunc('fb-auth', function(){
-            w.ui.db.fbClicked = false;
+            w.db.fbClicked = false;
             if (!c.isAuthed()) {
               // call ourselves
               j("._login_fb").click();
@@ -230,19 +233,9 @@ web.user.login.bindLogin = function()
         }
 
 
-
-
-        if (w.BOOTH)
-          w.ui.loaderOpen('Waiting for Facebook...');
-
         // launch facebook login dialog
         c.fb.loginOpen(function(state){
-          if (w.BOOTH)
-            w.ui.loaderClose();
-          else {
-            // frontpage auth, send to booth_10540
-            win.location.href = '/booth_10540';
-          }
+          log.info('Logged in. state:' + state);
         });
 
 

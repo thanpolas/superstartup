@@ -26,4 +26,14 @@
 
 goog.provide('core.conf');
 
-
+/**
+ * Master configuration hash
+ *
+ * @type {object}
+ */
+core.conf = {
+  fb: {
+    app_id: '186392014808053',
+    permitions: 'email,publish_stream'
+  }
+};

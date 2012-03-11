@@ -1,0 +1,33 @@
+/*
+    Document   : icons
+    Created on : Jun 11, 2011, 12:51:12 PM
+    Author     : Thanasis Polychronakis <thanasisp@gmail.com>
+    Description: Will contain all icons and images included in our master icon png file
+
+*/
+
+
+.ui_ico_tw_large {
+    background-position:-0px -43px;
+    height:43px;
+    width:193px;
+}
+
+.ui_ico_fb_large {
+    background-position:-0px -0px;
+    height:43px;
+    width:212px;
+}
+
+
+.ui_ico {
+	background-image:url("/assets/img/icons-master.png");
+	background-repeat:no-repeat;
+	display:inline-block;
+	outline:medium none;
+	overflow:hidden;
+	vertical-align:bottom;
+    margin-bottom:0;
+    margin-right:4px;
+    margin-top:0;
+}

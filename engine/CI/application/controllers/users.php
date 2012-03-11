@@ -67,10 +67,11 @@ class Users extends CI_Controller {
    */
   public function pc() {
 
-    $this->load->model('userperm');
+    $this->load->model('core/userperm');
+    $this->load->config('core_config');
 
     // check if perm cookie exists
-    $cook = $this->input->cookie(userperm::cookieName);
+    $cook = $this->input->cookie($this->config->item('perm_cookiename'));
     if (is_string($cook)) {
       die_json(array('status' => 10));
     }
@@ -95,7 +96,7 @@ class Users extends CI_Controller {
     $this->PERMID = $pc['permId'];
 
     // now update the metadata object and send it to the client
-    $this->load->model('extras/metadata');
+    $this->load->model('core/metadata');
     $md = $this->metadata->updateData();
 
     // all done
@@ -120,79 +121,7 @@ class Users extends CI_Controller {
     $this->load->view('users/login', array('fb' => $this->fb, 'twitter' => $this->tweet, 'error' => $error));
   }
 
-  /**
-   * Shows user's register screen
-   *
-   * @deprecated for now...
-   */
-  public function register() {
-    return;
-    $method = $this->uri->rsegment(3);
 
-    //Gets the error from previous steps
-    $error = $this->session->flashdata('register_error');
-
-    if ($this->input->post('submit') != null) {
-      $name = $this->input->post('real_name');
-
-      $user_id = $this->user->add($name, $method);
-
-      if ($user_id != false) {
-        if ($method == 'twitter') {
-          $handle = $this->input->post('handle');
-          $bio = $this->input->post('bio');
-          $profile_image_url = $this->input->post('profile_image_url');
-          $tw_id = $this->input->post('tw_id');
-          $ip = $this->input->ip_address();
-          $browser = $this->input->user_agent();
-          $real_name = $name;
-          $this->user->store_twitter($tw_id, $handle, $real_name, $bio, $profile_image_url, $ip, $browser);
-          //$this->user->store_twitter($tw_id, $real_name, $bio, $profile_image_url);
-          $this->_login($user_id, $method);
-          redirect('god/');
-        } else if ($method == 'facebook') {
-          $email = $this->input->post('email');
-          $fb_id = $this->input->post('fb_id');
-          $bio = $this->input->post('bio');
-          $profile_image_url = $this->input->post('profile_image_url');
-          $handle = $this->input->post('handle');
-          $this->user->store_facebook($fb_id, $email, $profile_image_url, $bio, $handle);
-          $this->_login($user_id, $method);
-          redirect('god/');
-        } else {
-          $error = 'You must select a valid login method';
-        }
-      } else {
-        $error = 'Registration failed please try again';
-      }
-    }
-
-    if ($method == 'twitter') {
-      //Form'submitted - TODO: Insert form validation
-      $this->load->library('User/tweet');
-      if (!$this->tweet->logged_in()) {
-        $this->tweet->set_callback(current_url());
-        $this->tweet->login();
-        return;
-      }
-
-      $user = $this->tweet->call('get', 'account/verify_credentials');
-      $this->load->view('users/register_twitter', array('user' => $user, 'error' => $error));
-      return;
-    } else if ($method == 'facebook') {
-      $this->load->library('User/fb');
-      if (!$this->fb->is_connected()) {
-        redirect($this->fb->login_url(array('next' => current_url())));
-      }
-
-      $user = $this->fb->client->api('/me');
-      //Image on Graph API is loaded separately
-      $image = $this->fb->image_url();
-      $this->load->view('users/register_facebook', array('user' => $user, 'image' => $image, 'error' => $error));
-      return;
-    }
-    redirect('users/login');
-  }
 
   /**
    * Logs user in with facebook
@@ -202,7 +131,7 @@ class Users extends CI_Controller {
   public function facebook()
   {
 
-    $this->load->library('User/fb');
+    $this->load->library('core/User/fb');
 
 
     //$sessData = $this->session->userdata('sessionData');
@@ -396,7 +325,7 @@ class Users extends CI_Controller {
       $refer = null;
     }
 
-    $this->load->library('User/fb');
+    $this->load->library('core/User/fb');
     $param = (int) $this->input->get('ret');
     //Local call
     if ($param != 1) {
@@ -449,7 +378,7 @@ class Users extends CI_Controller {
    * Logout from twitter
    */
   private function _tw_logout() {
-    $this->load->library('User/tweet');
+    $this->load->library('core/User/tweet');
     $this->tweet->set_callback(current_url() . '?ret=1');
     $this->tweet->logout();
   }
@@ -465,7 +394,7 @@ class Users extends CI_Controller {
       raise_error ('You need to be logged in to perform this action');
 
 
-    $this->load->model('notify');
+    $this->load->model('core/notify');
 
     die_json($this->notify->getStatic());
   }

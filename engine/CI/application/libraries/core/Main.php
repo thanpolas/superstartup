@@ -118,7 +118,7 @@ class Main {
    *
    * This method is called from master end.php file
    *
-   * @param boolean $force [optiona] Do not check if in ajax
+   * @param boolean $force [optional] Do not check if in ajax
    * @param boolean $opt_framed [optional] If true we add window.top.window. to call method
    * @return void
    */

@@ -26,31 +26,24 @@
  */
 
 class Userperm extends CI_Model {
-  /**
-   * Access the parent methods
-   */
-  function __construct() {
-    parent::__construct();
 
-  }
 
   /**
-   * Set the name of the permanent cookie
-   *
+   * the name of the permanent cookie
+   * Set in config "core_config"
    * @var string
    *
    */
-  const cookieName = 'bc';
+  private $cookieName = '';
 
   /**
-   * Set expiration time
-   *
+   * expiration time
+   * Set in config "core_config"
    * (measured in seconds)
    *
    * @var int
    */
-  const expire = 315360000; // == 10 years
-      //946080000; == 30 years
+  private $expire = 0;
 
   /**
    * The perm cookie data object
@@ -118,6 +111,18 @@ class Userperm extends CI_Model {
    */
   private $cookData = array();
 
+  /**
+   * Access the parent methods
+   */
+  function __construct() {
+    parent::__construct();
+
+    $this->load->config('core_config');
+
+    $this->cookieName = $this->config->item('perm_cookiename');
+    $this->expire = $this->config->item('perm_expire');
+
+  }
 
 
   /**
@@ -142,9 +147,7 @@ class Userperm extends CI_Model {
     $cd = & $this->cookData;
 
     // check if perm cookie exists
-    $cook = $this->input->cookie(self::cookieName);
-
-//die(debug_r($cook));
+    $cook = $this->input->cookie($this->cookieName);
     if (false === $cook) {
       // doesn't exist, notify JS engine and return dummy object
       $this->main->JsPass(25);
@@ -211,7 +214,7 @@ class Userperm extends CI_Model {
     $CI = & get_instance();
     $CI->PERMID = $cd['permId'];
     $sd = $this->session->userdata('sessionData');
-    $this->load->library('metrics');
+    $this->load->library('core/metrics');
     $this->metrics->trackCounter('visit', $sd['referrer'], '-');
 
 
@@ -241,7 +244,7 @@ class Userperm extends CI_Model {
     // generate random hash
     $cd['hash'] = HashString($this->agent->browser() . $this->agent->platform());
     // set expire after two years
-    $cd['expiresAt'] = time() + self::expire;
+    $cd['expiresAt'] = time() + $this->expire;
 
 
     // set rest variables
@@ -250,7 +253,7 @@ class Userperm extends CI_Model {
 
 
     // check if source from campaign
-    $this->load->model('campaigns');
+    $this->load->model('core/campaigns');
     if ($this->campaigns->inCampaign()) {
       // user is from a campaign, get the saved data
       $cd['campaign'] = $this->campaigns->getCampaignString();
@@ -288,9 +291,9 @@ class Userperm extends CI_Model {
     }
 
     $cookie = array(
-        'name'   => self::cookieName,
+        'name'   => $this->cookieName,
         'value'  => $cookValue,
-        'expire' => (string) self::expire,
+        'expire' => (string) $this->expire,
         'domain' => '.' . GetDomain(),
         'path'   => '/'
     );

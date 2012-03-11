@@ -16,28 +16,28 @@
  * 
  * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 25/May/2011
+ *
+ *
  *
  *********
- *  File:: system/conf.main.js 
- *  Core configurations for website / application
- *********
+ * created on Aug 23, 2011
+ * cookies.js Cookies management and operations
+ *
  */
 
 
-goog.provide('core.STATIC');
+goog.provide('web.cookies');
 
+goog.require('goog.net.Cookies');
 
-/**
- * The sources (web, mob, facebook...)
- *
- * @enum {number}
- */
-core.STATIC.SOURCES = {
-    WEB: 1,
-    MOB: 2,
-    FB: 5,
-    TWIT: 6
-};
+web.cookies.gcls = new goog.net.Cookies(document);
 
+web.cookies.isEnabled = function ()
+{
+  try {
+    return (web.cookies.gcls.isEnabled());
+  } catch (e) {
+    core.error(e);
+  }
 
+}

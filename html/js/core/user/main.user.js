@@ -30,6 +30,7 @@ goog.require('core.user.auth');
 goog.require('core.user.login');
 goog.require('core.user.profile');
 goog.require('core.user.pub');
+goog.require('core.user.metadata');
 
 
 /**

@@ -3,8 +3,8 @@
 if (!defined('BASEPATH'))
   exit('No direct script access allowed');
 
-include_once APPPATH . 'libraries/User/FBapi/fbexception.php';
-require APPPATH . 'libraries/User/FBapi/facebook.php';
+include_once APPPATH . 'libraries/core/User/FBapi/fbexception.php';
+require APPPATH . 'libraries/core/User/FBapi/facebook.php';
 
 class Fb {
 

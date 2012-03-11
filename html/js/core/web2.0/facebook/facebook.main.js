@@ -61,15 +61,7 @@ core.fb.db = {
      *
      * e.g. {publish_stream: true, email: false} [..]
      */
-  hasPerms: {},
-  appIdProd: 'xxx',
-  appIdLocal: 'xxx',
-  appIdBeta: 'xxx',
-  APIkeyProd: 'xxx',
-  APIkeyBeta: 'xxx',
-  APIkeyLocal: 'xxx'
-
-
+  hasPerms: {}
 }
 
 
@@ -94,29 +86,11 @@ core.fb.getAppId = function ()
 {
   var c = core;
 
-  return (c.ONSERVER ? c.fb.db.appIdProd :
-    (core.PREPROD ? c.fb.db.appIdBeta :
-      c.fb.db.appIdLocal
-      ));
+  return (c.conf.fb.app_id);
 
 };
 
-/**
- * Returns the correct Facebook API key
- * based on which mode we are on (Local server, production)
- *
- * @return {string}
- */
-core.fb.getApiKey = function ()
-{
-  var c = core;
 
-  return (c.ONSERVER ? c.fb.db.APIkeyProd :
-    (core.PREPROD ? c.fb.db.APIkeyBeta :
-      c.fb.db.APIkeyLocal
-      ));
-
-};
 
 /**
  * Clear the db of values, called by a user logout
@@ -202,13 +176,14 @@ core.fb.Init = function ()
     var c = core;
     var log = c.log('core.fb.Init');
 
-    log.shout('Init - FB LOADED');
+    log.info('Init - FB LIB LOADED');
 
     fb.init({
       appId  : c.fb.getAppId(),
       status : true, // check login status
       cookie : true, // enable cookies to allow the server to access the session
-      xfbml  : true  // parse XFBML
+      xfbml  : true,  // parse XFBML
+      oauth  : true
     });
 
     // catch session change events
@@ -250,13 +225,8 @@ core.fb.getInitialLoginStatus = function (response)
 
     // store the result
     c.fb.db.haveInitialAuthStatus = true;
+    console.debug(response);
 
-
-    /**
-     * response.perms returns string:
-     * {"extended":["status_update","photo_upload","video_upload","create_note","share_item","publish_stream"],"user":[],"friends":[]}
-     *
-     */
     if (response['session']) {
       log.info('FACEBOOK We are CONNECTED. status:' + response.status + ' privs:' + response['perms']);
       c.web2.collectInitialAuthChecks(c.STATIC.SOURCES.FB, true);
@@ -298,6 +268,27 @@ core.fb.getInitialLoginStatus = function (response)
     core.error(e);
   }
 }; // function getInitialLoginStatus
+
+
+/**
+ * Request the permissions we have for the currently logged
+ * in user.
+ * 
+ *
+ * @param {Function()} Callback function for the result
+ * @return {void}
+ */
+core.fb.getPermissions = function (callback)
+{
+  try {
+    
+    FB.api('/me/permissions', function (response) {
+        console.debug(response);
+    } );
+  } catch(e) {
+    core.error(e);
+  }
+};
 
 /**
  * Session Change event
@@ -352,6 +343,28 @@ core.fb.sessionChange = function (response)
 }; // function sessionChange
 
 
+/** 
+ * When an auth event / action is performed FB returns a response 
+ * object. This object changes from times to times so we have
+ * to create this function to rule them all
+ *
+ * We check the response if we have a successfull authentication
+ * and respond acordingly 
+ *
+ * @param {object} response the FB response object
+ * @return {boolean} if we are authed or not
+ */
+core.fb.isAuthedFromResponce = function(response)
+{
+  try {
+    if('connected' == response.status)
+      return true;
+    return false;
+  } catch(e) {
+    core.error(e);
+  }
+};
+
 /**
  * Facebook Login Listener.
  * We listen for the completion of the fb login modal
@@ -367,20 +380,11 @@ core.fb.loginListener = function (response, opt_callback)
     var g = goog;
     var log = c.log('core.fb.loginListener');
 
-    log.info('Init. response.session:' + response.session + ' perms:' + response.perms);
+    log.info('Init. response.status:' + response.status);
 
     var callback = opt_callback || function (){};
 
-    if (response.session) {
-      // check for permitions
-      if (g.isString(response['perms'])) {
-        var perms = c.explode(',' , response['perms']);
-        // overwrite with correct perms our local object
-        g.array.forEach(perms, function (perm, index) {
-          c.fb.db.hasPerms[perm] = true;
-        });
-      }
-
+    if (c.db.isAuthedFromResponce(response)) {
       c.fb.local.loginSubmit(callback);
     } else
       callback(false);
@@ -423,7 +427,7 @@ core.fb.loginOpen = function (opt_callback, opt_perms)
     };
   else
     var paramsObj = {
-      perms: 'email,publish_stream'
+      perms: c.conf.fb.permitions
     };
 
   if (c.WEB) {

@@ -16,28 +16,45 @@
  * 
  * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 25/May/2011
+ *
+ *
  *
  *********
- *  File:: system/conf.main.js 
- *  Core configurations for website / application
- *********
+ * createdate 09/Mar/2012
+ *
  */
-
-
-goog.provide('core.STATIC');
+ 
+goog.provide('web.myapp');
+goog.provide('web.myapp.initialise');
+ 
+goog.require('web.user.login');
+ 
 
 
 /**
- * The sources (web, mob, facebook...)
+ * Start when our framework is ready
+ * and perform initialising operations
+ * (page bindings, etc etc)
  *
- * @enum {number}
+ * @return {void}
  */
-core.STATIC.SOURCES = {
-    WEB: 1,
-    MOB: 2,
-    FB: 5,
-    TWIT: 6
+web.myapp.initialise = function()
+{
+  try {
+
+    var w = web, c = core;
+
+    var log = c.log('web.myapp.initialise');  
+    
+    log.info('Hello World!');
+    
+    // bind login buttons for FB/TW
+    w.user.login.bindLogin();
+    
+  } catch (e) {
+    core.error(e);
+  }  
 };
 
-
+// bind to the framework's ready event
+core.ready.addFunc('ready', web.myapp.initialise);

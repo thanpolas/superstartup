@@ -31,7 +31,7 @@ class Welcome extends CI_Controller {
   }
 
   public function index() {
-    $this->load->model('extras/ab_test');
+    $this->load->model('core/ab_test');
     $ab = $this->ab_test->getVersion('frontpage_1');
     $this->main->JsPass(58, array('isFront' => true));
     $this->load->view('frontpage', array('ab' => $ab));

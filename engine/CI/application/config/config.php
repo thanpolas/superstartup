@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://core.local/';
+$config['base_url']	= 'http://superstartup.local/';
 
 /*
 |--------------------------------------------------------------------------
@@ -266,7 +266,7 @@ $config['sess_time_to_update']	= 300;
 |
 */
 $config['cookie_prefix']	= "";
-$config['cookie_domain']	= ".core.local";
+$config['cookie_domain']	= ".superstartup.local";
 $config['cookie_path']		= "/";
 $config['cookie_secure']	= FALSE;
 

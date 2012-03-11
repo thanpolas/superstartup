@@ -62,7 +62,7 @@ if (1 == $ci->input->get('ajax') || 1 == $ci->input->post('ajax'))
 else
   define('IN_AJAX', false);
 
-require APPPATH . '/libraries/valid.class.php';
+require APPPATH . '/libraries/core/valid.class.php';
 
 // require our production counter for .css and .js master files
 require __DIR_PROJECT_ROOT . '/engine/bin/99.prodcounter_do_not_run.php';
@@ -124,7 +124,7 @@ try {
   // lame hack, at this point autoload for models
   // has not fired yet, so we manualy 'autoload' the
   // user model although it's in the autoload scheme...
-  $ci->load->model('user');
+  $ci->load->model('core/user');
 
   // check if user is authed
   if ($ci->user->isAuthed()) {
@@ -174,7 +174,7 @@ try {
 
     // load up permanent cookie model if not robot
     if (!$ci->agent->is_robot()) {
-      $ci->load->model('userperm');
+      $ci->load->model('core/userperm');
       $sessData['permData'] = $ci->userperm->newVisitor();
 
 
@@ -205,19 +205,15 @@ try {
 
   // now execute whatever is needed if the user already has a session with us
   if (!$isFirstTime) {
-
-
-
     // get the session Data
     $sessData = $ci->session->userdata('sessionData');
-
 
     $ci->load->library('user_agent');
     // check if our permCook is valid
     if (0 == $sessData['permData']['permId'] && !$ci->agent->is_robot()) {
       // not valid permCook, ask from client to request
       //to get it
-      $ci->load->model('userperm');
+      $ci->load->model('core/userperm');
       $sessData['permData'] = $ci->userperm->newVisitor();
       $ci->session->set_userdata('sessionData', $sessData);
     }
@@ -240,7 +236,7 @@ try {
   $ci->PERMID = $sessData['permData']['permId'];
 
   // pass the metadata object...
-  $ci->load->model('extras/metadata');
+  $ci->load->model('core/metadata');
   $ci->main->JsPass(56, $ci->metadata->getMetadata());
 
 
@@ -261,7 +257,7 @@ try {
       //die(debug_r($mailLand));
       // user landed from e-mail link, load email control and pass proper
       // instructions to JS
-      $ci->load->model('emailcontrol');
+      $ci->load->model('core/emailcontrol');
       $ci->emailcontrol->mailLand($mailLand);
 
       $mailLand['used'] = true;
@@ -273,4 +269,6 @@ try {
 } catch (Exception $e) {
   raise_error($e->getMessage());
 }
+
+
 ?>

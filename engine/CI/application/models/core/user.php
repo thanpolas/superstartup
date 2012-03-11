@@ -505,7 +505,7 @@ class User extends CI_Model {
 
     // check for campaign visitor
     $this->newUserData['campaign'] = '';
-    $this->load->model('campaigns');
+    $this->load->model('core/campaigns');
     if ($this->campaigns->inCampaign()) {
       // user is from a campaign, get the saved data
       $this->newUserData['campaign'] = $this->campaigns->getCampaignString();
@@ -513,7 +513,7 @@ class User extends CI_Model {
 
     // check for A/B testing
     $this->newUserData['ab_test'] = '';
-    $this->load->model('extras/ab_test');
+    $this->load->model('core/ab_test');
     if ($this->ab_test->inTest()) {
       $this->newUserData['ab_test'] = $this->ab_test->getTest();
     }
@@ -1375,19 +1375,19 @@ class User extends CI_Model {
     }
 
     // reset notifications
-    $this->load->model('notify');
+    $this->load->model('core/notify');
     $this->notify->clear();
 
     // notify perm cook data
-    $this->load->model('userperm');
+    $this->load->model('core/userperm');
     $this->userperm->userLogin($this->userData, $newuser);
 
     // notify metadata model
-    $this->load->model('extras/metadata');
+    $this->load->model('core/metadata');
     $this->userData['metadataObject'] = $this->metadata->updateData($this->userData['metadata']);
 
     // save the metrics
-    $this->load->library('metrics');
+    $this->load->library('core/metrics');
     $this->metrics->trackCounter('auth', 'login', $sourceId);
 
     // save the session
@@ -1408,7 +1408,7 @@ class User extends CI_Model {
   public function logout ()
   {
     // save the metrics
-    $this->load->library('metrics');
+    $this->load->library('core/metrics');
     $this->metrics->trackCounter('auth', 'logout');
     // reset session data
     $this->session->set_userdata('isAuthed', false);
