@@ -213,10 +213,6 @@ core.user.login.submitCallback = function(res, callback)
  * status is boolean
  * if false, we get error msg as well for user
  *
- * If method fails during first run time we return
- * false and error message can be retrieved using:
- * core.err.get();
- * [NOT YET IMPLEMENTED]
  *
  * @param {Function=} callback Callback function
  * @return {boolean}
@@ -232,16 +228,12 @@ core.user.login.logout = function(opt_callback)
 
     log.info('Init');
 
-
-
     // clear user db
     c.user.db.clear();
-
-
     // clear web2.0 data objects
     c.fb.db.clear();
     c.web2.db.clear();
-    // clear external auth
+
     //Parameters for AJAX
     var url = '/users/logout';
     var params = {
@@ -261,6 +253,8 @@ core.user.login.logout = function(opt_callback)
     {
         var res = a.getTag('status');
         log.info('logout server result:' + res);
+        // trigger global auth state event
+        c.web2.events.runEvent('initAuthState', false);
         callback(true);
     };
     //callback

@@ -34,12 +34,11 @@ $this->load->config('facebook');
 ?>
 <link rel="stylesheet" type="text/css" href="/cssc/v/main1_<?php echo PRODCOUNTER;?>.css" />
     <?php endif; 
+if (PRODUCTION):
+	// if in production then use our GA script
+	$this->load->config('analytics');
 
-		if (PRODUCTION):
-			// if in production then use our GA script
-			$this->load->config('analytics');
-
-			// the values for the analytics are set in config/analytics.php
+	// the values for the analytics are set in config/analytics.php
 ?>
 <script type="text/javascript">
 	var _gaq = _gaq || [];
@@ -60,24 +59,20 @@ $this->load->config('facebook');
 ?>
 	_gaq.push(['_trackPageview', '/campaigns/fb']);					
 <?php endif; 
-									// now check for AB testing
-									$ci->load->model('core/ab_test');
-									
-									if ($ci->ab_test->inTest()):
-										$abString = $ci->ab_test->getTest();
-										$abVersion = $ci->ab_test->getVersion('frontpage_1');
+	// now check for AB testing
+	$ci->load->model('core/ab_test');
+	
+	if ($ci->ab_test->inTest()):
+		$abString = $ci->ab_test->getTest();
+		$abVersion = $ci->ab_test->getVersion('frontpage_1');
 ?>
-				        _gaq.push(['_setCustomVar', 2, 'frontpage_1', '<?=$abVersion;?>' ,2]);
-							
-
-								<?php endif; 
-								
-								?>
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
+	_gaq.push(['_setCustomVar', 2, 'frontpage_1', '<?=$abVersion;?>' ,2]);
+<?php endif; ?>
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 </script>
 <?php endif; ?>
 </head>

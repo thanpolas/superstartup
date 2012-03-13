@@ -1,5 +1,13 @@
+a {
+  text-decoration: none;
+}
+
 .link {
   cursor: pointer;
+}
+
+.linkcolor {
+  color: #15C;
 }
 
 #master div {
@@ -19,4 +27,8 @@
   width: 500px;
   height: 300px;
   
+}
+
+#logged_in {
+  display:none;
 }

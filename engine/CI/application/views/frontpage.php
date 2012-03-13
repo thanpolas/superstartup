@@ -11,30 +11,28 @@ $ci->load->view('header', $headerVars);
 </div>
 <div id="content">
 	<div id="ab_test">
-<?php
-	switch ($ab) {
-		case 1:
-			echo '<h2>AB Test # ' . $ab . '</h2>';
-			break;
-		case 2:
-			echo '<h2>AB Test # ' . $ab . '</h2>';			
-			break;
-		case 3:
-			echo '<h2>AB Test # ' . $ab . '</h2>';
-			break;
-		case 4:
-			echo '<h2>AB Test # ' . $ab . '</h2>';
-			break;
-	}
-?>
+		<h2><?php
+
+$abString = $ci->ab_test->getTest();
+$abVersion = $ci->ab_test->getVersion('frontpage_1');
+
+echo 'AB Test name:' . $abString . ' Version #' . $abVersion;
+
+?> </h2>
 	</div>
 	<div id="login">
-	  <span id="login_facebook_front" class="ui_ico_fb_large ui_ico link _login_fb"></span>
-	  <span id="login_twitter_front" class="ui_ico_tw_large ui_ico link _login_tw"></span>		
+	  <span id="login_facebook_front" class="ui_ico_fb_large ui_ico link -login_fb"></span>
+	  <span id="login_twitter_front" class="ui_ico_tw_large ui_ico link -login_tw"></span>
+		<br />
+		<span>Create any type of tag for facebook login. It must contain the css class <a href="#" class="-login_fb">-login_fb</a> so we can bind on it. The class for Twitter is <a href="#" class="-login_tw">-login_tw</a></span>
+	</div>
+	<div id="logged_in">
+		<span class="link linkcolor -logout">Logout</span>
+		<br />
+		<span>Create any type of tag for logout. It must contain the css class <a href="#" class="-logout">-logout</a> so we can bind on it</span>
 	</div>
 	<div id="auth_state">
 		<h2>Auth State</h2>
-		<br />
 		<h3>Not Authed</h3>
 		<div id="auth_state_content">
 			<h4></h4>

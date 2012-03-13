@@ -48,8 +48,7 @@ web.myapp.initialise = function()
     
     log.info('Hello World!');
     
-    // bind login buttons for FB/TW
-    w.user.login.bindLogin();
+
     
     // subscribe to the auth state master event hook
     c.web2.events.addEventListener('initAuthState', w.myapp.authState);
@@ -87,11 +86,15 @@ web.myapp.authState = function(state)
       j('#auth_state h3').text('User Authed');
       j('#auth_state_content h4').text('The user data object');
       j('#user_data_object').text(g.debug.deepExpose(u));
+      // make #login invisible
+      j('#login').dispOff();
+      j('#logged_in').dispOn();
     } else {
       j('#auth_state h3').text('Not Authed');
       j('#auth_state_content h4').text('');
       j('#user_data_object').text('');
-      
+      j('#login').dispOn();
+      j('#logged_in').dispOff();  
     }
     
   } catch (e) {

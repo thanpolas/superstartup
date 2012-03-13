@@ -213,7 +213,7 @@ core.web2.extLogin = function (sourceId, user, opt_newuser)
     w2.db.isExtAuthed = true;
     w2.db.extAuthSources.push(sourceId);
 
-    w2.events.runEvent('initAuthState', true);
+    
 
     log.info('Running event. user');
     // call attached core events
@@ -228,6 +228,9 @@ core.web2.extLogin = function (sourceId, user, opt_newuser)
     // check if new user and fire said event
     if (opt_newuser)
         w2.events.runEvent('newuser', sourceId, user);
+
+    // trigger global auth state event
+    w2.events.runEvent('initAuthState', true);
 
     } catch(e) {core.error(e);}
 }; // function core.web2.extLogin

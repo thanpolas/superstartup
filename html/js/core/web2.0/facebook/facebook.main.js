@@ -103,7 +103,6 @@ core.fb.db.clear = function ()
 
   db.permitions = '';
   db.hasPerms = [];
-  db.haveInitialAuthStatus = false;
   db.initialAuthStatus = false;
 
 }; // function core.fb.db.clear

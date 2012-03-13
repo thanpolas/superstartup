@@ -37,6 +37,8 @@ goog.provide('web.user.login');
 web.user.login.logout = function (event)
 {
   try {
+    event.preventDefault();
+        
     var w = web,  c = core;
 
     var log = c.log('web.user.login.logout');
@@ -47,22 +49,12 @@ web.user.login.logout = function (event)
       return;
 
 
+
     // perform logout
     c.user.login.logout(function(status, opt_errmsg){
       // no matter the status, we will logout the user...
       log.info('logout callback received. status:' + status + ' opt_errmsg:' + opt_errmsg);
     });
-
-    // close user menu if open...
-    w.ui.initFooter();
-
-    // force close camera monitor
-    w.webcam.ui.closeCamModal();
-
-    // close user menu
-    w.user.ui.menu.close();
-
-    w.ui.alert('You are now logged out', 'success');
 
 
   } catch (e) {
@@ -168,7 +160,7 @@ web.user.login.bindLogin = function()
   var log = c.log('web.user.login.bindLogin');
 
   // bind click events on FB / TWITTER LOGIN BUTTONS
-  j("._login_tw").click(function(event){
+  j(".-login_tw").click(function(event){
     try {
         event.preventDefault();
         var elId = j(this).attr('id');
@@ -200,7 +192,7 @@ web.user.login.bindLogin = function()
 
   });
 
-  j("._login_fb").click(function(event){
+  j(".-login_fb").click(function(event){
     try {
         event.preventDefault();
         // get id of element that triggered the event

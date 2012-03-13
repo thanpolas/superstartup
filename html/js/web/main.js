@@ -26,10 +26,16 @@
 
 goog.provide('web');
 
+goog.require('core');
+
 goog.require('web.system');
 goog.require('web.cookies');
 
-goog.require('core');
+goog.require('web.jq.ext');
+
+goog.require('web.user');
+
+
 
 goog.require('goog.debug');
 goog.require('goog.debug.FancyWindow');
@@ -39,6 +45,9 @@ goog.require('goog.debug.LogManager');
 
 // Add your required files from here on...
 goog.require('web.myapp');
+
+
+
 
 /**
  * Our global variables
