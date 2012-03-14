@@ -55,16 +55,17 @@ if (PRODUCTION):
 	    $notifyAnalytics = true;
 
 	  if ($notifyAnalytics):
-	$cdata = $ci->campaigns->getData();
+			$cdata = $ci->campaigns->getData();
 ?>
 	_gaq.push(['_trackPageview', '/campaigns/fb']);					
-<?php endif; 
-	// now check for AB testing
-	$ci->load->model('core/ab_test');
+<?php 
+		endif; 
+		// now check for AB testing
+		$ci->load->model('core/ab_test');
 	
-	if ($ci->ab_test->inTest()):
-		$abString = $ci->ab_test->getTest();
-		$abVersion = $ci->ab_test->getVersion('frontpage_1');
+		if ($ci->ab_test->inTest()):
+			$abString = $ci->ab_test->getTest();
+			$abVersion = $ci->ab_test->getVersion('frontpage_1');
 ?>
 	_gaq.push(['_setCustomVar', 2, 'frontpage_1', '<?=$abVersion;?>' ,2]);
 <?php endif; ?>

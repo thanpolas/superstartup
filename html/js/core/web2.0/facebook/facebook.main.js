@@ -86,7 +86,7 @@ core.fb.getAppId = function ()
 {
   var c = core;
 
-  return (c.conf.fb.app_id);
+  return c.conf.fb.app_id;
 
 };
 
