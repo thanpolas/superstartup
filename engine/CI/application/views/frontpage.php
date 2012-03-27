@@ -21,10 +21,10 @@ echo 'AB Test name:' . $abString . ' Version #' . $abVersion;
 ?> </h2>
 	</div>
 	<div id="login">
-	  <span id="login_facebook_front" class="ui_ico_fb_large ui_ico link -login_fb"></span>
-	  <span id="login_twitter_front" class="ui_ico_tw_large ui_ico link -login_tw"></span>
+	  <span id="login_facebook_front" class="ui-ico-fb-large ui-ico link -login-fb"></span>
+	  <span id="login_twitter_front" class="ui-ico-tw-large ui-ico link -login-tw"></span>
 		<br />
-		<span>Create any type of tag for facebook login. It must contain the css class <a href="#" class="-login_fb">-login_fb</a> so we can bind on it. The class for Twitter is <a href="#" class="-login_tw">-login_tw</a></span>
+		<span>Create any type of HTML tag for facebook login. It must contain the css class <a href="#" class="-login-fb">-login-fb</a> so we can bind on it. The class for Twitter is <a href="#" class="-login-tw">-login-tw</a></span>
 	</div>
 	<div id="logged_in">
 		<span class="link linkcolor -logout">Logout</span>

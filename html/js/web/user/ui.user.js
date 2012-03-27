@@ -56,7 +56,8 @@ web.user.ui.Init = function ()
     log.info('Init');
 
     // listen for new notifications event
-    c.user.notify.hookNew(w.user.ui.setNotify);
+    // not implemented yet...
+    //c.user.notify.hookNew(w.user.ui.setNotify);
 
     // catch all logout buttons / links
     j('.-logout').click(w.user.login.logout);

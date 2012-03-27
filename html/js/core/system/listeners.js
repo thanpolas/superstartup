@@ -108,18 +108,7 @@ core.events.listeners.prototype.addEventListener = function (type, listener, opt
     core.error(e);
   }
 
-}; // core.events.listeners.addEvent
-
-/**
- * Adds an event listener for the specified type
- *
- * @param {string} type The type of the listener
- * @param {Function} listener The listening function
- * @param {_this=} opt_this Optional this context to run the listener on
- * @return {void}
- * @deprecated use core.events.listeners.addEventListener()
- */
-core.events.listeners.prototype.addEvent = core.events.listeners.prototype.addEventListener;
+}; // core.events.listeners.addEventListener
 
 
 /**
@@ -165,15 +154,6 @@ core.events.listeners.prototype.addEventListenerOnce = function (type, listener,
 
 }; // core.events.listeners.addEventOnce
 
-/**
- * Adds an event listener for the specified type
- *
- * @param {string} type The type of the listener
- * @param {Function} listener The listening function
- * @param {_this=} opt_this Optional this context to run the listener on
- * @deprecated use .addEventListenerOnce()
- */
-core.events.listeners.prototype.addEventOnce = core.events.listeners.prototype.addEventListenerOnce;
 
 /**
  * Removes an event listener for the specified type
@@ -250,17 +230,6 @@ core.events.listeners.prototype.removeEventListener = function (type, listener)
   }
 
 }; // core.events.listeners.removeEvent
-
-/**
- * Removes an event listener for the specified type
- * and specific listener
- *
- * @param {string} type The type of the listener
- * @param {Function} listener The listening function
- * @return {void}
- * @deprecated use core.events.listeners.removeEventListener();
- */
-core.events.listeners.prototype.removeEvent = core.events.listeners.prototype.removeEventListener;
 
 /**
  * Clears all listeners

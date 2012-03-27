@@ -60,7 +60,7 @@ then
   ### to this file
   chmod a+x $masterPath$postUpdate
 
-  echo "*** MASTER DEPLOYED"
+  echo "*** MASTER DEPLOYED-"
 
 fi
 

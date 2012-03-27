@@ -101,3 +101,37 @@ web.myapp.authState = function(state)
     core.error(e);
   }  
 };
+
+
+
+/*
+
+w.user.auth.events.runEvent('tw_click', elId);
+
+switch (elId) {
+  case 'login_twitter':
+    c.analytics.trackEvent('Auth', 'twitterLoginClick');
+  break;
+  case 'main_history_login_twitter':
+    c.analytics.trackEvent('Auth', 'twitterLoginClickkHistory');
+  break;
+  case 'login_twitter_front':
+    c.analytics.trackEvent('Auth', 'twitterLoginClickFrontpage');
+  break;
+}
+
+
+switch (elId) {
+  case 'login_facebook':
+    c.analytics.trackEvent('Auth', 'facebookLoginClick');
+  break;
+  case 'main_history_login_facebook':
+    c.analytics.trackEvent('Auth', 'facebookLoginClickHistory');
+  break;
+  case 'login_facebook_front':
+    c.analytics.trackEvent('Auth', 'facebookLoginClickFrontpage');
+  break;
+}
+
+
+*/

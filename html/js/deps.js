@@ -14,7 +14,7 @@ goog.addDependency("../../../web/ui/textCounter.ui.js", ['web.ui.textCounter'], 
 goog.addDependency("../../../web/ui/mobile/mobile.ui.js", ['web.ui.mobile'], []);
 goog.addDependency("../../../web/user/account.user.js", ['web.user.account', 'web.user.account.ui'], []);
 goog.addDependency("../../../web/user/alerts.user.js", ['web.user.alerts'], []);
-goog.addDependency("../../../web/user/auth.user.js", ['web.user.auth'], []);
+goog.addDependency("../../../web/user/auth.user.js", ['web.user.auth'], ['core.events']);
 goog.addDependency("../../../web/user/login.user.js", ['web.user.login'], []);
 goog.addDependency("../../../web/user/main.user.js", ['web.user'], ['web.user.auth', 'web.user.login', 'web.user.ui', 'web.user.notify']);
 goog.addDependency("../../../web/user/menu.ui.user.js", ['web.user.ui.menu'], ['web.user.account', 'web.user.profileForm', 'web.user.account.ui', 'web.user.alerts', 'goog.ui.Component.EventType', 'goog.ui.RoundedTabRenderer', 'goog.ui.Tab', 'goog.ui.TabBar']);

@@ -18,11 +18,11 @@
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
-*
-*********
+ *
+ *********
  * createdate 25/May/2011
-*
-*/
+ *
+ */
 
 
 
@@ -39,7 +39,7 @@ web.user.login.logout = function (event)
   try {
     event.preventDefault();
         
-    var w = web,  c = core;
+    var w = web,  c = core, j = jQuery;
 
     var log = c.log('web.user.login.logout');
 
@@ -47,8 +47,10 @@ web.user.login.logout = function (event)
 
     if (!c.isAuthed())
       return;
-
-
+    
+    var elId = j(this).attr('id');
+    // trigger the logout click event
+    w.user.auth.events.runEvent('logout_click', elId);
 
     // perform logout
     c.user.login.logout(function(status, opt_errmsg){
@@ -64,86 +66,6 @@ web.user.login.logout = function (event)
 }; // web.user.login.logout
 
 
-/**
- * Executes whenever we have an authentication event
- *
- * @param {type}  description
- * @return {void}
- */
-web.user.login.initLogin = function ()
-{
-  try {
-    var w = web, c = core, j = $;
-
-    var log = c.log('web.user.login.initLogin');
-
-    log.info('Init');
-
-    if (w.SFV)
-      return;
-
-    j("#chat_container").dispOn();
-
-    // if we already run while authed, exit
-    if (w.ui.db.footSetandAuthed)
-      return;
-    w.ui.db.footSetandAuthed = true;
-
-
-
-    // check if camera is live
-    if (w.webcam.isCameraOn()) {
-      chat.ui.formOnOff(true);
-      log.info('Opening camera monitor!');
-      // if we have camera live, show the monitor
-      w.webcam.ui.openCamMonitor();
-    }
-    else
-      chat.ui.formOnOff(false);
-
-
-    var u = c.user.getUserDataObject();
-
-
-    j("#chat_user_image img").attr('src', u['extSource'][0]['extProfileImageUrl']);
-    j("#chat_user_name").text(u['nickname']);
-
-
-    j("#main_history_login").dispOff();
-
-    /**
-     * Now attach to bottom scroll to load older
-     * frames
-     *
-     */
-    if (true) { // lock open for now
-      if (w.SFV || w.PAGE)
-        return;
-        log.info('Seting up bottom scroll');
-        //var bscroll = new w.ui.bottomScroll(j("#main"), j(".main_holder"));
-        var bscroll = new w.ui.bottomScroll(j(window), j(".main_holder"));
-        bscroll.addEvent('bottom', w.ui.reachedFrameBottom);
-    }
-
-    /**
-     * Get any notifications and listen for new ones
-     *
-     */
-    w.user.ui.setNotify();
-
-
-    // check if we have user's e-mail, if not ask for it
-    // forcibly
-    log.shout('Checking if we have e-mail:' + u.email);
-    if ('' == u.email)
-      w.user.ui.openGetEmailModal(true);
-
-
-  } catch (e) {
-    core.error(e);
-  }
-
-}; // web.user.login.initLogin
 
 /**
  * Will bind to click event for Twitter and Facebook connect
@@ -160,7 +82,7 @@ web.user.login.bindLogin = function()
   var log = c.log('web.user.login.bindLogin');
 
   // bind click events on FB / TWITTER LOGIN BUTTONS
-  j(".-login_tw").click(function(event){
+  j(".-login-tw").click(function(event){
     try {
         event.preventDefault();
         var elId = j(this).attr('id');
@@ -171,20 +93,7 @@ web.user.login.bindLogin = function()
         w.ui.loaderOpen('Waiting for twitter.com ...');
         c.twit.loginOpen();
 
-
-        switch (elId) {
-          case 'login_twitter':
-            c.analytics.trackEvent('Auth', 'twitterLoginClick');
-          break;
-          case 'main_history_login_twitter':
-            c.analytics.trackEvent('Auth', 'twitterLoginClickkHistory');
-          break;
-          case 'login_twitter_front':
-            c.analytics.trackEvent('Auth', 'twitterLoginClickFrontpage');
-          break;
-
-
-        }
+        w.user.auth.events.runEvent('tw_click', elId);
 
       } catch (e) {
         core.error(e);
@@ -192,11 +101,12 @@ web.user.login.bindLogin = function()
 
   });
 
-  j(".-login_fb").click(function(event){
+  j(".-login-fb").click(function(event){
     try {
         event.preventDefault();
         // get id of element that triggered the event
         var elId = j(this).attr('id');
+        var jel = j(this);
         log.info('Facebook login clicked:' + elId);
 
         if (!c.throttle('fb_login_click', 3000, true)) {
@@ -216,7 +126,7 @@ web.user.login.bindLogin = function()
             w.db.fbClicked = false;
             if (!c.isAuthed()) {
               // call ourselves
-              j("._login_fb").click();
+              jel.click();
             }
           });
 
@@ -227,21 +137,12 @@ web.user.login.bindLogin = function()
 
         // launch facebook login dialog
         c.fb.loginOpen(function(state){
-          log.info('Logged in. state:' + state);
+          log.info('Login return state:' + state);
+          w.user.auth.events.runEvent('fb_click_reply', state);
         });
 
-
-        switch (elId) {
-          case 'login_facebook':
-            c.analytics.trackEvent('Auth', 'facebookLoginClick');
-          break;
-          case 'main_history_login_facebook':
-            c.analytics.trackEvent('Auth', 'facebookLoginClickHistory');
-          break;
-          case 'login_facebook_front':
-            c.analytics.trackEvent('Auth', 'facebookLoginClickFrontpage');
-          break;
-        }
+        // trigger the facebook click event now
+        w.user.auth.events.runEvent('fb_click', elId);
 
       } catch (e) {
         core.error(e);
