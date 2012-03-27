@@ -319,23 +319,15 @@ core.twit.loginOpen = function ()
 {
     try {
     var c = core, win = window;
+    var log = c.log('core.twit.loginOpen');
     // we have to redirect user to /signup/twitter.php
     // to start the authentication process
 
-    var returnUrl = '';
-    // check if in Booth or frontpage
-    if (web.BOOTH) {
-      // first we will capture the current url of the user
-      var url = win.location.pathname; //window.location.hash;
-      returnUrl = c.encURI(url);
-    } else {
-      returnUrl = '/booth_10540'
-    }
-    // assign it as a url var for GET
-    url = '?url=' + returnUrl;
-
-
-    win.location.href = c.twit.db.loginUrl + url;
+    // use the current path of the user for return
+    var returnPath = '?url=' + c.encURI(win.location.pathname);
+    log.info('Redirecting user to:' + returnPath);
+    // redirect the browser now
+    win.location.href = c.twit.db.loginUrl + returnPath;
 
     } catch(e) {core.error(e);}
 }; // function core.twit.loginOpen

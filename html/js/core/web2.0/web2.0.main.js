@@ -26,8 +26,8 @@
 
 
 goog.provide('core.web2');
-
-goog.require('core.events.listeners');
+goog.require('core.user');
+goog.require('core.events');
 goog.require('core.fb');
 goog.require('core.fb.API');
 goog.require('core.twit');
@@ -106,27 +106,6 @@ core.web2.db.clear = function ()
     db.extAuthSources = [];
 }; // funtion core.web2.db.clear
 
-/**
- * Add events for for web2.0
- *
- * Use this instance of core.events.listeners
- * to add events listeners
- *
- * Valid events are, along with their parameters:
- *
- * login {sourceId, user}
- *      When we have recieved login ok from facebook but
- *      not yet validated with our servers
- * loginReady (sourceId, user)
- *      When we get reply from server and has validated our auth request
- * newuser (sourceId, user)
- *      If the user logged in is a new user
- * initAuthState (state{boolean})
- *      Fired when initial probe to external auth sources
- *      has finished.
- *
- */
-core.web2.events = new core.events.listeners();
 
 
 /**
@@ -185,7 +164,7 @@ core.web2.getUserExt = function(userObj, opt_prefferedSource)
  * server for an external source auth.
  *
  *
- * @param {number} sourceId The external source id
+ * @param {core.STATIC.SOURCES} sourceId The external source id
  * @param {object} user core user data object
  * @param {boolean=} opt_newuser If user logged in is new
  * @return {void}
@@ -195,16 +174,16 @@ core.web2.extLogin = function (sourceId, user, opt_newuser)
     try {
 
     var g = goog;
-    var w = core;
-    var w2 = w.web2;
-    var log = w.log('core.web2.extLogin');
+    var c = core;
+    var w2 = c.web2;
+    var log = c.log('core.web2.extLogin');
 
     log.info('Init. sourceId:' + sourceId + ' opt_newuser:' + opt_newuser);
 
     // check if we already know that
     if (w2.isExtAuthed(sourceId)) {
         // yes we do
-        log.shout('We already know that we are authed with this source');
+        log.warning('We already know that we are authed with this source');
         return;
     }
 
@@ -213,24 +192,13 @@ core.web2.extLogin = function (sourceId, user, opt_newuser)
     w2.db.isExtAuthed = true;
     w2.db.extAuthSources.push(sourceId);
 
-    
-
-    log.info('Running event. user');
-    // call attached core events
-    w2.events.runEvent('login', sourceId, user);
-
     // auth the user localy
-    w.user.auth.extAuth(sourceId, user);
-
-    // auth has happened call rest events
-    w2.events.runEvent('loginReady', sourceId, user);
+    c.user.auth.extAuth(sourceId, user);
 
     // check if new user and fire said event
     if (opt_newuser)
-        w2.events.runEvent('newuser', sourceId, user);
+        c.user.auth.events.runEvent('newuser', sourceId, user);
 
-    // trigger global auth state event
-    w2.events.runEvent('initAuthState', true);
 
     } catch(e) {core.error(e);}
 }; // function core.web2.extLogin
@@ -331,11 +299,11 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
 {
     try {
     var g = goog;
-    var w = core;
-    var w2 = w.web2;
+    var c = core;
+    var w2 = c.web2;
     var db = w2.db;
 
-    var log = w.log('core.web2.collectInitialAuthChecks');
+    var log = c.log('core.web2.collectInitialAuthChecks');
 
     log.fine('Init. sourceId:' + sourceId + ' initState:' + initState + ' endState:' + opt_endState
         + ' finished:' + db.initialCheck.finished);
@@ -351,7 +319,7 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
     log.fine('endState type:' + g.typeOf(endState) + ' typeOf opt_endState:' + g.typeOf(opt_endState));
 
     // check if we have checked this sourceId before
-    var ind = w.arFindIndex(db.initialCheck.checks, 'sourceId', sourceId);
+    var ind = c.arFindIndex(db.initialCheck.checks, 'sourceId', sourceId);
     if (-1 == ind) {
         // not found, create it
         var checkObj = {
@@ -409,12 +377,12 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
                     db.extAuthSources.push(checkObj.sourceId);
 
                 // check if already finished or is already authed... (sour grapes)
-                if (db.initialCheck.finished || w.isAuthed()) {
+                if (db.initialCheck.finished || c.isAuthed()) {
                     //return;
                 }
 
                 // trigger the event
-                w2.events.runEvent('initAuthState', true);
+                c.user.auth.events.runEvent('initAuthState', true);
                 // exit
                 return;
             }
@@ -451,7 +419,7 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
                 db.initialCheck.timeout = null;
 
                 // trigger the event
-                w2.events.runEvent('initAuthState', false);
+                c.user.auth.events.runEvent('initAuthState', false);
                 // exit
                 return;
 
@@ -478,13 +446,13 @@ core.web2.authStateTimeout = function ()
     try {
 
     var g = goog;
-    var w = core;
-    var w2 = w.web2;
+    var c = core;
+    var w2 = c.web2;
     var db = w2.db;
 
-    var log = w.log('core.web2.authStateTimeout');
+    var log = c.log('core.web2.authStateTimeout');
 
-    log.shout('web2.0 Ultimate timeout fired. db.finished:' + db.initialCheck.finished + ' Authed:' + w.isAuthed());
+    log.info('web2.0 Ultimate timeout fired. db.finished:' + db.initialCheck.finished + ' Authed:' + c.isAuthed());
 
 
 
@@ -499,7 +467,7 @@ core.web2.authStateTimeout = function ()
     db.initialCheck.timeout = null;
 
     // trigger the event
-    w2.events.runEvent('initAuthState', false);
+    c.user.auth.events.runEvent('initAuthState', false);
 
     } catch(e) {core.error(e);}
 }; // function core.web2.authStateTimeout

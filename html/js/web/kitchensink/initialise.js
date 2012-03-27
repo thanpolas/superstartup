@@ -26,10 +26,9 @@
  
 goog.provide('web.myapp');
 goog.provide('web.myapp.initialise');
- 
+goog.require('core');
 goog.require('web.user.login');
  
-
 
 /**
  * Start when our framework is ready
@@ -50,8 +49,7 @@ web.myapp.initialise = function()
     
 
     
-    // subscribe to the auth state master event hook
-    c.web2.events.addEventListener('initAuthState', w.myapp.authState);
+
     
   } catch (e) {
     core.error(e);
@@ -64,12 +62,62 @@ core.ready.addFunc('ready', web.myapp.initialise);
 
 
 /**
+ * Triggers when we have a new user.
+ *
+ * This is currently called from TagLanderParse...
+ *
+ * but in the future should include functionality from
+ * inline authentication flows (FB) when new user
+ *
+ * @return {void}
+ */
+web.myapp.newUser = function()
+{
+  try {
+    var w = web,  c = core;
+
+    var log = c.log('web.myapp.newUser');
+
+    log.info('Init');
+    
+    //TODO refactor it...
+    return;
+
+    // check if new user is from Twitter
+    if (c.user.auth.hasExtSource(c.STATIC.SOURCES.TWIT)) {
+      // now check that we don't have an e-mail
+      var u = c.user.getUserDataObject();
+      log.info('Newuser is from twitter. email:' + u.email);
+      if ('' == u.email) {
+        // show getemail modal
+        w.user.ui.openGetEmailModal();
+      }
+    }
+    
+    
+    // do a pageview after 2"
+    setTimeout(function(){
+      c.analytics.trackPageview('/mtr/users/new');
+    }, 2000);
+    // track on MixPanel
+    c.analytics.trackMP('newUser', {source:'TW'});    
+    
+    
+  } catch (e) {
+    core.error(e);
+  }
+
+}; // web.user.ui.newUser
+
+/**
  * Triggers when the master auth event hook changes state
  *
  * @param {boolean} state If we are authed or not
+ * @param {core.STATIC.SOURCES=} if authed, which auth source was used
+ * @param {object=} opt_userDataObject if authed, the user data object is passed here
  * @return {void}
  */
-web.myapp.authState = function(state)
+web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
 {
   try {
 
@@ -81,7 +129,7 @@ web.myapp.authState = function(state)
     
     if (state) {
       // user is authed, get his data object...
-      var u = c.user.getUserDataObject();
+      var u = opt_userDataObject;
       // now update our page...
       j('#auth_state h3').text('User Authed');
       j('#auth_state_content h4').text('The user data object');
@@ -102,6 +150,11 @@ web.myapp.authState = function(state)
   }  
 };
 
+// subscribe to the auth state master event hook
+core.user.auth.events.addEventListener('authState', web.myapp.authState);
+
+// listen for newuser event
+core.user.auth.events.addEventListener('newUser', web.myapp.newUser);
 
 
 /*

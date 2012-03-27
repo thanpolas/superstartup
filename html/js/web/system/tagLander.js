@@ -29,6 +29,8 @@ goog.provide('web.system.tagLander');
 
 
 goog.require('core.error');
+goog.require('core.user');
+
 
 /**
  * Called within a script tag in html, invoked by the server
@@ -123,12 +125,7 @@ web.system.tagLanderParse = function()
         return;
       }
       // user is logged in...
-      c.user.auth.Init(obj.obj, function(state, opt_msg) {
-
-      }, c.STATIC.SOURCES.WEB);
-
-      // add login check
-      //c.ready.addCheck('main', 'login');
+      c.user.auth.login(obj.obj, function(state, opt_msg){}, c.STATIC.SOURCES.WEB);
     }
 
 
@@ -162,17 +159,8 @@ web.system.tagLanderParse = function()
           // new user
           case 121:
             log.info('ACTION 121 :: New user');
-
-            // call new user function
-            w.user.ui.newUser();
-
-            // do a pageview after 2"
-            setTimeout(function(){
-              c.analytics.trackPageview('/mtr/users/new');
-            }, 2000);
-            // track on MixPanel
-            c.analytics.trackMP('newUser', {source:'TW'});
-
+            // trigger new user event
+            c.user.auth.events.runEvent('newUser');
 
           break;
 

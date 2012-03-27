@@ -29,9 +29,7 @@
 goog.provide('web.user.ui');
 
 goog.require('web.ui.textCounter');
-goog.require('web.user.ui.message');
-goog.require('web.user.ui.menu');
-goog.require('core.user.notify');
+
 
 web.user.ui.db = {
   menuOpen: false,
@@ -53,7 +51,7 @@ web.user.ui.Init = function ()
 
     var log = c.log('web.user.ui.Init');
 
-    log.info('Init');
+    log.info('Init - Binding on login / logout elements');
 
     // listen for new notifications event
     // not implemented yet...
@@ -74,40 +72,7 @@ web.user.ui.Init = function ()
 // listen for ready event
 core.ready.addFunc('main', web.user.ui.Init);
 
-/**
- * Triggers when we have a new user.
- *
- * This is currently called from TagLanderParse...
- *
- * but in the future should include functionality from
- * inline authentication flows (FB) when new user
- *
- * @return {void}
- */
-web.user.ui.newUser = function ()
-{
-  try {
-    var w = web,  c = core;
 
-    var log = c.log('web.user.ui.newUser');
-
-    log.info('Init');
-
-    // check if new user is from Twitter
-    if (c.user.auth.hasExtSource(c.STATIC.SOURCES.TWIT)) {
-      // now check that we don't have an e-mail
-      var u = c.user.getUserDataObject();
-      log.info('Newuser is from twitter. email:' + u.email);
-      if ('' == u.email) {
-        // show getemail modal
-        w.user.ui.openGetEmailModal();
-      }
-    }
-  } catch (e) {
-    core.error(e);
-  }
-
-}; // web.user.ui.newUser
 
 /**
  * Will open the get-email modal and ask user to enter e-mail

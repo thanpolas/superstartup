@@ -88,9 +88,6 @@ web.user.login.bindLogin = function()
         var elId = j(this).attr('id');
         log.info('Twitter login clicked:' + elId);
 
-
-        // start the loader
-        w.ui.loaderOpen('Waiting for twitter.com ...');
         c.twit.loginOpen();
 
         w.user.auth.events.runEvent('tw_click', elId);

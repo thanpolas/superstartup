@@ -25,13 +25,34 @@
  */
 
 goog.provide('core.user.auth');
-
 goog.require('core.user.notify');
+goog.require('core.events');
+
 
 /**
- * Perform a user authentication
+ * The core auth events. Everything about authentication is handled from
+ * here.
  *
- * Will authenticate the user
+ * Valid events are, along with their parameters:
+ *
+ * authState (state{boolean}, opt_sourceId{core.STATIC.SOURCES=}, opt_userDataObject{object=})
+ *      Whenever auth state changes, this event is triggered. facebook but
+ *      state {boolean} :: Tells us if authed or not
+ *      opt_sourceId :: The auth source in case of authed
+ *      opt_userDataObjet :: In case of auth, the user data object
+ * newUser (sourceId{core.STATIC.SOURCES}, userDataObject{object})
+ *      If the authed user is a new user
+ * initAuthState (state{boolean})
+ *      Fired when initial check with external auth sources has finished.
+ *
+ */
+core.user.auth.events = new core.events.listeners();
+
+/**
+ * Perform a user login.
+ * We call this function after we have cleared with the authentication
+ * procedures. 
+ *
  * We need a user data object to be provided
  *
  * Your callback fn will be executed as:
@@ -39,25 +60,22 @@ goog.require('core.user.notify');
  * status is boolean
  * if false, we get error msg as well for user
  *
- * We create a ready watch called 'initLogin'
- * If you want to attach to this watch you have
- * to trigger the dummy check we set here, 'alldone':
- * c.ready.check('initLogin', 'alldone');
  *
  *
  * @param {object} user
- * @param {Function} cb callback function when auth finishes
+ * @param {Function(boolean, opt_string)} cb callback function when auth finishes
  * @param {core.STATIC.SOURCES} sourceId the source of authentication
  * @return {void}
  */
-core.user.auth.Init = function(user, cb, sourceId)
+core.user.auth.login = function(user, cb, sourceId)
  {
+   try {
     //shortcut assign
     var c = core;
     var u = c.user;
     var db = u.db;
     var g = goog;
-    var log = c.log('core.user.auth.Init');
+    var log = c.log('core.user.auth.login');
     var genError = 'An error has occured. Please retry';
 
     log.info('Init. authed:' + db.isAuthed);
@@ -66,11 +84,6 @@ core.user.auth.Init = function(user, cb, sourceId)
       cb(true);
       return;
     }
-
-    // init the ready watch
-    var ready = c.ready;
-    ready('initLogin');
-    ready.addCheck('initLogin', 'alldone');
 
     // assign the recieved user data object to local db
     db.user = user;
@@ -91,14 +104,18 @@ core.user.auth.Init = function(user, cb, sourceId)
     // initialize notifications for user
     c.user.notify.Init();
 
-    // notify out analytics
+    c.user.auth.events.runEvent('authState', true, sourceId, user);
+
+
+    // notify our analytics
     c.analytics.userAuth(user);
 
-    ready.check('initLogin', 'alldone');
     cb(true);
 
     log.info('Finished');
-
+  } catch(e) {
+      core.error(e);
+  }
 };
 // method core.user.auth.loginManual
 
@@ -130,7 +147,7 @@ core.user.auth.isVerified = function()
  * @return {boolean}
  */
 core.user.auth.isPerm = function()
- {
+{
     return core.user.db.permLogin;
 };
 
@@ -157,7 +174,7 @@ core.user.auth.getPerm = function()
 
 
 /**
- * Triggers whenever we have an authentication event
+ * Execute when we have an authentication event
  * from an external source.
  *
  * If we are not authed, we will perform auth procedures
@@ -177,12 +194,10 @@ core.user.auth.extAuth = function(sourceId, user)
 
         // if already authed exit
         if (c.isAuthed())
-        return;
+          return;
 
         // not authed, start auth
-        c.user.auth.Init(user,
-        function() {},
-        sourceId);
+        c.user.auth.login(user, function(){}, sourceId);
 
     } catch(e) {
         core.error(e);

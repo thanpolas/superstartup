@@ -256,7 +256,7 @@ core.fb.getInitialLoginStatus = function (response)
       // check if the auth source is facebook and we are authed
       if (c.STATIC.SOURCES.FB == Number(c.ajax.dbstatic.session.sessSourceId) && c.isAuthed()) {
         // it is, Perform logout
-        log.shout('User is logged in and source is facebook. Logging out');
+        log.info('User is logged in and source is facebook. Logging out');
         c.user.login.logout();
       }
 

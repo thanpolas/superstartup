@@ -199,7 +199,7 @@ class Users extends CI_Controller {
    * @return void
    */
   public function twitter() {
-    $this->load->library('User/tweet');
+    $this->load->library('core/User/tweet');
 
 
     //$this->tweet->logout();
@@ -208,9 +208,6 @@ class Users extends CI_Controller {
       // we have the current url with the hashtag (#) passed
       // in the GET var 'url' ... grab it
       $url = $this->input->get('url');
-
-      // remove leading slash from string
-      //$url = substr($url, 1);
 
       // save it to session
       $this->session->set_userdata('tweeterOrigUrl', $url);

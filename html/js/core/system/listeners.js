@@ -56,6 +56,7 @@ core.events.listeners = function ()
          * this: {this} // the context we will run the method on
          */
       listeners: new Array()
+
     };
 
   } catch(e) {
@@ -67,11 +68,10 @@ core.events.listeners = function ()
 /**
  * Adds an event listener for the specified type
  *
- * @param {string} type The type of the listener
+ * @param {string} type The type of the listener. An arbitrary unique string
  * @param {Function} listener The listening function
  * @param {this=} opt_this Optional this context to run the listener on
- * @param {string=} opt_id Optional id for listener (easy removal)
- *      Use unique names
+ * @param {string=} opt_id Optional id for listener (easy removal) use unique names
  * @return {void}
  */
 core.events.listeners.prototype.addEventListener = function (type, listener, opt_this, opt_id)
@@ -258,37 +258,34 @@ core.events.listeners.prototype._runEventType = function(type, opt_var_args)
 {
   try {
     var g = goog;
-    var log = core.log('core.events.listeners._runEventType');
+    var c = core;
+    var log = c.log('core.events.listeners._runEventType');
 
-    //log.info('Init. type:' + type + ' total listeners:' + this._eventsdb.listeners.length);
+    log.finer('Init. type:' + type + ' total listeners:' + this._eventsdb.listeners.length);
 
     // check if no events
     if (!this._eventsdb.hasEvents) return;
+    
+    // look for the triggered event in the events object
+    var ev = c.arFind(this.events, 'type', type);
 
 
     var args = Array.prototype.slice.call(arguments, 1);
-    //log.info('args.expose:' + g.debug.expose(args));
 
 
 
     var removeListeners = [];
     // loop through the listeners object
     g.array.forEach(this._eventsdb.listeners, function(listObj, index){
-
-      //log.info('our type:' + type + ' listObj:' + g.debug.expose(listObj));
-
       if (listObj.type == type) {
-        //log.info('In it');
         // Prepend the bound arguments to the current arguments.
         var newArgs = Array.prototype.slice.call(arguments);
-        //log.info('newArgs.expose:' + g.debug.expose(newArgs));
         newArgs.unshift.apply(newArgs, args);
-        //log.info('After unshift newArgs.expose:' + g.debug.expose(newArgs));
+        // call the listener
         listObj.listener.apply(listObj._this, newArgs);
         // check if we need to remove this cause of runOnce
         if (listObj.runOnce)
           removeListeners.push(index);
-
       }
     }, this);
 
@@ -314,3 +311,6 @@ core.events.listeners.prototype._runEventType = function(type, opt_var_args)
  * @return {void}
  */
 core.events.listeners.prototype.runEvent = core.events.listeners.prototype._runEventType;
+
+
+

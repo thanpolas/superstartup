@@ -48,7 +48,7 @@ goog.require('core.error');
 
 goog.require('core.ajax');
 goog.require('core.ready');
-
+goog.require('core.events');
 goog.require('core.user');
 goog.require('core.conf');
 goog.require('core.valid');
@@ -136,8 +136,6 @@ core.db = {};
  * The geowarp Init function should be called whenever
  * our environment is loaded and ready.
  *
- * We will fire the web 2.0 APIs
- * and start the initAuthstate timeout
  *
  * @return {void}
  */
@@ -151,14 +149,8 @@ core.Init = function ()
     
     // the ready trigger for every other functionality beyond the framework
     c.ready('ready');
+    // for now this watch is finished at the end of taglander parse...    
     c.ready.addCheck('ready', 'alldone');
-    // for now this watch is finished at the end of taglander parse...
-
-
-    c.web2.events.addEvent('initAuthState', function (state){
-      // we don't care for the state, just state that we are finished
-
-    });
 
     c.READY = true;
     c.ready.check('main', 'loaded');

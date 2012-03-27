@@ -2,7 +2,7 @@
 if (!defined('BASEPATH'))
   exit('No direct script access allowed');
 
-require APPPATH . 'libraries/User/TWapi/tweetAPI.php';
+require APPPATH . 'libraries/core/User/TWapi/tweetAPI.php';
 
 class MY_tweet extends tweet {
 
