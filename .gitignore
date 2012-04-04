@@ -19,5 +19,4 @@ engine/CI/application/config/profiler.php
 engine/CI/application/config/routes.php
 engine/CI/application/config/smileys.php
 engine/CI/application/config/user_agents.php
-html/js/closure-library
 html/js/jsc/jquery-1.5.1.min.js
