@@ -7,5 +7,17 @@ engine/CI/application/index.html
 engine/CI/application/language
 engine/CI/application/logs
 engine/CI/application/third_party
+engine/CI/application/config/constants.php
+engine/CI/application/config/config.php
+engine/CI/application/config/doctypes.php
+engine/CI/application/config/email.php
+engine/CI/application/config/foreign_chats.php
+engine/CI/application/config/hooks.php
+engine/CI/application/config/index.html
+engine/CI/application/config/mimes.php
+engine/CI/application/config/profiler.php
+engine/CI/application/config/routes.php
+engine/CI/application/config/smileys.php
+engine/CI/application/config/user_agents.php
 html/js/closure-library
 html/js/jsc/jquery-1.5.1.min.js
