@@ -1,15 +1,9 @@
 INITIAL WORKSPACE SETUP
 ----------------------------
 
-Google Closure Library
-Google closure library must be downloaded in the folder: html/js/closure-library
-So add this folder to your .gitignore 
-We may use a git mirror of the library if we don't want to svn the library
+Initialize the submodules
 
-cd html/js
-mkdir closure-library
-cd closure-library
-git init
-git remote add origin https://github.com/jarib/google-closure-library.git
-git fetch origin
-git pull origin master
+git submodule init
+git submodule update
+
+
