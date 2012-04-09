@@ -6,4 +6,4 @@
 	url = https://github.com/jarib/google-closure-library.git
 [submodule "engine/CI/origin"]
 	path = engine/CI/origin
-	url = git@github.com:thanpolas/CodeIgniter.git
+	url = git@github.com:/EllisLab/CodeIgniter.git
