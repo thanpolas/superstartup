@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 08/Sep/2010
+ * createdate 08/Sep/2010
  *
  *********
  *  File:: user/profile.user.js

@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 25/Oct/2010
+ * createdate 25/Oct/2010
  *
  *********
  *  File:: web2.0/twitter/twitter.main.js
@@ -89,7 +88,7 @@ core.twit.libLoaded = function()
    var t = twttr, c = core;
    var log = c.log('core.twit.libLoaded');
 
-   log.shout('TWITTER LAODEEEEEED');
+   log.info('TWITTER LOADED');
    t.events.bind('tweet', c.twit.eventTweet);
 
   } catch (e) {

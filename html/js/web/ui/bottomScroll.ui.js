@@ -14,7 +14,6 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
@@ -80,7 +79,7 @@ goog.inherits(web.ui.bottomScroll, core.events.listeners);
  * The static data object hash of
  * our class
  *
- * @type {object}
+ * @type {Object}
  */
 web.ui.bottomScroll.staticDB = {
     constructed: false,

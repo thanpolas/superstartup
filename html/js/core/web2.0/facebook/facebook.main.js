@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 25/Oct/2010
+ * createdate 25/Oct/2010
  *
  *********
  *  File:: web2.0/facebook/facebook.main.js
@@ -281,7 +280,6 @@ core.fb.getPermissions = function (callback)
   try {
     
     FB.api('/me/permissions', function (response) {
-        console.debug(response);
     } );
   } catch(e) {
     core.error(e);
@@ -297,10 +295,9 @@ core.fb.getPermissions = function (callback)
 core.fb.sessionChange = function (response)
 {
   try {
-    var c = core;
+    var c = core, g = goog;
     var log = c.log('core.fb.sessionChange');
 
-    console.debug(response);
     log.info('Init. response.perms:' + response.perms);
     log.info('Init. response.session.expose:' + g.debug.expose(response.session));
     /**
@@ -596,15 +593,17 @@ jQuery("#mc_header").html('<fb:login-button></fb:login-button>')
  *
  * @param {string} url
  * @param {Number=} opt_width default is 400
- * @param {object=} opt_params Any number of parameter/value keys as described in FB Docs
+ * @param {Object=} opt_params Any number of parameter/value keys as 
+ *      described in FB Docs
+ * @param {Number=} opt_width width for like button
  * @return {string}
  */
-core.fb.getLikeButton = function (url, opt_params)
+core.fb.getLikeButton = function (url, opt_params, opt_width)
 {
   var g = goog;
 
   var params = opt_params || null;
-
+  var width = opt_width || 60;
   var likeUrl = '<fb:like href="' + url + '" ';
   if (!g.isNull(params)) {
     g.object.forEach(params, function (value, key){
@@ -644,8 +643,7 @@ core.fb.hasPerm = function (value, callback)
 
     // check if on mobile
     if (c.MOBILE) {
-      db.hasPerms[value] = Titanium.Facebook.hasPermission(value);
-      callback(db.hasPerms[value]);
+        // TBD
       return;
     }
 

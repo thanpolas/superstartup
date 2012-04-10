@@ -14,7 +14,6 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
@@ -52,7 +51,7 @@ goog.require('web.myapp');
 /**
  * Our global variables
  *
- * @type {object}
+ * @type {Object}
  */
 web.db = {
   fbClicked: false
@@ -68,6 +67,7 @@ web.MOB = false;
 /**
  * Set DOM Ready main hook
  *
+ * @param {Function}
  */
 $().ready(function(){
   web.INIT();

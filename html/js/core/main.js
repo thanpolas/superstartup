@@ -15,14 +15,13 @@
  * 
  * 
  * @license Apache License, Version 2.0
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 03/Mar/2010
+ * createdate 03/Mar/2010
  * @package core JS framework
  *
  *********
  *  File:: main.js
- *  Core main bundler
+ *  @fileoverview Core main bundler
  *********
  * 
  */
@@ -109,15 +108,9 @@ else
  */
 core.log = goog.debug.Logger.getLogger;
 
-//Test if mw namespace exists and set our WEB / MOBILE constants
-try {
-    if (mw.DEBUG);
-    core.MOBILE = true;
-    core.WEB = false;
-} catch(e) {
-    core.MOBILE = false;
-    core.WEB = true;
-}
+
+core.MOBILE = false;
+core.WEB = true;
 
 
 /**
@@ -141,7 +134,6 @@ core.db = {};
  */
 core.Init = function ()
 {
-    var g = goog;
     var c = core;
 
     c.ready('main');

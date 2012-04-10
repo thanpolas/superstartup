@@ -14,7 +14,6 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
@@ -308,7 +307,7 @@ web.user.notify._getFrame = function (data)
     jel.click(function(e){
       try {
         e.preventDefault();
-        chat.ui.openFrameModal(data['frameData'], data['fromUserData']);
+        //chat.ui.openFrameModal(data['frameData'], data['fromUserData']);
       } catch (e) {
         core.error(e);
       }

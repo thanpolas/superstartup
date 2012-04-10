@@ -62,14 +62,22 @@ system $cmdCompile;
 ## Compile with ADVANCED_OPTIMIZATIONS to compiled.js
 ## Use -Xmx1024m for giving more memory to java: http://groups.google.com/group/closure-compiler-discuss/browse_thread/thread/522fd9e9a87b9c92?hl=en#
 $cmdCompile = "$java -Xmx1024m -jar $closurecompiler ";
-$cmdCompile .= "--js $projectRoot" . "/html/jsc/precompiled.js --jscomp_warning=checkTypes ";
+$cmdCompile .= "--js $projectRoot" . "/html/jsc/precompiled.js ";
 $cmdCompile .= "--js_output_file=$projectRoot" . "/html/jsc/compiled.js";
 $cmdCompile .= "  --compilation_level=ADVANCED_OPTIMIZATIONS";
-$cmdCompile .= "  --create_name_map_files=true";
 $cmdCompile .= "  --externs=$projectRoot" . "/engine/bin/Third-Party/compiler_externs.js";
 # Formatting: Pretty print
-$cmdCompile .= "  --formatting PRETTY_PRINT";
-$cmdCompile .= "  --create_source_map $projectRoot" . "/html/jsc/sourcemap.js";
+#$cmdCompile .= "  --formatting PRETTY_PRINT";
+$cmdCompile .= " --warning_level=verbose";
+$cmdCompile .= " --jscomp_off=fileoverviewTags";
+$cmdCompile .= " --summary_detail_level=3";
+$cmdCompile .= " --jscomp_off=checkTypes";
+$cmdCompile .= " --jscomp_warning=undefinedVars ";
+$cmdCompile .= " ";
+$cmdCompile .= " > ./compiler.out 2>&1";
 
-### Don't compile now
-### system $cmdCompile;
+system $cmdCompile;
+
+system "cat compiler.out";
+#print $cmdCompile;
+

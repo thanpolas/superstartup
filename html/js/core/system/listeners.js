@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 28/Sep/2010
+ * createdate 28/Sep/2010
  *
  *********
  *  File:: system/listeners.js
@@ -43,7 +42,7 @@ core.events.listeners = function ()
     /**
      * Our local db
      *
-     * @type {object}
+     * @type {Object}
      * @private
      */
     this._eventsdb = {

@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 28/Oct/2010
+ * createdate 28/Oct/2010
  *
  *********
  *  File:: web2.0/facebook/facebook.local.js

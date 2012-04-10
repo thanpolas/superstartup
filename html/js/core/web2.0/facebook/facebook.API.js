@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 01/Nov/2010
+ * createdate 01/Nov/2010
  *
  *********
  *  File:: web2.0/facebook/facebook.API.js
@@ -128,16 +127,7 @@ core.fb.API.post.prototype.perform = function (listener)
 
     // check if on mobile and execute a bit differently...
     if (w.MOBILE) {
-        Titanium.Facebook.execute('stream.publish', this.paramsAPI,
-            g.bind(function(res){
-                if (res['success'])
-                    log.info('POST SUCCESS TO FACEBOOK');
-                else
-                    log.info('POST FAIL TO FACEBOOK');
-            }, this), null);
-
-
-
+        // TBD
         return;
     } // if on mobile
 

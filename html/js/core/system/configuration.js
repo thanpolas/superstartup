@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 25/May/2011
+ * createdate 25/May/2011
  *
  *********
  *  File:: system/conf.main.js 
@@ -29,7 +28,7 @@ goog.provide('core.conf');
 /**
  * Master configuration hash
  *
- * @type {object}
+ * @type {Object}
  */
 core.conf = {
   fb: {

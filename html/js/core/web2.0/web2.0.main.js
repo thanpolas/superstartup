@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 29/Oct/2010
+ * createdate 29/Oct/2010
  *
  *********
  *  File:: web2.0/web2.0.main.js
@@ -228,7 +227,7 @@ core.web2.isExtAuthed = function (sourceId)
 
     // ugly patch for mobile (FB Only now)
     if (w.MOBILE) {
-        return Titanium.Facebook.isLoggedIn();
+        // TBD
     }
 
     if (!w2.db.isExtAuthed)

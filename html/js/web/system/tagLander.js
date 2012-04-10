@@ -14,14 +14,13 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
  *
  *********
  * Parses the JS injections in the html file as page is loaded
- * @createdate 24/May/2011
+ * createdate 24/May/2011
  *
  */
 

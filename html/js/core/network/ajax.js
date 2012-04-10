@@ -14,9 +14,8 @@
  * limitations under the License.
  * 
  * 
- * @copyright  (C) 2000-2010 Athanasios Polychronakis - All Rights Reserved
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * @createdate 31/May/2010
+ * createdate 31/May/2010
  *
  *********
  *  File:: network/ajax.js
@@ -150,7 +149,7 @@ core.ajax = function(url, params, opt_callback)
         p: eval(params),
         /**
          * The data we want to pass through XML or JSON will be stored here
-         * @type {object}
+         * @type {Object}
          */
         passData: {},
         /**
@@ -309,7 +308,7 @@ core.ajax.prototype.addData = function (key, valuedata, opt_passBare)
     var g = goog;
     var geoc = core;
     // decide on env
-    if ('t' == this.env) var m = mw; else var m = web;
+    var m = web;
 
     var passBare = opt_passBare || false;
 
@@ -376,7 +375,7 @@ core.ajax.prototype.addData = function (key, valuedata, opt_passBare)
 */
 core.ajax.prototype.send = function() {
     // decide on env, set m root
-    if ('t' == this.env) var m = mw; else var m = web;
+    var m = web;
 
     var wa = core.ajax;
     var g = goog;
@@ -448,7 +447,7 @@ core.ajax.prototype._sendActual = function ()
 
 
     // decide on env, set m root
-    if ('t' == this.env) var m = mw; else var m = web;
+    var m = web;
     var c = core;
     var wa = c.ajax;
     var g = goog;
@@ -540,8 +539,7 @@ core.ajax.prototype._sendCallback = function (thisobj)
 
     try {
 
-    // decide on env, set m root
-    if ('t' == _this.env) var m = mw; else var m = web;
+    var m = web;
 
     var log = core.log('core.ajax._sendCallback');
 
@@ -706,12 +704,8 @@ core.ajax.prototype._sendErrorCallback = function (thisobj, opt_noupdate)
 
     try {
 
-    // decide on env, set m root
-    if (c.MOBILE) {
-        var m = mw;
-    } else {
+
         var m = web;
-    }
 
     var log = core.log('core.ajax._sendErrorCallback');
 
@@ -783,7 +777,7 @@ core.ajax.prototype._compilePassData = function ()
 {
     try {
     // decide on env, set m root
-    if ('t' == this.env) var m = mw; else var m = web;
+    var m = web;
     var g = goog;
     var log = core.log ('core.ajax._compilePassData');
     var geoc = core;
@@ -888,7 +882,7 @@ core.ajax.prototype._initAjaxObject = function()
 {
     var g = goog;
     // decide on env, set m root
-    if ('t' == this.env) var m = mw; else var m = web;
+    var m = web;
 
     var log = core.log('core.ajax._initAjaxObject');
 
@@ -896,9 +890,7 @@ core.ajax.prototype._initAjaxObject = function()
     switch(this.env) {
         case 't':
             // mobile Titanium
-            this.ajax = Titanium.Network.createHTTPClient();
-            this.ajax.setTimeout(14000);
-            log.fine('Inited Mobile');
+            // TBD
             break;
         case 'w':
             // webkit, mozilla, etc
@@ -936,7 +928,7 @@ core.ajax.prototype._initAjaxObject = function()
 core.ajax.prototype._setupAjaxHandlers = function ()
 {
     // decide on env, set m root
-    if ('t' == this.env) var m = mw; else var m = web;
+    var m = web;
     var wa = core.ajax;
     var g = goog;
     var log = core.log('core.ajax._setupAjaxHandlers');
@@ -945,29 +937,7 @@ core.ajax.prototype._setupAjaxHandlers = function ()
     switch (this.env) {
         case 't':
             // Titanium API
-            log.fine('seting handlers for mobile');
-            this.ajax.onload = function() {
-                log.fine('onload triggered:');
-                // get result
-                _this.db.result = this.responseText;
-
-                // call our sendcallback method
-                _this._sendCallback(_this);
-            };
-            // set the error responce handler
-            this.ajax.onerror = function(e){
-                _this._errorObj.status = wa.ERRORSTATUS.REQFAIL;
-                _this._errorObj.message = 'Server has problems. Please retry';
-                _this._errorObj.debugmessage = e.error;
-                _this._sendErrorCallback(_this);
-            };
-
-            // set the onreadystatechange handler
-            this.ajax.onreadystatechange = function() {
-                log.fine('state changed:' + _this.ajax.readyState +
-                ' status:' + _this.ajax.status);
-            };
-
+            // TBD
             break;
         case 'w':
         case 'ie':
@@ -1007,7 +977,7 @@ core.ajax.prototype._checkInjections = function()
     var _this = this;
 
     // decide on env, set m root
-    if ('t' == this.env) var m = mw; else var m = web;
+    var m = web;
 
     var log = c.log('core.ajax._checkInjections');
 
@@ -1092,23 +1062,6 @@ core.ajax.prototype._checkInjections = function()
         return false;
     }
 
-    // check if our [mobile] version is out of date
-    var outofdate = this.getTag('OUTOFDATE');
-    if (outofdate && c.MOBILE) {
-        // recieved out of date
-        this._errorObj.status = core.ajax.ERRORSTATUS.INJECT;
-        this._errorObj.message = 'Recieved application out of date...';
-        this._errorObj.debugmessage = 'OUTOFDATE';
-
-        this._sendErrorCallback(this, true);
-
-
-        // where there is an out of date there always
-        // is a 'updateUrl' link also, pass it to func
-        mw.outofdate(this.getTag('updateUrl'));
-        return false;
-
-    }
 
     return true;
 
@@ -1290,8 +1243,7 @@ core.ajax.prototype.setFileUpload = function (what)
 core.ajax.prototype._compilePassDataUpload = function ()
 {
     try {
-    // decide on env, set m root
-    if (core.MOBILE) var m = mw; else var m = web;
+    var m = web;
     var g = goog;
     var log = core.log ('core.ajax._compilePassDataUpload');
     var geoc = core;
