@@ -28,7 +28,6 @@
  *
  */
 goog.provide('core.ajax');
-goog.require('core.user.notify');
 
 
 
@@ -981,13 +980,6 @@ core.ajax.prototype._checkInjections = function()
 
     var log = c.log('core.ajax._checkInjections');
 
-    var notify = this.getTag('NOTIFY');
-    if (g.isObject(notify)) {
-      //log.shout('Found notification data object:' + g.debug.expose(notify));
-      log.shout('Found notification data object');
-      c.user.notify.newNotification(notify);
-
-    }
 
 
     // check for faulty credentials

@@ -24,7 +24,6 @@
  */
 
 goog.provide('core.user.auth');
-goog.require('core.user.notify');
 goog.require('core.events');
 
 

@@ -53,7 +53,6 @@ goog.require('core.conf');
 goog.require('core.valid');
 goog.require('core.web2');
 goog.require('core.STATIC');
-goog.require('core.throttle');
 
 
 /**
@@ -482,19 +481,6 @@ core.encEnt = function(str) {
 
 };
 
-/**
- * Generic Wrapper method for decoding strings
- * as sent from the geowarp server.
- *
- * We use this method so if something changes in the
- * future, transition will be easy
- *
- * For now we decode HTML entities
- *
- * @param {string}
- * @return {string}
- */
-core.decSrv = function (str) {return core.decEnt(str);};
 
 /**
  * Will return the current domain name of the site
@@ -504,8 +490,9 @@ core.decSrv = function (str) {return core.decEnt(str);};
  */
 core.getDomain = function()
 {
-    var g = goog;
-    var uri = new g.Uri(document.location.href);
+    var d = document;
+    var g = d.goog;
+    var uri = new g.Uri(d.location.href);
     return uri.getDomain();
 }; // method core.getDomain
 
@@ -649,4 +636,4 @@ core.string_replace = function(haystack, find, sub) {
   try {
     return haystack.split(find).join(sub);
   } catch(e) {core.error(e); return haystack;}
-}
+};
