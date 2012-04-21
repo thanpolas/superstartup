@@ -27,9 +27,6 @@
 goog.provide('web.ui');
 
 goog.require('web.ui.alert');
-goog.require('web.ui.bottomScroll');
-goog.require('web.ui.mobile');
-goog.require('web.ui.dialogs');
 
 
 web.ui.db = {
@@ -65,81 +62,11 @@ web.ui.INIT = function ()
     w.ui.resize();
   });
 
-  // start loading twitter's widgets after 500ms
-  setTimeout(function(){
-    var twString = '<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>';
-    j('body').append(twString);
 
-    // start init cycle for our twitter lib
-    c.twit.Init();
-
-  }, 500);
 
 
 
 };
-
-
-
-
-
-
-/**
- * Will fetch an ID stored in an element as a css class
- *
- * We expect a jQuery element and the prefix we want
- * to extract the id from
- * e.g. cssId(jQ, '_spid_')
- * will return r42F4 if the element has a class named:
- * _spid_r42F4
- *
- * @param {array} jQel jQuery element
- * @param {string} prefix of css
- * @return {string|boolean} false if fail / not found
- */
-web.ui.cssId = function (jQel, prefix)
-{
-
-  var g = goog, c = core;
-  var log = g.debug.Logger.getLogger('web.ui.cssId');
-
-  if (!c.isjQ(jQel))
-    return false;
-
-  // get the DOM element and check if it's there
-  var el = jQel[0];
-  if (!g.isObject(el))
-    return false;
-
-
-  // get all element's classes...
-  var arClasses = el.className.split(" ");
-  // now look for prefixed class
-  if (!g.isArray(arClasses)) {
-    log.severe('arClasses is not an array');
-    return false;
-  }
-
-  var found = false;
-  var objId = null;
-
-  g.array.forEach(arClasses, function(itemClass, index){
-    // check for prefix
-    if (prefix == itemClass.substr(0,prefix.length)) {
-      // found it!
-      found = true;
-      objId = itemClass.substr(prefix.length);
-    }
-  });
-
-  if (found)
-    return objId;
-
-  // not found
-  return false;
-}; // method web.ui.cssId
-
-
 
 /**
  * Gets window real estate and returns the values in a simple object

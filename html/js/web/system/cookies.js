@@ -27,16 +27,31 @@
 
 goog.provide('web.cookies');
 
-goog.require('goog.net.Cookies');
+// Don't utilize goog's cookie class, we only want to test if cookies
+// are enabled.
+//goog.require('goog.net.Cookies');
+//web.cookies.gcls = new goog.net.Cookies(document);
 
-web.cookies.gcls = new goog.net.Cookies(document);
-
+/**
+ * Determine if the browser is cookie enabled
+ *
+ * Code snippet from:
+ * http://www.javascriptkit.com/javatutors/cookiedetect.shtml
+ * @return {boolean}
+ */
 web.cookies.isEnabled = function ()
 {
   try {
-    return (web.cookies.gcls.isEnabled());
+    var cookieEnabled = (navigator.cookieEnabled) ? true : false
+
+    //if not IE4+ nor NS6+
+    if (typeof navigator.cookieEnabled == "undefined" && !cookieEnabled ){ 
+      document.cookie="testcookie"
+      cookieEnabled = (document.cookie.indexOf("testcookie") != -1)? true : false;
+    }
+    return cookieEnabled;
   } catch (e) {
     core.error(e);
   }
 
-}
+};

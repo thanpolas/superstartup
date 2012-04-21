@@ -25,8 +25,6 @@
 */
 
 goog.provide('web.user');
-
 goog.require('web.user.auth');
 goog.require('web.user.login');
 goog.require('web.user.ui');
-goog.require('web.user.notify');

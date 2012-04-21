@@ -87,8 +87,9 @@ web.INIT = function () {
   var log = c.log('web.INIT');
 
   log.info('Init');
-
   var win = window;
+  var j = win.jQuery;
+  
   c.db.URL = win.location.protocol + '//' + win.location.hostname;
 
   // execute the tag lander to parse injected JS instructions from
@@ -100,7 +101,15 @@ web.INIT = function () {
 
   // initialize the web2.0 (FB/Twitter)
   // AUTH BALL IS HERE
-  c.fb.InitWeb();  
+  c.fb.InitWeb();
+
+  // start loading twitter's widgets after 500ms
+  setTimeout(function(){
+    var twString = '<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>';
+    j('body').append(twString);
+    // start init cycle for our twitter lib
+    c.twit.Init();
+  }, 500);  
 
 }; // web.INIT
 
