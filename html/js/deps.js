@@ -17,7 +17,7 @@ goog.addDependency("../../../web/user/msg.ui.user.js", ['web.user.ui.message'], 
 goog.addDependency("../../../web/user/msgCls.ui.user.js", ['web.user.ui.msgCls'], ['core.events.listeners', 'core.user.message', 'web.ui.dialogs']);
 goog.addDependency("../../../web/user/notify.user.js", ['web.user.notify'], ['goog.string']);
 goog.addDependency("../../../web/user/profile-form.user.js", ['web.user.profileForm'], []);
-goog.addDependency("../../../web/user/ui.user.js", ['web.user.ui'], ['web.ui.textCounter']);
+goog.addDependency("../../../web/user/ui.user.js", ['web.user.ui'], []);
 goog.addDependency("../../../core/main.js", ['core', 'core.DEBUG', 'core.READY'], ['goog.debug', 'goog.debug.LogManager', 'goog.debug.Logger', 'core.analytics', 'core.date', 'core.error', 'core.ajax', 'core.ready', 'core.events', 'core.user', 'core.conf', 'core.valid', 'core.web2', 'core.STATIC', 'core.throttle']);
 goog.addDependency("../../../core/network/ajax.js", ['core.ajax'], ['core.user.notify']);
 goog.addDependency("../../../core/system/analytics.js", ['core.analytics'], []);

@@ -27,7 +27,7 @@
 goog.provide('web.user.ui.msgCls');
 goog.require('core.events.listeners');
 goog.require('core.user.message');
-goog.require('web.ui.dialogs');
+//goog.require('web.ui.dialogs');
 
 /**
  * The class that handles all events and ui elements of the

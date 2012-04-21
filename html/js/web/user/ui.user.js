@@ -27,7 +27,6 @@
 
 goog.provide('web.user.ui');
 
-goog.require('web.ui.textCounter');
 
 
 web.user.ui.db = {
