@@ -1,2 +1,3 @@
 html/js/jsc/jquery-1.5.1.min.js
 engine/bin/compiler.out
+*.pyc
