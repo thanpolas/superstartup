@@ -99,9 +99,6 @@ core.user.auth.login = function(user, cb, sourceId)
     // turn on authed switch
     db.isAuthed = true;
 
-    // initialize notifications for user
-    c.user.notify.Init();
-
     c.user.auth.events.runEvent('authState', true, sourceId, user);
 
 

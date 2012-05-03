@@ -12,7 +12,7 @@ goog.addDependency("../../../web/user/login.user.js", ['web.user.login'], []);
 goog.addDependency("../../../web/user/main.user.js", ['web.user'], ['web.user.auth', 'web.user.login', 'web.user.ui']);
 goog.addDependency("../../../web/user/ui.user.js", ['web.user.ui'], []);
 goog.addDependency("../../../core/main.js", ['core', 'core.DEBUG', 'core.READY'], ['goog.debug', 'goog.debug.LogManager', 'goog.debug.Logger', 'core.analytics', 'core.date', 'core.error', 'core.ajax', 'core.ready', 'core.events', 'core.user', 'core.conf', 'core.valid', 'core.web2', 'core.STATIC']);
-goog.addDependency("../../../core/network/ajax.js", ['core.ajax'], ['core.user.notify']);
+goog.addDependency("../../../core/network/ajax.js", ['core.ajax'], []);
 goog.addDependency("../../../core/system/analytics.js", ['core.analytics'], []);
 goog.addDependency("../../../core/system/configuration.js", ['core.conf'], []);
 goog.addDependency("../../../core/system/const.main.js", ['core.STATIC'], []);

@@ -110,6 +110,7 @@ web.INIT = function () {
     // start init cycle for our twitter lib
     c.twit.Init();
   }, 500);  
+  
 
 }; // web.INIT
 
@@ -123,3 +124,5 @@ web.openFancyWin = function () {
   debugWindow.setEnabled(true);
   debugWindow.init();
 }; // method web.openFancyWin
+
+
