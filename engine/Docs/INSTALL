@@ -1,9 +1,30 @@
 INITIAL WORKSPACE SETUP
 ----------------------------
 
+Let's get crazy with git!
+First fork the superstartup repo on Github
+https://github.com/thanpolas/superstartup
+
+Now create your local folder, enter it and:
+git init
+git remote add origin git@github.com:YOUR_GITHUB/superstartup.git
+git remote add upstream git@github.com:thanpolas/superstartup.git
+
+Download your forked repo to local:
+git fetch origin
+git checkout origin/master
+git checkout -b master
+
+You should now have a copy of superstartup sources in your local folder. We are not done yet, we have two major packages we need to get, CodeIgniter and Google's Closure Library. We have added them as submodules so you need to fetch them:
+git submodule init
+git submodule update
+
+
 Get into the superstartup directory and initialize the submodules
 git submodule init
 git submodule update
+
+Let's get crazy with git now
 
 Setup your apache to have superstartup/html as DocumentRoot
 
