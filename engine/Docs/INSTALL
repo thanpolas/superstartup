@@ -1,9 +1,9 @@
 INITIAL WORKSPACE SETUP
 ----------------------------
 
-Initialize the submodules
-
+Get into the superstartup directory and initialize the submodules
 git submodule init
 git submodule update
 
+Setup your apache to have superstartup/html as DocumentRoot
 
