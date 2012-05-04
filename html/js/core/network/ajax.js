@@ -1093,31 +1093,7 @@ core.ajax.prototype.getResult = function ()
     return this.db.result;
 };
 
-/**
-* Returns the value of a tag within an xml result
-* Assumes we have a single dimention resultset
-*
-* @private
-* @param {string} whichTag The tag we want to extract
-* @return {mixed} The value of the tag
-*/
-core.ajax.prototype._getXml = function (whichTag)
-{
-    try {
-        var _out = this.db.result.getElementsByTagName(whichTag)[0].childNodes[0].nodeValue;
-    }
-    catch(e) {
-        return '';
-    }
-    if (undefined === _out)
-    {
-        return '';
-    }
-    else {
-        return _out;
-    }
 
-}; // method core.ajax.prototype._getXml
 
 /**
  * Returns the value of a tag within a JSON object.

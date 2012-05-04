@@ -1,6 +1,3 @@
-[submodule "engine/CI/application/libraries/core/User/FBapi"]
-	path = engine/CI/application/libraries/core/User/FBapi
-	url = https://github.com/facebook/php-sdk.git
 [submodule "engine/CI/origin"]
 	path = engine/CI/origin
 	url = git@github.com:thanpolas/CodeIgniter.git

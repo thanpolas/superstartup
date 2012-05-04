@@ -54,7 +54,7 @@ core.error = function (e)
         var msg = e.message;
         var source = '';
       } else {
-        var filename = '';
+        filename = e.stack.split("\n")[1];
         var line = '';
         var msg = e.message;
         var source = '';

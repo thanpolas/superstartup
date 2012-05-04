@@ -38,7 +38,7 @@ goog.require('core.events');
  *      state {boolean} :: Tells us if authed or not
  *      opt_sourceId :: The auth source in case of authed
  *      opt_userDataObjet :: In case of auth, the user data object
- * newUser (sourceId{core.STATIC.SOURCES}, userDataObject{object})
+ * newUser ()
  *      If the authed user is a new user
  * initAuthState (state{boolean})
  *      Fired when initial check with external auth sources has finished.

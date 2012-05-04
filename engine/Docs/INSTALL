@@ -5,17 +5,21 @@ Let's get crazy with git!
 First fork the superstartup repo on Github
 https://github.com/thanpolas/superstartup
 
-Now create your local folder, enter it and:
-git init
-git remote add origin git@github.com:YOUR_GITHUB/superstartup.git
+Now create your local copy:
+git clone git@github.com:YOUR_GITHUB/superstartup.git
+
+If you want to stay up to date with the latest update add the superstartup repo as your upstream:
 git remote add upstream git@github.com:thanpolas/superstartup.git
 
-Download your forked repo to local:
-git pull origin master
-
-You should now have a copy of superstartup sources in your local folder. We are not done yet, we have two major packages we need to get, CodeIgniter and Google's Closure Library. We have added them as submodules so you need to fetch them:
+We are not done yet, we have two major packages we need to get, CodeIgniter and Google's Closure Library. We have added them as submodules so you need to fetch them:
 git submodule init
 git submodule update
 
 Setup your apache to have superstartup/html as DocumentRoot
+
+Create and edit configuration files:
+cd engine/CI/application/config
+ls -l tpl_*
+
+You will see all the files you need to copy omitting the 'tpl_' prefix and edit them.
 

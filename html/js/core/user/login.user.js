@@ -253,21 +253,25 @@ core.user.login.logout = function(opt_callback)
         var res = a.getTag('status');
         log.info('logout server result:' + res);
         // trigger global auth state event
-        c.web2.events.runEvent('initAuthState', false);
+        c.user.auth.events.runEvent('authState', false);
         callback(true);
     };
     //callback
     a.errorCallback = function(err)
     {
-        callback(false, err.message);
+        callback(false);
     };
 
     //perform the execution
-    if (!a.send()) return false;
+    if (!a.send()) {
+      callback(false);
+      return false;
+    };
 
     return true;
    } catch(e) {
      core.error(e);
+     callback(false);
     }
 };
 // method core.user.login.logout

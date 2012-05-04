@@ -52,9 +52,8 @@ web.user.login.logout = function (event)
     w.user.auth.events.runEvent('logout_click', elId);
 
     // perform logout
-    c.user.login.logout(function(status, opt_errmsg){
-      // no matter the status, we will logout the user...
-      log.info('logout callback received. status:' + status + ' opt_errmsg:' + opt_errmsg);
+    c.user.login.logout(function(status){
+      log.info('logout callback received. status:' + status);
     });
 
 
@@ -104,11 +103,6 @@ web.user.login.bindLogin = function()
         var elId = j(this).attr('id');
         var jel = j(this);
         log.info('Facebook login clicked:' + elId);
-
-        if (!c.throttle('fb_login_click', 3000, true)) {
-          log.info('Execution canceled by throttler');
-          return;
-        }
 
         // check if facebook ready
         if (!c.fb.haveAuthStatus()) {

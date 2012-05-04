@@ -87,7 +87,7 @@ core.fb.local.checkFacebookAuth = function (listener)
         // check if newuser
         if (newuser) {
             // open welcome window
-            web.user.ui.newUser();
+            w.user.auth.events.runEvent('newUser');
         }
 
         listener(true);
@@ -177,9 +177,7 @@ core.fb.local.loginSubmit = function (opt_listener)
         listener(true);
 
         if (newuser) {
-          log.shout('New USER FB!!!');
-          w.analytics.trackPageview('/mtr/users/new');
-          w.analytics.trackMP('newUser', {source:'FB'});
+            w.user.auth.events.runEvent('newUser');
         }
 
       } catch(e) {
