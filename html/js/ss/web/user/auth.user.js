@@ -23,15 +23,15 @@
  * 
  */
 
-goog.provide('web.user.auth');
+goog.provide('ss.web.user.auth');
 goog.require('ss.events');
 
 // create the master auth events instance 
-web.user.auth.events = new ss.events.listeners();
+ss.web.user.auth.events = new ss.events.listeners();
 
 /**
  * The following events exist and can be listened to with:
- * web.user.auth.events.addEventListener(eventName, [...])
+ * ss.web.user.auth.events.addEventListener(eventName, [...])
  *
  * tw_click(elId) :: Click on a Twitter login button. elId is the ID of the html element
  *            that was clicked

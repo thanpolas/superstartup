@@ -20,7 +20,7 @@
  * jQuery Extensions 
  */
 
-goog.provide('web.jq.ext');
+goog.provide('ss.web.jq.ext');
 
 
 /**
@@ -68,7 +68,7 @@ goog.provide('web.jq.ext');
  *
  * @return {void}
  */
-web.jq.ext.dispOn = function()
+ss.web.jq.ext.dispOn = function()
 {
     var j = $;
     return this.each(function()
@@ -78,14 +78,14 @@ web.jq.ext.dispOn = function()
         j(this).data('closed', false);
 
     });
-}; // method web.jq.ext.dispOn
+}; // method ss.web.jq.ext.dispOn
 
 /**
  * .dispOff() :: == .css("display", "none")
  *
  * @return {void}
  */
-web.jq.ext.dispOff = function()
+ss.web.jq.ext.dispOff = function()
 {
     var j  = $;
     return this.each(function()
@@ -94,27 +94,27 @@ web.jq.ext.dispOff = function()
         // set state of element
         j(this).data('closed', true);
     });
-}; // method web.jq.ext.dispOff
+}; // method ss.web.jq.ext.dispOff
 
 /**
  * .on() :: returns boolean if display == block
  *
  * @return {boolean}
  */
-web.jq.ext.on = function()
+ss.web.jq.ext.on = function()
 {
     return ('none' == this.css('display') ? false : true);
-}; // method web.jq.ext.on
+}; // method ss.web.jq.ext.on
 
 /**
  * .off() ::  returns boolean if display == none
  *
  * @return {boolean}
  */
-web.jq.ext.off = function()
+ss.web.jq.ext.off = function()
 {
     return ('none' == this.css('display')? true : false);
-}; // method web.jq.ext.off
+}; // method ss.web.jq.ext.off
 
 /**
  * .del(callback) :: Performs a custom remove(), optionaly we can set a callback
@@ -124,7 +124,7 @@ web.jq.ext.off = function()
  * @param {function} callback
  * @return void
  */
-web.jq.ext.del = function(callback)
+ss.web.jq.ext.del = function(callback)
 {
 
     $(this).effect('pulsate', {}, 250, function() {
@@ -136,7 +136,7 @@ web.jq.ext.del = function(callback)
 
     });
     return $(this);
-}; // method web.jq.ext.
+}; // method ss.web.jq.ext.
 
 /**
  * .slide(refreshHeight) :: Performs a slideUp/Down depending on status.
@@ -147,10 +147,10 @@ web.jq.ext.del = function(callback)
  * @param {function=} opt_callback Call Back function, assign as first parameter as well
  * @return {void}
  */
-web.jq.ext.slide = function(opt_refreshHeight, opt_callback)
+ss.web.jq.ext.slide = function(opt_refreshHeight, opt_callback)
 {
     var g = goog;
-    var log = g.debug.Logger.getLogger('web.jq.ext.slide');
+    var log = g.debug.Logger.getLogger('ss.web.jq.ext.slide');
     var j = $;
 
     log.fine('Init for:' + this.selector + ' closed:' + j(this).data('closed') + ' callId:' + j(this).data('callId'));
@@ -250,13 +250,13 @@ web.jq.ext.slide = function(opt_refreshHeight, opt_callback)
         });
 
     } // else we need to close it
-}; // method web.jq.ext.slide
+}; // method ss.web.jq.ext.slide
 
 (function($){
 /**
  * Use our methods to extend jQuery
  */
-    var j = web.jq.ext;
+    var j = ss.web.jq.ext;
     $.fn.extend(
     {
         //msgBox: j.msgbox,

@@ -24,7 +24,7 @@
 *
 */
 
-goog.provide('web.user');
-goog.require('web.user.auth');
-goog.require('web.user.login');
-goog.require('web.user.ui');
+goog.provide('ss.web.user');
+goog.require('ss.web.user.auth');
+goog.require('ss.web.user.login');
+goog.require('ss.web.user.ui');

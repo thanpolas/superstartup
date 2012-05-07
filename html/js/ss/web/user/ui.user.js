@@ -25,11 +25,11 @@
  */
 
 
-goog.provide('web.user.ui');
+goog.provide('ss.web.user.ui');
 
 
 
-web.user.ui.db = {
+ss.web.user.ui.db = {
   menuOpen: false,
   profileTextCounter: null,
   msgCls: null,
@@ -42,18 +42,14 @@ web.user.ui.db = {
  *
  * @return {void}
  */
-web.user.ui.Init = function ()
+ss.web.user.ui.Init = function ()
 {
   try {
-    var w = web, j = $, c = core;
+    var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
 
-    var log = c.log('web.user.ui.Init');
+    var log = c.log('ss.web.user.ui.Init');
 
     log.info('Init - Binding on login / logout elements');
-
-    // listen for new notifications event
-    // not implemented yet...
-    //c.user.notify.hookNew(w.user.ui.setNotify);
 
     // catch all logout buttons / links
     j('.-logout').click(w.user.login.logout);
@@ -66,125 +62,10 @@ web.user.ui.Init = function ()
     ss.error(e);
   }
 
-}; // web.user.ui.Init
+}; // ss.web.user.ui.Init
 // listen for ready event
-ss.ready.addFunc('main', web.user.ui.Init);
+ss.ready.addFunc('main', ss.web.user.ui.Init);
 
 
 
-/**
- * Will open the get-email modal and ask user to enter e-mail
- *
- * @param {boolean=}  opt_isOldUser set to true if user is not new
- * @return {void}
- */
-web.user.ui.openGetEmailModal = function (opt_isOldUser)
-{
-  try {
-    var w = web, j = $, c = core;
 
-    var log = c.log('web.user.ui.getEmailModal');
-
-    log.info('Init. Modal Open:' + w.user.ui.db.getMailOpen);
-
-    // check if already open
-    if (w.user.ui.db.getMailOpen)
-      return;
-    w.user.ui.db.getMailOpen = true;
-
-    var jOver = j('#getmail');
-    jOver.dispOn();
-
-    // get user data, chop nick to 9 chars so it fits ok
-    var u = c.user.getUserDataObject();
-    j('#getmail_title_nick').text(u.nickname.substr(0,9));
-
-    // now check if not new user
-    if (opt_isOldUser) {
-      // change welcome to 'hey'
-      j('#getmail_title_prefix').text('Hey');
-      j('#getmail_content').text("We don't seem to have your e-mail, please type it here");
-    }
-
-
-    // check if we have already binded to events
-    if (w.user.ui.db.getMailInit)
-      return;
-
-    w.user.ui.db.getMailInit = true;
-
-    // bind events
-    j('#getmail_form').submit(w.user.ui.getEmailSubmit);
-    j('#getmail_submit').click(w.user.ui.getEmailSubmit);
-
-  } catch (e) {
-    ss.error(e);
-  }
-}; // web.user.ui.getEmailModal
-
-/**
- * Handles submition of the get Email modal form
- *
- * @param {type} e description
- * @return {void}
- */
-web.user.ui.getEmailSubmit = function (e)
-{
-  try {
-    var w = web, j = $, c = core;
-
-    var log = c.log('web.user.ui.getEmailSubmit');
-
-    log.info('Init');
-
-    // show the loader
-    j('#getmail_submit').css('visibility', 'hidden');
-    j('#getmail_loader').css('display', 'inline');
-
-    // we'll cheat and use the submit account
-    // methods....
-    // collect the data...
-    var u = c.user.getUserDataObject();
-    var datafields = {
-      nickname: u.nickname,
-      email: j('#getmail_textfield').val()
-    };
-
-    c.user.profile.submitAccount(datafields, function(status, opt_errmsg){
-      try {
-        log.info('Submit Callback. status:' + status + ' opt_errmsg:' + opt_errmsg);
-        j('#getmail_submit').css('visibility', 'visible');
-        j('#getmail_loader').dispOff();
-
-        if (status) {
-          // profile submitted successfuly
-          w.ui.alert('Thank you', 'success');
-          w.user.ui.db.getMailOpen = false;
-          j('#getmail').dispOff();
-
-          // create GA event ???
-          //c.analytics.trackEvent('UserMenu', 'account_saved');
-
-
-        } else {
-          // error in submition
-          w.ui.alert(opt_errmsg, 'error');
-        }
-
-
-      } catch (e) {
-        ss.error(e);
-      }
-
-    });
-
-    return false;
-
-  } catch (e) {
-    ss.error(e);
-    j('#getmail_submit').css('visibility', 'visible');
-    j('#getmail_loader').dispOff();
-    return false;
-  }
-
-}; // web.user.ui.getEmailSubmit

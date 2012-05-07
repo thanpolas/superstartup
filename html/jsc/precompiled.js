@@ -11953,7 +11953,7 @@ core.fb.local.checkFacebookAuth = function (listener)
         // check if newuser
         if (newuser) {
             // open welcome window
-            web.user.ui.newUser();
+            ss.web.user.ui.newUser();
         }
 
         listener(true);
@@ -23256,7 +23256,7 @@ core.ajax.prototype._checkInjections = function()
 
 
     // check for faulty credentials
-    // 14/Oct/2010 For now this has been deprecated for web... just for now (maybe)
+    // 14/Oct/2010 For now this has been deprecated for ss.web... just for now (maybe)
     var faulty = this.getTag('FAULTYCREDS');
     if (faulty) {
         log.warning('Recieved FAULTYCREDS. Loging out...');
@@ -24807,7 +24807,7 @@ core.string_replace = function(haystack, find, sub) {
 
 
 
-goog.provide('web.user.login');
+goog.provide('ss.web.user.login');
 
 /**
  * Logs out a user
@@ -24815,14 +24815,14 @@ goog.provide('web.user.login');
  * @param {object} event jQuery event object
  * @return {void}
  */
-web.user.login.logout = function (event)
+ss.web.user.login.logout = function (event)
 {
   try {
     event.preventDefault();
         
     var w = web,  c = core, j = jQuery;
 
-    var log = c.log('web.user.login.logout');
+    var log = c.log('ss.web.user.login.logout');
 
     log.info('Init. Authed:' + c.isAuthed());
 
@@ -24844,7 +24844,7 @@ web.user.login.logout = function (event)
     core.error(e);
   }
 
-}; // web.user.login.logout
+}; // ss.web.user.login.logout
 
 
 
@@ -24854,13 +24854,13 @@ web.user.login.logout = function (event)
  *
  * @return {void}
  */
-web.user.login.bindLogin = function()
+ss.web.user.login.bindLogin = function()
 {
   try {
 
   var w = web, c = core, j = $, win = window;
 
-  var log = c.log('web.user.login.bindLogin');
+  var log = c.log('ss.web.user.login.bindLogin');
 
   // bind click events on FB / TWITTER LOGIN BUTTONS
   j(".-login-tw").click(function(event){
@@ -24958,10 +24958,10 @@ web.user.login.bindLogin = function()
  *
  */
  
-goog.provide('web.myapp');
-goog.provide('web.myapp.initialise');
+goog.provide('ss.web.myapp');
+goog.provide('ss.web.myapp.initialise');
 goog.require('core');
-goog.require('web.user.login');
+goog.require('ss.web.user.login');
  
 
 /**
@@ -24971,13 +24971,13 @@ goog.require('web.user.login');
  *
  * @return {void}
  */
-web.myapp.initialise = function()
+ss.web.myapp.initialise = function()
 {
   try {
 
     var w = web, c = core;
 
-    var log = c.log('web.myapp.initialise');  
+    var log = c.log('ss.web.myapp.initialise');  
     
     log.info('Hello World!');
     
@@ -24991,7 +24991,7 @@ web.myapp.initialise = function()
 };
 
 // bind to the framework's ready event
-core.ready.addFunc('ready', web.myapp.initialise);
+core.ready.addFunc('ready', ss.web.myapp.initialise);
 
 
 
@@ -25005,12 +25005,12 @@ core.ready.addFunc('ready', web.myapp.initialise);
  *
  * @return {void}
  */
-web.myapp.newUser = function()
+ss.web.myapp.newUser = function()
 {
   try {
     var w = web,  c = core;
 
-    var log = c.log('web.myapp.newUser');
+    var log = c.log('ss.web.myapp.newUser');
 
     log.info('Init');
     
@@ -25041,7 +25041,7 @@ web.myapp.newUser = function()
     core.error(e);
   }
 
-}; // web.user.ui.newUser
+}; // ss.web.user.ui.newUser
 
 /**
  * Triggers when the master auth event hook changes state
@@ -25051,13 +25051,13 @@ web.myapp.newUser = function()
  * @param {object=} opt_userDataObject if authed, the user data object is passed here
  * @return {void}
  */
-web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
+ss.web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
 {
   try {
 
     var w = web, c = core, j = jQuery, g = goog;
 
-    var log = c.log('web.myapp.authState');  
+    var log = c.log('ss.web.myapp.authState');  
     
     log.info('Auth event is ready. State:' + state);
     
@@ -25085,10 +25085,10 @@ web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
 };
 
 // subscribe to the auth state master event hook
-core.user.auth.events.addEventListener('authState', web.myapp.authState);
+core.user.auth.events.addEventListener('authState', ss.web.myapp.authState);
 
 // listen for newuser event
-core.user.auth.events.addEventListener('newUser', web.myapp.newUser);
+core.user.auth.events.addEventListener('newUser', ss.web.myapp.newUser);
 
 
 /*
@@ -25148,11 +25148,11 @@ switch (elId) {
  */
 
 
-goog.provide('web.user.ui');
+goog.provide('ss.web.user.ui');
 
 
 
-web.user.ui.db = {
+ss.web.user.ui.db = {
   menuOpen: false,
   profileTextCounter: null,
   msgCls: null,
@@ -25165,12 +25165,12 @@ web.user.ui.db = {
  *
  * @return {void}
  */
-web.user.ui.Init = function ()
+ss.web.user.ui.Init = function ()
 {
   try {
     var w = web, j = $, c = core;
 
-    var log = c.log('web.user.ui.Init');
+    var log = c.log('ss.web.user.ui.Init');
 
     log.info('Init - Binding on login / logout elements');
 
@@ -25189,9 +25189,9 @@ web.user.ui.Init = function ()
     core.error(e);
   }
 
-}; // web.user.ui.Init
+}; // ss.web.user.ui.Init
 // listen for ready event
-core.ready.addFunc('main', web.user.ui.Init);
+core.ready.addFunc('main', ss.web.user.ui.Init);
 
 
 
@@ -25201,12 +25201,12 @@ core.ready.addFunc('main', web.user.ui.Init);
  * @param {boolean=}  opt_isOldUser set to true if user is not new
  * @return {void}
  */
-web.user.ui.openGetEmailModal = function (opt_isOldUser)
+ss.web.user.ui.openGetEmailModal = function (opt_isOldUser)
 {
   try {
     var w = web, j = $, c = core;
 
-    var log = c.log('web.user.ui.getEmailModal');
+    var log = c.log('ss.web.user.ui.getEmailModal');
 
     log.info('Init. Modal Open:' + w.user.ui.db.getMailOpen);
 
@@ -25243,7 +25243,7 @@ web.user.ui.openGetEmailModal = function (opt_isOldUser)
   } catch (e) {
     core.error(e);
   }
-}; // web.user.ui.getEmailModal
+}; // ss.web.user.ui.getEmailModal
 
 /**
  * Handles submition of the get Email modal form
@@ -25251,12 +25251,12 @@ web.user.ui.openGetEmailModal = function (opt_isOldUser)
  * @param {type} e description
  * @return {void}
  */
-web.user.ui.getEmailSubmit = function (e)
+ss.web.user.ui.getEmailSubmit = function (e)
 {
   try {
     var w = web, j = $, c = core;
 
-    var log = c.log('web.user.ui.getEmailSubmit');
+    var log = c.log('ss.web.user.ui.getEmailSubmit');
 
     log.info('Init');
 
@@ -25310,7 +25310,7 @@ web.user.ui.getEmailSubmit = function (e)
     return false;
   }
 
-}; // web.user.ui.getEmailSubmit
+}; // ss.web.user.ui.getEmailSubmit
 /**
  * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
  *
@@ -25336,15 +25336,15 @@ web.user.ui.getEmailSubmit = function (e)
  * 
  */
 
-goog.provide('web.user.auth');
+goog.provide('ss.web.user.auth');
 goog.require('core.events');
 
 // create the master auth events instance 
-web.user.auth.events = new core.events.listeners();
+ss.web.user.auth.events = new core.events.listeners();
 
 /**
  * The following events exist and can be listened to with:
- * web.user.auth.events.addEventListener(eventName, [...])
+ * ss.web.user.auth.events.addEventListener(eventName, [...])
  *
  * tw_click(elId) :: Click on a Twitter login button. elId is the ID of the html element
  *            that was clicked
@@ -25379,10 +25379,10 @@ web.user.auth.events = new core.events.listeners();
 *
 */
 
-goog.provide('web.user');
-goog.require('web.user.auth');
-goog.require('web.user.login');
-goog.require('web.user.ui');
+goog.provide('ss.web.user');
+goog.require('ss.web.user.auth');
+goog.require('ss.web.user.login');
+goog.require('ss.web.user.ui');
 /**
  * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
  *
@@ -25405,7 +25405,7 @@ goog.require('web.user.ui');
  * jQuery Extensions 
  */
 
-goog.provide('web.jq.ext');
+goog.provide('ss.web.jq.ext');
 
 
 /**
@@ -25453,7 +25453,7 @@ goog.provide('web.jq.ext');
  *
  * @return {void}
  */
-web.jq.ext.dispOn = function()
+ss.web.jq.ext.dispOn = function()
 {
     var j = $;
     return this.each(function()
@@ -25463,14 +25463,14 @@ web.jq.ext.dispOn = function()
         j(this).data('closed', false);
 
     });
-}; // method web.jq.ext.dispOn
+}; // method ss.web.jq.ext.dispOn
 
 /**
  * .dispOff() :: == .css("display", "none")
  *
  * @return {void}
  */
-web.jq.ext.dispOff = function()
+ss.web.jq.ext.dispOff = function()
 {
     var j  = $;
     return this.each(function()
@@ -25479,27 +25479,27 @@ web.jq.ext.dispOff = function()
         // set state of element
         j(this).data('closed', true);
     });
-}; // method web.jq.ext.dispOff
+}; // method ss.web.jq.ext.dispOff
 
 /**
  * .on() :: returns boolean if display == block
  *
  * @return {boolean}
  */
-web.jq.ext.on = function()
+ss.web.jq.ext.on = function()
 {
     return ('none' == this.css('display') ? false : true);
-}; // method web.jq.ext.on
+}; // method ss.web.jq.ext.on
 
 /**
  * .off() ::  returns boolean if display == none
  *
  * @return {boolean}
  */
-web.jq.ext.off = function()
+ss.web.jq.ext.off = function()
 {
     return ('none' == this.css('display')? true : false);
-}; // method web.jq.ext.off
+}; // method ss.web.jq.ext.off
 
 /**
  * .del(callback) :: Performs a custom remove(), optionaly we can set a callback
@@ -25509,7 +25509,7 @@ web.jq.ext.off = function()
  * @param {function} callback
  * @return void
  */
-web.jq.ext.del = function(callback)
+ss.web.jq.ext.del = function(callback)
 {
 
     $(this).effect('pulsate', {}, 250, function() {
@@ -25521,7 +25521,7 @@ web.jq.ext.del = function(callback)
 
     });
     return $(this);
-}; // method web.jq.ext.
+}; // method ss.web.jq.ext.
 
 /**
  * .slide(refreshHeight) :: Performs a slideUp/Down depending on status.
@@ -25532,10 +25532,10 @@ web.jq.ext.del = function(callback)
  * @param {function=} opt_callback Call Back function, assign as first parameter as well
  * @return {void}
  */
-web.jq.ext.slide = function(opt_refreshHeight, opt_callback)
+ss.web.jq.ext.slide = function(opt_refreshHeight, opt_callback)
 {
     var g = goog;
-    var log = g.debug.Logger.getLogger('web.jq.ext.slide');
+    var log = g.debug.Logger.getLogger('ss.web.jq.ext.slide');
     var j = $;
 
     log.fine('Init for:' + this.selector + ' closed:' + j(this).data('closed') + ' callId:' + j(this).data('callId'));
@@ -25635,13 +25635,13 @@ web.jq.ext.slide = function(opt_refreshHeight, opt_callback)
         });
 
     } // else we need to close it
-}; // method web.jq.ext.slide
+}; // method ss.web.jq.ext.slide
 
 (function($){
 /**
  * Use our methods to extend jQuery
  */
-    var j = web.jq.ext;
+    var j = ss.web.jq.ext;
     $.fn.extend(
     {
         //msgBox: j.msgbox,
@@ -25681,12 +25681,12 @@ web.jq.ext.slide = function(opt_refreshHeight, opt_callback)
  */
 
 
-goog.provide('web.cookies');
+goog.provide('ss.web.cookies');
 
 // Don't utilize goog's cookie class, we only want to test if cookies
 // are enabled.
 //goog.require('goog.net.Cookies');
-//web.cookies.gcls = new goog.net.Cookies(document);
+//ss.web.cookies.gcls = new goog.net.Cookies(document);
 
 /**
  * Determine if the browser is cookie enabled
@@ -25695,7 +25695,7 @@ goog.provide('web.cookies');
  * http://www.javascriptkit.com/javatutors/cookiedetect.shtml
  * @return {boolean}
  */
-web.cookies.isEnabled = function ()
+ss.web.cookies.isEnabled = function ()
 {
   try {
     var cookieEnabled = (navigator.cookieEnabled) ? true : false
@@ -30622,7 +30622,7 @@ goog.debug.FancyWindow.getLoggers_ = function() {
  *
  */
 
-goog.provide('web.system.tagLander');
+goog.provide('ss.web.system.tagLander');
 
 
 goog.require('core.error');
@@ -30636,19 +30636,19 @@ goog.require('core.user');
  * @param {array} arr the object we want to inject
  * @return {void}
  */
-web.system.tagLander = function(arr)
+ss.web.system.tagLander = function(arr)
 {
 
-  var log = goog.debug.Logger.getLogger('web.system.tagLander');
+  var log = goog.debug.Logger.getLogger('ss.web.system.tagLander');
 
   log.info('Init');
 
-  web.system.injArr = arr;
-}; // method web.system.tagLander
+  ss.web.system.injArr = arr;
+}; // method ss.web.system.tagLander
 
 /**
  * Fired when DOM is ready, this method parses injected
- * data objects from server. Check out web.system.tagLander
+ * data objects from server. Check out ss.web.system.tagLander
  *
  * Current tags:
  *
@@ -30664,7 +30664,7 @@ web.system.tagLander = function(arr)
  *
  * @return void
  */
-web.system.tagLanderParse = function()
+ss.web.system.tagLanderParse = function()
 {
   try {
 
@@ -30674,7 +30674,7 @@ web.system.tagLanderParse = function()
     var g = goog;
     //go through the array and check for values
     var arr = w.system.injArr;
-    var log = g.debug.Logger.getLogger('web.system.tagLanderParse');
+    var log = g.debug.Logger.getLogger('ss.web.system.tagLanderParse');
 
     log.info('Init');
 
@@ -30841,10 +30841,10 @@ web.system.tagLanderParse = function()
   } catch (e) {
     core.error(e);
   }
-}; // method web.system.tagLanderParse
-goog.provide('web.system');
+}; // method ss.web.system.tagLanderParse
+goog.provide('ss.web.system');
 
-goog.require('web.system.tagLander');
+goog.require('ss.web.system.tagLander');
 /**
  * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
  *
@@ -30874,12 +30874,12 @@ goog.provide('web');
 
 goog.require('core');
 
-goog.require('web.system');
-goog.require('web.cookies');
+goog.require('ss.web.system');
+goog.require('ss.web.cookies');
 
-goog.require('web.jq.ext');
+goog.require('ss.web.jq.ext');
 
-goog.require('web.user');
+goog.require('ss.web.user');
 
 
 
@@ -30890,7 +30890,7 @@ goog.require('goog.debug.LogManager');
 
 
 // Add your required files from here on...
-goog.require('web.myapp');
+goog.require('ss.web.myapp');
 
 
 
@@ -30900,7 +30900,7 @@ goog.require('web.myapp');
  *
  * @type {Object}
  */
-web.db = {
+ss.web.db = {
   fbClicked: false
 }
 
@@ -30909,7 +30909,7 @@ web.db = {
  *
  * @type {boolean}
  */
-web.MOB = false;
+ss.web.MOB = false;
 
 /**
  * Set DOM Ready main hook
@@ -30917,7 +30917,7 @@ web.MOB = false;
  * @param {Function}
  */
 $().ready(function(){
-  web.INIT();
+  ss.web.INIT();
 });
 
 /**
@@ -30926,12 +30926,12 @@ $().ready(function(){
  *
  * @return {void}
  */
-web.INIT = function () {
+ss.web.INIT = function () {
 
 
   var w = web, c = core;
 
-  var log = c.log('web.INIT');
+  var log = c.log('ss.web.INIT');
 
   log.info('Init');
   var win = window;
@@ -30958,15 +30958,15 @@ web.INIT = function () {
     c.twit.Init();
   }, 500);  
 
-}; // web.INIT
+}; // ss.web.INIT
 
 
 /**
  * Will popup a debuging funcy window
  *
  */
-web.openFancyWin = function () {
+ss.web.openFancyWin = function () {
   var debugWindow = new goog.debug.FancyWindow('main');
   debugWindow.setEnabled(true);
   debugWindow.init();
-}; // method web.openFancyWin
+}; // method ss.web.openFancyWin

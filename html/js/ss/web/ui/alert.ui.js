@@ -24,7 +24,7 @@
 *
 */
 
-goog.provide('web.ui.alert');
+goog.provide('ss.web.ui.alert');
 
 
 
@@ -39,21 +39,17 @@ goog.provide('web.ui.alert');
  *
  * @param {string} msg The message you want to output
  * @param {string=} opt_type The type of the alert
- * @param {jQuery=} opt_jqel jQuery Element we want to apply the alert to
  * @return {void}
  */
-web.ui.alert = function (msg, opt_type, opt_jqel)
+ss.web.ui.alert = function (msg, opt_type, opt_jqel)
 {
-    var w = web;
-    var c = core;
-    var ui = w.ui;
     var g = goog;
-    var j = $;
-    var log = g.debug.Logger.getLogger('web.ui.alert');
+
+    var log = g.debug.Logger.getLogger('ss.web.ui.alert');
 
     var type = opt_type || 'error';
 
     log.shout('Init - type:' + type + ' msg:' + msg);
 
 
-}; // method web.ui.alert
+}; // method ss.web.ui.alert

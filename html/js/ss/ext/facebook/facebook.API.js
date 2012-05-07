@@ -30,16 +30,16 @@ goog.require('ss.STATIC');
 
 
 /**
- * The core of the facebook API calls
+ * The ss of the facebook API calls
  * We use restAPI for these functions
  * for now
  *
  * @constructor
  */
-ss.fb.API.core = function ()
+ss.fb.API.ss = function ()
 {
 
-}; // class ss.fb.API.core
+}; // class ss.fb.API.ss
 
 /**
  * The post API class
@@ -119,7 +119,7 @@ ss.fb.API.post.prototype.perform = function (listener)
 {
     try {
     var g = goog;
-    var w = core;
+    var w = ss;
 
     var log = w.log ('ss.fb.API.post.perform');
 

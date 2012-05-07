@@ -15,7 +15,7 @@ $googPath = $jsroot . "/closure-library/closure/goog";
 #3rd party apps...
 $asyncPath = $jsroot . "/closure-library/third_party/closure/goog";
 $sptPath = $jsroot . "/web";
-$geoPath = $jsroot . "/core";
+$geoPath = $jsroot . "/ss";
 
 $calcdeps = $closurelib . "/closure/bin/calcdeps.py";
 

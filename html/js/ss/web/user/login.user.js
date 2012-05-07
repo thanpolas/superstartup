@@ -25,7 +25,7 @@
 
 
 
-goog.provide('web.user.login');
+goog.provide('ss.web.user.login');
 
 /**
  * Logs out a user
@@ -33,14 +33,13 @@ goog.provide('web.user.login');
  * @param {object} event jQuery event object
  * @return {void}
  */
-web.user.login.logout = function (event)
+ss.web.user.login.logout = function (event)
 {
   try {
     event.preventDefault();
         
-    var w = web,  c = core, j = jQuery;
-
-    var log = c.log('web.user.login.logout');
+    var win = window, j = win.jQuery, c = win.ss, w = c.web;
+    var log = c.log('ss.web.user.login.logout');
 
     log.info('Init. Authed:' + c.isAuthed());
 
@@ -61,7 +60,7 @@ web.user.login.logout = function (event)
     ss.error(e);
   }
 
-}; // web.user.login.logout
+}; // ss.web.user.login.logout
 
 
 
@@ -71,13 +70,13 @@ web.user.login.logout = function (event)
  *
  * @return {void}
  */
-web.user.login.bindLogin = function()
+ss.web.user.login.bindLogin = function()
 {
   try {
 
-  var w = web, c = core, j = $, win = window;
+  var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
 
-  var log = c.log('web.user.login.bindLogin');
+  var log = c.log('ss.web.user.login.bindLogin');
 
   // bind click events on FB / TWITTER LOGIN BUTTONS
   j(".-login-tw").click(function(event){

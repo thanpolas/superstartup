@@ -26,7 +26,7 @@
  * 
  */
 
-goog.provide('core');
+goog.provide('ss');
 
 goog.provide('ss.DEBUG');
 goog.provide('ss.READY'); //DOM ready switch
@@ -128,18 +128,18 @@ ss.db = {};
  */
 ss.Init = function ()
 {
-    var c = core;
+    var s = ss;
 
-    c.ready('main');
-    c.ready.addCheck('main', 'loaded');
+    s.ready('main');
+    s.ready.addCheck('main', 'loaded');
     
     // the ready trigger for every other functionality beyond the framework
-    c.ready('ready');
+    s.ready('ready');
     // for now this watch is finished at the end of taglander parse...    
-    c.ready.addCheck('ready', 'alldone');
+    s.ready.addCheck('ready', 'alldone');
 
-    c.READY = true;
-    c.ready.check('main', 'loaded');
+    s.READY = true;
+    s.ready.check('main', 'loaded');
 
 }; // function ss.Init
 
@@ -278,111 +278,6 @@ ss.objCount = function (obj)
 }; // method ss.object
 
 /**
- * Will reset all root elements of the passed
- * object. We check for the type of each element and
- * reset it properly as per type.
- *
- * If obj is an array, we examine the array elements
- * for reset (1 level up)
- *
- * @param {object|array} obj Object we want to reset
- * @return {object|array|null} Whatever is passed - reset - or null if not object/array
- */
-ss.resetAny = function (obj)
-{
-    var g = goog;
-
-    // check if array
-    if (g.isArray(obj)) {
-        g.array.forEach(obj, function(el, index) {
-            // we only examine objects
-            if (g.isObject(el)) {
-                obj[index] = _reset(el);
-            }
-        });
-        return obj;
-    }
-
-    // check if object
-    if (g.isObject(obj)) {
-        obj = _reset(obj);
-        return obj;
-    }
-
-    // default
-    return null;
-
-    /**
-     * The actual payload of the reset method
-     *
-     * We do the type checks, reset the object
-     * and return it
-     *
-     * @param {Object} actualObj This needs to be an object
-     * @return {Object} The object reset
-     */
-    function _reset(actualObj) {
-
-        g.object.forEach(actualObj, function(el, i){
-            switch(goog.typeOf(el)) {
-                case 'array': actualObj[i] = []; break;
-                case 'string': actualObj[i] = ''; break;
-                case 'boolean': actualObj[i] = false; break;
-                case 'function': actualObj[i] = function(){}; break;
-                case 'number': actualObj[i] = 0;
-                case 'null': actualObj[i] = null;
-                default: actualObj[i] = null; break;
-
-           }
-        });
-        return actualObj;
-    }
-
-
-}; // method ss.ui.ctrl.db_con
-
-/**
- * Will calculate w,h dimentions based on
- * resizeTarget. We need an object in the form of:
- * obj_dims = {w:200, h:200)
- *
- * @param {number} resizeTarget The resize target
- * @param {Object} obj_dims object containing w and h keys with number values
- * @return {Object} containing w, h keys and anything else that wass passed
- */
-ss.resizePixels = function (resizeTarget, obj_dims)
-{
-    if (obj_dims.w > obj_dims.h)
-        var imax = obj_dims.w;
-    else
-        var imax = obj_dims.h;
-
-    if (0 === obj_dims.w) {
-        obj_dims.w = resizeTarget;
-    } else {
-        obj_dims.w = obj_dims.w / (imax / resizeTarget);
-        obj_dims.h = obj_dims.h / (imax / resizeTarget);
-    }
-
-    return obj_dims;
-};
-
-
-/**
- * Will make all root elements of a given object
- * have value null
- *
- * @return {void}
- */
-ss.nullify = function (obj)
-{
-
-    goog.object.forEach(obj, function(item, index){
-        obj[index] = null;
-    });
-}; // method nullify
-
-/**
  * Decode a URI string
  *
  * @param {string}
@@ -506,7 +401,6 @@ ss.getUrlVars = function()
     for(var i = 0; i < hashes.length; i++)
     {
         hash = hashes[i].split('=');
-        //hash = {hash[0]:hash[1]};
         vars.push(hash[0]);
         vars[hash[0]] = hash[1];
     }
@@ -524,7 +418,6 @@ ss.getUrlVars = function()
 ss.isNotEmpty = function (obj) {
     for (var i in obj)
         return true;
-
     return false;
 };
 
@@ -536,18 +429,6 @@ ss.isAuthed = function () {
     //return true;
     return ss.user.auth.isAuthed();
 };
-
-
-
-/**
- * Return a copy of the value provided
- *
- * @param {mixed} val
- * @return {mixed} whatever is passed for copy
- */
-ss.copy = function (val){return val;};
-
-
 
 /**
  * Checks if a value (needle) is within the provided other parameters
@@ -575,60 +456,3 @@ ss.inValue = function (needle, opt_var_args)
 
 }; // function ss.inValue
 
-
-/**
- * Poor implementation of PHP explode
- * we split a given string by the seperator
- *
- * we return an array with the values
- *
- * if no seperator is found within the string we return
- * an array with a single value
- *
- * @param {string} seperator The seperator
- * @param {string} stringValue The string we want to split
- * @return {Array}
- */
-ss.explode = function ( seperator, stringValue)
-{
-    return stringValue.split(seperator);
-}; // function ss.explode
-
-/**
- * Will mix (fuse) two objects.
- *
- * Put target object on first parameter
- *
- * @param {object} objTarget The target object we want to mix to
- * @param {object} objData The new object we want to mix
- * @return {void}
- */
-ss.objMix = function (objTarget, objData)
-{
-    var g = goog;
-
-    if (!g.isObject(objTarget) || !g.isObject(objData))
-        return;
-
-    g.object.forEach(objData, function(obj, index){
-        if (!g.isDef(objTarget[index]))
-            objTarget[index] = obj;
-    });
-
-};
-
-/**
- * An alternative non-regexp idiom for simple global string replace is:
- *
- * snippet from: http://stackoverflow.com/questions/252924/javascript-how-to-replace-a-sub-string
- *
- * @param {string} haystack
- * @param {string} find
- * @param {string} sub
- * @return {string}
- */
-ss.string_replace = function(haystack, find, sub) {
-  try {
-    return haystack.split(find).join(sub);
-  } catch(e) {ss.error(e); return haystack;}
-};

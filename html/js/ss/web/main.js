@@ -23,16 +23,13 @@
  *
  */
 
-goog.provide('web');
+goog.provide('ss.web');
+goog.require('ss.web.system');
+goog.require('ss.web.cookies');
 
-goog.require('core');
+goog.require('ss.web.jq.ext');
 
-goog.require('web.system');
-goog.require('web.cookies');
-
-goog.require('web.jq.ext');
-
-goog.require('web.user');
+goog.require('ss.web.user');
 
 
 
@@ -43,7 +40,7 @@ goog.require('goog.debug.LogManager');
 
 
 // Add your required files from here on...
-goog.require('web.myapp');
+goog.require('ss.web.myapp');
 
 
 
@@ -53,7 +50,7 @@ goog.require('web.myapp');
  *
  * @type {Object}
  */
-web.db = {
+ss.web.db = {
   fbClicked: false
 }
 
@@ -62,7 +59,7 @@ web.db = {
  *
  * @type {boolean}
  */
-web.MOB = false;
+ss.web.MOB = false;
 
 /**
  * Set DOM Ready main hook
@@ -70,7 +67,7 @@ web.MOB = false;
  * @param {Function}
  */
 $().ready(function(){
-  web.INIT();
+  ss.web.INIT();
 });
 
 /**
@@ -79,16 +76,14 @@ $().ready(function(){
  *
  * @return {void}
  */
-web.INIT = function () {
+ss.web.INIT = function () {
 
 
-  var w = web, c = core;
+  var win = window, c = win.ss, w = c.web, j = win.jQuery;
 
-  var log = c.log('web.INIT');
+  var log = c.log('ss.web.INIT');
 
   log.info('Init');
-  var win = window;
-  var j = win.jQuery;
   
   c.db.URL = win.location.protocol + '//' + win.location.hostname;
 
@@ -96,7 +91,7 @@ web.INIT = function () {
   // the server
   w.system.tagLanderParse();
   
-  // Init the core framework
+  // Init the ss framework
   c.Init();
 
   // initialize the web2.0 (FB/Twitter)
@@ -119,7 +114,7 @@ web.INIT = function () {
  * Will popup a debuging funcy window
  *
  */
-web.openFancyWin = function () {
+ss.web.openFancyWin = function () {
   var debugWindow = new goog.debug.FancyWindow('main');
   debugWindow.setEnabled(true);
   debugWindow.init();

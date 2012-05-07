@@ -1,3 +1,3 @@
-goog.provide('web.system');
+goog.provide('ss.web.system');
 
-goog.require('web.system.tagLander');
+goog.require('ss.web.system.tagLander');

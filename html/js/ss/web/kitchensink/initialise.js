@@ -23,10 +23,10 @@
  *
  */
  
-goog.provide('web.myapp');
-goog.provide('web.myapp.initialise');
+goog.provide('ss.web.myapp');
+goog.provide('ss.web.myapp.initialise');
 goog.require('core');
-goog.require('web.user.login');
+goog.require('ss.web.user.login');
  
 
 /**
@@ -36,13 +36,13 @@ goog.require('web.user.login');
  *
  * @return {void}
  */
-web.myapp.initialise = function()
+ss.web.myapp.initialise = function()
 {
   try {
 
     var w = web, c = core;
 
-    var log = c.log('web.myapp.initialise');  
+    var log = c.log('ss.web.myapp.initialise');  
     
     log.info('Hello World!');
     
@@ -56,7 +56,7 @@ web.myapp.initialise = function()
 };
 
 // bind to the framework's ready event
-ss.ready.addFunc('ready', web.myapp.initialise);
+ss.ready.addFunc('ready', ss.web.myapp.initialise);
 
 
 
@@ -70,12 +70,12 @@ ss.ready.addFunc('ready', web.myapp.initialise);
  *
  * @return {void}
  */
-web.myapp.newUser = function()
+ss.web.myapp.newUser = function()
 {
   try {
     var w = web,  c = core;
 
-    var log = c.log('web.myapp.newUser');
+    var log = c.log('ss.web.myapp.newUser');
 
     log.info('Init');
     
@@ -106,7 +106,7 @@ web.myapp.newUser = function()
     ss.error(e);
   }
 
-}; // web.user.ui.newUser
+}; // ss.web.user.ui.newUser
 
 /**
  * Triggers when the master auth event hook changes state
@@ -116,13 +116,13 @@ web.myapp.newUser = function()
  * @param {object=} opt_userDataObject if authed, the user data object is passed here
  * @return {void}
  */
-web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
+ss.web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
 {
   try {
 
     var w = web, c = core, j = jQuery, g = goog;
 
-    var log = c.log('web.myapp.authState');  
+    var log = c.log('ss.web.myapp.authState');  
     
     log.info('Auth event is ready. State:' + state);
     
@@ -150,10 +150,10 @@ web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
 };
 
 // subscribe to the auth state master event hook
-ss.user.auth.events.addEventListener('authState', web.myapp.authState);
+ss.user.auth.events.addEventListener('authState', ss.web.myapp.authState);
 
 // listen for newuser event
-ss.user.auth.events.addEventListener('newUser', web.myapp.newUser);
+ss.user.auth.events.addEventListener('newUser', ss.web.myapp.newUser);
 
 
 /*

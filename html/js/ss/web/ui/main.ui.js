@@ -24,12 +24,12 @@
 
 
 
-goog.provide('web.ui');
+goog.provide('ss.web.ui');
 
-goog.require('web.ui.alert');
+goog.require('ss.web.ui.alert');
 
 
-web.ui.db = {
+ss.web.ui.db = {
   fbClicked: false,
   resize: new Array(),
   /**
@@ -40,25 +40,24 @@ web.ui.db = {
 };
 
 /**
- * Executes hard coded from web.Init
+ * Executes hard coded from ss.web.Init
  *
  * Initializes core UI elements and events
  *
  * @return {void}
  */
-web.ui.INIT = function ()
+ss.web.ui.INIT = function ()
 {
-  var j = $;
-  var w = web, c = core, g = goog;
+  var win = window, j = win.jQuery, c = win.ss, w = c.web;
 
-  var log = c.log('web.ui.INIT');
+  var log = c.log('ss.web.ui.INIT');
 
   log.info('Init');
 
   // perform initial resize
   w.ui.resize();
   // setup resize global listener for our app
-  j(window).smartresize(function(){
+  j(win).smartresize(function(){
     w.ui.resize();
   });
 
@@ -77,7 +76,7 @@ web.ui.INIT = function ()
  * @return object
  */
 //
-web.ui.getWindowRes = function ()
+ss.web.ui.getWindowRes = function ()
 {
   //
   var winWidth = 0, winHeight = 0;
@@ -103,68 +102,28 @@ web.ui.getWindowRes = function ()
 /**
  * Will resize all page elements that need be resized
  *
- * We will calculate the web.ui.winsizes data object
+ * We will calculate the ss.web.ui.winsizes data object
  *
- * Resize the core elements of the page if web.ui.db.doresize
+ * Resize the core elements of the page if ss.web.ui.db.doresize
  *   allows us to
  *
  * And loop through all resize hooks we have
  *
  * @return {void}
  */
-web.ui.resize = function ()
+ss.web.ui.resize = function ()
 {
-  var w = web;
-  var ui = w.ui;
-  var g = goog;
-  var log = g.debug.Logger.getLogger('web.ui.resize');
+  var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
+  var log = g.debug.Logger.getLogger('ss.web.ui.resize');
   //var cp = s.conf.page;
-  var j = $;
+  
   log.fine('Init - Resize event just fired');
 
-
-
-  // This code was html inline, fixes main window sizes
-  //var height = j(window).height();
-
-  //if (height > 520)
-   // j('#home_master').css('height', height + 'px');
-    //document.getElementById('home_master').style.height=a+'px';
-
-  // calculate height for main chat window
-  //a = height-80-56-55;
-  //j('#main').css('height', a + 'px');
-  //document.getElementById('main').style.height=a+'px';
-  var win = window;
   var height = j(win).height();
   var width = j(win).width();
-  var r = w.ui.db.resize;
+
   // execute any listening functions
   w.ui.resizeEvent.runEvent('resize', {width:width, height:height});
-
-  if (w.SFV) {
-    //j('#sfv_all_frames').css('height', (height - 80 - 81) + 'px');
-  } else {
-    // 3b Aug/12/11 no longer needed inline scroll, we now scroll the hole page
-    //j('#main').css('height', (height - 80 - 81) + 'px');
-
-    // calculate position for camera
-    if (!w.webcam.isCameraOn()) {
-      j("#chatbox_videofeed").css('left', Math.abs(width / 2) - 110);
-    }
-  }
-
-
-  return;
-  // get window size
-  var size = ui.getWindowRes();
-
-  // assign window size to our local winSizes db
-  w.win.width = size.width;
-  w.win.height = size.height;
-
-  // we need to resize the main chat area...
-
 
   return;
 
@@ -182,12 +141,11 @@ web.ui.resize = function ()
  *
  * @param {function} fn The function to callback
  * @return {void}
- * @depricated Use web.ui.resizeEvent
+ * @depricated Use ss.web.ui.resizeEvent
  */
-web.ui.resizeHook = function (fn)
-{
-  web.ui.resizeEvent.addEventListener('resize', fn);
-}; // method web.ui.resizeHook
+ss.web.ui.resizeHook = function (fn) {
+  ss.web.ui.resizeEvent.addEventListener('resize', fn);
+}; // method ss.web.ui.resizeHook
 
 /**
  * Create a new instance of the events listeners class
@@ -198,7 +156,7 @@ web.ui.resizeHook = function (fn)
  * resize :: {width:Number, height:Number}
  *
  */
-web.ui.resizeEvent = new ss.events.listeners();
+ss.web.ui.resizeEvent = new ss.events.listeners();
 
 /**
  * Will set the page title
@@ -206,8 +164,7 @@ web.ui.resizeEvent = new ss.events.listeners();
  * @param {string} title The title
  * @return void
  */
-web.ui.setTitle = function (title)
-{
+ss.web.ui.setTitle = function (title) {
   document.title = title;
 };
 

@@ -983,7 +983,7 @@ ss.ajax.prototype._checkInjections = function()
 
 
     // check for faulty credentials
-    // 14/Oct/2010 For now this has been deprecated for web... just for now (maybe)
+    // 14/Oct/2010 For now this has been deprecated for ss.web... just for now (maybe)
     var faulty = this.getTag('FAULTYCREDS');
     if (faulty) {
         log.warning('Recieved FAULTYCREDS. Loging out...');

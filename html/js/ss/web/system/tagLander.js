@@ -24,7 +24,7 @@
  *
  */
 
-goog.provide('web.system.tagLander');
+goog.provide('ss.web.system.tagLander');
 
 
 goog.require('ss.error');
@@ -38,19 +38,19 @@ goog.require('ss.user');
  * @param {array} arr the object we want to inject
  * @return {void}
  */
-web.system.tagLander = function(arr)
+ss.web.system.tagLander = function(arr)
 {
 
-  var log = goog.debug.Logger.getLogger('web.system.tagLander');
+  var log = goog.debug.Logger.getLogger('ss.web.system.tagLander');
 
   log.info('Init');
 
-  web.system.injArr = arr;
-}; // method web.system.tagLander
+  ss.web.system.injArr = arr;
+}; // method ss.web.system.tagLander
 
 /**
  * Fired when DOM is ready, this method parses injected
- * data objects from server. Check out web.system.tagLander
+ * data objects from server. Check out ss.web.system.tagLander
  *
  * Current tags:
  *
@@ -66,17 +66,14 @@ web.system.tagLander = function(arr)
  *
  * @return void
  */
-web.system.tagLanderParse = function()
+ss.web.system.tagLanderParse = function()
 {
   try {
 
-
-    var w = web;
-    var c = core;
-    var g = goog;
+    var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
     //go through the array and check for values
     var arr = w.system.injArr;
-    var log = g.debug.Logger.getLogger('web.system.tagLanderParse');
+    var log = g.debug.Logger.getLogger('ss.web.system.tagLanderParse');
 
     log.info('Init');
 
@@ -229,18 +226,9 @@ web.system.tagLanderParse = function()
     } else {
       _parse();
     }
-    
-    
-    
-
 
     return;
-
-
-
-
-
   } catch (e) {
     ss.error(e);
   }
-}; // method web.system.tagLanderParse
+}; // method ss.web.system.tagLanderParse

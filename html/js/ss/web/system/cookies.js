@@ -25,12 +25,12 @@
  */
 
 
-goog.provide('web.cookies');
+goog.provide('ss.web.cookies');
 
 // Don't utilize goog's cookie class, we only want to test if cookies
 // are enabled.
 //goog.require('goog.net.Cookies');
-//web.cookies.gcls = new goog.net.Cookies(document);
+//ss.web.cookies.gcls = new goog.net.Cookies(document);
 
 /**
  * Determine if the browser is cookie enabled
@@ -39,7 +39,7 @@ goog.provide('web.cookies');
  * http://www.javascriptkit.com/javatutors/cookiedetect.shtml
  * @return {boolean}
  */
-web.cookies.isEnabled = function ()
+ss.web.cookies.isEnabled = function ()
 {
   try {
     var cookieEnabled = (navigator.cookieEnabled) ? true : false
