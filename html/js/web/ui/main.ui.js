@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -198,7 +198,7 @@ web.ui.resizeHook = function (fn)
  * resize :: {width:Number, height:Number}
  *
  */
-web.ui.resizeEvent = new core.events.listeners();
+web.ui.resizeEvent = new ss.events.listeners();
 
 /**
  * Will set the page title

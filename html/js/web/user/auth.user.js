@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@
  */
 
 goog.provide('web.user.auth');
-goog.require('core.events');
+goog.require('ss.events');
 
 // create the master auth events instance 
-web.user.auth.events = new core.events.listeners();
+web.user.auth.events = new ss.events.listeners();
 
 /**
  * The following events exist and can be listened to with:

@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 
 
 
-goog.provide('core.user.profile');
+goog.provide('ss.user.profile');
 
 
 /**
@@ -43,7 +43,7 @@ goog.provide('core.user.profile');
  * @param {Function} cb Callback Function
  * @return {boolean} Execution success / failure
  */
-core.user.profile.submitAccount = function (datafields, cb)
+ss.user.profile.submitAccount = function (datafields, cb)
 {
     //shortcut assignments
     var w = core;
@@ -52,7 +52,7 @@ core.user.profile.submitAccount = function (datafields, cb)
     var db = u.db;
     var g = goog;
     var genError = 'an error occured, please retry #222';
-    var log = g.debug.Logger.getLogger('core.user.profile.submitAccount');
+    var log = g.debug.Logger.getLogger('ss.user.profile.submitAccount');
 
     log.info('Init');
 
@@ -135,7 +135,7 @@ core.user.profile.submitAccount = function (datafields, cb)
 
     return true;
 
-}; // method core.user.profile.submitAccount
+}; // method ss.user.profile.submitAccount
 
 /**
  * We will validate the passed datafields object
@@ -145,7 +145,7 @@ core.user.profile.submitAccount = function (datafields, cb)
  * @param {object} datafields
  * @return {boolean}
  */
-core.user.profile._validateAccount = function (datafields)
+ss.user.profile._validateAccount = function (datafields)
 {
     //shortcut assignments
     var w = core;
@@ -153,7 +153,7 @@ core.user.profile._validateAccount = function (datafields)
     var u = w.user;
     var db = u.db;
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.user.profile._validateAccount');
+    var log = g.debug.Logger.getLogger('ss.user.profile._validateAccount');
 
     log.info('Init');
 
@@ -201,7 +201,7 @@ core.user.profile._validateAccount = function (datafields)
     // all ok
     return true;
 
-}; // method core.user.profile._validateAccount
+}; // method ss.user.profile._validateAccount
 
 
 /**
@@ -218,7 +218,7 @@ core.user.profile._validateAccount = function (datafields)
  * @param {Function} cb Callback Function
  * @return {boolean} Execution success / failure
  */
-core.user.profile.submitPassword = function (datafields, cb)
+ss.user.profile.submitPassword = function (datafields, cb)
 {
     try {
     //shortcut assignments
@@ -229,7 +229,7 @@ core.user.profile.submitPassword = function (datafields, cb)
     var g = goog;
     var lang = w.lang.user;
     var genError = lang.errorGeneric;
-    var log = g.debug.Logger.getLogger('core.user.profile.submitPassword');
+    var log = g.debug.Logger.getLogger('ss.user.profile.submitPassword');
 
     log.info('Init');
 
@@ -287,9 +287,9 @@ core.user.profile.submitPassword = function (datafields, cb)
 
     return true;
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 
-}; // method core.user.profile.submitPassword
+}; // method ss.user.profile.submitPassword
 
 /**
  * We will validate the passed datafields object
@@ -299,7 +299,7 @@ core.user.profile.submitPassword = function (datafields, cb)
  * @param {object} datafields
  * @return {boolean}
  */
-core.user.profile._validatePassword = function (datafields)
+ss.user.profile._validatePassword = function (datafields)
 {
     //shortcut assignments
     var w = core;
@@ -308,7 +308,7 @@ core.user.profile._validatePassword = function (datafields)
     var db = u.db;
     var g = goog;
     var l = w.lang.user;
-    var log = g.debug.Logger.getLogger('core.user.profile._validatePassword');
+    var log = g.debug.Logger.getLogger('ss.user.profile._validatePassword');
 
     log.info('Init');
 
@@ -344,7 +344,7 @@ core.user.profile._validatePassword = function (datafields)
     // all ok
     return true;
 
-}; // method core.user.profile._validatePassword
+}; // method ss.user.profile._validatePassword
 
 
 
@@ -361,7 +361,7 @@ core.user.profile._validatePassword = function (datafields)
  * @param {Function} cb Callback function
  * @return {void}
  */
-core.user.profile.submitProfile = function (datafields, cb)
+ss.user.profile.submitProfile = function (datafields, cb)
 {
   try {
     //shortcut assignments
@@ -371,7 +371,7 @@ core.user.profile.submitProfile = function (datafields, cb)
     var db = u.db;
     var g = goog;
     var genError = 'an error occured, please retry #223';
-    var log = g.debug.Logger.getLogger('core.user.profile.submitProfile');
+    var log = g.debug.Logger.getLogger('ss.user.profile.submitProfile');
 
     log.info('Init');
 
@@ -446,10 +446,10 @@ core.user.profile.submitProfile = function (datafields, cb)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // core.user.profile.submitProfile
+}; // ss.user.profile.submitProfile
 
 
 /**
@@ -466,7 +466,7 @@ core.user.profile.submitProfile = function (datafields, cb)
  * @param {Function} cb Callback Function
  * @return {boolean} Execution success / failure
  */
-core.user.profile.submitAlerts = function (datafields, cb)
+ss.user.profile.submitAlerts = function (datafields, cb)
 {
     //shortcut assignments
     var w = core;
@@ -475,7 +475,7 @@ core.user.profile.submitAlerts = function (datafields, cb)
     var db = u.db;
     var g = goog;
     var genError = 'an error occured, please retry #229';
-    var log = g.debug.Logger.getLogger('core.user.profile.submitAlerts');
+    var log = g.debug.Logger.getLogger('ss.user.profile.submitAlerts');
 
     log.info('Init');
 
@@ -543,5 +543,5 @@ core.user.profile.submitAlerts = function (datafields, cb)
 
     return true;
 
-}; // method core.user.profile.submitAlerts
+}; // method ss.user.profile.submitAlerts
 

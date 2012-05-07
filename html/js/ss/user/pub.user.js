@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  */
 
 
-goog.provide('core.user.pub');
+goog.provide('ss.user.pub');
 
 
 
@@ -37,7 +37,7 @@ goog.provide('core.user.pub');
  *    object as returned from server
  * @return {void}
  */
-core.user.pub.get = function(nickname, cb)
+ss.user.pub.get = function(nickname, cb)
 {
   try {
     var c = core;
@@ -78,7 +78,7 @@ core.user.pub.get = function(nickname, cb)
 
       } catch(e) {
 
-        core.error(e);
+        ss.error(e);
         cb(false, 'other error1');
       }
     };
@@ -92,7 +92,7 @@ core.user.pub.get = function(nickname, cb)
       cb(false, errorobj.message);
 
       } catch (e) {
-        core.error(e);
+        ss.error(e);
       }
 
     };
@@ -102,7 +102,7 @@ core.user.pub.get = function(nickname, cb)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
 
     cb(false, 'other error2');
   }

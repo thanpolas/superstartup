@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,12 +63,12 @@ web.user.ui.Init = function ()
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 }; // web.user.ui.Init
 // listen for ready event
-core.ready.addFunc('main', web.user.ui.Init);
+ss.ready.addFunc('main', web.user.ui.Init);
 
 
 
@@ -118,7 +118,7 @@ web.user.ui.openGetEmailModal = function (opt_isOldUser)
     j('#getmail_submit').click(w.user.ui.getEmailSubmit);
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 }; // web.user.ui.getEmailModal
 
@@ -173,7 +173,7 @@ web.user.ui.getEmailSubmit = function (e)
 
 
       } catch (e) {
-        core.error(e);
+        ss.error(e);
       }
 
     });
@@ -181,7 +181,7 @@ web.user.ui.getEmailSubmit = function (e)
     return false;
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
     j('#getmail_submit').css('visibility', 'visible');
     j('#getmail_loader').dispOff();
     return false;

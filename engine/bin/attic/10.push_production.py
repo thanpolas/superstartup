@@ -17,7 +17,7 @@ domainRoot = "/home/116255/users/.home/domains";
 betaRoot = domainRoot + "/beeeta.boothchat.com";
 productionRoot = domainRoot + "/boothchat.com";
 
-preCore = productionRoot + "/engine/include/configuration/core.config.php";
+preCore = productionRoot + "/engine/include/configuration/ss.config.php";
 
 # SHELL commands locations
 svn = "/usr/local/bin/svn";

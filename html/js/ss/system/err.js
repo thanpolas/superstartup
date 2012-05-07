@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@
  */
 
 
-goog.provide('core.err');
-goog.provide('core.error');
+goog.provide('ss.err');
+goog.provide('ss.error');
 
-core.err = {};
+ss.err = {};
 
 
 /**
@@ -36,13 +36,13 @@ core.err = {};
  * @param {object} e error object
  * @return {void}
  */
-core.error = function (e)
+ss.error = function (e)
 {
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.error');
+    var log = g.debug.Logger.getLogger('ss.error');
 
     //log.info(g.debug.expose(e));
-    if (core.MOBILE) {
+    if (ss.MOBILE) {
         var filename = e.name;
         var line = e.line;
         var msg = e.message;
@@ -61,29 +61,29 @@ core.error = function (e)
       }
     }
     log.severe('Error! name:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source);
-    if (core.WEB && console) { 
+    if (ss.WEB && console) { 
       console.debug('Error! name:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source);
     }
     
-}; // method core.error
+}; // method ss.error
 
 
 
 /**
  * Container for the error message
  */
-core.err.msg = '';
+ss.err.msg = '';
 
 /**
  * Simple setter for error message
  */
-core.err = function(msg) {
-    core.err.msg = msg;
+ss.err = function(msg) {
+    ss.err.msg = msg;
 };
 
 /**
  * Simple getter for error message
  */
-core.err.get = function () {
-    return core.err.msg;
+ss.err.get = function () {
+    return ss.err.msg;
 };

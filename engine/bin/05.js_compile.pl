@@ -51,7 +51,7 @@ $cmdCompile .= "--js_output_file=$projectRoot" . "/html/jsc/semicompiled.js";
 $cmdCompile .= "  --compilation_level=WHITESPACE_ONLY";
 #$cmdCompile .= "  --create_name_map_files=true";
 #$cmdCompile .= "  --create_source_map $projectRoot" . "/www/sourcemap";
-#$cmdCompile .= " --define='core.DEBUG=false'";
+#$cmdCompile .= " --define='ss.DEBUG=false'";
 $cmdCompile .= "  --define='goog.COMPILED=true'";
 
 #print $cmdCompile;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,16 @@
  *
  */
 
-goog.provide('core.metadata');
-goog.provide('core.user.metadata');
+goog.provide('ss.metadata');
+goog.provide('ss.user.metadata');
 // do a shortcut assign till all references have been updated
-core.metadata = core.user.metadata;
+ss.metadata = ss.user.metadata;
 
 /**
  * The static data object of metadata
  *
  */
-core.user.metadata.db = {
+ss.user.metadata.db = {
   source: '',
   permId: 0,
   createDate: null,
@@ -48,11 +48,11 @@ core.user.metadata.db = {
  * @param {object} dataobj
  * @return {void}
  */
-core.user.metadata.newObject = function (dataobj)
+ss.user.metadata.newObject = function (dataobj)
 {
   try {
     var c = core;
-    var log = c.log('core.metadata.newObject');
+    var log = c.log('ss.metadata.newObject');
 
     var db = c.metadata.db;
     db.source = dataobj['source'];
@@ -74,7 +74,7 @@ core.user.metadata.newObject = function (dataobj)
       c.analytics.identify(db.permId);
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -88,7 +88,7 @@ core.user.metadata.newObject = function (dataobj)
  * @param {string} key the root key we want to get
  * @return {mixed} null if doesn't exit
  */
-core.user.metadata.get = function (key)
+ss.user.metadata.get = function (key)
 {
   try {
     var c = core;
@@ -104,7 +104,7 @@ core.user.metadata.get = function (key)
     return db.metadata[key];
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -120,12 +120,12 @@ core.user.metadata.get = function (key)
  * @param {mixed} value
  * @return {void}
  */
-core.user.metadata.save = function (key, value)
+ss.user.metadata.save = function (key, value)
 {
   try {
     var c = core, g = goog;
 
-    var log = c.log('core.metadata.save');
+    var log = c.log('ss.metadata.save');
 
     log.info('Saving metadata. key:' + key + ' value:' + value);
     var db = c.metadata.db;
@@ -156,7 +156,7 @@ core.user.metadata.save = function (key, value)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };

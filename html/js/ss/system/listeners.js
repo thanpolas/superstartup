@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@
  */
 
 
-goog.provide('core.events');
-goog.provide('core.events.listeners');
+goog.provide('ss.events');
+goog.provide('ss.events.listeners');
 
 /**
  * Will provide event handling listener
@@ -36,7 +36,7 @@ goog.provide('core.events.listeners');
  *
  * @constructor
  */
-core.events.listeners = function ()
+ss.events.listeners = function ()
 {
   try {
     /**
@@ -59,10 +59,10 @@ core.events.listeners = function ()
     };
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // class core.events.listeners
+}; // class ss.events.listeners
 
 /**
  * Adds an event listener for the specified type
@@ -73,13 +73,13 @@ core.events.listeners = function ()
  * @param {string=} opt_id Optional id for listener (easy removal) use unique names
  * @return {void}
  */
-core.events.listeners.prototype.addEventListener = function (type, listener, opt_this, opt_id)
+ss.events.listeners.prototype.addEventListener = function (type, listener, opt_this, opt_id)
 {
   try {
 
     var w = core;
     var g = goog;
-    var log = w.log('core.events.listeners.addEvent');
+    var log = w.log('ss.events.listeners.addEvent');
 
     if (!g.isFunction(listener)) {
       log.warning('listener is not a function for type:' + type);
@@ -104,10 +104,10 @@ core.events.listeners.prototype.addEventListener = function (type, listener, opt
     this._eventsdb.listeners.push(listObj);
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // core.events.listeners.addEventListener
+}; // ss.events.listeners.addEventListener
 
 
 /**
@@ -120,13 +120,13 @@ core.events.listeners.prototype.addEventListener = function (type, listener, opt
  * @param {_this=} opt_this Optional this context to run the listener on
  * @return {void}
  */
-core.events.listeners.prototype.addEventListenerOnce = function (type, listener, opt_this)
+ss.events.listeners.prototype.addEventListenerOnce = function (type, listener, opt_this)
 {
   try {
 
     var w = core;
     var g = goog;
-    var log = w.log('core.events.listeners.addEventOnce');
+    var log = w.log('ss.events.listeners.addEventOnce');
 
     if (!g.isFunction(listener)) {
       log.warning('listener is not a function for type:' + type);
@@ -148,10 +148,10 @@ core.events.listeners.prototype.addEventListenerOnce = function (type, listener,
     this._eventsdb.listeners.push(listObj);
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // core.events.listeners.addEventOnce
+}; // ss.events.listeners.addEventOnce
 
 
 /**
@@ -163,13 +163,13 @@ core.events.listeners.prototype.addEventListenerOnce = function (type, listener,
  *      listener if we had set one...
  * @return {void}
  */
-core.events.listeners.prototype.removeEventListener = function (type, listener)
+ss.events.listeners.prototype.removeEventListener = function (type, listener)
 {
   try {
 
     var w = core;
     var g = goog;
-    var log = w.log('core.events.listeners.removeEvent');
+    var log = w.log('ss.events.listeners.removeEvent');
 
     log.info('Init. type:' + type);
 
@@ -225,10 +225,10 @@ core.events.listeners.prototype.removeEventListener = function (type, listener)
       this._eventsdb.hasEvents = false;
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // core.events.listeners.removeEvent
+}; // ss.events.listeners.removeEvent
 
 /**
  * Clears all listeners
@@ -236,11 +236,11 @@ core.events.listeners.prototype.removeEventListener = function (type, listener)
  * @return {void}
  * @private
  */
-core.events.listeners.prototype._clearListeners = function ()
+ss.events.listeners.prototype._clearListeners = function ()
 {
   this._eventsdb.listeners = new Array();
   this._eventsdb.hasEvents = false;
-}; // core.events.listeners._clearListeners
+}; // ss.events.listeners._clearListeners
 
 
 
@@ -253,12 +253,12 @@ core.events.listeners.prototype._clearListeners = function ()
  * @return {void}
  * @private
  */
-core.events.listeners.prototype._runEventType = function(type, opt_var_args)
+ss.events.listeners.prototype._runEventType = function(type, opt_var_args)
 {
   try {
     var g = goog;
     var c = core;
-    var log = c.log('core.events.listeners._runEventType');
+    var log = c.log('ss.events.listeners._runEventType');
 
     log.finer('Init. type:' + type + ' total listeners:' + this._eventsdb.listeners.length);
 
@@ -296,9 +296,9 @@ core.events.listeners.prototype._runEventType = function(type, opt_var_args)
     }, this);
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
-}; // method core.events.listeners._runEventType
+}; // method ss.events.listeners._runEventType
 
 
 /**
@@ -309,7 +309,7 @@ core.events.listeners.prototype._runEventType = function(type, opt_var_args)
  *     applied to listeners.
  * @return {void}
  */
-core.events.listeners.prototype.runEvent = core.events.listeners.prototype._runEventType;
+ss.events.listeners.prototype.runEvent = ss.events.listeners.prototype._runEventType;
 
 
 

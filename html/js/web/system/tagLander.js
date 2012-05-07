@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@
 goog.provide('web.system.tagLander');
 
 
-goog.require('core.error');
-goog.require('core.user');
+goog.require('ss.error');
+goog.require('ss.user');
 
 
 /**
@@ -215,7 +215,7 @@ web.system.tagLanderParse = function()
       // trigger ready watch for rest of fucntionality
       c.ready.check('ready', 'alldone');
       } catch (e) {
-        core.error(e);
+        ss.error(e);
       }
     }
 
@@ -241,6 +241,6 @@ web.system.tagLanderParse = function()
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 }; // method web.system.tagLanderParse

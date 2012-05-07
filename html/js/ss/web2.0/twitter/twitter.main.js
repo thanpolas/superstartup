@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  */
 
 
-goog.provide('core.twit');
+goog.provide('ss.twit');
 
 //goog.require('TwitterHelper');
 
@@ -32,7 +32,7 @@ goog.provide('core.twit');
  * Our static db
  *
  */
-core.twit.db = {
+ss.twit.db = {
     loginUrl: '/users/twitter',
     loginLinkAccountParams: '?link=1', // use when user wants to link account not login
     twttrPoll: null,
@@ -47,11 +47,11 @@ core.twit.db = {
  *
  * @return {void}
  */
-core.twit.Init = function ()
+ss.twit.Init = function ()
 {
   var c = core;
   c.twit.db.twttrPoll = setInterval(c.twit._checkTwttrLoad, 300);
-}; // function core.twit.Init
+}; // function ss.twit.Init
 
 /**
  * This is the polling function that checks if twttr lib
@@ -60,7 +60,7 @@ core.twit.Init = function ()
  *
  * @return {void}
  */
-core.twit._checkTwttrLoad = function()
+ss.twit._checkTwttrLoad = function()
 {
   try {
 
@@ -70,7 +70,7 @@ core.twit._checkTwttrLoad = function()
       c.twit.libLoaded();
     }
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -82,17 +82,17 @@ core.twit._checkTwttrLoad = function()
  *
  * @return {void}
  */
-core.twit.libLoaded = function()
+ss.twit.libLoaded = function()
 {
   try {
    var t = twttr, c = core;
-   var log = c.log('core.twit.libLoaded');
+   var log = c.log('ss.twit.libLoaded');
 
    log.info('TWITTER LOADED');
    t.events.bind('tweet', c.twit.eventTweet);
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -110,7 +110,7 @@ core.twit.libLoaded = function()
  * @param {object} event
  * @return {void}
  */
-core.twit.eventTweet = function (event)
+ss.twit.eventTweet = function (event)
 {
   try {
 
@@ -157,7 +157,7 @@ core.twit.eventTweet = function (event)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -183,7 +183,7 @@ core.twit.eventTweet = function (event)
  * @param {string} paramName
  * @return {string|void}
  */
-core.twit.extractParamFromUri = function(uri, paramName) {
+ss.twit.extractParamFromUri = function(uri, paramName) {
   if (!uri) {
     return;
   }
@@ -227,7 +227,7 @@ core.twit.extractParamFromUri = function(uri, paramName) {
  * @param {object=} opt_params Parameters as per documentation
  * @return {string}
  */
-core.twit.getHref = function (text, uri, opt_params)
+ss.twit.getHref = function (text, uri, opt_params)
 {
   try {
     var c = core, g = goog;
@@ -257,7 +257,7 @@ core.twit.getHref = function (text, uri, opt_params)
     href += '&_=' + new Date().getTime();
 
     return href;
-  } catch(e){core.error(e);}
+  } catch(e){ss.error(e);}
 };
 
 /**
@@ -266,14 +266,14 @@ core.twit.getHref = function (text, uri, opt_params)
  *
  * @return {void}
  */
-core.twit.linkUser = function()
+ss.twit.linkUser = function()
 {
     try {
 
     var w = core;
     var g = goog;
     var fb = FB;
-    var log = w.log('core.twit.linkUser');
+    var log = w.log('ss.twit.linkUser');
 
     if (!w.isAuthed())
         return;
@@ -301,8 +301,8 @@ core.twit.linkUser = function()
     }
 
 
-    } catch(e) {core.error(e);}
-}; // function core.twit.linkUser
+    } catch(e) {ss.error(e);}
+}; // function ss.twit.linkUser
 
 
 /**
@@ -314,11 +314,11 @@ core.twit.linkUser = function()
  * @this {DOM}
  * @return {void}
  */
-core.twit.loginOpen = function ()
+ss.twit.loginOpen = function ()
 {
     try {
     var c = core, win = window;
-    var log = c.log('core.twit.loginOpen');
+    var log = c.log('ss.twit.loginOpen');
     // we have to redirect user to /signup/twitter.php
     // to start the authentication process
 
@@ -328,18 +328,18 @@ core.twit.loginOpen = function ()
     // redirect the browser now
     win.location.href = c.twit.db.loginUrl + returnPath;
 
-    } catch(e) {core.error(e);}
-}; // function core.twit.loginOpen
+    } catch(e) {ss.error(e);}
+}; // function ss.twit.loginOpen
 
 
 /**
  * Will open a new window on the browser prompting the user
  * to share content on twitter
  *
- * @param {string} url the target url properly formed by core.twit.getHref()
+ * @param {string} url the target url properly formed by ss.twit.getHref()
  * @return {void}
  */
-core.twit.openShareWindow = function (url)
+ss.twit.openShareWindow = function (url)
 {
   try {
     var j = $;
@@ -357,7 +357,7 @@ core.twit.openShareWindow = function (url)
 
     win.open(url, 'twitter', opts);
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 }
@@ -372,11 +372,11 @@ core.twit.openShareWindow = function (url)
  * @return {void}
  * @deprecated
  */
-core.twit.post = function (warpmsg)
+ss.twit.post = function (warpmsg)
 {
 	try {
 
-	var log = core.log('core.twit.post');
+	var log = ss.log('ss.twit.post');
 
 	log.info('Init');
 	var throbber = false;
@@ -392,7 +392,7 @@ core.twit.post = function (warpmsg)
 
 	/*
 	var afeedURL = 'http://api.twitter.com/' + "statuses/update.json";
-	afeedURL += "?status=" + core.encURI(warpmsg);
+	afeedURL += "?status=" + ss.encURI(warpmsg);
 
 
 
@@ -415,7 +415,7 @@ core.twit.post = function (warpmsg)
 	xmlRequest.setRequestHeader("Content-length", 0);
 	xmlRequest.send(null);
 	*/
-	} catch(e) {core.error(e);}
+	} catch(e) {ss.error(e);}
 };
 
 

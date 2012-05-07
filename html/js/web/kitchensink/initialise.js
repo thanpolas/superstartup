@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,12 +51,12 @@ web.myapp.initialise = function()
 
     
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }  
 };
 
 // bind to the framework's ready event
-core.ready.addFunc('ready', web.myapp.initialise);
+ss.ready.addFunc('ready', web.myapp.initialise);
 
 
 
@@ -103,7 +103,7 @@ web.myapp.newUser = function()
     
     
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 }; // web.user.ui.newUser
@@ -112,7 +112,7 @@ web.myapp.newUser = function()
  * Triggers when the master auth event hook changes state
  *
  * @param {boolean} state If we are authed or not
- * @param {core.STATIC.SOURCES=} if authed, which auth source was used
+ * @param {ss.STATIC.SOURCES=} if authed, which auth source was used
  * @param {object=} opt_userDataObject if authed, the user data object is passed here
  * @return {void}
  */
@@ -145,15 +145,15 @@ web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
     }
     
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }  
 };
 
 // subscribe to the auth state master event hook
-core.user.auth.events.addEventListener('authState', web.myapp.authState);
+ss.user.auth.events.addEventListener('authState', web.myapp.authState);
 
 // listen for newuser event
-core.user.auth.events.addEventListener('newUser', web.myapp.newUser);
+ss.user.auth.events.addEventListener('newUser', web.myapp.newUser);
 
 
 /*

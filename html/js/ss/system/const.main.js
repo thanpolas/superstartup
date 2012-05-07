@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  */
 
 
-goog.provide('core.STATIC');
+goog.provide('ss.STATIC');
 
 
 /**
@@ -32,7 +32,7 @@ goog.provide('core.STATIC');
  *
  * @enum {number}
  */
-core.STATIC.SOURCES = {
+ss.STATIC.SOURCES = {
     WEB: 1,
     MOB: 2,
     FB: 5,

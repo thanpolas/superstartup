@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,19 @@
  */
 
 
-goog.provide('core.user');
-goog.require('core.user.auth');
-goog.require('core.user.login');
-goog.require('core.user.profile');
-goog.require('core.user.pub');
-goog.require('core.user.metadata');
+goog.provide('ss.user');
+goog.require('ss.user.auth');
+goog.require('ss.user.login');
+goog.require('ss.user.profile');
+goog.require('ss.user.pub');
+goog.require('ss.user.metadata');
 
 
 /**
  * static Data storage
  *
  */
-core.user.db = {
+ss.user.db = {
 	    /**
 	     * The user data object, provided from the server
 	     */
@@ -60,9 +60,9 @@ core.user.db = {
  *
  * @return void
  */
-core.user.db.clear = function()
+ss.user.db.clear = function()
 {
-    var db = core.user.db;
+    var db = ss.user.db;
     db.user = {};
     db.cookie = [];
     db.isAuthed = false;
@@ -70,7 +70,7 @@ core.user.db.clear = function()
     db.serverCook = {};
     db.permLogin = false;
     db.permCook = {};
-}; // method core.user.db.clear
+}; // method ss.user.db.clear
 
 
 
@@ -80,14 +80,14 @@ core.user.db.clear = function()
  *
  * @return {Number|null} null if not logged in or error
  */
-core.user.getUserId = function ()
+ss.user.getUserId = function ()
 {
     var w = core;
     if (!w.isAuthed())
         return null;
 
     return w.user.db.user['userId'];
-}; // method core.user.getUserId
+}; // method ss.user.getUserId
 
 /**
  * Get current user's nickname
@@ -96,7 +96,7 @@ core.user.getUserId = function ()
  *
  * @return {string|null}
  */
-core.user.getNickname = function ()
+ss.user.getNickname = function ()
 {
   var c = core;
   if (!c.isAuthed())
@@ -110,24 +110,24 @@ core.user.getNickname = function ()
  *
  * @return {object}
  */
-core.user.getUserDataObject = function ()
+ss.user.getUserDataObject = function ()
 {
-    return core.user.db.user;
-}; // function core.user.getUserDataObject
+    return ss.user.db.user;
+}; // function ss.user.getUserDataObject
 
 /**
  * Return the logged in user's data object
  *
  * @return {object}
  */
-core.user.getUserData = function ()
+ss.user.getUserData = function ()
 {
     var c = core;
     if (!c.isAuthed())
         return {};
 
     return c.user.db.user['userData'];
-}; // function core.user.getUserData
+}; // function ss.user.getUserData
 
 /**
  * Perform follow user
@@ -136,7 +136,7 @@ core.user.getUserData = function ()
  * @param {Function({boolean}, {opt_error_message})} listener callback function with state for execution
  * @return {void}
  */
-core.user.follow = function (uid, listener)
+ss.user.follow = function (uid, listener)
 {
     try {
 
@@ -185,8 +185,8 @@ core.user.follow = function (uid, listener)
         return;
     }
 
-    } catch(e) {core.error(e);}
-}; // function core.user.follow
+    } catch(e) {ss.error(e);}
+}; // function ss.user.follow
 
 
 
@@ -198,7 +198,7 @@ core.user.follow = function (uid, listener)
  * @param {Function({boolean}, {opt_error_message})} listener callback function with state for execution
  * @return {void}
  */
-core.user.unfollow = function (uid, listener)
+ss.user.unfollow = function (uid, listener)
 {
     try {
 
@@ -247,8 +247,8 @@ core.user.unfollow = function (uid, listener)
         return;
     }
 
-    } catch(e) {core.error(e);}
-}; // function core.user.follow
+    } catch(e) {ss.error(e);}
+}; // function ss.user.follow
 
 
 /**
@@ -258,12 +258,12 @@ core.user.unfollow = function (uid, listener)
  * @param {object} user
  * @return {boolean}
  */
-core.user.isUserObject = function (user)
+ss.user.isUserObject = function (user)
 {
     try {
 
     var g = goog;
-    var log = core.log('core.user.isUserObject');
+    var log = ss.log('ss.user.isUserObject');
 
     if (!g.isObject(user)) {
       log.warning('user object passed not an object');
@@ -297,15 +297,15 @@ core.user.isUserObject = function (user)
 
 
     return true;
-    } catch(e) {core.error(e);}
-}; // function core.user.isUserObject
+    } catch(e) {ss.error(e);}
+}; // function ss.user.isUserObject
 
 /**
  * Return an empty dummy user data object
  *
  * @return {object}
  */
-core.user.getDummyObject = function ()
+ss.user.getDummyObject = function ()
 {
   try {
     return {
@@ -325,7 +325,7 @@ core.user.getDummyObject = function ()
     ]};
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 

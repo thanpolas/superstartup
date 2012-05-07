@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@
  *
  *
  */
-goog.provide('core.fb');
-goog.require('core.fb.local');
-goog.require('core.STATIC');
-goog.require('core.fb.com');
+goog.provide('ss.fb');
+goog.require('ss.fb.local');
+goog.require('ss.STATIC');
+goog.require('ss.fb.com');
 goog.require('goog.Uri');
 
 /**
@@ -43,7 +43,7 @@ goog.require('goog.Uri');
  *
  * @enum {*}
  */
-core.fb.db = {
+ss.fb.db = {
   haveInitialAuthStatus: false,
   initialAuthStatus: false,
   /**
@@ -70,9 +70,9 @@ core.fb.db = {
  *
  * @return {boolean}
  */
-core.fb.haveAuthStatus = function ()
+ss.fb.haveAuthStatus = function ()
 {
-  return core.fb.db.haveInitialAuthStatus;
+  return ss.fb.db.haveInitialAuthStatus;
 };
 
 /**
@@ -81,7 +81,7 @@ core.fb.haveAuthStatus = function ()
  *
  * @return {string}
  */
-core.fb.getAppId = function ()
+ss.fb.getAppId = function ()
 {
   var c = core;
 
@@ -96,15 +96,15 @@ core.fb.getAppId = function ()
  *
  * @return {void}
  */
-core.fb.db.clear = function ()
+ss.fb.db.clear = function ()
 {
-  var db = core.fb.db;
+  var db = ss.fb.db;
 
   db.permitions = '';
   db.hasPerms = [];
   db.initialAuthStatus = false;
 
-}; // function core.fb.db.clear
+}; // function ss.fb.db.clear
 
 
 
@@ -116,11 +116,11 @@ core.fb.db.clear = function ()
  *
  * @return {void}
  */
-core.fb.InitWeb = function ()
+ss.fb.InitWeb = function ()
 {
   try {
     var c = core, g = goog;
-    var log = c.log('core.fb.InitWeb');
+    var log = c.log('ss.fb.InitWeb');
 
     log.info('Init');
 
@@ -141,7 +141,7 @@ core.fb.InitWeb = function ()
     var e = document.createElement('script');
     var src = document.location.protocol;
     if (c.DEVEL)
-      src += '//static.ak.fbcdn.net/connect/en_US/core.debug.js';
+      src += '//static.ak.fbcdn.net/connect/en_US/ss.debug.js';
     else
       src += '//connect.facebook.net/en_US/all.js';
     e.src = src;
@@ -153,9 +153,9 @@ core.fb.InitWeb = function ()
 
 
   } catch(e){
-    core.error(e);
+    ss.error(e);
   }
-}; // core.fb.InitWeb
+}; // ss.fb.InitWeb
 
 
 /**
@@ -166,13 +166,13 @@ core.fb.InitWeb = function ()
  *
  * @return {void}
  */
-core.fb.Init = function ()
+ss.fb.Init = function ()
 {
   try {
 
     var fb = FB;
     var c = core;
-    var log = c.log('core.fb.Init');
+    var log = c.log('ss.fb.Init');
 
     log.info('Init - FB LIB LOADED');
 
@@ -204,9 +204,9 @@ core.fb.Init = function ()
     c.ready.check('fb', 'loaded');
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
-}; // function core.fb.Init
+}; // function ss.fb.Init
 
 /**
  * Initial login status of user
@@ -214,12 +214,12 @@ core.fb.Init = function ()
  * @param {object} response
  * @return {void}
  */
-core.fb.getInitialLoginStatus = function (response)
+ss.fb.getInitialLoginStatus = function (response)
 {
   try {
     var c = core;
     var g = goog;
-    var log = c.log('core.fb.getInitialLoginStatus');
+    var log = c.log('ss.fb.getInitialLoginStatus');
 
     // store the result
     c.fb.db.haveInitialAuthStatus = true;
@@ -262,7 +262,7 @@ core.fb.getInitialLoginStatus = function (response)
     }
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 }; // function getInitialLoginStatus
 
@@ -275,14 +275,14 @@ core.fb.getInitialLoginStatus = function (response)
  * @param {Function()} Callback function for the result
  * @return {void}
  */
-core.fb.getPermissions = function (callback)
+ss.fb.getPermissions = function (callback)
 {
   try {
     
     FB.api('/me/permissions', function (response) {
     } );
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 };
 
@@ -292,11 +292,11 @@ core.fb.getPermissions = function (callback)
  * @param {object} responce Served from FB SDK
  * @return {void}
  */
-core.fb.sessionChange = function (response)
+ss.fb.sessionChange = function (response)
 {
   try {
     var c = core, g = goog;
-    var log = c.log('core.fb.sessionChange');
+    var log = c.log('ss.fb.sessionChange');
 
     log.info('Init. response.perms:' + response.perms);
     log.info('Init. response.session.expose:' + g.debug.expose(response.session));
@@ -332,7 +332,7 @@ core.fb.sessionChange = function (response)
   }
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 }; // function sessionChange
 
@@ -348,14 +348,14 @@ core.fb.sessionChange = function (response)
  * @param {object} response the FB response object
  * @return {boolean} if we are authed or not
  */
-core.fb.isAuthedFromResponse = function(response)
+ss.fb.isAuthedFromResponse = function(response)
 {
   try {
     if('connected' == response.status)
       return true;
     return false;
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
 };
 
@@ -367,12 +367,12 @@ core.fb.isAuthedFromResponse = function(response)
  * @param {Function(boolean)=} opt_callback
  * @return {void}
  */
-core.fb.loginListener = function (response, opt_callback)
+ss.fb.loginListener = function (response, opt_callback)
 {
   try {
     var c = core;
     var g = goog;
-    var log = c.log('core.fb.loginListener');
+    var log = c.log('ss.fb.loginListener');
 
     log.info('Init. response.status:' + response.status);
 
@@ -391,9 +391,9 @@ core.fb.loginListener = function (response, opt_callback)
   //})
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
-}; // function core.fb.loginListener
+}; // function ss.fb.loginListener
 
 
 
@@ -407,7 +407,7 @@ core.fb.loginListener = function (response, opt_callback)
  * @this {DOM}
  * @return {void}
  */
-core.fb.loginOpen = function (opt_callback, opt_perms)
+ss.fb.loginOpen = function (opt_callback, opt_perms)
 {
   var c = core;
   var g = goog;
@@ -430,7 +430,7 @@ core.fb.loginOpen = function (opt_callback, opt_perms)
       c.fb.loginListener(response, callback)
     }, paramsObj);
   }
-}; // function core.fb.loginOpen
+}; // function ss.fb.loginOpen
 
 
 
@@ -441,14 +441,14 @@ core.fb.loginOpen = function (opt_callback, opt_perms)
  * @param {Function(boolean)=} opt_callback function
  * @return {void}
  */
-core.fb.linkUser = function(opt_callback)
+ss.fb.linkUser = function(opt_callback)
 {
   try {
 
     var c = core;
     var g = goog;
     var fb = FB;
-    var log = c.log('core.fb.linkUser');
+    var log = c.log('ss.fb.linkUser');
 
     var callback = opt_callback || function(){};
 
@@ -478,9 +478,9 @@ core.fb.linkUser = function(opt_callback)
 
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
-}; // function core.fb.linkUser
+}; // function ss.fb.linkUser
 
 /**
  * Fires when we have an edge event like fb:like
@@ -489,14 +489,14 @@ core.fb.linkUser = function(opt_callback)
  * @param {object} fbobj an uknown object returned by FB
  * @return {void}
  */
-core.fb.edgeCreate = function (result, fbobj)
+ss.fb.edgeCreate = function (result, fbobj)
 {
   try {
 
     var c = core;
     var g = goog;
     var fb = FB;
-    var log = c.log('core.fb.edgeCreate');
+    var log = c.log('ss.fb.edgeCreate');
 
 
 
@@ -520,9 +520,9 @@ core.fb.edgeCreate = function (result, fbobj)
 
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
-}; // function core.fb.edgeCreate
+}; // function ss.fb.edgeCreate
 
 
 /**
@@ -532,13 +532,13 @@ core.fb.edgeCreate = function (result, fbobj)
  * @param {object} fbobj an uknown object returned by FB
  * @return {void}
  */
-core.fb.edgeRemove = function (result, fbobj)
+ss.fb.edgeRemove = function (result, fbobj)
 {
   try {
 
     var c = core;
     var g = goog;
-    var log = c.log('core.fb.edgeRemove');
+    var log = c.log('ss.fb.edgeRemove');
 
     // we can locate the ref inside the fobj, go carefully...
     var ref = '';
@@ -560,9 +560,9 @@ core.fb.edgeRemove = function (result, fbobj)
 
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
-}; // function core.fb.edgeRemove
+}; // function ss.fb.edgeRemove
 
 
 /**
@@ -598,7 +598,7 @@ jQuery("#mc_header").html('<fb:login-button></fb:login-button>')
  * @param {Number=} opt_width width for like button
  * @return {string}
  */
-core.fb.getLikeButton = function (url, opt_params, opt_width)
+ss.fb.getLikeButton = function (url, opt_params, opt_width)
 {
   var g = goog;
 
@@ -619,7 +619,7 @@ core.fb.getLikeButton = function (url, opt_params, opt_width)
 
 
 
-}; // function core.fb.getLikeButton
+}; // function ss.fb.getLikeButton
 
 /**
  * Checks if user has defined permitions
@@ -631,13 +631,13 @@ core.fb.getLikeButton = function (url, opt_params, opt_width)
  * @param {Function(boolean)} callback responce is provided through a callback
  * @return {void}
  */
-core.fb.hasPerm = function (value, callback)
+ss.fb.hasPerm = function (value, callback)
 {
   try {
     var c = core;
     var g = goog;
     var db = c.fb.db;
-    var log = c.log('core.fb.hasPerm');
+    var log = c.log('ss.fb.hasPerm');
 
     log.info('Init for:' + value);
 
@@ -675,6 +675,6 @@ core.fb.hasPerm = function (value, callback)
 
 
   } catch(e) {
-    core.error(e);
+    ss.error(e);
   }
-}; // core.fb.hasPerm
+}; // ss.fb.hasPerm

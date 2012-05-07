@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
  * Provide the Ajax namespace
  *
  */
-goog.provide('core.ajax');
+goog.provide('ss.ajax');
 
 
 
@@ -43,8 +43,8 @@ goog.provide('core.ajax');
 * bare :: If set to true we will not pass standar spot parameters like g/s/origin etc
 * showMsg :: boolean, display alert message on success [default: true]
 * showErrorMsg :: boolean, display alert message on error [default: true]
-* oper :: {string} If this is a named operation use object from core.update.oper
-* loadertype :: {core.update.LOADERTYPES=} loader type for mobiles
+* oper :: {string} If this is a named operation use object from ss.update.oper
+* loadertype :: {ss.update.LOADERTYPES=} loader type for mobiles
 * noLog:: {boolean} if we want silent loging
 *
 * @constructor
@@ -52,12 +52,12 @@ goog.provide('core.ajax');
 * @param {Object} params the parameters for the AJAX execution
 * @param {Function=} opt_callback The call back function for execution when we have a response
 */
-core.ajax = function(url, params, opt_callback)
+ss.ajax = function(url, params, opt_callback)
 {
     var c = core;
     var db = c.ajax.dbstatic;
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.ajax');
+    var log = g.debug.Logger.getLogger('ss.ajax');
 
     log.fine('Init');
 
@@ -199,7 +199,7 @@ core.ajax = function(url, params, opt_callback)
     /**
     * Local error object handler
     *
-    * core.ajax.ERRORSTATUS = {
+    * ss.ajax.ERRORSTATUS = {
     *       NOAJAX: 10, // Client does not support AJAX
     *       REQFAIL: 20, // Request to Server failed, HTTP Status not 200
     *       XMLNULL: 30, // XML respose from server is null
@@ -214,7 +214,7 @@ core.ajax = function(url, params, opt_callback)
     this._errorObj = { //new Error(); old way using native Error object... need more expertise to implement it
         /**
          * Erros status
-         * @type {core.ajax.ERRORSTATUS}
+         * @type {ss.ajax.ERRORSTATUS}
          */
         status: 0,
         message: '',
@@ -257,7 +257,7 @@ core.ajax = function(url, params, opt_callback)
         this.db.p.showMsg = false;
     return this;
 
-}; // core.ajax constructor
+}; // ss.ajax constructor
 
 
 /**
@@ -265,7 +265,7 @@ core.ajax = function(url, params, opt_callback)
  *
  * @enumb {mixed}
  */
-core.ajax.dbstatic = {
+ss.ajax.dbstatic = {
    /**
     * For web store session token and id here
     */
@@ -274,7 +274,7 @@ core.ajax.dbstatic = {
        sesstoken: null,
        sessSourceId: null
    }
-}; // core.ajax.dbstatic
+}; // ss.ajax.dbstatic
 
 /**
  * Define error  Statuses
@@ -282,7 +282,7 @@ core.ajax.dbstatic = {
  * @define {object}
  * @enum {number}
  */
-core.ajax.ERRORSTATUS = {
+ss.ajax.ERRORSTATUS = {
     NOAJAX: 10, // Client does not support AJAX
     REQFAIL: 20, // Request to Server failed, HTTP Status not 200
     XMLNULL: 30, // XML respose from server is null
@@ -290,7 +290,7 @@ core.ajax.ERRORSTATUS = {
     SERVERERROR: 50, // Server error
     INJECT: 60, // server requested something serious (logout, reinit for mobs)
     TIMEOUT: 70 // timeout (!)
-}; //core.ajax.ERRORSTATUS
+}; //ss.ajax.ERRORSTATUS
 
 /**
 * adds a parameter to the local data object which
@@ -302,7 +302,7 @@ core.ajax.ERRORSTATUS = {
 * @param {boolean=} opt_passBare optionaly set this to true if we need to pass the value as is
 * @return {void}
 */
-core.ajax.prototype.addData = function (key, valuedata, opt_passBare)
+ss.ajax.prototype.addData = function (key, valuedata, opt_passBare)
 {
     var g = goog;
     var geoc = core;
@@ -363,7 +363,7 @@ core.ajax.prototype.addData = function (key, valuedata, opt_passBare)
 
     // open hasData switch
     this.db.hasData = true;
-}; //method core.ajax.addData
+}; //method ss.ajax.addData
 
 
 /**
@@ -372,14 +372,14 @@ core.ajax.prototype.addData = function (key, valuedata, opt_passBare)
 *
 * @return {boolean} true / false
 */
-core.ajax.prototype.send = function() {
+ss.ajax.prototype.send = function() {
     // decide on env, set m root
     var m = web;
 
-    var wa = core.ajax;
+    var wa = ss.ajax;
     var g = goog;
 
-    var log = core.log('core.ajax.send');
+    var log = ss.log('ss.ajax.send');
     var _this = this;
 
 
@@ -428,7 +428,7 @@ core.ajax.prototype.send = function() {
 
     log.fine('Finish');
     return true;
-}; // method core.ajax.send
+}; // method ss.ajax.send
 
 /**
  * The actual payload of ajax send operation
@@ -440,7 +440,7 @@ core.ajax.prototype.send = function() {
  * @private
  * @return {void}
  */
-core.ajax.prototype._sendActual = function ()
+ss.ajax.prototype._sendActual = function ()
 {
     try {
 
@@ -451,7 +451,7 @@ core.ajax.prototype._sendActual = function ()
     var wa = c.ajax;
     var g = goog;
 
-    var log = core.log('core.ajax._sendActual');
+    var log = ss.log('ss.ajax._sendActual');
     var _this = this;
 
     log.fine('Init');
@@ -507,9 +507,9 @@ core.ajax.prototype._sendActual = function ()
 
     }
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 
-}; // method core.ajax._sendActual
+}; // method ss.ajax._sendActual
 
 /**
  * Return a URI string that carries our session
@@ -518,10 +518,10 @@ core.ajax.prototype._sendActual = function ()
  *
  * @return {string}
  */
-core.ajax.prototype.getSessionString = function ()
+ss.ajax.prototype.getSessionString = function ()
 {
     return this._compilePassData();
-}; // core.ajax.getSessionString
+}; // ss.ajax.getSessionString
 
 /**
  * The ajax callback method
@@ -530,17 +530,17 @@ core.ajax.prototype.getSessionString = function ()
  * @param {this} thisobj
  * @return {void}
  */
-core.ajax.prototype._sendCallback = function (thisobj)
+ss.ajax.prototype._sendCallback = function (thisobj)
 {
     var g = goog;
     var _this = thisobj;
-    var wa = core.ajax;
+    var wa = ss.ajax;
 
     try {
 
     var m = web;
 
-    var log = core.log('core.ajax._sendCallback');
+    var log = ss.log('ss.ajax._sendCallback');
 
     if (this.db.p.noLog)
       log.fine('Init');
@@ -624,9 +624,9 @@ core.ajax.prototype._sendCallback = function (thisobj)
     log.fine('callback call Finished');
 
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 
-}; // method core.ajax._sendCallback
+}; // method ss.ajax._sendCallback
 
 /**
 * Checks if we had errors in execution.
@@ -634,10 +634,10 @@ core.ajax.prototype._sendCallback = function (thisobj)
 * @private
 * @return {boolean} True if we did not have any errors, false otherwise
 */
-core.ajax.prototype._checkError = function()
+ss.ajax.prototype._checkError = function()
 {
 
-	//var log = core.log('core.ajax.prototype._checkError');
+	//var log = ss.log('ss.ajax.prototype._checkError');
 
 	//log.info('Init. this._errorObj.status:' + this._errorObj.status);
 
@@ -655,7 +655,7 @@ core.ajax.prototype._checkError = function()
         /*
         if (10 != st) {
             // we have an error from the server
-            this._errorObj.status = core.ajax.ERRORSTATUS.SERVERERROR;
+            this._errorObj.status = ss.ajax.ERRORSTATUS.SERVERERROR;
             this._errorObj.message = this.getTag('errorMsg');
             this._errorObj.debugmessage = this.getTag('errorEngine');
             this._errorObj.serverStatus = st;
@@ -667,7 +667,7 @@ core.ajax.prototype._checkError = function()
         var er = this.getTag('error');
         if ('' !== er) {
             // we have an error from the server
-            this._errorObj.status = core.ajax.ERRORSTATUS.SERVERERROR;
+            this._errorObj.status = ss.ajax.ERRORSTATUS.SERVERERROR;
             this._errorObj.message = er;
             this._errorObj.debugmessage = er;
             this._errorObj.serverStatus = -1;
@@ -692,10 +692,10 @@ core.ajax.prototype._checkError = function()
  *
  * @private
  * @param {this} thisobj
- * @param {boolean=} opt_noupdate if true we will not call core.update(false)
+ * @param {boolean=} opt_noupdate if true we will not call ss.update(false)
  * @return {void}
  */
-core.ajax.prototype._sendErrorCallback = function (thisobj, opt_noupdate)
+ss.ajax.prototype._sendErrorCallback = function (thisobj, opt_noupdate)
 {
     var c = core;
     var wa = c.ajax;
@@ -706,7 +706,7 @@ core.ajax.prototype._sendErrorCallback = function (thisobj, opt_noupdate)
 
         var m = web;
 
-    var log = core.log('core.ajax._sendErrorCallback');
+    var log = ss.log('ss.ajax._sendErrorCallback');
 
     log.warning('Init - ERROR. status:' + thisobj._errorObj.status
     + ' serverStatus:' + thisobj._errorObj.serverStatus
@@ -756,9 +756,9 @@ core.ajax.prototype._sendErrorCallback = function (thisobj, opt_noupdate)
     return;
 
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 
-}; // method core.ajax._sendErrorCallback
+}; // method ss.ajax._sendErrorCallback
 
 
 
@@ -772,13 +772,13 @@ core.ajax.prototype._sendErrorCallback = function (thisobj, opt_noupdate)
 * @private
 * @return {string|object}
 */
-core.ajax.prototype._compilePassData = function ()
+ss.ajax.prototype._compilePassData = function ()
 {
     try {
     // decide on env, set m root
     var m = web;
     var g = goog;
-    var log = core.log ('core.ajax._compilePassData');
+    var log = ss.log ('ss.ajax._compilePassData');
     var geoc = core;
 
     log.fine('Init');
@@ -866,8 +866,8 @@ core.ajax.prototype._compilePassData = function ()
 
 
     return sReturn;
-    } catch(e) {core.error(e);}
-}; //method  core.ajax._compilePassData
+    } catch(e) {ss.error(e);}
+}; //method  ss.ajax._compilePassData
 
 
 /**
@@ -877,13 +877,13 @@ core.ajax.prototype._compilePassData = function ()
  * @private
  * @return {boolean}
  */
-core.ajax.prototype._initAjaxObject = function()
+ss.ajax.prototype._initAjaxObject = function()
 {
     var g = goog;
     // decide on env, set m root
     var m = web;
 
-    var log = core.log('core.ajax._initAjaxObject');
+    var log = ss.log('ss.ajax._initAjaxObject');
 
     // check on environment type
     switch(this.env) {
@@ -904,7 +904,7 @@ core.ajax.prototype._initAjaxObject = function()
 
     // check if we have an object
     if (g.isNull(this.ajax)) {
-        this._errorObj.status = core.ajax.ERRORSTATUS.NOAJAX;
+        this._errorObj.status = ss.ajax.ERRORSTATUS.NOAJAX;
         this._errorObj.message = 'AJAX not supported by the client';
 
         return false;
@@ -912,7 +912,7 @@ core.ajax.prototype._initAjaxObject = function()
 
     return true;
 
-}; // method core.ajax._initAjaxObject
+}; // method ss.ajax._initAjaxObject
 
 
 /**
@@ -924,13 +924,13 @@ core.ajax.prototype._initAjaxObject = function()
  * @private
  * @return {void}
  */
-core.ajax.prototype._setupAjaxHandlers = function ()
+ss.ajax.prototype._setupAjaxHandlers = function ()
 {
     // decide on env, set m root
     var m = web;
-    var wa = core.ajax;
+    var wa = ss.ajax;
     var g = goog;
-    var log = core.log('core.ajax._setupAjaxHandlers');
+    var log = ss.log('ss.ajax._setupAjaxHandlers');
     var _this = this;
 
     switch (this.env) {
@@ -957,7 +957,7 @@ core.ajax.prototype._setupAjaxHandlers = function ()
             break;
     } // switch environment type
 
-}; // method core.ajax._setupAjaxHandlers
+}; // method ss.ajax._setupAjaxHandlers
 
 
 
@@ -968,7 +968,7 @@ core.ajax.prototype._setupAjaxHandlers = function ()
  * @private
  * @return {boolean} true if all ok, false if need to halt
  */
-core.ajax.prototype._checkInjections = function()
+ss.ajax.prototype._checkInjections = function()
 {
     try {
     var g = goog;
@@ -978,7 +978,7 @@ core.ajax.prototype._checkInjections = function()
     // decide on env, set m root
     var m = web;
 
-    var log = c.log('core.ajax._checkInjections');
+    var log = c.log('ss.ajax._checkInjections');
 
 
 
@@ -1043,7 +1043,7 @@ core.ajax.prototype._checkInjections = function()
                     _this._sendActual();
                 } else {
                     // we had errors
-                    _this._errorObj.status = core.ajax.ERRORSTATUS.INJECT;
+                    _this._errorObj.status = ss.ajax.ERRORSTATUS.INJECT;
                     _this._errorObj.message = 'Please hang on...';
                     _this._errorObj.debugmessage = 'Server Injected reinit';
 
@@ -1057,7 +1057,7 @@ core.ajax.prototype._checkInjections = function()
 
     return true;
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 }; // method _checkInjections
 
 
@@ -1068,7 +1068,7 @@ core.ajax.prototype._checkInjections = function()
  * @param {string} whichTag The tag we want to extract
  * @return {mixed} The value of the tag
  */
-core.ajax.prototype.getTag = function (whichTag)
+ss.ajax.prototype.getTag = function (whichTag)
 {
 
     switch(this.db.p.typeGet)
@@ -1088,7 +1088,7 @@ core.ajax.prototype.getTag = function (whichTag)
  *
  * @return {mixed}
  */
-core.ajax.prototype.getResult = function ()
+ss.ajax.prototype.getResult = function ()
 {
     return this.db.result;
 };
@@ -1103,7 +1103,7 @@ core.ajax.prototype.getResult = function ()
  * @param {string} whichTag The tag we want to extract
  * @return {mixed} The value of the tag
  */
- core.ajax.prototype._getJson = function (whichTag)
+ ss.ajax.prototype._getJson = function (whichTag)
 {
 
     try {
@@ -1121,7 +1121,7 @@ core.ajax.prototype.getResult = function ()
         return _out;
     }
 
-}; // method core.ajax.prototype._getJson
+}; // method ss.ajax.prototype._getJson
 
 /**
  * Will Stop handling or error messages
@@ -1129,10 +1129,10 @@ core.ajax.prototype.getResult = function ()
  *
  * @return {void}
  */
-core.ajax.prototype.stopErrorHandler = function()
+ss.ajax.prototype.stopErrorHandler = function()
 {
     this._noErrorHandling = true;
-}; // method core.ajax.stopErrorHandler
+}; // method ss.ajax.stopErrorHandler
 
 /**
  * Will append whatever given to the POST string
@@ -1140,7 +1140,7 @@ core.ajax.prototype.stopErrorHandler = function()
  * @parm {string} what
  * @return {void}
  */
-core.ajax.prototype.addRaw = function (what)
+ss.ajax.prototype.addRaw = function (what)
 {
     this._passRaw += what;
 }; //method addRaw
@@ -1150,40 +1150,40 @@ core.ajax.prototype.addRaw = function (what)
  *
  * @return {Number}
  */
-core.ajax.prototype.getreadyState = function ()
+ss.ajax.prototype.getreadyState = function ()
 {
     return this.ajax.readyState;
-}; // method core.ajax.getreadyState
+}; // method ss.ajax.getreadyState
 
 /**
  * Returns the ajax status
  *
  * @return {Number}
  */
-core.ajax.prototype.getstatus = function ()
+ss.ajax.prototype.getstatus = function ()
 {
     return this.ajax.status;
-}; // method core.ajax.getstatus
+}; // method ss.ajax.getstatus
 
 /**
  * Closes any open requests
  *
  * @return {void}
  */
-core.ajax.prototype.close = function ()
+ss.ajax.prototype.close = function ()
 {
     this.ajax.abort();
-}; // method core.ajax.close
+}; // method ss.ajax.close
 
 /**
  * Get error object
  *
  * @return {void}
  */
-core.ajax.prototype.getError = function ()
+ss.ajax.prototype.getError = function ()
 {
     return this._errorObj;
-}; // method core.ajax.getError
+}; // method ss.ajax.getError
 
 
 /**
@@ -1192,11 +1192,11 @@ core.ajax.prototype.getError = function ()
  * @param {boolean} what
  * @return {void}
  */
-core.ajax.prototype.setFileUpload = function (what)
+ss.ajax.prototype.setFileUpload = function (what)
 {
     this.db.isUpload = true;
 
-}; // method core.ajax.setFileUpload
+}; // method ss.ajax.setFileUpload
 
 
 
@@ -1208,12 +1208,12 @@ core.ajax.prototype.setFileUpload = function (what)
 * @private
 * @return {string}
 */
-core.ajax.prototype._compilePassDataUpload = function ()
+ss.ajax.prototype._compilePassDataUpload = function ()
 {
     try {
     var m = web;
     var g = goog;
-    var log = core.log ('core.ajax._compilePassDataUpload');
+    var log = ss.log ('ss.ajax._compilePassDataUpload');
     var geoc = core;
 
     log.fine('Init');
@@ -1277,5 +1277,5 @@ core.ajax.prototype._compilePassDataUpload = function ()
     // no raw data supported in this mode
 
     return oReturn;
-    } catch(e) {core.error(e);}
-}; //method  core.ajax._compilePassDataUpload
+    } catch(e) {ss.error(e);}
+}; //method  ss.ajax._compilePassDataUpload

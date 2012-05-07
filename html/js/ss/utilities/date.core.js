@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@
  * createdate 05/Jul/2010
  *
  *********
- *  File:: utilities/date.core.js
+ *  File:: utilities/date.ss.js
  *  Generic date class. Used for formating
  *********
  */
 
 
-goog.provide('core.date');
+goog.provide('ss.date');
 
 goog.require('goog.date');
 goog.require('goog.date.DateTime');
@@ -43,11 +43,11 @@ goog.require('goog.date.DateTime');
  * @return {this}
  * @constructor
  */
-core.date = function (opt_sDate)
+ss.date = function (opt_sDate)
 {
     var c = core;
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.date');
+    var log = g.debug.Logger.getLogger('ss.date');
 
     log.fine('Init - sDate:' + opt_sDate);
 
@@ -128,7 +128,7 @@ core.date = function (opt_sDate)
     return this;
 }
 
-core.date.dbstatic = {
+ss.date.dbstatic = {
     day: {
         0: 'Sun',
         1: 'Mon',
@@ -166,7 +166,7 @@ core.date.dbstatic = {
         'Nov' : 10,
         'Dec' : 11
     }
-}; // property core.date.db
+}; // property ss.date.db
 
 
 /**
@@ -176,11 +176,11 @@ core.date.dbstatic = {
  * @param {boolean} opt_short If we need a shorter version define true
  * @return {string}
  */
-core.date.prototype.getDiffStringAgo = function (opt_short)
+ss.date.prototype.getDiffStringAgo = function (opt_short)
 {
     var c = core;
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.date.getDiffStringAgo');
+    var log = g.debug.Logger.getLogger('ss.date.getDiffStringAgo');
 
     log.fine('Init');
 
@@ -204,7 +204,7 @@ core.date.prototype.getDiffStringAgo = function (opt_short)
     if (86400 >= diff) return ( c.MOBILE || opt_short ? Math.floor(diff / 3600) + ' hours' : 'about ' + Math.floor(diff / 3600) + ' hours ago');
 
     return '';
-}; // method core.date.getDiffStringAgo
+}; // method ss.date.getDiffStringAgo
 
 /**
  * A static function that calculates
@@ -214,7 +214,7 @@ core.date.prototype.getDiffStringAgo = function (opt_short)
  * @param {goog.date.DateTime} gDate
  * @return {Number} seconds
  */
-core.date.getDiffSecs = function (gDate)
+ss.date.getDiffSecs = function (gDate)
 {
   try {
     var g = goog;
@@ -227,7 +227,7 @@ core.date.getDiffSecs = function (gDate)
     var epochnow = Math.floor(dtnow.getTime() / 1000);
 
     return Math.abs((epochnow - epoch));
-  } catch(e) {core.error(e);}
+  } catch(e) {ss.error(e);}
 };
 
 
@@ -239,12 +239,12 @@ core.date.getDiffSecs = function (gDate)
  * e.g. 12:32 PM May 25
  * 09:23 AM Dec 23, 2009
  */
-core.date.prototype.smallDatetime = function ()
+ss.date.prototype.smallDatetime = function ()
 {
     var c = core;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var log = g.debug.Logger.getLogger('core.date.smallDatetime');
+    var log = g.debug.Logger.getLogger('ss.date.smallDatetime');
     var sdate = this.db.sDate;
     log.fine('Init');
 
@@ -316,7 +316,7 @@ core.date.prototype.smallDatetime = function ()
     log.finer('Date Not same Orig:' + sdate + ' Formated:' + ret);
     return ret;
 
-}; // method core.data.smallDatetime
+}; // method ss.data.smallDatetime
 
 /**
  * Returns a formated date in the shortest type.
@@ -325,12 +325,12 @@ core.date.prototype.smallDatetime = function ()
  *
  * @return {string|null} formated date or null if sdate does not validate
  */
-core.date.prototype.smallDate = function ()
+ss.date.prototype.smallDate = function ()
 {
     var c = core;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var log = g.debug.Logger.getLogger('core.date.smallDate');
+    var log = g.debug.Logger.getLogger('ss.date.smallDate');
     var sdate = this.db.sDate;
     log.fine('Init:' + g.typeOf(this.db.gdt));
 
@@ -400,7 +400,7 @@ core.date.prototype.smallDate = function ()
     return ret;
 
 
-}; // method core.date.smallDate
+}; // method ss.date.smallDate
 
 
 /**
@@ -411,11 +411,11 @@ core.date.prototype.smallDate = function ()
  * @private
  * @return {void}
  */
-core.date.prototype._getDatetimedb = function ()
+ss.date.prototype._getDatetimedb = function ()
 {
     var c = core;
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.date._getDatetimedb');
+    var log = g.debug.Logger.getLogger('ss.date._getDatetimedb');
 
     log.fine('Init');
 
@@ -451,7 +451,7 @@ core.date.prototype._getDatetimedb = function ()
         );
 
 
-}; // method core.date._getDatetimedb
+}; // method ss.date._getDatetimedb
 
 /**
  * Get current date in RFC822 format: Wed, 26 May 2010 23:17:17 +0000
@@ -459,11 +459,11 @@ core.date.prototype._getDatetimedb = function ()
  * @return {string} date RFC822 type: Wed, 26 May 2010 23:17:17 +0000
  * @constructor
  */
-core.date.prototype.getRFC822 = function ()
+ss.date.prototype.getRFC822 = function ()
 {
     var c = core;
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.date.getRFC822');
+    var log = g.debug.Logger.getLogger('ss.date.getRFC822');
 
     // construct the string
     var ret = '';
@@ -486,7 +486,7 @@ core.date.prototype.getRFC822 = function ()
 
     return ret;
 
-}; // method core.date.getRFC822
+}; // method ss.date.getRFC822
 
 /**
  * Returns a full date time in the format of:
@@ -494,12 +494,12 @@ core.date.prototype.getRFC822 = function ()
  *
  * @return {string}
  */
-core.date.prototype.getFullDateTime = function ()
+ss.date.prototype.getFullDateTime = function ()
 {
     var c = core;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var log = g.debug.Logger.getLogger('core.date.smallDatetime');
+    var log = g.debug.Logger.getLogger('ss.date.smallDatetime');
     var sdate = this.db.sDate;
     log.fine('Init');
 
@@ -540,5 +540,5 @@ core.date.prototype.getFullDateTime = function ()
     var ret = dd  + '/' + mmm + '/' + d.getYear() + ' ' + hh + ':' + MM + ' ' + a_p;
     return ret;
 
-}; // core.date.getFullDateTime
+}; // ss.date.getFullDateTime
 

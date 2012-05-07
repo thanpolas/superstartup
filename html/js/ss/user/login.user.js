@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
  *********
  */
 
-goog.provide('core.user.login');
+goog.provide('ss.user.login');
 
 
 /**
@@ -41,7 +41,7 @@ goog.provide('core.user.login');
  * @param {Function({boolean}, {string=})} callback Callback function
  * @return {boolean} - use callback func for handling
  */
-core.user.login.submit = function(user, pass, perm, callback)
+ss.user.login.submit = function(user, pass, perm, callback)
  {
     //shortcut assign
     var c = core;
@@ -51,7 +51,7 @@ core.user.login.submit = function(user, pass, perm, callback)
     var db = u.db;
     var g = goog;
     //var lang = c.lang.user;
-    var log = c.log('core.user.login.submit');
+    var log = c.log('ss.user.login.submit');
     var genError = 'Ooops an error occured, please retry';
 
 
@@ -140,7 +140,7 @@ core.user.login.submit = function(user, pass, perm, callback)
 
     return true;
 };
-// method core.user.login.submit
+// method ss.user.login.submit
 
 
 
@@ -155,9 +155,9 @@ core.user.login.submit = function(user, pass, perm, callback)
  *
  *
  * Check for permanent login using:
- * core.user.auth.isPerm();
+ * ss.user.auth.isPerm();
  * And get the server token using:
- * core.user.auth.getPerm();
+ * ss.user.auth.getPerm();
  *
  * Your callback fn will be executed as:
  * callback(status, opt_error_msg)
@@ -168,7 +168,7 @@ core.user.login.submit = function(user, pass, perm, callback)
  * @param {Function({boolean}, {string=})} callback callback function when auth finishes
  * @return {void}
  */
-core.user.login.submitCallback = function(res, callback)
+ss.user.login.submitCallback = function(res, callback)
  {
     //shortcut assign
     var c = core;
@@ -177,7 +177,7 @@ core.user.login.submitCallback = function(res, callback)
     var db = u.db;
     var g = goog;
     //var lang = c.lang.user;
-    var log = c.log('core.user.login.submitCallback');
+    var log = c.log('ss.user.login.submitCallback');
     var genError = 'An error has occured. Please retry';
     log.info('Init');
 
@@ -197,10 +197,10 @@ core.user.login.submitCallback = function(res, callback)
 
 
     } catch(e) {
-        core.error(e);
+        ss.error(e);
     }
 };
-// method core.user.login.submitCallback
+// method ss.user.login.submitCallback
 
 
 
@@ -216,12 +216,12 @@ core.user.login.submitCallback = function(res, callback)
  * @param {Function=} callback Callback function
  * @return {boolean}
  */
-core.user.login.logout = function(opt_callback)
+ss.user.login.logout = function(opt_callback)
  {
    try {
     var c = core;
 
-    var log = goog.debug.Logger.getLogger('core.user.login.logout');
+    var log = goog.debug.Logger.getLogger('ss.user.login.logout');
 
     var callback = opt_callback || function() {};
 
@@ -270,10 +270,10 @@ core.user.login.logout = function(opt_callback)
 
     return true;
    } catch(e) {
-     core.error(e);
+     ss.error(e);
      callback(false);
     }
 };
-// method core.user.login.logout
+// method ss.user.login.logout
 
 

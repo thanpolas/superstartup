@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,17 @@
  */
 
 
-goog.provide('core.web2');
-goog.require('core.user');
-goog.require('core.events');
-goog.require('core.fb');
-goog.require('core.fb.API');
-goog.require('core.twit');
+goog.provide('ss.web2');
+goog.require('ss.user');
+goog.require('ss.events');
+goog.require('ss.fb');
+goog.require('ss.fb.API');
+goog.require('ss.twit');
 
 /**
  * Local data object
  */
-core.web2.db = {
+ss.web2.db = {
 
     /**
      * If we have external sources authentication
@@ -44,11 +44,11 @@ core.web2.db = {
     isExtAuthed: false,
 
     /**
-     * This var contains an array of core.STATIC.SOURCES
+     * This var contains an array of ss.STATIC.SOURCES
      * values, indicates that we are authed on these
      * external sources
      *
-     * @type {Array<core.STATIC.SOURCES>}
+     * @type {Array<ss.STATIC.SOURCES>}
      */
     extAuthSources: [],
 
@@ -56,9 +56,9 @@ core.web2.db = {
      * Add here the external sources we have integraded
      * for authentication on client side
      *
-     * @type {Array<core.STATIC.SOURCES>}
+     * @type {Array<ss.STATIC.SOURCES>}
      */
-    supportedSources: [core.STATIC.SOURCES.FB],
+    supportedSources: [ss.STATIC.SOURCES.FB],
 
     /**
      * Initial external auth check needed vars
@@ -91,7 +91,7 @@ core.web2.db = {
  *
  * @return {void}
  */
-core.web2.db.clear = function ()
+ss.web2.db.clear = function ()
 {
     var c = core;
     var db = c.web2.db;
@@ -103,7 +103,7 @@ core.web2.db.clear = function ()
 
     db.isExtAuthed = false;
     db.extAuthSources = [];
-}; // funtion core.web2.db.clear
+}; // funtion ss.web2.db.clear
 
 
 
@@ -122,10 +122,10 @@ core.web2.db.clear = function ()
 
  *
  * @param {object} userObj The user data object
- * @param {core.STATIC.SOURCES} opt_prefferedSource
+ * @param {ss.STATIC.SOURCES} opt_prefferedSource
  * @return {object}
  */
-core.web2.getUserExt = function(userObj, opt_prefferedSource)
+ss.web2.getUserExt = function(userObj, opt_prefferedSource)
 {
   try {
     var g = goog, c = core;
@@ -153,7 +153,7 @@ core.web2.getUserExt = function(userObj, opt_prefferedSource)
 
 
     return extObj;
-  } catch(e) {core.error(e);}
+  } catch(e) {ss.error(e);}
 };
 
 
@@ -163,19 +163,19 @@ core.web2.getUserExt = function(userObj, opt_prefferedSource)
  * server for an external source auth.
  *
  *
- * @param {core.STATIC.SOURCES} sourceId The external source id
+ * @param {ss.STATIC.SOURCES} sourceId The external source id
  * @param {object} user core user data object
  * @param {boolean=} opt_newuser If user logged in is new
  * @return {void}
  */
-core.web2.extLogin = function (sourceId, user, opt_newuser)
+ss.web2.extLogin = function (sourceId, user, opt_newuser)
 {
     try {
 
     var g = goog;
     var c = core;
     var w2 = c.web2;
-    var log = c.log('core.web2.extLogin');
+    var log = c.log('ss.web2.extLogin');
 
     log.info('Init. sourceId:' + sourceId + ' opt_newuser:' + opt_newuser);
 
@@ -199,8 +199,8 @@ core.web2.extLogin = function (sourceId, user, opt_newuser)
         c.user.auth.events.runEvent('newuser', sourceId, user);
 
 
-    } catch(e) {core.error(e);}
-}; // function core.web2.extLogin
+    } catch(e) {ss.error(e);}
+}; // function ss.web2.extLogin
 
 /**
  * Checks if we are authed for the specified
@@ -215,10 +215,10 @@ core.web2.extLogin = function (sourceId, user, opt_newuser)
  * sources... use the .hasExtSource() function
  * for this...
  *
- * @param {core.STATIC.SOURCES} sourceId
+ * @param {ss.STATIC.SOURCES} sourceId
  * @return {boolean}
  */
-core.web2.isExtAuthed = function (sourceId)
+ss.web2.isExtAuthed = function (sourceId)
 {
     try {
     var g = goog;
@@ -238,23 +238,23 @@ core.web2.isExtAuthed = function (sourceId)
 
     return false;
 
-    } catch(e) {core.error(e);}
-}; // function core.web2.isExtAuthed
+    } catch(e) {ss.error(e);}
+}; // function ss.web2.isExtAuthed
 
 /**
  * Checks if user has linked his account with
  * an external source
  *
- * @param {core.STATIC.SOURCES} sourceId
+ * @param {ss.STATIC.SOURCES} sourceId
  * @return boolean
- * @deprecated use core.user.auth.hasExtSource
+ * @deprecated use ss.user.auth.hasExtSource
  */
-core.web2.hasExtSource = function (sourceId)
+ss.web2.hasExtSource = function (sourceId)
 {
     try {
-    return core.user.auth.hasExtSource(sourceId);
-    } catch(e) {core.error(e);}
-}; // function core.web2.hasExtSource
+    return ss.user.auth.hasExtSource(sourceId);
+    } catch(e) {ss.error(e);}
+}; // function ss.web2.hasExtSource
 
 
 /**
@@ -262,20 +262,20 @@ core.web2.hasExtSource = function (sourceId)
  * are currently authenticated at (only FB
  * has auth at client side)
  *
- * @return {Array<core.STATIC.SOURCES>}
+ * @return {Array<ss.STATIC.SOURCES>}
  */
-core.web2.getExtSources = function ()
+ss.web2.getExtSources = function ()
 {
-    return core.web2.db.extAuthSources;
+    return ss.web2.db.extAuthSources;
 
-}; // func core.web2.getExtSources
+}; // func ss.web2.getExtSources
 
 /**
  * We collect initial authentication checks from
  * external sources.
  *
  * This function is aware of each external source
- * we integrade for auth. These are set at: core.web2.db.supportedSources
+ * we integrade for auth. These are set at: ss.web2.db.supportedSources
  * On startup we check the auth states for these sources
  *
  * As each external source responds it calls this function
@@ -288,13 +288,13 @@ core.web2.getExtSources = function ()
  * When all external auth requests finish we fire the 'authState'
  * event from our events instance
  *
- * @param {core.STATIC.SOURCES} sourceId The source id
+ * @param {ss.STATIC.SOURCES} sourceId The source id
  * @param {boolean} initState Initial responce from ext source. If true we wait for final state
  * @param {boolean=} opt_endState If initState was true we check with our servers to validate
  *      the auth. This lets us know if server honored us
  * @return {void}
  */
-core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
+ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
 {
     try {
     var g = goog;
@@ -302,7 +302,7 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
     var w2 = c.web2;
     var db = w2.db;
 
-    var log = c.log('core.web2.collectInitialAuthChecks');
+    var log = c.log('ss.web2.collectInitialAuthChecks');
 
     log.fine('Init. sourceId:' + sourceId + ' initState:' + initState + ' endState:' + opt_endState
         + ' finished:' + db.initialCheck.finished);
@@ -340,7 +340,7 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
 
     }
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 
     /**
      * Perform auth checks, if we need to trigger the event and on...
@@ -425,12 +425,12 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
         }
 
 
-        } catch(e) {core.error(e);}
+        } catch(e) {ss.error(e);}
     } // function _checkState
 
 
 
-}; // function core.web2.collectInitialAuthChecks
+}; // function ss.web2.collectInitialAuthChecks
 
 /**
  * Fires when ultimate auth state timeout fires
@@ -440,7 +440,7 @@ core.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState
  *
  * @return {void}
  */
-core.web2.authStateTimeout = function ()
+ss.web2.authStateTimeout = function ()
 {
     try {
 
@@ -449,7 +449,7 @@ core.web2.authStateTimeout = function ()
     var w2 = c.web2;
     var db = w2.db;
 
-    var log = c.log('core.web2.authStateTimeout');
+    var log = c.log('ss.web2.authStateTimeout');
 
     log.info('web2.0 Ultimate timeout fired. db.finished:' + db.initialCheck.finished + ' Authed:' + c.isAuthed());
 
@@ -468,8 +468,8 @@ core.web2.authStateTimeout = function ()
     // trigger the event
     c.user.auth.events.runEvent('initAuthState', false);
 
-    } catch(e) {core.error(e);}
-}; // function core.web2.authStateTimeout
+    } catch(e) {ss.error(e);}
+}; // function ss.web2.authStateTimeout
 
 
 /**
@@ -477,13 +477,13 @@ core.web2.authStateTimeout = function ()
  *
  * @return {void}
  */
-core.web2.extLogout = function ()
+ss.web2.extLogout = function ()
 {
     // if on mobile, exit... (no solution yet)
-    if (core.MOBILE)
+    if (ss.MOBILE)
         return;
 
     FB.logout(function(response) {
       // user is now logged out
     });
-}; // function core.web2.extLogout
+}; // function ss.web2.extLogout

@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@
 
 
 /**
- * Init the core.ready object
+ * Init the ss.ready object
  *
  */
-goog.provide('core.ready');
+goog.provide('ss.ready');
 
 /**
  * The ready method will either init a new ready
@@ -40,9 +40,9 @@ goog.provide('core.ready');
  * @param {boolean=} opt_forceInit If we need to force Init
  * @return void
  */
-core.ready = function(nameId, opt_forceInit)
+ss.ready = function(nameId, opt_forceInit)
 {
-    var log = goog.debug.Logger.getLogger('core.ready');
+    var log = goog.debug.Logger.getLogger('ss.ready');
     var w = core;
     var r = w.ready;
 
@@ -120,14 +120,14 @@ core.ready = function(nameId, opt_forceInit)
 
      r.db.allReady.push(readyObj);
 
-}; // core.ready Constructor
+}; // ss.ready Constructor
 
-core.ready.log = goog.debug.Logger.getLogger('core.ready');
+ss.ready.log = goog.debug.Logger.getLogger('ss.ready');
 
 /**
  * Static Data Container
  */
-core.ready.db = {
+ss.ready.db = {
     allReady: []
 };
 
@@ -138,7 +138,7 @@ core.ready.db = {
  * @param {string} nameId The id of the ready event
  * @return {boolean}
  */
-core.ready.isDone = function (nameId)
+ss.ready.isDone = function (nameId)
 {
     var w = core;
     var r = w.ready;
@@ -146,13 +146,13 @@ core.ready.isDone = function (nameId)
     var nameId = nameId || null;
     var arReady = w.arFind(r.db.allReady, 'nameId', nameId);
 
-    var log = g.debug.Logger.getLogger('core.ready.isDone');
+    var log = g.debug.Logger.getLogger('ss.ready.isDone');
     log.fine('Init - nameId:' + nameId + ' arReady.done:' + arReady.done);
 
     if (g.isNull(arReady)) return false;
 
     return arReady.done;
-}; // method core.ready.isDone
+}; // method ss.ready.isDone
 
 /**
  * Checks if a certain name and specific check exists and has finished
@@ -162,7 +162,7 @@ core.ready.isDone = function (nameId)
  * @param {string} checkId The id of the check
  * @return {boolean}
  */
-core.ready.isDoneCheck = function (nameId, checkId)
+ss.ready.isDoneCheck = function (nameId, checkId)
 {
     var w = core;
     var r = w.ready;
@@ -171,7 +171,7 @@ core.ready.isDoneCheck = function (nameId, checkId)
 
     var arReady = w.arFind(r.db.allReady, 'nameId', nameId);
 
-    var log = g.debug.Logger.getLogger('core.ready.isDoneCheck');
+    var log = g.debug.Logger.getLogger('ss.ready.isDoneCheck');
     log.fine('Init - nameId:' + nameId + ' arReady.done:' + arReady.done);
 
     if (g.isNull(arReady)) return false;
@@ -181,7 +181,7 @@ core.ready.isDoneCheck = function (nameId, checkId)
     if (g.isNull(arCheck)) return false;
 
     return arCheck.done;
-}; // method core.ready.isDoneCheck
+}; // method ss.ready.isDoneCheck
 
 
 
@@ -193,10 +193,10 @@ core.ready.isDoneCheck = function (nameId, checkId)
  * @param {Number=} opt_delay optionaly set a delay to execute fn in ms
  * @return {void}
  */
-core.ready.addFunc = function(nameId, fn, opt_delay)
+ss.ready.addFunc = function(nameId, fn, opt_delay)
 {
     var c = core;
-    var log = c.log('core.ready.addFunc');
+    var log = c.log('ss.ready.addFunc');
 
     var nameId = nameId || null;
 
@@ -226,7 +226,7 @@ core.ready.addFunc = function(nameId, fn, opt_delay)
     // if watch is finished then we execute the function right away...
     if (c.ready.isDone(nameId))
         fn();
-}; // method core.ready.addFunc
+}; // method ss.ready.addFunc
 
 
 /**
@@ -245,11 +245,11 @@ core.ready.addFunc = function(nameId, fn, opt_delay)
  * @param {function} fn callback function
  * @return void
  */
-core.ready.addFuncCheck = function(nameId, checkId, fn)
+ss.ready.addFuncCheck = function(nameId, checkId, fn)
 {
     var w = core;
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.ready.addFuncCheck');
+    var log = g.debug.Logger.getLogger('ss.ready.addFuncCheck');
 
     var nameId = nameId || null;
 
@@ -292,7 +292,7 @@ core.ready.addFuncCheck = function(nameId, checkId, fn)
     // if watch is finished then we execute the function right away...
     if (w.ready.isDoneCheck(nameId, checkId))
         fn();
-}; // method core.ready.addFuncCheck
+}; // method ss.ready.addFuncCheck
 
 
 /**
@@ -303,12 +303,12 @@ core.ready.addFuncCheck = function(nameId, checkId, fn)
  * @param {string} checkId The check string id we will use as a switch
  * @return void
  */
-core.ready.addCheck = function(nameId, checkId)
+ss.ready.addCheck = function(nameId, checkId)
 {
   try {
     var w = core;
     var nameId = nameId || null;
-    var log = goog.debug.Logger.getLogger('core.ready.addCheck');
+    var log = goog.debug.Logger.getLogger('ss.ready.addCheck');
     log.fine('Init - nameId:' + nameId + ' checkId:' + checkId);
 
 
@@ -332,8 +332,8 @@ core.ready.addCheck = function(nameId, checkId)
             done: false
         });
     }
-  } catch (e) {core.error(e);}
-}; // method core.ready.addCheck
+  } catch (e) {ss.error(e);}
+}; // method ss.ready.addCheck
 
 
 /**
@@ -345,14 +345,14 @@ core.ready.addCheck = function(nameId, checkId)
  * @param {boolean=} opt_state If check method failed, set this to false
  * @return void
  */
-core.ready.check = function(nameId, checkId, opt_state)
+ss.ready.check = function(nameId, checkId, opt_state)
 {
     try {
     var g = goog;
     var w = core;
     var nameId = nameId || null;
 
-    var log = g.debug.Logger.getLogger('core.ready.check');
+    var log = g.debug.Logger.getLogger('ss.ready.check');
     log.info('Init - Check DONE nameId:' + nameId + ' checkId:' + checkId);
 
     var check_state = opt_state || true;
@@ -398,8 +398,8 @@ core.ready.check = function(nameId, checkId, opt_state)
     } else {
         log.info('NOT Done watch:' + nameId);
     }
-    } catch(e) {core.error(e);}
-}; // method core.ready.check
+    } catch(e) {ss.error(e);}
+}; // method ss.ready.check
 
 /**
  * This private function will check if all
@@ -409,12 +409,12 @@ core.ready.check = function(nameId, checkId, opt_state)
  * @return {boolean}
  * @private
  */
-core.ready._isChecksComplete = function (nameId)
+ss.ready._isChecksComplete = function (nameId)
 {
     try {
     var g = goog;
     var w = core;
-    var log = w.log('core.ready._isChecksComplete');
+    var log = w.log('ss.ready._isChecksComplete');
 
     // find index of nameId or if it exists...
     var ind = w.arFindIndex(w.ready.db.allReady, 'nameId', nameId);
@@ -445,8 +445,8 @@ core.ready._isChecksComplete = function (nameId)
 
     return allChecksDone;
 
-    } catch(e) {core.error(e);}
-}; // core.ready._isChecksComplete
+    } catch(e) {ss.error(e);}
+}; // ss.ready._isChecksComplete
 
 
 
@@ -461,12 +461,12 @@ core.ready._isChecksComplete = function (nameId)
  * @param {string} namedId the ready watch name
  * @return {boolean}
  */
-core.ready._runAll = function (nameId)
+ss.ready._runAll = function (nameId)
 {
     try {
     var g = goog;
     var w = core;
-    var log = w.log('core.ready._runAll');
+    var log = w.log('ss.ready._runAll');
 
     log.info('Executing all listeners for:' + nameId)
 
@@ -489,7 +489,7 @@ core.ready._runAll = function (nameId)
         } else {
           fnObj.fn(readyObj.execOk);
         }
-      } catch(e) {core.error(e);}
+      } catch(e) {ss.error(e);}
     });
     // empty the array
     readyObj.fnCheck = new Array();
@@ -508,12 +508,12 @@ core.ready._runAll = function (nameId)
           fn(readyObj.execOk);
         else
           setTimeout(fn, fnObj.delay);
-      } catch(e) {core.error(e);}
+      } catch(e) {ss.error(e);}
     });
     // reset function container array of watch...
     readyObj.fn = new Array();
-    } catch(e) {core.error(e);}
-}; // core.ready._runAll
+    } catch(e) {ss.error(e);}
+}; // ss.ready._runAll
 
 
 /**
@@ -526,7 +526,7 @@ core.ready._runAll = function (nameId)
  * @param {string} checkId The check we want to execute the listeners of
  * @return {void}
  */
-core.ready._runAllChecks = function (nameId, checkId)
+ss.ready._runAllChecks = function (nameId, checkId)
 {
     try {
     var g = goog;
@@ -560,6 +560,6 @@ core.ready._runAllChecks = function (nameId, checkId)
     // all done
 
 
-    } catch(e) {core.error(e);}
-}; // core.ready._runAllChecks
+    } catch(e) {ss.error(e);}
+}; // ss.ready._runAllChecks
 

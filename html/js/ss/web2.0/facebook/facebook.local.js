@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@
 
 
 
-goog.provide('core.fb.local');
-goog.require('core.STATIC');
+goog.provide('ss.fb.local');
+goog.require('ss.STATIC');
 
 /**
  * Triggers when we have a facebook auth event
@@ -37,12 +37,12 @@ goog.require('core.STATIC');
  * @param {Function(boolean)} listener callback function
  * @return {void}
  */
-core.fb.local.checkFacebookAuth = function (listener)
+ss.fb.local.checkFacebookAuth = function (listener)
 {
     try {
 
     var w = core;
-    var log = w.log('core.fb.local.checkFacebookAuth');
+    var log = w.log('ss.fb.local.checkFacebookAuth');
 
     log.info('Init. Authed:' + w.isAuthed());
 
@@ -106,9 +106,9 @@ core.fb.local.checkFacebookAuth = function (listener)
         return;
     }
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 
-}; // function core.fb.local.checkFacebookAuth
+}; // function ss.fb.local.checkFacebookAuth
 
 
 /**
@@ -120,14 +120,14 @@ core.fb.local.checkFacebookAuth = function (listener)
  * @param {Function(boolean)=} opt_listener callback function
  * @return {void}
  */
-core.fb.local.loginSubmit = function (opt_listener)
+ss.fb.local.loginSubmit = function (opt_listener)
 {
     try {
 
     var fb = FB;
     var w = core;
     var g = goog;
-    var log = w.log('core.fb.local.loginSubmit');
+    var log = w.log('ss.fb.local.loginSubmit');
 
     log.info('Init. Authed:' + w.isAuthed());
 
@@ -181,7 +181,7 @@ core.fb.local.loginSubmit = function (opt_listener)
         }
 
       } catch(e) {
-        core.error(e);
+        ss.error(e);
         listener(false);
       }
 
@@ -200,10 +200,10 @@ core.fb.local.loginSubmit = function (opt_listener)
 
     } catch(e) {
       listener(false);
-      core.error(e);
+      ss.error(e);
     }
 
-}; // function core.fb.local.loginSubmit
+}; // function ss.fb.local.loginSubmit
 
 
 
@@ -219,13 +219,13 @@ core.fb.local.loginSubmit = function (opt_listener)
  * @param {object=} opt_fbuser if on mobile mode we need the fb user data object
  * @return {void}
  */
-core.fb.local.linkUser = function (opt_listener, opt_fbuser)
+ss.fb.local.linkUser = function (opt_listener, opt_fbuser)
 {
     try {
 
 
     var w = core;
-    var log = w.log('core.fb.local.linkUser');
+    var log = w.log('ss.fb.local.linkUser');
 
     log.info('Init. Authed:' + w.isAuthed());
 
@@ -283,9 +283,9 @@ core.fb.local.linkUser = function (opt_listener, opt_fbuser)
         return;
     }
 
-    } catch(e) {core.error(e);}
+    } catch(e) {ss.error(e);}
 
-}; // function core.fb.local.linkUser
+}; // function ss.fb.local.linkUser
 
 
 /**
@@ -296,7 +296,7 @@ core.fb.local.linkUser = function (opt_listener, opt_fbuser)
  * @param {Function=} opt_cb Callback function (status, opt_errmsg)
  * @return {void}
  */
-core.fb.local.commentCreate = function (data, opt_rem, opt_cb)
+ss.fb.local.commentCreate = function (data, opt_rem, opt_cb)
 {
   try {
     var c = core;
@@ -329,7 +329,7 @@ core.fb.local.commentCreate = function (data, opt_rem, opt_cb)
       try {
         cb(true);
       } catch(e) {
-        core.error(e);
+        ss.error(e);
         cb(true);
       }
     };
@@ -343,7 +343,7 @@ core.fb.local.commentCreate = function (data, opt_rem, opt_cb)
       cb(false, errorobj.message);
 
       } catch (e) {
-        core.error(e);
+        ss.error(e);
       }
 
     };
@@ -354,11 +354,11 @@ core.fb.local.commentCreate = function (data, opt_rem, opt_cb)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
     cb(false, 'error');
   }
 
-}; // core.fb.local.commentCreate
+}; // ss.fb.local.commentCreate
 
 
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@
  *********
  */
 
-goog.provide('core.conf');
+goog.provide('ss.conf');
 
 /**
  * Master configuration hash
  *
  * @type {Object}
  */
-core.conf = {
+ss.conf = {
   fb: {
     app_id: '186392014808053',
     permitions: 'email,publish_stream'

@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 
 
 
-goog.provide('core.analytics');
+goog.provide('ss.analytics');
 
 /**
  * Constructs and sends the event tracking call to the Google
@@ -45,12 +45,12 @@ goog.provide('core.analytics');
  * @param {Number=} opt_value An integer that you can use to provide numerical data about the user event.
  * @return {void}
  */
-core.analytics.trackEvent = function (category, action, opt_label, opt_value)
+ss.analytics.trackEvent = function (category, action, opt_label, opt_value)
 {
     try {
     var w = window, c = core;
 
-    if (!core.WEBTRACK)
+    if (!ss.WEBTRACK)
         return;
 
     // send the event to GA
@@ -68,8 +68,8 @@ core.analytics.trackEvent = function (category, action, opt_label, opt_value)
 
 
 
-    } catch (e) {core.error(e);}
-}; // core.analytics.trackEvent
+    } catch (e) {ss.error(e);}
+}; // ss.analytics.trackEvent
 
 
 /**
@@ -86,7 +86,7 @@ core.analytics.trackEvent = function (category, action, opt_label, opt_value)
  * @param {string=} opt_value4 Additional data to store
  * @return {void}
  */
-core.analytics.trackMetrics = function (category, action, opt_label, opt_value,
+ss.analytics.trackMetrics = function (category, action, opt_label, opt_value,
     opt_value2, opt_value3, opt_value4)
 {
   try {
@@ -113,10 +113,10 @@ core.analytics.trackMetrics = function (category, action, opt_label, opt_value,
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // core.analytics.trackMetrics
+}; // ss.analytics.trackMetrics
 
 
 
@@ -145,12 +145,12 @@ core.analytics.trackMetrics = function (category, action, opt_label, opt_value,
  *      to indicate the page URL.
  * @return {void}
  */
-core.analytics.trackPageview = function (opt_pageURL)
+ss.analytics.trackPageview = function (opt_pageURL)
 {
     try {
     var w = window;
 
-    if (!core.WEBTRACK)
+    if (!ss.WEBTRACK)
         return;
 
     // check if we have a string value, append hash tag '/#'
@@ -168,8 +168,8 @@ core.analytics.trackPageview = function (opt_pageURL)
     w.mpq.track('pageview', props);
 
 
-    } catch (e) {core.error(e);}
-}; // core.analytics.trackPageview
+    } catch (e) {ss.error(e);}
+}; // ss.analytics.trackPageview
 
 
 /**
@@ -178,11 +178,11 @@ core.analytics.trackPageview = function (opt_pageURL)
  * @param {object} user user standard object
  * @return {void}
  */
-core.analytics.userAuth = function (user)
+ss.analytics.userAuth = function (user)
 {
   try {
     var w = window;
-    if (!core.WEBTRACK)
+    if (!ss.WEBTRACK)
         return;
 
     // Google CUSTOM VAR SLOT 1
@@ -199,7 +199,7 @@ core.analytics.userAuth = function (user)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -209,23 +209,23 @@ core.analytics.userAuth = function (user)
  * visitors.
  *
  * For now we track our visitors using the permanent Cook ID
- * Called from: core.metadata.newObject();
+ * Called from: ss.metadata.newObject();
  *
  *
  * @param {Number} permId
  * @return {void}
  */
-core.analytics.identify = function (permId)
+ss.analytics.identify = function (permId)
 {
   try {
 
-    if (!core.WEBTRACK)
+    if (!ss.WEBTRACK)
         return;
     window.mpq.identify(permId);
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -238,12 +238,12 @@ core.analytics.identify = function (permId)
  * @param {object=} props custom properties
  * @return {void}
  */
-core.analytics.trackMP = function (name, props)
+ss.analytics.trackMP = function (name, props)
 {
   try {
     var w = window;
 
-    if (!core.WEBTRACK)
+    if (!ss.WEBTRACK)
         return;
 
     props = props || {};
@@ -259,7 +259,7 @@ core.analytics.trackMP = function (name, props)
     w.mpq.track(name, props || {});
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };
@@ -293,18 +293,18 @@ core.analytics.trackMP = function (name, props)
  * _trackPageview method.
  *
  */
-core.analytics.trackSocial = function (network, socialAction, opt_target, opt_pagePath)
+ss.analytics.trackSocial = function (network, socialAction, opt_target, opt_pagePath)
 {
   try {
     var w = window;
 
-    if (!core.WEBTRACK)
+    if (!ss.WEBTRACK)
         return;
 
     w._gaq.push(['_trackSocial', network, socialAction, opt_target, opt_pagePath]);
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 };

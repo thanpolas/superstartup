@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@
  */
 
 
-goog.provide('core.valid');
+goog.provide('ss.valid');
 
 
 /**
  * Here we will store an array of bad password strings.
  * We ban certain very weak passwords from use
  */
-core.valid.badPasswords = false;
+ss.valid.badPasswords = false;
 
 /**
  * Checks a nickname against proper characters
@@ -41,9 +41,9 @@ core.valid.badPasswords = false;
  * @param {string} string the nickname
  * @param {boolean} what [optional] if set to true we will return the illegal character
  */
-core.valid.checkNick = function (string) {
+ss.valid.checkNick = function (string) {
 
-    var err = core.err;
+    var err = ss.err;
 
     if (!goog.isString(string)) {
         err('No nickname was entered');
@@ -51,7 +51,7 @@ core.valid.checkNick = function (string) {
     }
 
     //prepare reg ex
-    var lim = core.conf.userLengthLimits;
+    var lim = ss.conf.userLengthLimits;
     var reg = '^[\\\w\\\d\\\_\\\-]{';
     reg += lim.nick_lo + "," + lim.nick_hi;
     reg += "}$";
@@ -77,14 +77,14 @@ core.valid.checkNick = function (string) {
  * @param {string} string
  * @return boolean
  */
-core.valid.checkFullName = function (string)
+ss.valid.checkFullName = function (string)
 {
     if (-1 == string.search(/^[a-zA-Z -]+$/)) {
-        core.err(core.lang.user.register.valid_fname);
+        ss.err(ss.lang.user.register.valid_fname);
         return false;
     }
     return true;
-}; // method core.valid.checkFullName
+}; // method ss.valid.checkFullName
 
 
 /**
@@ -95,30 +95,30 @@ core.valid.checkFullName = function (string)
  * @param {string} string The password
  * @return boolean
  */
-core.valid.checkPass = function (string)
+ss.valid.checkPass = function (string)
 {
     //check for small password length
-    if (string.length < core.conf.userLengthLimits.pass_lo) {
-        core.err(core.lang.user.register.password_min);
+    if (string.length < ss.conf.userLengthLimits.pass_lo) {
+        ss.err(ss.lang.user.register.password_min);
         return false;
     }
 
     //check for max password length
-    if (string.length > core.conf.userLengthLimits.pass_hi) {
-        core.err(core.lang.user.register.password_max);
+    if (string.length > ss.conf.userLengthLimits.pass_hi) {
+        ss.err(ss.lang.user.register.password_max);
         return false;
     }
 
     //check if we have badPasswords loaded and check against them
-    if (goog.isArray(core.valid.badPasswords)) {
-        if(-1 < jQuery.inArray(string, core.valid.badPasswords)) {
+    if (goog.isArray(ss.valid.badPasswords)) {
+        if(-1 < jQuery.inArray(string, ss.valid.badPasswords)) {
             //password is weak
-            core.err(core.lang.user.register.pass_weak);
+            ss.err(ss.lang.user.register.pass_weak);
             return false;
         }
     }
     return true;
-}; // method core.valid.checkPass
+}; // method ss.valid.checkPass
 
 
 /**
@@ -136,10 +136,10 @@ core.valid.checkPass = function (string)
  * @param {string} string The email
  * @return boolean
  */
-core.valid.checkEmail = function (string)
+ss.valid.checkEmail = function (string)
 {
-    var err = core.err;
-    var lang = core.lang.user;
+    var err = ss.err;
+    var lang = ss.lang.user;
 
     if (!goog.isString(string)) {
         err('No email has been entered. Please retry');
@@ -148,7 +148,7 @@ core.valid.checkEmail = function (string)
 
     //check if string within character length limits
     var len = string.length;
-    var lim = core.conf.userLengthLimits;
+    var lim = ss.conf.userLengthLimits;
     if (lim.email_lo >  len || lim.email_hi < len) {
         err('The e-mail you entered is not valid');
         return false;

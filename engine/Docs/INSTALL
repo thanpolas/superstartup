@@ -17,9 +17,25 @@ git submodule update
 
 Setup your apache to have superstartup/html as DocumentRoot
 
-Create and edit configuration files:
+Create a mysql database and import the dump you can find in engine/sql/corefw.sql.gz
+By default we use these settings:
+database: corefw
+username: corefw
+password: corefw
+Change any of them to suit your needs...
+
+Now let's work on CodeIgniter, we have the Facebook PHP API there as a submodule, so we got the lame/awesome case of having a submodule inside a submodule...
+cd engine/CI/origin
+git checkout master
+git pull origin master
+git submodule init
+git submodule update
+
+Now we need to create and edit CI's configuration files:
 cd engine/CI/application/config
 ls -l tpl_*
 
-You will see all the files you need to copy omitting the 'tpl_' prefix and edit them.
+You will see all the files you need to copy omitting the 'tpl_' prefix and edit them. The same format is also used in the "staging" and "production" configuration folders. Please read Code Igniter's relevant documentation on how config files work. 
+
+
 

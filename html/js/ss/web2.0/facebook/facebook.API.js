@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@
 
 
 
-goog.provide('core.fb.API');
-goog.require('core.STATIC');
+goog.provide('ss.fb.API');
+goog.require('ss.STATIC');
 
 
 /**
@@ -36,10 +36,10 @@ goog.require('core.STATIC');
  *
  * @constructor
  */
-core.fb.API.core = function ()
+ss.fb.API.core = function ()
 {
 
-}; // class core.fb.API.core
+}; // class ss.fb.API.core
 
 /**
  * The post API class
@@ -51,7 +51,7 @@ core.fb.API.core = function ()
  *
  * @constructor
  */
-core.fb.API.post = function ()
+ss.fb.API.post = function ()
 {
     try {
     this.db = {
@@ -66,8 +66,8 @@ core.fb.API.post = function ()
     this.savedId = null;
     this.paramsAPI = null;
 
-    } catch(e) {core.error(e);}
-}; // class core.fb.API.post
+    } catch(e) {ss.error(e);}
+}; // class ss.fb.API.post
 
 /**
  * With this method we set all the needed
@@ -96,7 +96,7 @@ core.fb.API.post = function ()
  * @return {void}
  *
  */
-core.fb.API.post.prototype.setParams = function (params)
+ss.fb.API.post.prototype.setParams = function (params)
 {
     try {
 
@@ -106,8 +106,8 @@ core.fb.API.post.prototype.setParams = function (params)
     //this.paramsAPI['display'] = 'popup';
 
 
-    } catch(e) {core.error(e);}
-}; // method core.fb.API.post.setParams
+    } catch(e) {ss.error(e);}
+}; // method ss.fb.API.post.setParams
 
 /**
  * Perform actual post of the post we have created
@@ -115,13 +115,13 @@ core.fb.API.post.prototype.setParams = function (params)
  * @param {Function(boolean, string)} listener with state and error message or post ID
  * @return {void}
  */
-core.fb.API.post.prototype.perform = function (listener)
+ss.fb.API.post.prototype.perform = function (listener)
 {
     try {
     var g = goog;
     var w = core;
 
-    var log = w.log ('core.fb.API.post.perform');
+    var log = w.log ('ss.fb.API.post.perform');
 
     log.info('Init');
 
@@ -167,8 +167,8 @@ core.fb.API.post.prototype.perform = function (listener)
         }
     }, this));
 
-    } catch(e) {core.error(e);}
-}; // method core.fb.API.post.perform
+    } catch(e) {ss.error(e);}
+}; // method ss.fb.API.post.perform
 
 
 
@@ -183,7 +183,7 @@ core.fb.API.post.prototype.perform = function (listener)
  * @param {boolean} value
  * @return {void}
  */
-core.fb.API.post.prototype.setEditBeforePost = function (value)
+ss.fb.API.post.prototype.setEditBeforePost = function (value)
 {
     if (goog.isBoolean(value))
         this.db.editBeforePost = value;

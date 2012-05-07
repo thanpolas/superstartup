@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@
  *********
  */
 
-goog.provide('core.user.auth');
-goog.require('core.events');
+goog.provide('ss.user.auth');
+goog.require('ss.events');
 
 
 /**
@@ -33,7 +33,7 @@ goog.require('core.events');
  *
  * Valid events are, along with their parameters:
  *
- * authState (state{boolean}, opt_sourceId{core.STATIC.SOURCES=}, opt_userDataObject{object=})
+ * authState (state{boolean}, opt_sourceId{ss.STATIC.SOURCES=}, opt_userDataObject{object=})
  *      Whenever auth state changes, this event is triggered. facebook but
  *      state {boolean} :: Tells us if authed or not
  *      opt_sourceId :: The auth source in case of authed
@@ -44,7 +44,7 @@ goog.require('core.events');
  *      Fired when initial check with external auth sources has finished.
  *
  */
-core.user.auth.events = new core.events.listeners();
+ss.user.auth.events = new ss.events.listeners();
 
 /**
  * Perform a user login.
@@ -62,10 +62,10 @@ core.user.auth.events = new core.events.listeners();
  *
  * @param {object} user
  * @param {Function(boolean, opt_string)} cb callback function when auth finishes
- * @param {core.STATIC.SOURCES} sourceId the source of authentication
+ * @param {ss.STATIC.SOURCES} sourceId the source of authentication
  * @return {void}
  */
-core.user.auth.login = function(user, cb, sourceId)
+ss.user.auth.login = function(user, cb, sourceId)
  {
    try {
     //shortcut assign
@@ -73,7 +73,7 @@ core.user.auth.login = function(user, cb, sourceId)
     var u = c.user;
     var db = u.db;
     var g = goog;
-    var log = c.log('core.user.auth.login');
+    var log = c.log('ss.user.auth.login');
     var genError = 'An error has occured. Please retry';
 
     log.info('Init. authed:' + db.isAuthed);
@@ -109,41 +109,41 @@ core.user.auth.login = function(user, cb, sourceId)
 
     log.info('Finished');
   } catch(e) {
-      core.error(e);
+      ss.error(e);
   }
 };
-// method core.user.auth.loginManual
+// method ss.user.auth.loginManual
 
 /**
  * Tells us if user is authed
  *
  * @return boolean
  */
-core.user.auth.isAuthed = function()
+ss.user.auth.isAuthed = function()
  {
-    return core.user.db.isAuthed;
+    return ss.user.db.isAuthed;
 };
-// method core.user.auth.isAuthed
+// method ss.user.auth.isAuthed
 
 /**
  * Tells us if user if verified
  *
  * @return boolean
  */
-core.user.auth.isVerified = function()
+ss.user.auth.isVerified = function()
  {
-    return core.user.db.user.verified;
+    return ss.user.db.user.verified;
 };
-// method core.user.auth.isVerified
+// method ss.user.auth.isVerified
 /**
  * Tells us if the user has perm login credentials
  * stored
  *
  * @return {boolean}
  */
-core.user.auth.isPerm = function()
+ss.user.auth.isPerm = function()
 {
-    return core.user.db.permLogin;
+    return ss.user.db.permLogin;
 };
 
 /**
@@ -155,14 +155,14 @@ core.user.auth.isPerm = function()
      timeset = 1284027551
      permId = 50
      duration = 1318587551
-     cookieDomain = ".core.local"
+     cookieDomain = ".ss.local"
      cookieName = "cookie_perm"
  *
  * @return {string}
  */
-core.user.auth.getPerm = function()
+ss.user.auth.getPerm = function()
  {
-    return core.user.db.permCook;
+    return ss.user.db.permCook;
 };
 
 
@@ -174,16 +174,16 @@ core.user.auth.getPerm = function()
  *
  * If we are not authed, we will perform auth procedures
  *
- * @param {core.STATIC.SOURCES} sourceId
+ * @param {ss.STATIC.SOURCES} sourceId
  * @param {object} user core user data object verified
  * @return {void}
  */
-core.user.auth.extAuth = function(sourceId, user)
+ss.user.auth.extAuth = function(sourceId, user)
  {
     try {
 
         var c = core;
-        var log = c.log('core.user.auth.extAuth');
+        var log = c.log('ss.user.auth.extAuth');
 
         log.info('sourceId:' + sourceId + ' authed:' + c.isAuthed());
 
@@ -195,22 +195,22 @@ core.user.auth.extAuth = function(sourceId, user)
         c.user.auth.login(user, function(){}, sourceId);
 
     } catch(e) {
-        core.error(e);
+        ss.error(e);
     }
 };
-// function core.user.auth.extAuth
+// function ss.user.auth.extAuth
 
 /**
  * Lets us know if currently logged in user
  * has external authentication for the provided
  * source id
  *
- * @param {core.STATIC.SOURCES} sourceId
+ * @param {ss.STATIC.SOURCES} sourceId
  * @return {boolean}
  */
-core.user.auth.hasExtSource = function(sourceId)
+ss.user.auth.hasExtSource = function(sourceId)
  {
-    //core.user.auth.hasFacebook = function ()
+    //ss.user.auth.hasFacebook = function ()
     try {
         var c = core;
 
@@ -233,19 +233,19 @@ core.user.auth.hasExtSource = function(sourceId)
         return true;
 
     } catch(e) {
-        core.error(e);
+        ss.error(e);
     }
 };
-// function core.user.auth.hasFacebook
+// function ss.user.auth.hasFacebook
 
 
 /**
  * Gets the external auth source user's name
  *
- * @param {core.STATIC.SOURCES.FB} sourceId
+ * @param {ss.STATIC.SOURCES.FB} sourceId
  * @return {string|null} null if error / not found
  */
-core.user.auth.getExtName = function(sourceId)
+ss.user.auth.getExtName = function(sourceId)
  {
 
     try {
@@ -275,7 +275,7 @@ core.user.auth.getExtName = function(sourceId)
         return null;
 
     } catch(e) {
-        core.error(e);
+        ss.error(e);
     }
 };
-// function core.user.auth.hasFacebook
+// function ss.user.auth.hasFacebook

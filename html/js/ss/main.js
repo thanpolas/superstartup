@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,75 +17,70 @@
  * @license Apache License, Version 2.0
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 03/Mar/2010
- * @package core JS framework
+ * @package Superstartup framework
  *
  *********
  *  File:: main.js
- *  @fileoverview Core main bundler
+ *  
  *********
  * 
  */
 
-/**
- * Init the geowarp object
- *
- * @public
- */
 goog.provide('core');
 
-goog.provide('core.DEBUG');
-goog.provide('core.READY'); //DOM ready switch
+goog.provide('ss.DEBUG');
+goog.provide('ss.READY'); //DOM ready switch
 
 
 goog.require('goog.debug');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 
-goog.require('core.analytics');
-goog.require('core.date');
-goog.require('core.error');
+goog.require('ss.analytics');
+goog.require('ss.date');
+goog.require('ss.error');
 
-goog.require('core.ajax');
-goog.require('core.ready');
-goog.require('core.events');
-goog.require('core.user');
-goog.require('core.conf');
-goog.require('core.valid');
-goog.require('core.web2');
-goog.require('core.STATIC');
+goog.require('ss.ajax');
+goog.require('ss.ready');
+goog.require('ss.events');
+goog.require('ss.user');
+goog.require('ss.conf');
+goog.require('ss.valid');
+goog.require('ss.web2');
+goog.require('ss.STATIC');
 
 
 /**
  * Debuging option, set to false for production
  * @define {boolean}
  */
-core.DEBUG = true;
+ss.DEBUG = true;
 
 /**
  * ONSERVER switch.
  * @define {boolean}
  */
-core.ONSERVER = false;
+ss.ONSERVER = false;
 
 /**
  * Pre - production switch
  * @define {boolean}
  */
-core.PREPROD = false;
+ss.PREPROD = false;
 
 /**
  * Mobile application mode
  *
  * @define {boolean}
  */
-core.MOBILE = false;
+ss.MOBILE = false;
 
 /**
  * WEB app mode
  *
  * @define {boolean}
  */
-core.WEB = false;
+ss.WEB = false;
 
 /**
  * If we have tracking (on web production)
@@ -93,10 +88,10 @@ core.WEB = false;
  *
  */
 
-if (core.ONSERVER)
-  core.WEBTRACK = true;
+if (ss.ONSERVER)
+  ss.WEBTRACK = true;
 else
-  core.WEBTRACK = false;
+  ss.WEBTRACK = false;
 
 
 
@@ -105,24 +100,24 @@ else
  * Shortcut assign google's getLogger method to ours
  *
  */
-core.log = goog.debug.Logger.getLogger;
+ss.log = goog.debug.Logger.getLogger;
 
 
-core.MOBILE = false;
-core.WEB = true;
+ss.MOBILE = false;
+ss.WEB = true;
 
 
 /**
  * Switch to true when DOM fires the ready() event
  * @define {boolean}
  */
-core.READY = false;
+ss.READY = false;
 
 /**
  * Global db (hash of values)
  *
  */
-core.db = {};
+ss.db = {};
 
 /**
  * The geowarp Init function should be called whenever
@@ -131,7 +126,7 @@ core.db = {};
  *
  * @return {void}
  */
-core.Init = function ()
+ss.Init = function ()
 {
     var c = core;
 
@@ -146,7 +141,7 @@ core.Init = function ()
     c.READY = true;
     c.ready.check('main', 'loaded');
 
-}; // function core.Init
+}; // function ss.Init
 
 /**
  * Wrapper for goog.array.find
@@ -154,14 +149,14 @@ core.Init = function ()
  * match the object key 'key' with 'value'
  * On Match we will return the element content
  *
- * e.g. var ind = core.arFind(ar, 'userId', userIdvar);
+ * e.g. var ind = ss.arFind(ar, 'userId', userIdvar);
  *
  * @param {array} ar The array
  * @param {string} key The object key we will query
  * @param {mixed} value The value we are looking for
  * @return {array|null} The first array element that passes the test, or null if no element is found.
  */
-core.arFind = function (ar, key, value)
+ss.arFind = function (ar, key, value)
 {
     var g = goog;
 
@@ -182,14 +177,14 @@ core.arFind = function (ar, key, value)
  * match the object key 'key' with 'value'
  * On Match we will return the element index
  *
- * e.g. var ind = core.arFindIndex(ar, 'userId', userIdvar);
+ * e.g. var ind = ss.arFindIndex(ar, 'userId', userIdvar);
  *
  * @param {array} ar The array
  * @param {string} key The object key we will query
  * @param {mixed} value The value we are looking for
  * @return {number} -1 for fail. The index of the first array element that passes the test, or -1 if no element is found.
  */
-core.arFindIndex = function (ar, key, value)
+ss.arFindIndex = function (ar, key, value)
 {
     if (!goog.isArray(ar)) return -1;
     return goog.array.findIndex(ar, function(el, i, ar){
@@ -212,14 +207,14 @@ core.arFindIndex = function (ar, key, value)
  * @param {mixed} value The value we are looking for
  * @return boolean  True if an element was removed.
  */
-core.arRemove = function (ar, key, value)
+ss.arRemove = function (ar, key, value)
 {
     if (!goog.isArray(ar)) return false;
     return goog.array.removeIf(ar, function(el, i, ar){
         if (el[key] == value) return true;
         return false;
     });
-}; // method core.arRemove
+}; // method ss.arRemove
 
 /**
  * Checks if a specific itam (value) exists in an array
@@ -232,7 +227,7 @@ core.arRemove = function (ar, key, value)
  * @param {*} value The value we are looking for
  * @return {number} -1 if not found or index
  */
-core.arInArrayIndex = function (ar, value)
+ss.arInArrayIndex = function (ar, value)
 {
     var ret = -1;
     goog.array.forEach(ar, function (val, index){
@@ -242,7 +237,7 @@ core.arInArrayIndex = function (ar, value)
     // not found
     return ret;
 
-}; // core.arInArrayIndex
+}; // ss.arInArrayIndex
 
 
 /**
@@ -252,7 +247,7 @@ core.arInArrayIndex = function (ar, value)
  * @param {mixed} ar The object we want to examine
  * @return boolean
  */
-core.isjQ = function (ar)
+ss.isjQ = function (ar)
 {
   try {
     // for some reason a selection of a jQuery object now returns object (!)
@@ -263,10 +258,10 @@ core.isjQ = function (ar)
 
     return false;
   } catch(e) {
-    core.error(e);
+    ss.error(e);
     return false;
   }
-}; // method core.isjQ
+}; // method ss.isjQ
 
 /**
  * Will count an objects element
@@ -274,13 +269,13 @@ core.isjQ = function (ar)
  * @param {Object} obj any object
  * @return {int}
  */
-core.objCount = function (obj)
+ss.objCount = function (obj)
 {
     var count = 0;
     goog.object.forEach(obj, function(){count++;});
     return count;
 
-}; // method core.object
+}; // method ss.object
 
 /**
  * Will reset all root elements of the passed
@@ -293,7 +288,7 @@ core.objCount = function (obj)
  * @param {object|array} obj Object we want to reset
  * @return {object|array|null} Whatever is passed - reset - or null if not object/array
  */
-core.resetAny = function (obj)
+ss.resetAny = function (obj)
 {
     var g = goog;
 
@@ -344,7 +339,7 @@ core.resetAny = function (obj)
     }
 
 
-}; // method core.ui.ctrl.db_con
+}; // method ss.ui.ctrl.db_con
 
 /**
  * Will calculate w,h dimentions based on
@@ -355,7 +350,7 @@ core.resetAny = function (obj)
  * @param {Object} obj_dims object containing w and h keys with number values
  * @return {Object} containing w, h keys and anything else that wass passed
  */
-core.resizePixels = function (resizeTarget, obj_dims)
+ss.resizePixels = function (resizeTarget, obj_dims)
 {
     if (obj_dims.w > obj_dims.h)
         var imax = obj_dims.w;
@@ -379,7 +374,7 @@ core.resizePixels = function (resizeTarget, obj_dims)
  *
  * @return {void}
  */
-core.nullify = function (obj)
+ss.nullify = function (obj)
 {
 
     goog.object.forEach(obj, function(item, index){
@@ -393,9 +388,9 @@ core.nullify = function (obj)
  * @param {string}
  * @return {string}
  */
-core.decURI = function(str){
+ss.decURI = function(str){
     var g = goog;
-    var log = goog.debug.Logger.getLogger('core.decURI');
+    var log = goog.debug.Logger.getLogger('ss.decURI');
 
     if (g.isNull(str)) return '';
 
@@ -415,10 +410,10 @@ core.decURI = function(str){
  * @param {string}
  * @return {string}
  */
-core.encURI = function(str){
+ss.encURI = function(str){
 
     var g = goog;
-    var log = goog.debug.Logger.getLogger('core.encURI');
+    var log = goog.debug.Logger.getLogger('ss.encURI');
 
     if (g.isNull(str)) return '';
 
@@ -439,9 +434,9 @@ core.encURI = function(str){
  * @param {string}
  * @return {string}
  */
-core.decEnt = function(str) {
+ss.decEnt = function(str) {
     var g = goog;
-    var log = goog.debug.Logger.getLogger('core.decEnt');
+    var log = goog.debug.Logger.getLogger('ss.decEnt');
 
     if (g.isNull(str)) {
         return '';
@@ -464,9 +459,9 @@ core.decEnt = function(str) {
  * @param {string}
  * @return {string}
  */
-core.encEnt = function(str) {
+ss.encEnt = function(str) {
     var g = goog;
-    var log = g.debug.Logger.getLogger('core.encEnt');
+    var log = g.debug.Logger.getLogger('ss.encEnt');
 
     if (g.isNull(str)) return '';
 
@@ -484,17 +479,17 @@ core.encEnt = function(str) {
 
 /**
  * Will return the current domain name of the site
- * e.g. core.local, core.com ...
+ * e.g. ss.local, ss.com ...
  *
  * @return {string}
  */
-core.getDomain = function()
+ss.getDomain = function()
 {
     var d = document;
     var g = d.goog;
     var uri = new g.Uri(d.location.href);
     return uri.getDomain();
-}; // method core.getDomain
+}; // method ss.getDomain
 
 
 /**
@@ -503,7 +498,7 @@ core.getDomain = function()
  *
  * @return {array}
  */
-core.getUrlVars = function()
+ss.getUrlVars = function()
 {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -517,7 +512,7 @@ core.getUrlVars = function()
     }
 
     return vars;
-}; // method core.getUrlVars
+}; // method ss.getUrlVars
 
 /**
  * Checks if an object is empty
@@ -526,7 +521,7 @@ core.getUrlVars = function()
  * @param {obj}
  * @return {boolean}
  */
-core.isNotEmpty = function (obj) {
+ss.isNotEmpty = function (obj) {
     for (var i in obj)
         return true;
 
@@ -537,9 +532,9 @@ core.isNotEmpty = function (obj) {
  * Return true/false if user is authenticated
  * @return {boolean}
  */
-core.isAuthed = function () {
+ss.isAuthed = function () {
     //return true;
-    return core.user.auth.isAuthed();
+    return ss.user.auth.isAuthed();
 };
 
 
@@ -550,21 +545,21 @@ core.isAuthed = function () {
  * @param {mixed} val
  * @return {mixed} whatever is passed for copy
  */
-core.copy = function (val){return val;};
+ss.copy = function (val){return val;};
 
 
 
 /**
  * Checks if a value (needle) is within the provided other parameters
  *
- * e.g. if (core.inValue('a', 'b', 'c', 'z')) is false...
+ * e.g. if (ss.inValue('a', 'b', 'c', 'z')) is false...
  *
  * @param {mixed} needle Value we want to look for
  * @param {...*=} opt_var_args Additional arguments that are used to compare
  *      our needle value against
  * @return {boolean}
  */
-core.inValue = function (needle, opt_var_args)
+ss.inValue = function (needle, opt_var_args)
 {
 
     var len = arguments.length;
@@ -578,7 +573,7 @@ core.inValue = function (needle, opt_var_args)
 
     return true;
 
-}; // function core.inValue
+}; // function ss.inValue
 
 
 /**
@@ -594,10 +589,10 @@ core.inValue = function (needle, opt_var_args)
  * @param {string} stringValue The string we want to split
  * @return {Array}
  */
-core.explode = function ( seperator, stringValue)
+ss.explode = function ( seperator, stringValue)
 {
     return stringValue.split(seperator);
-}; // function core.explode
+}; // function ss.explode
 
 /**
  * Will mix (fuse) two objects.
@@ -608,7 +603,7 @@ core.explode = function ( seperator, stringValue)
  * @param {object} objData The new object we want to mix
  * @return {void}
  */
-core.objMix = function (objTarget, objData)
+ss.objMix = function (objTarget, objData)
 {
     var g = goog;
 
@@ -632,8 +627,8 @@ core.objMix = function (objTarget, objData)
  * @param {string} sub
  * @return {string}
  */
-core.string_replace = function(haystack, find, sub) {
+ss.string_replace = function(haystack, find, sub) {
   try {
     return haystack.split(find).join(sub);
-  } catch(e) {core.error(e); return haystack;}
+  } catch(e) {ss.error(e); return haystack;}
 };

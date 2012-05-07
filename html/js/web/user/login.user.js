@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ web.user.login.logout = function (event)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 }; // web.user.login.logout
@@ -91,7 +91,7 @@ web.user.login.bindLogin = function()
         w.user.auth.events.runEvent('tw_click', elId);
 
       } catch (e) {
-        core.error(e);
+        ss.error(e);
       }
 
   });
@@ -135,13 +135,13 @@ web.user.login.bindLogin = function()
         w.user.auth.events.runEvent('fb_click', elId);
 
       } catch (e) {
-        core.error(e);
+        ss.error(e);
       }
 
   });
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 

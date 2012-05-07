@@ -1,5 +1,5 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. All Rights Reserved.
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 
 
 
-goog.provide('core.fb.com');
+goog.provide('ss.fb.com');
 
 
 
@@ -35,12 +35,12 @@ goog.provide('core.fb.com');
  * @param {object} event FB passed object
  * @return {void}
  */
-core.fb.com.create = function (event)
+ss.fb.com.create = function (event)
 {
   try {
     var c = core, g = goog;
 
-    var log = c.log('core.fb.com.create');
+    var log = c.log('ss.fb.com.create');
 
     log.info('Init');
 
@@ -60,10 +60,10 @@ core.fb.com.create = function (event)
      c.analytics.trackSocial('facebook', 'comment', event.href);
      
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // core.fb.com.create
+}; // ss.fb.com.create
 
 /**
  * Listen for comment remove events
@@ -71,12 +71,12 @@ core.fb.com.create = function (event)
  * @param {object} event FB passed object
  * @return {void}
  */
-core.fb.com.remove = function (event)
+ss.fb.com.remove = function (event)
 {
   try {
     var c = core, g = goog;
 
-    var log = c.log('core.fb.com.remove');
+    var log = c.log('ss.fb.com.remove');
 
     log.info('Init');
     /**
@@ -93,10 +93,10 @@ core.fb.com.remove = function (event)
 
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
-}; // core.fb.com.remove
+}; // ss.fb.com.remove
 
 
 /**
@@ -111,7 +111,7 @@ core.fb.com.remove = function (event)
  * @param {object=} opt_params Additional parameters as described above
  * @return {string}
  */
-core.fb.com.getElement = function (href, opt_params)
+ss.fb.com.getElement = function (href, opt_params)
 {
   try {
 
@@ -131,7 +131,7 @@ core.fb.com.getElement = function (href, opt_params)
   return str;
 
   } catch (e) {
-    core.error(e);
+    ss.error(e);
   }
 
 
