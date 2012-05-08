@@ -28,7 +28,7 @@ goog.require('ss.events');
 
 
 /**
- * The core auth events. Everything about authentication is handled from
+ * The ss auth events. Everything about authentication is handled from
  * here.
  *
  * Valid events are, along with their parameters:
@@ -69,7 +69,7 @@ ss.user.auth.login = function(user, cb, sourceId)
  {
    try {
     //shortcut assign
-    var c = core;
+    var c = ss;
     var u = c.user;
     var db = u.db;
     var g = goog;
@@ -175,14 +175,14 @@ ss.user.auth.getPerm = function()
  * If we are not authed, we will perform auth procedures
  *
  * @param {ss.STATIC.SOURCES} sourceId
- * @param {object} user core user data object verified
+ * @param {object} user ss user data object verified
  * @return {void}
  */
 ss.user.auth.extAuth = function(sourceId, user)
  {
     try {
 
-        var c = core;
+        var c = ss;
         var log = c.log('ss.user.auth.extAuth');
 
         log.info('sourceId:' + sourceId + ' authed:' + c.isAuthed());
@@ -212,7 +212,7 @@ ss.user.auth.hasExtSource = function(sourceId)
  {
     //ss.user.auth.hasFacebook = function ()
     try {
-        var c = core;
+        var c = ss;
 
         if (!c.isAuthed())
         return false;
@@ -249,7 +249,7 @@ ss.user.auth.getExtName = function(sourceId)
  {
 
     try {
-        var c = core;
+        var c = ss;
         var g = goog;
 
         if (!c.isAuthed())

@@ -26,7 +26,7 @@
 
 
 goog.provide('ss.web.user.ui');
-
+goog.require('ss.ready');
 
 
 ss.web.user.ui.db = {

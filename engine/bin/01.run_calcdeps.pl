@@ -12,21 +12,14 @@ $projectRoot = "../..";
 $jsroot = $projectRoot . "/html/js";
 $closurelib = $jsroot . "/closure-library";
 $googPath = $jsroot . "/closure-library/closure/goog";
-#3rd party apps...
 $asyncPath = $jsroot . "/closure-library/third_party/closure/goog";
-$sptPath = $jsroot . "/web";
-$geoPath = $jsroot . "/ss";
+$ourPath = $jsroot . "/";
 
 $calcdeps = $closurelib . "/closure/bin/calcdeps.py";
 
 $java = "/usr/bin/java";
 
-
-#print "PWD: $ENV{PWD}\n";
-#print "\$0: $0\n";
-
-
-$cmdrun = "$calcdeps -d $jsroot" . "/closure-library -p $sptPath -p $geoPath -o deps --output_file=$jsroot" . "/deps.js";
+$cmdrun = "$calcdeps -d $jsroot" . "/closure-library -p $ourPath -o deps --output_file=$jsroot" . "/deps.js";
 
 print "Will execute: " . $cmdrun . "\n";
 

@@ -24,9 +24,9 @@
  */
 
 goog.provide('ss.web');
+goog.require('ss');
 goog.require('ss.web.system');
 goog.require('ss.web.cookies');
-
 goog.require('ss.web.jq.ext');
 
 goog.require('ss.web.user');

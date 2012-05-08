@@ -42,7 +42,7 @@ ss.web.ui.db = {
 /**
  * Executes hard coded from ss.web.Init
  *
- * Initializes core UI elements and events
+ * Initializes ss UI elements and events
  *
  * @return {void}
  */
@@ -104,7 +104,7 @@ ss.web.ui.getWindowRes = function ()
  *
  * We will calculate the ss.web.ui.winsizes data object
  *
- * Resize the core elements of the page if ss.web.ui.db.doresize
+ * Resize the ss elements of the page if ss.web.ui.db.doresize
  *   allows us to
  *
  * And loop through all resize hooks we have

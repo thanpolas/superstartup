@@ -45,7 +45,7 @@ goog.require('goog.date.DateTime');
  */
 ss.date = function (opt_sDate)
 {
-    var c = core;
+    var c = ss;
     var g = goog;
     var log = g.debug.Logger.getLogger('ss.date');
 
@@ -178,7 +178,7 @@ ss.date.dbstatic = {
  */
 ss.date.prototype.getDiffStringAgo = function (opt_short)
 {
-    var c = core;
+    var c = ss;
     var g = goog;
     var log = g.debug.Logger.getLogger('ss.date.getDiffStringAgo');
 
@@ -241,7 +241,7 @@ ss.date.getDiffSecs = function (gDate)
  */
 ss.date.prototype.smallDatetime = function ()
 {
-    var c = core;
+    var c = ss;
     var g = goog;
     var m = c.date.dbstatic.month;
     var log = g.debug.Logger.getLogger('ss.date.smallDatetime');
@@ -327,7 +327,7 @@ ss.date.prototype.smallDatetime = function ()
  */
 ss.date.prototype.smallDate = function ()
 {
-    var c = core;
+    var c = ss;
     var g = goog;
     var m = c.date.dbstatic.month;
     var log = g.debug.Logger.getLogger('ss.date.smallDate');
@@ -413,7 +413,7 @@ ss.date.prototype.smallDate = function ()
  */
 ss.date.prototype._getDatetimedb = function ()
 {
-    var c = core;
+    var c = ss;
     var g = goog;
     var log = g.debug.Logger.getLogger('ss.date._getDatetimedb');
 
@@ -461,7 +461,7 @@ ss.date.prototype._getDatetimedb = function ()
  */
 ss.date.prototype.getRFC822 = function ()
 {
-    var c = core;
+    var c = ss;
     var g = goog;
     var log = g.debug.Logger.getLogger('ss.date.getRFC822');
 
@@ -496,7 +496,7 @@ ss.date.prototype.getRFC822 = function ()
  */
 ss.date.prototype.getFullDateTime = function ()
 {
-    var c = core;
+    var c = ss;
     var g = goog;
     var m = c.date.dbstatic.month;
     var log = g.debug.Logger.getLogger('ss.date.smallDatetime');

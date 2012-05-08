@@ -30,7 +30,7 @@ git = "/usr/bin/git";
 
 
 # Patch files
-core = '/html/start.php'
+ss = '/html/start.php'
 
 # CSS / JS / HEAD/FOOT Files
 css1 = projectRoot + "/html/cssc/main1.css";

@@ -13,7 +13,7 @@ $projectRoot = "/Users/borjo/Devel/websites/geo-beta";
 $java = "/usr/bin/java";
 
 
-### No need to edit further unless core folders are renamed
+### No need to edit further unless ss folders are renamed
 $templatesDir = $projectRoot . "/engine/templates/javascript/";
 $soyCompiler = $projectRoot . "/sysfiles/bin/soyCompiler/SoyToJsSrcCompiler.jar";
 $outputPathFormat = $projectRoot . "/geowarp.com/js/spt/templates/tpl_{INPUT_FILE_NAME_NO_EXT}.js";

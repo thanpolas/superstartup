@@ -51,7 +51,7 @@ ss.user.metadata.db = {
 ss.user.metadata.newObject = function (dataobj)
 {
   try {
-    var c = core;
+    var c = ss;
     var log = c.log('ss.metadata.newObject');
 
     var db = c.metadata.db;
@@ -91,7 +91,7 @@ ss.user.metadata.newObject = function (dataobj)
 ss.user.metadata.get = function (key)
 {
   try {
-    var c = core;
+    var c = ss;
     var db = c.metadata.db;
 
     if (null == db.metadata)
@@ -123,7 +123,7 @@ ss.user.metadata.get = function (key)
 ss.user.metadata.save = function (key, value)
 {
   try {
-    var c = core, g = goog;
+    var c = ss, g = goog;
 
     var log = c.log('ss.metadata.save');
 

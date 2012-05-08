@@ -46,7 +46,7 @@ goog.provide('ss.user.profile');
 ss.user.profile.submitAccount = function (datafields, cb)
 {
     //shortcut assignments
-    var w = core;
+    var w = ss;
     var err = w.err;
     var u = w.user;
     var db = u.db;
@@ -148,7 +148,7 @@ ss.user.profile.submitAccount = function (datafields, cb)
 ss.user.profile._validateAccount = function (datafields)
 {
     //shortcut assignments
-    var w = core;
+    var w = ss;
     var err = w.err;
     var u = w.user;
     var db = u.db;
@@ -222,7 +222,7 @@ ss.user.profile.submitPassword = function (datafields, cb)
 {
     try {
     //shortcut assignments
-    var w = core;
+    var w = ss;
     var err = w.err;
     var u = w.user;
     var db = u.db;
@@ -302,7 +302,7 @@ ss.user.profile.submitPassword = function (datafields, cb)
 ss.user.profile._validatePassword = function (datafields)
 {
     //shortcut assignments
-    var w = core;
+    var w = ss;
     var err = w.err;
     var u = w.user;
     var db = u.db;
@@ -365,7 +365,7 @@ ss.user.profile.submitProfile = function (datafields, cb)
 {
   try {
     //shortcut assignments
-    var c = core;
+    var c = ss;
     var err = c.err;
     var u = c.user;
     var db = u.db;
@@ -469,7 +469,7 @@ ss.user.profile.submitProfile = function (datafields, cb)
 ss.user.profile.submitAlerts = function (datafields, cb)
 {
     //shortcut assignments
-    var w = core;
+    var w = ss;
     var err = w.err;
     var u = w.user;
     var db = u.db;

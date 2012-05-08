@@ -54,7 +54,7 @@ goog.provide('ss.ajax');
 */
 ss.ajax = function(url, params, opt_callback)
 {
-    var c = core;
+    var c = ss;
     var db = c.ajax.dbstatic;
     var g = goog;
     var log = g.debug.Logger.getLogger('ss.ajax');
@@ -305,9 +305,9 @@ ss.ajax.ERRORSTATUS = {
 ss.ajax.prototype.addData = function (key, valuedata, opt_passBare)
 {
     var g = goog;
-    var geoc = core;
+    var geoc = ss;
     // decide on env
-    var m = web;
+    var m = ss.web;
 
     var passBare = opt_passBare || false;
 
@@ -373,13 +373,8 @@ ss.ajax.prototype.addData = function (key, valuedata, opt_passBare)
 * @return {boolean} true / false
 */
 ss.ajax.prototype.send = function() {
-    // decide on env, set m root
-    var m = web;
-
-    var wa = ss.ajax;
-    var g = goog;
-
     var log = ss.log('ss.ajax.send');
+    var g = goog;
     var _this = this;
 
 
@@ -390,7 +385,6 @@ ss.ajax.prototype.send = function() {
         log.warning('updating is true, exiting');
         return false;
     }
-    //log.shout('this:' + g.debug.expose(this));
 
     //reset local variables
     this.db.result = null;
@@ -446,8 +440,7 @@ ss.ajax.prototype._sendActual = function ()
 
 
     // decide on env, set m root
-    var m = web;
-    var c = core;
+    var c = ss, m = c.web;
     var wa = c.ajax;
     var g = goog;
 
@@ -538,7 +531,7 @@ ss.ajax.prototype._sendCallback = function (thisobj)
 
     try {
 
-    var m = web;
+    var m = ss.web;
 
     var log = ss.log('ss.ajax._sendCallback');
 
@@ -697,14 +690,14 @@ ss.ajax.prototype._checkError = function()
  */
 ss.ajax.prototype._sendErrorCallback = function (thisobj, opt_noupdate)
 {
-    var c = core;
+    var c = ss;
     var wa = c.ajax;
     var g = goog;
 
     try {
 
 
-        var m = web;
+        var m = c.web;
 
     var log = ss.log('ss.ajax._sendErrorCallback');
 
@@ -776,10 +769,10 @@ ss.ajax.prototype._compilePassData = function ()
 {
     try {
     // decide on env, set m root
-    var m = web;
+    var m = ss.web;
     var g = goog;
     var log = ss.log ('ss.ajax._compilePassData');
-    var geoc = core;
+    var geoc = ss;
 
     log.fine('Init');
 
@@ -881,7 +874,7 @@ ss.ajax.prototype._initAjaxObject = function()
 {
     var g = goog;
     // decide on env, set m root
-    var m = web;
+    var m = ss.web;
 
     var log = ss.log('ss.ajax._initAjaxObject');
 
@@ -927,7 +920,7 @@ ss.ajax.prototype._initAjaxObject = function()
 ss.ajax.prototype._setupAjaxHandlers = function ()
 {
     // decide on env, set m root
-    var m = web;
+    var m = ss.web;
     var wa = ss.ajax;
     var g = goog;
     var log = ss.log('ss.ajax._setupAjaxHandlers');
@@ -972,11 +965,11 @@ ss.ajax.prototype._checkInjections = function()
 {
     try {
     var g = goog;
-    var c = core;
+    var c = ss;
     var _this = this;
 
     // decide on env, set m root
-    var m = web;
+    var m = ss.web;
 
     var log = c.log('ss.ajax._checkInjections');
 
@@ -1211,10 +1204,10 @@ ss.ajax.prototype.setFileUpload = function (what)
 ss.ajax.prototype._compilePassDataUpload = function ()
 {
     try {
-    var m = web;
+    var m = ss.web;
     var g = goog;
     var log = ss.log ('ss.ajax._compilePassDataUpload');
-    var geoc = core;
+    var geoc = ss;
 
     log.fine('Init');
 

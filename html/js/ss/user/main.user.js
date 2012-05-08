@@ -82,7 +82,7 @@ ss.user.db.clear = function()
  */
 ss.user.getUserId = function ()
 {
-    var w = core;
+    var w = ss;
     if (!w.isAuthed())
         return null;
 
@@ -98,7 +98,7 @@ ss.user.getUserId = function ()
  */
 ss.user.getNickname = function ()
 {
-  var c = core;
+  var c = ss;
   if (!c.isAuthed())
     return null;
 
@@ -122,7 +122,7 @@ ss.user.getUserDataObject = function ()
  */
 ss.user.getUserData = function ()
 {
-    var c = core;
+    var c = ss;
     if (!c.isAuthed())
         return {};
 
@@ -140,7 +140,7 @@ ss.user.follow = function (uid, listener)
 {
     try {
 
-    var w = core;
+    var w = ss;
     var g = goog;
 
     if (!w.isAuthed()) {
@@ -202,7 +202,7 @@ ss.user.unfollow = function (uid, listener)
 {
     try {
 
-    var w = core;
+    var w = ss;
     var g = goog;
 
     if (!w.isAuthed()) {
@@ -253,7 +253,7 @@ ss.user.unfollow = function (uid, listener)
 
 /**
  * Checks if the given object is a valid
- * core user object
+ * ss user object
  *
  * @param {object} user
  * @return {boolean}

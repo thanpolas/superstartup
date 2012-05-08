@@ -38,7 +38,7 @@ goog.provide('ss.fb.com');
 ss.fb.com.create = function (event)
 {
   try {
-    var c = core, g = goog;
+    var c = ss, g = goog;
 
     var log = c.log('ss.fb.com.create');
 
@@ -74,7 +74,7 @@ ss.fb.com.create = function (event)
 ss.fb.com.remove = function (event)
 {
   try {
-    var c = core, g = goog;
+    var c = ss, g = goog;
 
     var log = c.log('ss.fb.com.remove');
 

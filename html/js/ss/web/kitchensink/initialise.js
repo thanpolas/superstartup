@@ -25,7 +25,7 @@
  
 goog.provide('ss.web.myapp');
 goog.provide('ss.web.myapp.initialise');
-goog.require('core');
+goog.require('ss');
 goog.require('ss.web.user.login');
  
 
@@ -40,13 +40,13 @@ ss.web.myapp.initialise = function()
 {
   try {
 
-    var w = web, c = core;
+    var c = ss, w = c.web;
 
     var log = c.log('ss.web.myapp.initialise');  
     
     log.info('Hello World!');
     
-
+    
     
 
     
@@ -73,7 +73,7 @@ ss.ready.addFunc('ready', ss.web.myapp.initialise);
 ss.web.myapp.newUser = function()
 {
   try {
-    var w = web,  c = core;
+    var c = ss, w = c.web;
 
     var log = c.log('ss.web.myapp.newUser');
 
@@ -120,7 +120,7 @@ ss.web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
 {
   try {
 
-    var w = web, c = core, j = jQuery, g = goog;
+    var c = ss, w = c.web, j = jQuery, g = goog;
 
     var log = c.log('ss.web.myapp.authState');  
     

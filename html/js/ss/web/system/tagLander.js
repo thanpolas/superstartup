@@ -82,7 +82,7 @@ ss.web.system.tagLanderParse = function()
     // check Core Env
     obj = c.arFind(arr, 'action', 5);
     if (!g.isNull(obj)) {
-      // we found core states assign to web
+      // we found ss states assign to web
       if (g.isBoolean(obj.obj['DEVEL']))
         c.DEBUG = obj.obj['DEVEL'];
       if (g.isBoolean(obj.obj['PRODUCTION']))

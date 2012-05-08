@@ -77,7 +77,7 @@ ss.events.listeners.prototype.addEventListener = function (type, listener, opt_t
 {
   try {
 
-    var w = core;
+    var w = ss;
     var g = goog;
     var log = w.log('ss.events.listeners.addEvent');
 
@@ -124,7 +124,7 @@ ss.events.listeners.prototype.addEventListenerOnce = function (type, listener, o
 {
   try {
 
-    var w = core;
+    var w = ss;
     var g = goog;
     var log = w.log('ss.events.listeners.addEventOnce');
 
@@ -167,7 +167,7 @@ ss.events.listeners.prototype.removeEventListener = function (type, listener)
 {
   try {
 
-    var w = core;
+    var w = ss;
     var g = goog;
     var log = w.log('ss.events.listeners.removeEvent');
 
@@ -257,7 +257,7 @@ ss.events.listeners.prototype._runEventType = function(type, opt_var_args)
 {
   try {
     var g = goog;
-    var c = core;
+    var c = ss;
     var log = c.log('ss.events.listeners._runEventType');
 
     log.finer('Init. type:' + type + ' total listeners:' + this._eventsdb.listeners.length);

@@ -141,7 +141,7 @@ ss.web.jq.ext.del = function(callback)
 /**
  * .slide(refreshHeight) :: Performs a slideUp/Down depending on status.
  *
- * core code from: http://jqueryfordesigners.com/slidedown-animation-jump-revisited/
+ * ss code from: http://jqueryfordesigners.com/slidedown-animation-jump-revisited/
  *
  * @param {boolean|function=} opt_refreshHeight is optional, if set to true we will force refresh the truHeight
  * @param {function=} opt_callback Call Back function, assign as first parameter as well

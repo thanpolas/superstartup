@@ -93,7 +93,7 @@ ss.web2.db = {
  */
 ss.web2.db.clear = function ()
 {
-    var c = core;
+    var c = ss;
     var db = c.web2.db;
 
     // check if we were authed from external source
@@ -128,7 +128,7 @@ ss.web2.db.clear = function ()
 ss.web2.getUserExt = function(userObj, opt_prefferedSource)
 {
   try {
-    var g = goog, c = core;
+    var g = goog, c = ss;
 
     var prefSource = opt_prefferedSource || c.STATIC.SOURCES.FB;
 
@@ -164,7 +164,7 @@ ss.web2.getUserExt = function(userObj, opt_prefferedSource)
  *
  *
  * @param {ss.STATIC.SOURCES} sourceId The external source id
- * @param {object} user core user data object
+ * @param {object} user ss user data object
  * @param {boolean=} opt_newuser If user logged in is new
  * @return {void}
  */
@@ -173,7 +173,7 @@ ss.web2.extLogin = function (sourceId, user, opt_newuser)
     try {
 
     var g = goog;
-    var c = core;
+    var c = ss;
     var w2 = c.web2;
     var log = c.log('ss.web2.extLogin');
 
@@ -222,7 +222,7 @@ ss.web2.isExtAuthed = function (sourceId)
 {
     try {
     var g = goog;
-    var w = core;
+    var w = ss;
     var w2 = w.web2;
 
     // ugly patch for mobile (FB Only now)
@@ -298,7 +298,7 @@ ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
 {
     try {
     var g = goog;
-    var c = core;
+    var c = ss;
     var w2 = c.web2;
     var db = w2.db;
 
@@ -387,7 +387,7 @@ ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
             }
 
             if (g.isNull(checkObj.endState)) {
-                // core server auth validation pending...
+                // ss server auth validation pending...
                 log.fine('endState is null exiting');
                 return;
             }
@@ -445,7 +445,7 @@ ss.web2.authStateTimeout = function ()
     try {
 
     var g = goog;
-    var c = core;
+    var c = ss;
     var w2 = c.web2;
     var db = w2.db;
 

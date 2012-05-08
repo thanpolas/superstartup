@@ -28,7 +28,7 @@
  * In this file we have the main facebook event listeners
  * and basic functions.
  *
- * core Server interaction is in facebook.local.js
+ * ss Server interaction is in facebook.local.js
  *
  *
  */
@@ -83,7 +83,7 @@ ss.fb.haveAuthStatus = function ()
  */
 ss.fb.getAppId = function ()
 {
-  var c = core;
+  var c = ss;
 
   return c.conf.fb.app_id;
 
@@ -119,7 +119,7 @@ ss.fb.db.clear = function ()
 ss.fb.InitWeb = function ()
 {
   try {
-    var c = core, g = goog;
+    var c = ss, g = goog;
     var log = c.log('ss.fb.InitWeb');
 
     log.info('Init');
@@ -171,7 +171,7 @@ ss.fb.Init = function ()
   try {
 
     var fb = FB;
-    var c = core;
+    var c = ss;
     var log = c.log('ss.fb.Init');
 
     log.info('Init - FB LIB LOADED');
@@ -217,7 +217,7 @@ ss.fb.Init = function ()
 ss.fb.getInitialLoginStatus = function (response)
 {
   try {
-    var c = core;
+    var c = ss;
     var g = goog;
     var log = c.log('ss.fb.getInitialLoginStatus');
 
@@ -295,7 +295,7 @@ ss.fb.getPermissions = function (callback)
 ss.fb.sessionChange = function (response)
 {
   try {
-    var c = core, g = goog;
+    var c = ss, g = goog;
     var log = c.log('ss.fb.sessionChange');
 
     log.info('Init. response.perms:' + response.perms);
@@ -370,7 +370,7 @@ ss.fb.isAuthedFromResponse = function(response)
 ss.fb.loginListener = function (response, opt_callback)
 {
   try {
-    var c = core;
+    var c = ss;
     var g = goog;
     var log = c.log('ss.fb.loginListener');
 
@@ -409,7 +409,7 @@ ss.fb.loginListener = function (response, opt_callback)
  */
 ss.fb.loginOpen = function (opt_callback, opt_perms)
 {
-  var c = core;
+  var c = ss;
   var g = goog;
   var fb = FB;
 
@@ -445,7 +445,7 @@ ss.fb.linkUser = function(opt_callback)
 {
   try {
 
-    var c = core;
+    var c = ss;
     var g = goog;
     var fb = FB;
     var log = c.log('ss.fb.linkUser');
@@ -493,7 +493,7 @@ ss.fb.edgeCreate = function (result, fbobj)
 {
   try {
 
-    var c = core;
+    var c = ss;
     var g = goog;
     var fb = FB;
     var log = c.log('ss.fb.edgeCreate');
@@ -536,7 +536,7 @@ ss.fb.edgeRemove = function (result, fbobj)
 {
   try {
 
-    var c = core;
+    var c = ss;
     var g = goog;
     var log = c.log('ss.fb.edgeRemove');
 
@@ -634,7 +634,7 @@ ss.fb.getLikeButton = function (url, opt_params, opt_width)
 ss.fb.hasPerm = function (value, callback)
 {
   try {
-    var c = core;
+    var c = ss;
     var g = goog;
     var db = c.fb.db;
     var log = c.log('ss.fb.hasPerm');

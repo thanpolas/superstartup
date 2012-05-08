@@ -36,17 +36,24 @@ goog.provide('ss.ready');
  * watch or exit. If we need to force initialisation
  * we need to set the second parameter to true
  *
- * @param {string} nameId Unique identifier
+ * @param {string|function} nameId Unique identifier or function that will attach 
+ *      to our framework's ready event...
  * @param {boolean=} opt_forceInit If we need to force Init
  * @return void
  */
 ss.ready = function(nameId, opt_forceInit)
 {
+  try {
     var log = goog.debug.Logger.getLogger('ss.ready');
-    var w = core;
+    var w = ss;
     var r = w.ready;
 
     log.info('Init - nameId:' + nameId + ' opt_forceInit:' + opt_forceInit);
+
+    if(goog.isFunction(nameId)) {
+      w.ready.addFunc('main', nameId);
+      return;
+    }
 
     var nameId = nameId || null;
 
@@ -119,7 +126,7 @@ ss.ready = function(nameId, opt_forceInit)
      */
 
      r.db.allReady.push(readyObj);
-
+   } catch(e){ ss.error(e);}
 }; // ss.ready Constructor
 
 ss.ready.log = goog.debug.Logger.getLogger('ss.ready');
@@ -140,7 +147,7 @@ ss.ready.db = {
  */
 ss.ready.isDone = function (nameId)
 {
-    var w = core;
+    var w = ss;
     var r = w.ready;
     var g = goog;
     var nameId = nameId || null;
@@ -164,7 +171,7 @@ ss.ready.isDone = function (nameId)
  */
 ss.ready.isDoneCheck = function (nameId, checkId)
 {
-    var w = core;
+    var w = ss;
     var r = w.ready;
     var g = goog;
     var nameId = nameId || null;
@@ -189,13 +196,13 @@ ss.ready.isDoneCheck = function (nameId, checkId)
  * Pushes a listener function down the ready queue...
  *
  * @param {string} nameId The name ID
- * @param {function} fn callback function
+ * @param {Function} fn callback function
  * @param {Number=} opt_delay optionaly set a delay to execute fn in ms
  * @return {void}
  */
 ss.ready.addFunc = function(nameId, fn, opt_delay)
 {
-    var c = core;
+    var c = ss;
     var log = c.log('ss.ready.addFunc');
 
     var nameId = nameId || null;
@@ -247,7 +254,7 @@ ss.ready.addFunc = function(nameId, fn, opt_delay)
  */
 ss.ready.addFuncCheck = function(nameId, checkId, fn)
 {
-    var w = core;
+    var w = ss;
     var g = goog;
     var log = g.debug.Logger.getLogger('ss.ready.addFuncCheck');
 
@@ -306,7 +313,7 @@ ss.ready.addFuncCheck = function(nameId, checkId, fn)
 ss.ready.addCheck = function(nameId, checkId)
 {
   try {
-    var w = core;
+    var w = ss;
     var nameId = nameId || null;
     var log = goog.debug.Logger.getLogger('ss.ready.addCheck');
     log.fine('Init - nameId:' + nameId + ' checkId:' + checkId);
@@ -349,7 +356,7 @@ ss.ready.check = function(nameId, checkId, opt_state)
 {
     try {
     var g = goog;
-    var w = core;
+    var w = ss;
     var nameId = nameId || null;
 
     var log = g.debug.Logger.getLogger('ss.ready.check');
@@ -413,7 +420,7 @@ ss.ready._isChecksComplete = function (nameId)
 {
     try {
     var g = goog;
-    var w = core;
+    var w = ss;
     var log = w.log('ss.ready._isChecksComplete');
 
     // find index of nameId or if it exists...
@@ -465,7 +472,7 @@ ss.ready._runAll = function (nameId)
 {
     try {
     var g = goog;
-    var w = core;
+    var w = ss;
     var log = w.log('ss.ready._runAll');
 
     log.info('Executing all listeners for:' + nameId)
@@ -530,7 +537,7 @@ ss.ready._runAllChecks = function (nameId, checkId)
 {
     try {
     var g = goog;
-    var w = core;
+    var w = ss;
 
     // find index of nameId or if it exists...
     var ind = w.arFindIndex(w.ready.db.allReady, 'nameId', nameId);

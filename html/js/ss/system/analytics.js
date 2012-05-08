@@ -48,7 +48,7 @@ goog.provide('ss.analytics');
 ss.analytics.trackEvent = function (category, action, opt_label, opt_value)
 {
     try {
-    var w = window, c = core;
+    var w = window, c = ss;
 
     if (!ss.WEBTRACK)
         return;
@@ -90,7 +90,7 @@ ss.analytics.trackMetrics = function (category, action, opt_label, opt_value,
     opt_value2, opt_value3, opt_value4)
 {
   try {
-    var c = core;
+    var c = ss;
 
 
     var aj = new c.ajax('/mtr/track', {
@@ -298,7 +298,7 @@ ss.analytics.trackSocial = function (network, socialAction, opt_target, opt_page
   try {
     var w = window;
 
-    if (!ss.WEBTRACK)
+    if (!w.ss.WEBTRACK)
         return;
 
     w._gaq.push(['_trackSocial', network, socialAction, opt_target, opt_pagePath]);

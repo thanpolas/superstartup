@@ -49,7 +49,7 @@ ss.twit.db = {
  */
 ss.twit.Init = function ()
 {
-  var c = core;
+  var c = ss;
   c.twit.db.twttrPoll = setInterval(c.twit._checkTwttrLoad, 300);
 }; // function ss.twit.Init
 
@@ -65,7 +65,7 @@ ss.twit._checkTwttrLoad = function()
   try {
 
     if (goog.isDef(window.twttr)){
-      var c = core;
+      var c = ss;
       clearInterval(c.twit.db.twttrPoll);
       c.twit.libLoaded();
     }
@@ -85,7 +85,7 @@ ss.twit._checkTwttrLoad = function()
 ss.twit.libLoaded = function()
 {
   try {
-   var t = twttr, c = core;
+   var t = twttr, c = ss;
    var log = c.log('ss.twit.libLoaded');
 
    log.info('TWITTER LOADED');
@@ -116,7 +116,7 @@ ss.twit.eventTweet = function (event)
 
 
     //event.target.id
-    var j = $, c = core;
+    var j = $, c = ss;
 
     var twShare = j(event.target).data('twShare');
 
@@ -230,7 +230,7 @@ ss.twit.extractParamFromUri = function(uri, paramName) {
 ss.twit.getHref = function (text, uri, opt_params)
 {
   try {
-    var c = core, g = goog;
+    var c = ss, g = goog;
 
     var params = opt_params || {};
 
@@ -270,7 +270,7 @@ ss.twit.linkUser = function()
 {
     try {
 
-    var w = core;
+    var w = ss;
     var g = goog;
     var fb = FB;
     var log = w.log('ss.twit.linkUser');
@@ -317,7 +317,7 @@ ss.twit.linkUser = function()
 ss.twit.loginOpen = function ()
 {
     try {
-    var c = core, win = window;
+    var c = ss, win = window;
     var log = c.log('ss.twit.loginOpen');
     // we have to redirect user to /signup/twitter.php
     // to start the authentication process

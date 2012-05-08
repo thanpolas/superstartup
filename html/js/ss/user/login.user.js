@@ -44,7 +44,7 @@ goog.provide('ss.user.login');
 ss.user.login.submit = function(user, pass, perm, callback)
  {
     //shortcut assign
-    var c = core;
+    var c = ss;
     var valid = c.valid;
     var err = c.err;
     var u = c.user;
@@ -171,7 +171,7 @@ ss.user.login.submit = function(user, pass, perm, callback)
 ss.user.login.submitCallback = function(res, callback)
  {
     //shortcut assign
-    var c = core;
+    var c = ss;
     var err = c.err;
     var u = c.user;
     var db = u.db;
@@ -219,7 +219,7 @@ ss.user.login.submitCallback = function(res, callback)
 ss.user.login.logout = function(opt_callback)
  {
    try {
-    var c = core;
+    var c = ss;
 
     var log = goog.debug.Logger.getLogger('ss.user.login.logout');
 

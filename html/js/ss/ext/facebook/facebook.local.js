@@ -41,7 +41,7 @@ ss.fb.local.checkFacebookAuth = function (listener)
 {
     try {
 
-    var w = core;
+    var w = ss;
     var log = w.log('ss.fb.local.checkFacebookAuth');
 
     log.info('Init. Authed:' + w.isAuthed());
@@ -125,7 +125,7 @@ ss.fb.local.loginSubmit = function (opt_listener)
     try {
 
     var fb = FB;
-    var w = core;
+    var w = ss;
     var g = goog;
     var log = w.log('ss.fb.local.loginSubmit');
 
@@ -224,7 +224,7 @@ ss.fb.local.linkUser = function (opt_listener, opt_fbuser)
     try {
 
 
-    var w = core;
+    var w = ss;
     var log = w.log('ss.fb.local.linkUser');
 
     log.info('Init. Authed:' + w.isAuthed());
@@ -299,7 +299,7 @@ ss.fb.local.linkUser = function (opt_listener, opt_fbuser)
 ss.fb.local.commentCreate = function (data, opt_rem, opt_cb)
 {
   try {
-    var c = core;
+    var c = ss;
 
     var cb = opt_cb || function(){};
 
