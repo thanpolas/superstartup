@@ -27,3 +27,14 @@ goog.provide('showcase');
 
 
 goog.require('showcase.widget.showObject');
+
+
+ss.ready(function(){showcase.init();});
+
+
+showcase.init = function() {
+  var log = ss.log('showcase.init');
+  
+  var so = new showcase.widgets.showObject();
+  
+};

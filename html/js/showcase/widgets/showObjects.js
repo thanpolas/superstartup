@@ -25,14 +25,75 @@
 
 goog.provide('showcase.widget.showObject');
 
-ss.ready(function(){showcase.widget.showObject.init();});
+var sws = showcase.widget.showObject;
+
 
 /**
- * Initialize our widget
+ * The widget's constructor
  *
- * @return {void}
+ * @constructor
+ * @return {this}
  */
-showcase.widget.showObject.init = function() {
-  console.log('hello world');
+sws = function() {
+  
+  
+  
+  this.objectItems = [];
+  
+  
+  
+  
+  return this;
 };
+
+/**
+ * A class that contains our objectItem structure
+ *
+ * @constructor
+ * @return {object}
+ */
+sws.objectItem = function() {
+  return {
+    id: '',
+    title: '',
+    comboTitle: '',
+    objectPath: '',
+    objectActual: {}
+  }
+
+};
+
+/**
+ * Add an object to the widget
+ * 
+ * @param {string} id A unique identifier to be used for handling objects
+ * @param {string} title Title to use when the object is selected
+ * @param {string} path The path where the object lives e.g. showcase.user.dataobject
+ *                pass as a string
+ * @param {string=} opt_comboTitle The title to use in the combo box if different from title
+ * @return {this}
+ */
+sws.prototype.addObject = function(id, title, path, opt_comboTitle) {
+  var obj = new sws.objectItem();
+  obj.id = id;
+  obj.title = title;
+  obj.comboTitle = opt_comboTitle || title;
+  obj.objectPath = path;
+  this.objectItems.push(obj);
+  return this;
+};
+
+/**
+ * Populate our combobox
+ * 
+ * @return {this}
+ */
+sws.prototype.populate = function() {
+  
+};
+
+
+
+
+
 
