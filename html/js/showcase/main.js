@@ -24,7 +24,7 @@
  */
 
 goog.provide('showcase');
-
+goog.require('ss');
 
 goog.require('showcase.widget.showObject');
 
@@ -33,8 +33,13 @@ ss.ready(function(){showcase.init();});
 
 
 showcase.init = function() {
+  try {
   var log = ss.log('showcase.init');
   
-  var so = new showcase.widgets.showObject();
+  var so = new showcase.widget.showObject();
   
+  so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()');
+  log.info('run');
+  log.info(so.objectItems);
+  } catch(e) {ss.error(e);}
 };

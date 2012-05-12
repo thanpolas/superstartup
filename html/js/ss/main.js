@@ -120,7 +120,7 @@ ss.READY = false;
 ss.db = {};
 
 /**
- * The geowarp Init function should be called whenever
+ * The Init function should be called whenever
  * our environment is loaded and ready.
  *
  *

@@ -34,25 +34,29 @@ var sws = showcase.widget.showObject;
  * @constructor
  * @return {this}
  */
-sws = function() {
-  
-  
-  
-  this.objectItems = [];
-  
-  
-  
+showcase.widget.showObject = function() {
+  try {
   
   return this;
+  } catch(e) {ss.error(e);}
 };
+
+/**
+ * private container of object items
+ *
+ * @type {Array}
+ * @private
+ */
+showcase.widget.showObject.prototype._objectItems = [];
 
 /**
  * A class that contains our objectItem structure
  *
  * @constructor
+ * @private
  * @return {object}
  */
-sws.objectItem = function() {
+showcase.widget.showObject.objectItem = function() {
   return {
     id: '',
     title: '',
@@ -73,8 +77,8 @@ sws.objectItem = function() {
  * @param {string=} opt_comboTitle The title to use in the combo box if different from title
  * @return {this}
  */
-sws.prototype.addObject = function(id, title, path, opt_comboTitle) {
-  var obj = new sws.objectItem();
+showcase.widget.showObject.prototype.addObject = function(id, title, path, opt_comboTitle) {
+  var obj = new showcase.widget.showObject.objectItem();
   obj.id = id;
   obj.title = title;
   obj.comboTitle = opt_comboTitle || title;
@@ -88,7 +92,7 @@ sws.prototype.addObject = function(id, title, path, opt_comboTitle) {
  * 
  * @return {this}
  */
-sws.prototype.populate = function() {
+showcase.widget.showObject.prototype.populate = function() {
   
 };
 

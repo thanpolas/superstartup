@@ -44,7 +44,6 @@ ss.web.myapp.initialise = function()
 
     var log = c.log('ss.web.myapp.initialise');  
     
-    log.info('Hello World!');
     
     
     
