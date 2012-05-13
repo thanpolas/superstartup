@@ -21,11 +21,15 @@ masterRoot="/home/116255/users/.home/domains/"
 livePath=$masterRoot"superstartup.org"
 stagingPath=$masterRoot"staging.superstartup.org"
 # set deployment preparation paths
-deployPath=$masterRoot"deploy-superstartup"
+deployRootPath=$masterRoot"deploy-superstartup"
+deplyPath=$deployRootPath"/deploys/"
 configLive=$deployPath"/config/production"
 configStaging=$deployPath"/config/staging"
-# Set path to CI's config folder
-configPath="/engine/CI/origin/application/config"
+gitPrototype=$deployPath"/git-prototype"
+
+# Set path to CI's root and config folder
+CIrootPath="engine/CI/origin"
+CIconfigPath="engine/CI/origin/application/config"
 
 
 # Set where CI's environment PHP file is (included by index.php)
@@ -72,9 +76,34 @@ then
   env -i git submodule init
   env -i git submodule update
   
+  # get a random path
+  newFullPath=$deplyPath"superstartup_"$RANDOM"/"
   
-  randNum=$RANDOM
-  echo "Random: "$randNum
+  # copy our git prototype there
+  cp -R $gitPrototype $newFullPath
+  
+  cd $newFullPath
+  env -i git pull grid master
+  ## init and update submodules
+  echo "Updating submodules..."
+  env -i git submodule init
+  env -i git submodule update
+  # init CI's submodules  
+  echo "Updating CI's submodules..."
+  cd $newFullPath$CIrootPath
+  env -i git submodule init
+  env -i git submodule update
+  # overwrite our config file
+  echo "Overwriting LIVE config files..."
+  cp -fR $configLive $newFullPath$CIconfigPath
+  
+  ### Secure environment after the pull
+  echo $envPHPmaster > $newFullPath$envFile
+  
+  ### Make post-update executable, git repo's hook is linked
+  ### to this file
+  chmod a+x  $newFullPath$postUpdate  
+  
   echo "*** LIVE DEPLOYED-"
 
 fi
