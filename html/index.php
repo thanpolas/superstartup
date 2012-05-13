@@ -118,7 +118,7 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  */
-	$system_path = '../engine/CI/system';
+	$system_path = '../engine/CI/origin/system';
 
 /*
  *---------------------------------------------------------------
@@ -134,7 +134,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  */
-	$application_folder =  '../engine/CI/application';
+	$application_folder =  '../engine/CI/origin/application';
 
 /*
  * --------------------------------------------------------------------
