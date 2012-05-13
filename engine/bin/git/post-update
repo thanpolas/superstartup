@@ -23,9 +23,9 @@ stagingPath=$masterRoot"staging.superstartup.org"
 # set deployment preparation paths
 deployRootPath=$masterRoot"deploy-superstartup"
 deplyPath=$deployRootPath"/deploys/"
-configLive=$deployPath"/config/production"
-configStaging=$deployPath"/config/staging"
-gitPrototype=$deployPath"/git-prototype"
+configLive=$deployRootPath"/config/production"
+configStaging=$deployRootPath"/config/staging"
+gitPrototype=$deployRootPath"/git-prototype"
 
 # Set path to CI's root and config folder
 CIrootPath="engine/CI/origin"
