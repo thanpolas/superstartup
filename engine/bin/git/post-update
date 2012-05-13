@@ -78,23 +78,23 @@ then
   
   # get a random path
   newFullPath=$deplyPath"superstartup_"$RANDOM"/"
-  
+  echo "*** Creating new deployment in folder: "$newFullPath
   # copy our git prototype there
   cp -R $gitPrototype $newFullPath
   
   cd $newFullPath
   env -i git pull grid master
   ## init and update submodules
-  echo "Updating submodules..."
+  echo "*** Updating submodules..."
   env -i git submodule init
   env -i git submodule update
   # init CI's submodules  
-  echo "Updating CI's submodules..."
+  echo "*** Updating CI's submodules..."
   cd $newFullPath$CIrootPath
   env -i git submodule init
   env -i git submodule update
   # overwrite our config file
-  echo "Overwriting LIVE config files..."
+  echo "*** Overwriting LIVE config files..."
   cp -fR $configLive $newFullPath$CIconfigPath
   
   ### Secure environment after the pull
