@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ###
 ### Automatically push to production and staging installations
 ###
@@ -55,22 +55,22 @@ then
   echo "*** master branch pushed. Deploying on LIVE site"
 
 
-  #cd $masterPath
-  #env -i git reset --hard
+  cd $masterPath
+  env -i git reset --hard
   ### Secure environment after the reset
-  #echo $envPHPmaster > $masterPath$envFile
+  echo $envPHPmaster > $masterPath$envFile
 
-  #env -i git pull grid master
+  env -i git pull grid master
   ### Secure environment after the pull
-  #echo $envPHPmaster > $masterPath$envFile
+  echo $envPHPmaster > $masterPath$envFile
 
   ### Make post-update executable, git repo's hook is linked
   ### to this file
-  #chmod a+x $masterPath$postUpdate
+  chmod a+x $masterPath$postUpdate
   
   ## init and update submodules
-  #env -i git submodule init
-  #env -i git submodule update
+  env -i git submodule init
+  env -i git submodule update
   
   
   randNum=$RANDOM
