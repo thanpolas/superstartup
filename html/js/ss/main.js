@@ -242,7 +242,7 @@ ss.arInArrayIndex = function (ar, value)
 
 /**
  * Determines if the given object is a valid
- * jQuery array
+ * jQuery array or the jQuery function
  *
  * @param {mixed} ar The object we want to examine
  * @return boolean
@@ -250,13 +250,9 @@ ss.arInArrayIndex = function (ar, value)
 ss.isjQ = function (ar)
 {
   try {
-    // for some reason a selection of a jQuery object now returns object (!)
-    // check on that when have time (ahahaha)
-    if (!goog.isArray(ar) && !goog.isObject(ar)) return false;
-
-    if (goog.isString(ar.jquery)) return true;
-
-    return false;
+    if (goog.isFunction(ar))
+      return ar == jQuery;
+    return ar instanceof jQuery;
   } catch(e) {
     ss.error(e);
     return false;

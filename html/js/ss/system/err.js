@@ -31,59 +31,43 @@ ss.err = {};
 
 
 /**
- * Hook or try{}catch(e) statements
+ * Hook for try{}catch(e) statements
  *
  * @param {object} e error object
  * @return {void}
  */
 ss.error = function (e)
 {
-    var g = goog;
-    var log = g.debug.Logger.getLogger('ss.error');
-
+    var s = ss;
+    var log = s.log('ss.error');
+    var filename, line, msg, source, name;
     //log.info(g.debug.expose(e));
     if (ss.MOBILE) {
-        var filename = e.name;
-        var line = e.line;
-        var msg = e.message;
-        var source = e.sourceURL;
+        filename = e.name;
+        line = e.line;
+        msg = e.message;
+        source = e.sourceURL;
     } else {
+      name = e.name;
       if (e.fileName) {
-        var filename = e.fileName;
-        var line = e.lineNumber;
-        var msg = e.message;
-        var source = '';
+        filename = e.fileName;
+        line = e.lineNumber;
+        msg = e.message;
+        source = '';
       } else {
         filename = e.stack.split("\n")[1];
-        var line = '';
-        var msg = e.message;
-        var source = '';
+        line = '';
+        msg = e.message;
+        source = '';
       }
     }
-    log.severe('Error! name:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source);
+    
+    var errMsg = 'Error! name:' + name + ' Filename:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source;
+    log.severe(errMsg);
     if (ss.WEB && console) { 
-      console.debug('Error! name:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source);
+      console.debug(errMsg);
+      console.debug(e);
     }
     
 }; // method ss.error
 
-
-
-/**
- * Container for the error message
- */
-ss.err.msg = '';
-
-/**
- * Simple setter for error message
- */
-ss.err = function(msg) {
-    ss.err.msg = msg;
-};
-
-/**
- * Simple getter for error message
- */
-ss.err.get = function () {
-    return ss.err.msg;
-};

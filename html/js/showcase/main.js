@@ -34,12 +34,18 @@ ss.ready(function(){showcase.init();});
 
 showcase.init = function() {
   try {
-  var log = ss.log('showcase.init');
+  var log = ss.log('showcase.init'),
+    j = $, s = showcase;
   
-  var so = new showcase.widget.showObject();
+  s.so = new showcase.widget.showObject({
+    comboBox: j('#comboBox'),
+    displayBox: j('#showObjects')
+  });
   
-  so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()');
-  log.info('run');
-  log.info(so.objectItems);
+  s.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()');
+  s.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()');
+
+  s.so.render();
+  
   } catch(e) {ss.error(e);}
 };

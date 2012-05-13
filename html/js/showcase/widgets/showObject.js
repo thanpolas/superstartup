@@ -24,18 +24,42 @@
  */
 
 goog.provide('showcase.widget.showObject');
-
-var sws = showcase.widget.showObject;
+goog.require('goog.debug');
 
 
 /**
  * The widget's constructor
+ * 
+ * Parameters are:
+ *  comboBox: {jQuery|string} jQuery element or selector
+ *  displayBox: {jQuery|string} jQuery element or selector for displaying results
  *
+ *
+ *
+ * @param {Object=} opt_params a hash containing configuration options as defined
+ *          in the description above
  * @constructor
  * @return {this}
  */
-showcase.widget.showObject = function() {
+showcase.widget.showObject = function(opt_params) {
   try {
+  /**
+   * @private
+   * @type {?Object} Contains our jQuery elements to bind on
+   */
+  this._params = opt_params || null;
+  
+  /**
+   * @private
+   * @type {jQuery} Will contain the content we'll inject in the displayBox element
+   */
+  this._jContent = jQuery();
+  
+  /**
+   * @private
+   * @type {boolean} Know if we have binded events
+   */
+  this._eventsBinded = false;
   
   return this;
   } catch(e) {ss.error(e);}
@@ -62,6 +86,7 @@ showcase.widget.showObject.objectItem = function() {
     title: '',
     comboTitle: '',
     objectPath: '',
+    def: false,
     objectActual: {}
   }
 
@@ -72,28 +97,164 @@ showcase.widget.showObject.objectItem = function() {
  * 
  * @param {string} id A unique identifier to be used for handling objects
  * @param {string} title Title to use when the object is selected
- * @param {string} path The path where the object lives e.g. showcase.user.dataobject
- *                pass as a string
+ * @param {string} path Liternal name of mixed. The path where the object, 
+ *      array or whatever lives e.g. showcase.user.dataobject pass as a string
+ * @param {boolean=} opt_default If we want this object to render first
  * @param {string=} opt_comboTitle The title to use in the combo box if different from title
  * @return {this}
  */
-showcase.widget.showObject.prototype.addObject = function(id, title, path, opt_comboTitle) {
+showcase.widget.showObject.prototype.addObject = function(id, title, path, opt_default, opt_comboTitle) {
   var obj = new showcase.widget.showObject.objectItem();
   obj.id = id;
   obj.title = title;
   obj.comboTitle = opt_comboTitle || title;
   obj.objectPath = path;
-  this.objectItems.push(obj);
+  obj.def = opt_default || false;
+  this._objectItems.push(obj);
   return this;
 };
 
 /**
- * Populate our combobox
+ * Renders required elements and populates them
  * 
+ * @return {this} if we don't validate
+ */
+showcase.widget.showObject.prototype.render = function() {
+  try {
+  // validate parameters, reset our containers and populate the combo box
+  // if we haven't binded events
+  if (!this._eventsBinded)
+    this._validate().reset().populateCombo()._bindEvents();
+  
+  // Now show the selected object
+  var itemId = this._params.comboBox.val();
+  var item = ss.arFind(this._objectItems, 'id', itemId);
+  
+  this._renderItem(item);
+  
+  return this;
+  } catch(e) {
+    ss.error(e);
+    return false;
+  }
+};
+
+/**
+ * Render proper elements and inject into DOM showing the
+ * object or whatever var we got...
+ *
+ * @private
+ * @param {showcase.widget.showObject.objectItem} item
  * @return {this}
  */
-showcase.widget.showObject.prototype.populate = function() {
+showcase.widget.showObject.prototype._renderItem = function(item) {
+  try {
+  this._jContent.children('h3').text(item.title);
+  this._jContent.children('span').text('Name literal: ' + item.objectPath);
+  this._jContent.children('pre').text(goog.debug.deepExpose(eval(item.objectPath), false, true));
+  this._params.displayBox.html(this._jContent);
   
+  return this;
+  
+  
+  } catch(e) {ss.error(e);}
+};
+
+
+
+/**
+ * Populate combo Box with data
+ *
+ * @return {this}
+ */
+showcase.widget.showObject.prototype.populateCombo = function () {
+  try {
+    var c = this._params.comboBox, newOption;
+    $.each(this._objectItems, function(index, item) {
+      newOption = '<option' + (item.def ? ' selected' : '') + ' value="' + item.id + '">' + item.comboTitle + '</option>';
+      c.append(newOption);
+    });
+    return this;
+  } catch(e) {ss.error(e);}
+};
+
+/**
+ * Resets the contents of our elements
+ *
+ * @return {this}
+ */
+showcase.widget.showObject.prototype.reset = function () {
+  this._params.comboBox.empty();
+  this._params.displayBox.html('');
+  this._jContent = jQuery(showcase.widget.showObject.template());
+  return this;
+};
+
+/**
+ * Perform validation on given parameters
+ * @private
+ * @return {this}
+ */
+showcase.widget.showObject.prototype._validate = function() {
+  var w = window, g = w.goog, s = w.ss, j = $;
+
+  if (g.isNull(this._params))
+    throw new TypeError('Parameters not defined. Please set proper elements');
+  
+  // check if we have jQuery objects, if not try to create
+  // them, and in the end see if we have 1 selected element...
+  var jQurator = function(mixed, name) {
+    if (!s.isjQ(mixed))
+      if(!g.isString(mixed))
+        throw new TypeError(name + ' parameter not defined');
+      else
+        mixed = j(mixed);
+    if (1 != mixed.length)
+      throw new Error(name + ' selector does not have one(1) element selected. It has:' + mixed.length + ' Selector:' + mixed.selector);
+    
+  };
+  jQurator(this._params.comboBox, 'comboBox');
+  jQurator(this._params.displayBox, 'displayBox');
+  
+  // make sure comboBox IS a combo box
+  if ('SELECT' != this._params.comboBox[0].tagName)
+    throw new Error('comboBox is NOT a combo box. Type of element:' + this._params.comboBox[0].tagName);
+  
+  return this;
+
+};
+
+/**
+ * Bind on combobox change events
+ *
+ * @private
+ * @return {this}
+ */
+showcase.widget.showObject.prototype._bindEvents = function () {
+  if (this._eventsBinded)
+    return;
+  this._eventsBinded = true;
+  var t = this;
+  this._params.comboBox.change(function(e){
+    console.log('Change event fired');
+    t.render();
+  });
+  return this;
+};
+
+
+/**
+ * A micro template to use to output oura data objects properly
+ * in our container
+ *
+ * @return {string}
+ */
+showcase.widget.showObject.template = function() {
+  return '<div style="overflow:auto; border:1px solid #BBB; width: 500px;height:300px;">'
+    + '<h3></h3><br />'
+    + '<span></span><br />'
+    + '<pre></pre>'    
+    + '</div>';
 };
 
 
