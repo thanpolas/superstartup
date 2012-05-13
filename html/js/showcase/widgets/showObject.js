@@ -135,7 +135,6 @@ showcase.widget.showObject.prototype.render = function() {
   return this;
   } catch(e) {
     ss.error(e);
-    return false;
   }
 };
 
@@ -150,7 +149,7 @@ showcase.widget.showObject.prototype.render = function() {
 showcase.widget.showObject.prototype._renderItem = function(item) {
   try {
   this._jContent.children('h3').text(item.title);
-  this._jContent.children('span').text('Name literal: ' + item.objectPath);
+  this._jContent.children('span').html('<b>Name literal:</b> <i>' + item.objectPath + '</i>');
   this._jContent.children('pre').text(goog.debug.deepExpose(eval(item.objectPath), false, true));
   this._params.displayBox.html(this._jContent);
   
