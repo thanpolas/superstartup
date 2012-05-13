@@ -50,7 +50,7 @@ envPHPbeta="<?php define('ENVIRONMENT', 'staging'); ?>"
 
 echo "*** Checking if pushed branch is next or master..."
 
-if [ "$ref" = "$master" ]
+if [ "$ref" = "$live" ]
 then
   echo "*** master branch pushed. Deploying on LIVE site"
 
