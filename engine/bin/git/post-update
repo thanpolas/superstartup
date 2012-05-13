@@ -99,6 +99,7 @@ then
   
   ### Secure environment after the pull
   echo $envPHPmaster > $newFullPath$envFile
+  
   ### Make post-update executable, git repo's hook is linked
   ### to this file
   chmod a+x  $newFullPath$postUpdate  
