@@ -18,12 +18,12 @@ staging="refs/heads/next"
 
 ### Set paths here
 masterRoot="/home/116255/users/.home/domains/"
-livePath=masterRoot"superstartup.org"
-stagingPath=masterRoot"staging.superstartup.org"
+livePath=$masterRoot"superstartup.org"
+stagingPath=$masterRoot"staging.superstartup.org"
 # set deployment preparation paths
-deployPath=masterRoot"deploy-superstartup"
-configLive=deployPath"/config/production"
-configStaging=deployPath"/config/staging"
+deployPath=$masterRoot"deploy-superstartup"
+configLive=$deployPath"/config/production"
+configStaging=$deployPath"/config/staging"
 # Set path to CI's config folder
 configPath="/engine/CI/origin/application/config"
 
@@ -74,7 +74,7 @@ then
   
   
   randNum=$RANDOM
-  echo "Random: "randNum
+  echo "Random: "$randNum
   echo "*** LIVE DEPLOYED-"
 
 fi
