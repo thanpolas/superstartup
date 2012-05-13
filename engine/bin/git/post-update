@@ -1,6 +1,6 @@
 #!/bin/sh
 ###
-### Automatically push to production and beta installations
+### Automatically push to production and staging installations
 ###
 
 git-update-server-info
@@ -13,24 +13,32 @@ ref=$1
 ###
 
 ### Set branches that we will trigger on
-master="refs/heads/master"
-beta="refs/heads/beta"
+live="refs/heads/master"
+staging="refs/heads/next"
 
 ### Set paths here
-masterPath="/home/116255/users/.home/domains/superstartup.org"
-betaPath="/home/116255/users/.home/domains/beta.superstartup.org"
+masterRoot="/home/116255/users/.home/domains/"
+livePath=masterRoot"superstartup.org"
+stagingPath=masterRoot"staging.superstartup.org"
+# set deployment preparation paths
+deployPath=masterRoot"deploy-superstartup"
+configLive=deployPath"/config/production"
+configStaging=deployPath"/config/staging"
+# Set path to CI's config folder
+configPath="/engine/CI/origin/application/config"
 
-### Set where CI's environment PHP file is (included by index.php)
-### This file should be included in the .gitignore file to avoid
-### merge conflicts. We overwrite this file on each push
+
+# Set where CI's environment PHP file is (included by index.php)
+# This file should be included in the .gitignore file to avoid
+# merge conflicts. We overwrite this file on each push
 envFile="/html/php/env.php"
 
-### Set the location of the post-update script. git repo will ln -s to this
+# Set the location of the post-update script. git repo will ln -s to this
 postUpdate="/engine/bin/git/post-update"
 
 ### Set string to echo on environment file depending on environment
 envPHPmaster="<?php define('ENVIRONMENT', 'production'); ?>"
-envPHPbeta="<?php define('ENVIRONMENT', 'testing'); ?>"
+envPHPbeta="<?php define('ENVIRONMENT', 'staging'); ?>"
 
 ###
 ### SCRIPT STARTS HERE
@@ -40,27 +48,33 @@ envPHPbeta="<?php define('ENVIRONMENT', 'testing'); ?>"
 ### Check if we got 'beta' or 'master' branches pushed
 ### and update live installations
 
-echo "*** Checking out if pushed branch is beta or master"
+echo "*** Checking if pushed branch is next or master..."
 
 if [ "$ref" = "$master" ]
 then
-  echo "*** MASTER branch pushed. Deploying on master site"
+  echo "*** master branch pushed. Deploying on LIVE site"
 
 
-  cd $masterPath
-  env -i git reset --hard
+  #cd $masterPath
+  #env -i git reset --hard
   ### Secure environment after the reset
-  echo $envPHPmaster > $masterPath$envFile
+  #echo $envPHPmaster > $masterPath$envFile
 
-  env -i git pull grid master
+  #env -i git pull grid master
   ### Secure environment after the pull
-  echo $envPHPmaster > $masterPath$envFile
+  #echo $envPHPmaster > $masterPath$envFile
 
   ### Make post-update executable, git repo's hook is linked
   ### to this file
-  chmod a+x $masterPath$postUpdate
-
-  echo "*** MASTER DEPLOYED-"
+  #chmod a+x $masterPath$postUpdate
+  
+  ## init and update submodules
+  #env -i git submodule init
+  #env -i git submodule update
+  
+  randNum=$RANDOM
+  echo "Random: "randNum
+  echo "*** LIVE DEPLOYED-"
 
 fi
 
@@ -70,7 +84,7 @@ fi
 ###
 if [ "$ref" = "$beta" ]
 then
-  echo "*** BETA branch pushed. Deploying on beta site"
+  echo "*** next branch pushed. Deploying on staging site"
 
   cd $betaPath
   env -i git reset --hard
@@ -85,7 +99,7 @@ then
   ### to this file
   chmod a+x $betaPath$postUpdate
 
-  echo "*** BETA DEPLOYED"
+  echo "*** STAGING DEPLOYED"
 
 fi
 
