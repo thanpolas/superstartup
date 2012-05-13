@@ -55,18 +55,18 @@ then
   echo "*** master branch pushed. Deploying on LIVE site"
 
 
-  cd $masterPath
+  cd $livePath
   env -i git reset --hard
   ### Secure environment after the reset
-  echo $envPHPmaster > $masterPath$envFile
+  echo $envPHPmaster > $livePath$envFile
 
   env -i git pull grid master
   ### Secure environment after the pull
-  echo $envPHPmaster > $masterPath$envFile
+  echo $envPHPmaster > $livePath$envFile
 
   ### Make post-update executable, git repo's hook is linked
   ### to this file
-  chmod a+x $masterPath$postUpdate
+  chmod a+x $livePath$postUpdate
   
   ## init and update submodules
   env -i git submodule init
