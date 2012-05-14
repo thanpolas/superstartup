@@ -82,8 +82,6 @@ if (defined('ENVIRONMENT'))
     return false;
   }
 
-// method set_tz_by_offset
-
   /**
    * Will set
    *
@@ -91,10 +89,8 @@ if (defined('ENVIRONMENT'))
    * @param integer $offset
    */
   function SetTimezones($offset = 0) {
-    global $eye_db, $gOrigin;
-
     // force numeric
-    $offset = $offset * 1;
+    $offset = (int) $offset;
 
     // PHP run the set timezone by offset
     set_tz_by_offset($offset);

@@ -22,7 +22,7 @@ livePath=$masterRoot"superstartup.org"
 stagingPath=$masterRoot"staging.superstartup.org"
 # set deployment preparation paths
 deployRootPath=$masterRoot"deploy-superstartup"
-deplyPath=$deployRootPath"/deploys/"
+deployPath=$deployRootPath"/deploys/"
 configLive=$deployRootPath"/config/production"
 configStaging=$deployRootPath"/config/staging"
 gitPrototype=$deployRootPath"/git-prototype"
@@ -57,27 +57,10 @@ echo "*** Checking if pushed branch is next or master..."
 if [ "$ref" = "$live" ]
 then
   echo "*** master branch pushed. Deploying on LIVE site"
-
-
-  cd $livePath
-  env -i git reset --hard
-  ### Secure environment after the reset
-  echo $envPHPmaster > $livePath$envFile
-
-  env -i git pull grid master
-  ### Secure environment after the pull
-  echo $envPHPmaster > $livePath$envFile
-
-  ### Make post-update executable, git repo's hook is linked
-  ### to this file
-  chmod a+x $livePath$postUpdate
   
-  ## init and update submodules
-  env -i git submodule init
-  env -i git submodule update
-  
-  # get a random path
-  newFullPath=$deplyPath"superstartup_"$RANDOM"/"
+  # create a new path to deploy, based on Year-Month-Day-Hour-Minute-Second
+  timestampPath=$(date +"%Y%m%d%H%M%S")
+  newFullPath=$deployPath"superstartup_"$timestampPath"/"
   echo "*** Creating new deployment in folder: "$newFullPath
   # copy our git prototype there
   cp -R $gitPrototype $newFullPath
@@ -104,10 +87,14 @@ then
   ### to this file
   chmod a+x  $newFullPath$postUpdate  
   
+  echo "*** Removing old symlink and creating new one"
+  # remove old link and link new
+  rm -fr $livePath
+  ln -s $newFullPath $livePath
+  
   echo "*** LIVE DEPLOYED-"
 
 fi
-
 
 ###
 ### Go for the beta, checkout the git command to fit your own needs
