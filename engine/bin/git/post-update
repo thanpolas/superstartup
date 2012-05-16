@@ -91,10 +91,12 @@ then
   chmod a+x  $newFullPath$postUpdate
   
   ### CWD to bin and compile js / css and increase file counter...
+  echo "*** Compiling JS and CSS files..."
   cd $livePath$binPath
   # set exec path
   ep=$livePath$binPath
   $ep"/05.js_compile.pl"
+  
   
   echo "*** Removing old symlink and creating new one"
   # remove old link and link new
