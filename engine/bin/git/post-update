@@ -20,6 +20,9 @@ staging="refs/heads/next"
 masterRoot="/home/116255/users/.home/domains/"
 livePath=$masterRoot"superstartup.org"
 stagingPath=$masterRoot"staging.superstartup.org"
+
+binPath="/engine/bin"
+
 # set deployment preparation paths
 deployRootPath=$masterRoot"deploy-superstartup"
 deployPath=$deployRootPath"/deploys/"
@@ -85,7 +88,13 @@ then
   
   ### Make post-update executable, git repo's hook is linked
   ### to this file
-  chmod a+x  $newFullPath$postUpdate  
+  chmod a+x  $newFullPath$postUpdate
+  
+  ### CWD to bin and compile js / css and increase file counter...
+  cd $livePath$binPath
+  # set exec path
+  ep=$livePath$binPath
+  $ep"/05.js_compile.pl"
   
   echo "*** Removing old symlink and creating new one"
   # remove old link and link new
