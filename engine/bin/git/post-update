@@ -41,7 +41,7 @@ CIconfigPath="engine/CI/origin/application/config"
 envFile="/html/php/env.php"
 
 # Set the location of the post-update script. git repo will ln -s to this
-postUpdate="/engine/bin/git/post-update"
+postUpdate="engine/bin/git/post-update"
 
 ### Set string to echo on environment file depending on environment
 envPHPmaster="<?php define('ENVIRONMENT', 'production'); ?>"
