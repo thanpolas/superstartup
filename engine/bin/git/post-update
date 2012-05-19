@@ -30,7 +30,7 @@ masterRoot="/home/thanpolas/"
 livePath=$masterRoot"web/superstartup.org"
 stagingPath=$masterRoot"web/staging.superstartup.org"
 
-binPath="/engine/bin"
+binPath="engine/bin"
 
 # set deployment preparation paths
 deployRootPath=$masterRoot"deploy/"
@@ -99,7 +99,7 @@ then
   chmod a+x  $newFullPath$postUpdate
 
   ### CWD to bin and compile js / css and increase file counter...
-  echo "*** Compiling JS..."
+  echo "*** Compiling JS..."$newFullPath$binPath
   cd $newFullPath$binPath
   # set exec path
   ep=$newFullPath$binPath
