@@ -5,8 +5,6 @@ use Time::Local;
 
 
 ######################### CONFIG ###############################
-### date stamp
-$dateStamp = strftime("%d-%m-%Y", localtime);
 ### Project Root
 $projectRoot = "../..";
 
@@ -27,16 +25,13 @@ $closurecompiler = $projectRoot . "/engine/bin/Third-Party/closure_compiler/comp
 
 $java = "/usr/bin/java";
 
+######################### CONFIG END ###########################
 
 $cmdBuild = "$closurebuilder ";
-#$cmdBuild .= " -i $googPath" . "/base.js -i $googPath" . "/deps.js ";
-#$cmdBuild .= "-i $asyncPath" . "/deps.js ";
 $cmdBuild .= "-i $sptPath" . "/main.js -i $jsroot" . "/deps.js ";
 $cmdBuild .= "-i $geoPath" . "/main.js ";
-#$cmdBuild .= "-i $sptPath -i $closurelib ";
 
 $cmdBuild .= "--root $jsroot ";
-#$cmdBuild .= "--root $closurelib --root $sptPath ";
 $cmdBuild .= " -o script --output_file=$projectRoot" . "/html/jsc/precompiled.js";
 
 
@@ -49,9 +44,6 @@ $cmdCompile = "$java -jar $closurecompiler ";
 $cmdCompile .= "--js $projectRoot" . "/html/jsc/precompiled.js --jscomp_warning=checkTypes ";
 $cmdCompile .= "--js_output_file=$projectRoot" . "/html/jsc/semicompiled.js";
 $cmdCompile .= "  --compilation_level=WHITESPACE_ONLY";
-#$cmdCompile .= "  --create_name_map_files=true";
-#$cmdCompile .= "  --create_source_map $projectRoot" . "/www/sourcemap";
-#$cmdCompile .= " --define='ss.DEBUG=false'";
 $cmdCompile .= "  --define='goog.COMPILED=true'";
 
 #print $cmdCompile;
@@ -79,5 +71,4 @@ $cmdCompile .= " > ./compiler.out 2>&1";
 system $cmdCompile;
 
 system "cat compiler.out";
-#print $cmdCompile;
 

@@ -17,18 +17,18 @@ live="refs/heads/master"
 staging="refs/heads/next"
 
 ### Set paths here
-masterRoot="/home/116255/users/.home/domains/"
-livePath=$masterRoot"superstartup.org"
-stagingPath=$masterRoot"staging.superstartup.org"
+masterRoot="~/"
+livePath=$masterRoot"web/superstartup.org"
+stagingPath=$masterRoot"web/staging.superstartup.org"
 
 binPath="/engine/bin"
 
 # set deployment preparation paths
-deployRootPath=$masterRoot"deploy-superstartup"
-deployPath=$deployRootPath"/deploys/"
-configLive=$deployRootPath"/config/production"
-configStaging=$deployRootPath"/config/staging"
-gitPrototype=$deployRootPath"/git-prototype"
+deployRootPath=$masterRoot"deploy/"
+deployPath=$deployRootPath"deployments"
+configLive=$deployRootPath"config/production"
+configStaging=$deployRootPath"config/staging"
+gitPrototype=$deployRootPath"dummyGit"
 
 # Set path to CI's root and config folder
 CIrootPath="engine/CI/origin"
@@ -89,15 +89,7 @@ then
   ### Make post-update executable, git repo's hook is linked
   ### to this file
   chmod a+x  $newFullPath$postUpdate
-  
-  ### CWD to bin and compile js / css and increase file counter...
-  echo "*** Compiling JS and CSS files..."
-  cd $livePath$binPath
-  # set exec path
-  ep=$livePath$binPath
-  $ep"/05.js_compile.pl"
-  
-  
+    
   echo "*** Removing old symlink and creating new one"
   # remove old link and link new
   rm -fr $livePath
