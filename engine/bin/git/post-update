@@ -99,11 +99,15 @@ then
 
 
   ### CWD to bin and compile js / css and increase file counter...
-  echo "*** Compiling JS and CSS files..."
+  echo "*** Compiling JS..."
   cd $livePath$binPath
   # set exec path
   ep=$livePath$binPath
-  #$ep"/05.js_compile.pl"
+  $ep"/05.js_compile.pl"
+  
+  echo "*** Compiling CSS and publishing files"
+  $ep"/06.css_compile.pl"
+  $ep"/08.Increment_files.py"
 
     
   echo "*** Removing old symlink and creating new one"
