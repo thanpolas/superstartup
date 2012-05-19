@@ -4,9 +4,10 @@
 ###
 
 ### Error handling
-catchErrors()
+function catchErrors()
 {
   local exit_status=${1:-$?}
+  echo "********** WARNING WARNING WARNING **************"
   echo "*** Deployment FAILED Exiting" $0 with $exit_status
   exit $exit_status
 }
@@ -114,8 +115,6 @@ then
   # remove old link and link newFullPath
   rm -fr $livePath
   ln -s $newFullPath $livePath
-  
-  
   
   echo "*** LIVE DEPLOYED-"
 
