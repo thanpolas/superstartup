@@ -113,7 +113,6 @@ then
   ln -s $newFullPath $livePath
   
   echo "*** LIVE DEPLOYED-"
-
 fi
 
 ###
