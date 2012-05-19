@@ -3,7 +3,15 @@
 ### Automatically push to production and staging installations
 ###
 
-git-update-server-info
+### Error handling
+catchErrors()
+{
+  local exit_status=${1:-$?}
+  echo "*** Deployment FAILED Exiting" $0 with $exit_status
+  exit $exit_status
+}
+trap 'catchErrors' ERR
+set -e
 
 ### Get current branch that was pushed
 ref=$1
