@@ -69,7 +69,7 @@ then
   cp -R $gitPrototype $newFullPath
   
   cd $newFullPath
-  env -i git pull grid master
+  env -i git pull origin master
   ## init and update submodules
   echo "*** Updating submodules..."
   env -i git submodule init
