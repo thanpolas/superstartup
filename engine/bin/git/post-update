@@ -101,7 +101,7 @@ then
   cd $newFullPath$binPath
   # set exec path
   ep=$newFullPath$binPath
-  $ep"/05.js_compile.pl > /dev/null"
+  $ep"/05.js_compile.pl"
   
   echo "*** Compiling CSS and publishing files"
   $ep"/06.css_compile.pl"

@@ -27,13 +27,9 @@ $java = "/usr/bin/java";
 
 $cmdBuild = "$closurebuilder ";
 $cmdBuild .= "-i $jsroot" . "/ss/main.js -i $jsroot" . "/deps.js ";
-
-
 $cmdBuild .= "--root $jsroot ";
 $cmdBuild .= " -o script --output_file=$projectRoot" . "/html/jsc/precompiled.js";
-
-
-print $cmdBuild;
+$cmdBuild .= " > /dev/null 2>&1";
 
 system $cmdBuild;
 
@@ -43,8 +39,7 @@ $cmdCompile .= "--js $projectRoot" . "/html/jsc/precompiled.js --jscomp_warning=
 $cmdCompile .= "--js_output_file=$projectRoot" . "/html/jsc/semicompiled.js";
 $cmdCompile .= "  --compilation_level=WHITESPACE_ONLY";
 $cmdCompile .= "  --define='goog.COMPILED=true'";
-
-#print $cmdCompile;
+$cmdCompile .= " >> ./compiler.out 2>&1";
 system $cmdCompile;
 
 ## Don't do SIMPLE_OPTIMIZATIONS
@@ -64,7 +59,7 @@ $cmdCompile .= " --summary_detail_level=3";
 $cmdCompile .= " --jscomp_off=checkTypes";
 $cmdCompile .= " --jscomp_warning=undefinedVars ";
 $cmdCompile .= " ";
-$cmdCompile .= " > ./compiler.out 2>&1";
+$cmdCompile .= " >> ./compiler.out 2>&1";
 
 system $cmdCompile;
 
