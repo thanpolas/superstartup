@@ -98,7 +98,6 @@ then
   ### to this file
   chmod a+x  $newFullPath$postUpdate
 
-
   ### CWD to bin and compile js / css and increase file counter...
   echo "*** Compiling JS..."
   cd $newFullPath$binPath
@@ -109,7 +108,6 @@ then
   echo "*** Compiling CSS and publishing files"
   $ep"/06.css_compile.pl"
   $ep"/08.Increment_files.py"
-
     
   echo "*** Removing old symlink and creating new one"
   # remove old link and link newFullPath
