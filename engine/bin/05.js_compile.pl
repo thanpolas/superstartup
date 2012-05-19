@@ -15,8 +15,6 @@ $closurelib = $jsroot . "/closure-library";
 $googPath = $jsroot . "/closure-library/closure/goog";
 #3rd party apps...
 $asyncPath = $jsroot . "/closure-library/third_party/closure/goog";
-$sptPath = $jsroot . "/web";
-$geoPath = $jsroot . "/ss";
 
 $calcdeps = $jsroot . "/closure-library/closure/bin/calcdeps.py";
 
@@ -28,8 +26,8 @@ $java = "/usr/bin/java";
 ######################### CONFIG END ###########################
 
 $cmdBuild = "$closurebuilder ";
-$cmdBuild .= "-i $sptPath" . "/main.js -i $jsroot" . "/deps.js ";
-$cmdBuild .= "-i $geoPath" . "/main.js ";
+$cmdBuild .= "-i $jsroot" . "/ss/main.js -i $jsroot" . "/deps.js ";
+
 
 $cmdBuild .= "--root $jsroot ";
 $cmdBuild .= " -o script --output_file=$projectRoot" . "/html/jsc/precompiled.js";
