@@ -28,11 +28,8 @@ git = "/usr/bin/git";
 # CSS / JS / HEAD/FOOT Files
 css1 = projectRoot + "/html/cssc/main.css";
 jsc = projectRoot + "/html/jsc/compiled.js";
-masterIconUrl = "/img/images/icons-master.png";
+masterIconUrl = "/assets/img/icons-master.png";
 masterIcon = projectRoot + "/html" + masterIconUrl;
-
-#indexFile = projectRoot + "/engine/CI/application/views/main_boothchat.php"
-
 
 ####################################################
 ####################################################
