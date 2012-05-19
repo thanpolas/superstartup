@@ -68,5 +68,5 @@ $cmdCompile .= " > ./compiler.out 2>&1";
 
 system $cmdCompile;
 
-print "JS Compiled. Find output in engine/bin/compiler.out";
+print "JS Compiled. See output in engine/bin/compiler.out\n";
 

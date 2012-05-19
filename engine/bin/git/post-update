@@ -101,10 +101,10 @@ then
 
   ### CWD to bin and compile js / css and increase file counter...
   echo "*** Compiling JS..."
-  cd $livePath$binPath
+  cd $newFullPath$binPath
   # set exec path
-  ep=$livePath$binPath
-  $ep"/05.js_compile.pl"
+  ep=$newFullPath$binPath
+  $ep"/05.js_compile.pl 2>&1"
   
   echo "*** Compiling CSS and publishing files"
   $ep"/06.css_compile.pl"
