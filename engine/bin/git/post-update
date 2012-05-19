@@ -17,7 +17,7 @@ live="refs/heads/master"
 staging="refs/heads/next"
 
 ### Set paths here
-masterRoot="~/"
+masterRoot="/home/thanpolas/"
 livePath=$masterRoot"web/superstartup.org"
 stagingPath=$masterRoot"web/staging.superstartup.org"
 
