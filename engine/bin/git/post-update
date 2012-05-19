@@ -20,7 +20,6 @@ ref=$1
 ###
 ### SETTINGS AND PATHS
 ###
-
 ### Set branches that we will trigger on
 live="refs/heads/master"
 staging="refs/heads/next"
