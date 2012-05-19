@@ -2,27 +2,22 @@
 use POSIX qw(strftime);
 use Time::Local;
 
-
-
 ######################### CONFIG ###############################
+
+$java = "/usr/bin/java";
+
+
 ### Project Root
 $projectRoot = "../..";
-
-
 ### Rest subfolders
 $jsroot = $projectRoot . "/html/js";
 $closurelib = $jsroot . "/closure-library";
 $googPath = $jsroot . "/closure-library/closure/goog";
 #3rd party apps...
 $asyncPath = $jsroot . "/closure-library/third_party/closure/goog";
-
 $calcdeps = $jsroot . "/closure-library/closure/bin/calcdeps.py";
-
 $closurebuilder = $jsroot . "/closure-library/closure/bin/build/closurebuilder.py";
 $closurecompiler = $projectRoot . "/engine/bin/Third-Party/closure_compiler/compiler.jar";
-
-$java = "/usr/bin/java";
-
 ######################### CONFIG END ###########################
 
 $cmdBuild = "$closurebuilder ";
