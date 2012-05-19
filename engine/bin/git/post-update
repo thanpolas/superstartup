@@ -59,7 +59,6 @@ envPHPbeta="<?php define('ENVIRONMENT', 'staging'); ?>"
 ### SCRIPT STARTS HERE
 ###
 
-
 ### Check if we got 'beta' or 'master' branches pushed
 ### and update live installations
 
