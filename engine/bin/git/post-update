@@ -25,9 +25,9 @@ binPath="/engine/bin"
 
 # set deployment preparation paths
 deployRootPath=$masterRoot"deploy/"
-deployPath=$deployRootPath"deployments"
-configLive=$deployRootPath"config/production"
-configStaging=$deployRootPath"config/staging"
+deployPath=$deployRootPath"deployments/"
+configLive=$deployRootPath"config/production/"
+configStaging=$deployRootPath"config/staging/"
 gitPrototype=$deployRootPath"dummyGit"
 
 # Set path to CI's root and config folder
@@ -89,11 +89,22 @@ then
   ### Make post-update executable, git repo's hook is linked
   ### to this file
   chmod a+x  $newFullPath$postUpdate
+
+
+  ### CWD to bin and compile js / css and increase file counter...
+  echo "*** Compiling JS and CSS files..."
+  cd $livePath$binPath
+  # set exec path
+  ep=$livePath$binPath
+  #$ep"/05.js_compile.pl"
+
     
   echo "*** Removing old symlink and creating new one"
-  # remove old link and link new
+  # remove old link and link newFullPath
   rm -fr $livePath
   ln -s $newFullPath $livePath
+  
+  
   
   echo "*** LIVE DEPLOYED-"
 
