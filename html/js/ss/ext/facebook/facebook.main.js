@@ -119,37 +119,38 @@ ss.fb.db.clear = function ()
 ss.fb.InitWeb = function ()
 {
   try {
-    var c = ss, g = goog;
-    var log = c.log('ss.fb.InitWeb');
+    var s = ss, g = goog;
+    var log = s.log('ss.fb.InitWeb');
 
     log.info('Init');
 
-    c.ready('fb');
-    c.ready.addCheck('fb', 'loaded');
+    s.ready('fb');
+    s.ready.addCheck('fb', 'loaded');
 
     // create fb-auth check
-    c.ready('fb-auth');
-    c.ready.addCheck('fb-auth', 'done');
+    s.ready('fb-auth');
+    s.ready.addCheck('fb-auth', 'done');
 
 
     // capture FB API Load event
-    g.global.fbAsyncInit = function() {
-      c.fb.Init();
+    g.global['fbAsyncInit'] = function() {
+      s.fb.Init();
     };
 
     // request the facebook api
-    var e = document.createElement('script');
-    var src = document.location.protocol;
-    if (c.DEVEL)
-      src += '//static.ak.fbcdn.net/connect/en_US/ss.debug.js';
+    var d = g.global['document'];
+    var e = d.createElement('script');
+    var src = d.location.protocol;
+    if (s.DEVEL)
+      src += '//static.ak.fbcdn.net/connect/en_US/core.debug.js';
     else
       src += '//connect.facebook.net/en_US/all.js';
     e.src = src;
     e.async = true;
-    document.getElementById('fb-root').appendChild(e);
+    d.getElementById('fb-root').appendChild(e);
 
-    c.web2.db.initialCheck.timeout = setTimeout(c.web2.authStateTimeout,
-      c.web2.db.initialCheck.timeoutTime);
+    s.web2.db.initialCheck.timeout = setTimeout(s.web2.authStateTimeout,
+      s.web2.db.initialCheck.timeoutTime);
 
 
   } catch(e){
@@ -174,14 +175,13 @@ ss.fb.Init = function ()
     var c = ss;
     var log = c.log('ss.fb.Init');
 
-    log.info('Init - FB LIB LOADED');
-
+    log.info('Init - FB LIB LOADED. Our App ID:' + c.fb.getAppId());
     fb.init({
-      appId  : c.fb.getAppId(),
-      status : true, // check login status
-      cookie : true, // enable cookies to allow the server to access the session
-      xfbml  : true,  // parse XFBML
-      oauth  : true
+      'appId'  : c.fb.getAppId(),
+      'status' : true, // check login status
+      'cookie' : true, // enable cookies to allow the server to access the session
+      'xfbml'  : true,  // parse XFBML
+      'oauth'  : true
     });
 
     // catch session change events

@@ -122,8 +122,6 @@ showcase.widget.showObject.prototype.addObject = function(id, title, path, item,
  * @return {this} if we don't validate
  */
 showcase.widget.showObject.prototype.render = function() {
-  var l = ss.log('showcase.widget.showObject.render');
-  l.info('ENTERED');
   // validate parameters, reset our containers and populate the combo box
   // if we haven't binded events
   if (!this._eventsBinded)
@@ -132,9 +130,6 @@ showcase.widget.showObject.prototype.render = function() {
   // Now show the selected object
   var itemId = this._params.comboBox.val();
   var item = ss.arFind(this._objectItems, 'itemId', itemId);
-  l.info('itemId:' + itemId);
-  l.info('item:' + goog.debug.expose(item));
-  console.log(item);
   this._renderItem(item);
   
   return this;
@@ -150,10 +145,6 @@ showcase.widget.showObject.prototype.render = function() {
  */
 showcase.widget.showObject.prototype._renderItem = function(item) {
   var g = goog;
-  console.log('_renderItem!');
-  var l = ss.log('showcase.widget.showObject._renderItem');
-  l.info('HERE I SAY!');
-  l.info('item:' + g.debug.expose(item));
   this._jContent.children('h3').text(item.title);
   this._jContent.children('span').html('<b>Name literal:</b> <i>' + item.objectPath + '</i>');
   var objItem = null;
@@ -161,8 +152,6 @@ showcase.widget.showObject.prototype._renderItem = function(item) {
     objItem = item.item();
   else
     objItem = item.item;
-  console.log(item);
-  console.log(objItem);
   this._jContent.children('pre').text(g.debug.deepExpose(objItem, false, true));
   this._params.displayBox.html(this._jContent);
   

@@ -128,7 +128,6 @@ ss.log = goog.debug.Logger.getLogger;
 ss.Init = function ()
 {
     var s = ss, l = s.log('ss.Init');
-    l.info('stat:' + goog.debug.deepExpose(s.STATIC));
     s.ready('main');
     s.ready.addCheck('main', 'loaded');
     
@@ -144,6 +143,4 @@ ss.Init = function ()
 
 // export root based properties
 (function(goog){
-  console.log('1');
-  console.log(ss.STATIC);
 })(goog);

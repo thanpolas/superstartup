@@ -13,9 +13,9 @@ $java = "/usr/bin/java";
 
 
 ### Project Root
-$projectRoot = "..";
+$projectRoot = "../..";
 ### Rest subfolders
-$jsroot = "js";
+$jsroot = $projectRoot . "/html/js";
 $binPath = $projectRoot . "/engine/bin";
 $closurelib = $jsroot . "/closure-library";
 $googPath = $jsroot . "/closure-library/closure/goog";
@@ -38,9 +38,9 @@ $cmdCompile = "  --compiler_flags=\"--compilation_level=ADVANCED_OPTIMIZATIONS\"
 # Define all extern files here
 $cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/compiler_externs.js\"";
 $cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/jquery-1.7.js\"";
+$cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/facebook_javascript_sdk.js\"";
+$cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/json.js\"";
 
-#$cmdCompile .= " --compiler_flags=\"--common_js_entry_module=../../html/js\"";
-#$cmdCompile .= " --compiler_flags=\"--common_js_module_path_prefix=../../html/\"";
 $cmdCompile .= " --compiler_flags=\"--warning_level=verbose\"";
 $cmdCompile .= " --compiler_flags=\"--jscomp_off=fileoverviewTags\"";
 $cmdCompile .= " --compiler_flags=\"--summary_detail_level=3\"";
@@ -49,7 +49,7 @@ $cmdCompile .= " --compiler_flags=\"--jscomp_off=checkTypes\"";
 $cmdCompile .- " --compiler_flags=\"--manage_closure_dependencies\"";
 if ($DEBUG) {
   $cmdCompile .= " --compiler_flags=\"--source_map_format=V3\"";
-  $cmdCompile .= " --compiler_flags=\"--create_source_map=compiled.js.map\"";
+  $cmdCompile .= " --compiler_flags=\"--create_source_map=$projectRoot/html/compiled.js.map\"";
   #$cmdCompile .= " --compiler_flags=\"--debug\"";
   $cmdCompile .= " --compiler_flags=\"--output_wrapper='(function(){%output%}).call(this); \\\n//@ sourceMappingURL=/compiled.js.map'\"";  
 } else {
