@@ -66,7 +66,6 @@ ss.error = function (e)
     log.severe(errMsg);
     if (ss.WEB && console) { 
       console.debug(errMsg);
-      console.debug(e);
     }
     
 }; // method ss.error

@@ -45,7 +45,6 @@ goog.require('ss.helpers');
  */
 ss.ready = function(nameId, opt_forceInit)
 {
-  try {
     var s = ss, r = s.ready;
     
     if(goog.isFunction(nameId)) {
@@ -67,7 +66,7 @@ ss.ready = function(nameId, opt_forceInit)
 
         if (opt_forceInit) {
             // we will reset the values
-            r.db.allReady[arReady].nameId = nameId;
+            r.db.allReady[arReady]['nameId'] = nameId;
             r.db.allReady[arReady].done = false;
             r.db.allReady[arReady].execOk = true;
             r.db.allReady[arReady].checks = [];
@@ -75,16 +74,9 @@ ss.ready = function(nameId, opt_forceInit)
         }
 
         return;
-        /*
-        this.checks = arReady.checks;
-        this.fn = arReady.fn;
-        this.done = arReady.done;
-        this.boo = arReady.boo;
-        return this;
-        */
     }
     var readyObj = {
-        nameId: nameId,
+        'nameId': nameId,
         execOk: true, // if all executed ok
         done: false,
         execOk: true,
@@ -124,8 +116,7 @@ ss.ready = function(nameId, opt_forceInit)
      */
 
      r.db.allReady.push(readyObj);
-   } catch(e){ ss.error(e);}
-}; // ss.ready Constructor
+}; // ss.ready
 
 
 
@@ -249,7 +240,7 @@ ss.ready.addFuncCheck = function(nameId, checkId, fn)
     if (g.isNull(arCheck)) {
         // no, doesn't exist, create it
         rdb.checks.push({
-            checkId: checkId,
+            'checkId': checkId,
             done: false
         });
     } // if we didn't find the check
@@ -258,7 +249,7 @@ ss.ready.addFuncCheck = function(nameId, checkId, fn)
 
     // push the function down the checks listeners
     rdb.fnCheck.push({
-        checkId: checkId,
+        'checkId': checkId,
         fn: fn
     });
 
@@ -278,9 +269,7 @@ ss.ready.addFuncCheck = function(nameId, checkId, fn)
  */
 ss.ready.addCheck = function(nameId, checkId)
 {
-  try {
     var s = ss;
-
     // find index of nameId or if it exists...
     var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
@@ -297,11 +286,10 @@ ss.ready.addCheck = function(nameId, checkId)
     if (-1 == indCheck) {
         // yup, not found...
         readyObj.checks.push({
-            checkId: checkId,
+            'checkId': checkId,
             done: false
         });
     }
-  } catch (e) {ss.error(e);}
 }; // method ss.ready.addCheck
 
 
@@ -316,7 +304,6 @@ ss.ready.addCheck = function(nameId, checkId)
  */
 ss.ready.check = function(nameId, checkId, opt_state)
 {
-    try {
     var g = goog, s = ss;
 
     var check_state = opt_state || true;
@@ -359,7 +346,6 @@ ss.ready.check = function(nameId, checkId, opt_state)
     } else {
       // not done
     }
-    } catch(e) {ss.error(e);}
 }; // method ss.ready.check
 
 /**
@@ -372,7 +358,6 @@ ss.ready.check = function(nameId, checkId, opt_state)
  */
 ss.ready._isChecksComplete = function (nameId)
 {
-    try {
     var g = goog, s = ss;
     // find index of nameId or if it exists...
     var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
@@ -398,7 +383,6 @@ ss.ready._isChecksComplete = function (nameId)
         }
     });
     return allChecksDone;
-    } catch(e) {ss.error(e);}
 }; // ss.ready._isChecksComplete
 
 /**
@@ -413,7 +397,6 @@ ss.ready._isChecksComplete = function (nameId)
  */
 ss.ready._runAll = function (nameId)
 {
-    try {
     var g = goog, s = ss;
 
     // find index of nameId or if it exists...
@@ -438,7 +421,6 @@ ss.ready._runAll = function (nameId)
 
     // now go for all main ready watch listeners
     g.array.forEach(readyObj.fn, function(fnObj, index) {
-      try {
         var fn = fnObj.fn;
         if (!g.isFunction(fn)) {
           //We found a non function to execute
@@ -449,11 +431,9 @@ ss.ready._runAll = function (nameId)
           fn(readyObj.execOk);
         else
           setTimeout(fn, fnObj.delay);
-      } catch(e) {ss.error(e);}
     });
     // reset function container array of watch...
     readyObj.fn = new Array();
-    } catch(e) {ss.error(e);}
 }; // ss.ready._runAll
 
 
@@ -469,7 +449,6 @@ ss.ready._runAll = function (nameId)
  */
 ss.ready._runAllChecks = function (nameId, checkId)
 {
-    try {
     var g = goog, s = ss;
 
     // find index of nameId or if it exists...
@@ -499,6 +478,5 @@ ss.ready._runAllChecks = function (nameId, checkId)
 
     // all done
 
-    } catch(e) {ss.error(e);}
 };
 

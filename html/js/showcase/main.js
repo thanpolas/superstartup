@@ -42,8 +42,8 @@ showcase.init = function() {
     displayBox: j('#showObjects')
   });
   
-  s.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()');
-  s.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()');
+  s.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()', ss.user.getUserDataObject);
+  s.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()', ss.user.getDummyObject);
 
   s.so.render();
   

@@ -26,11 +26,11 @@
 
 goog.provide('ss.STATIC');
 
+ss.STATIC.zoo = 3;
+
 
 /**
- * The sources (web, mob, facebook...)
- *
- * @enum {number}
+ * The auth sources (web, mob, facebook...)
  */
 ss.STATIC.SOURCES = {
     WEB: 1,
@@ -38,5 +38,8 @@ ss.STATIC.SOURCES = {
     FB: 5,
     TWIT: 6
 };
+
+
+
 
 

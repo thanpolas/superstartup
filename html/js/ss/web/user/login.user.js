@@ -38,12 +38,12 @@ ss.web.user.login.logout = function (event)
   try {
     event.preventDefault();
         
-    var win = window, j = win.jQuery, c = win.ss, w = c.web;
-    var log = c.log('ss.web.user.login.logout');
+    var win = window, j = jQuery, s = ss, w = s.web;
+    var log = s.log('ss.web.user.login.logout');
 
-    log.info('Init. Authed:' + c.isAuthed());
+    log.info('Init. Authed:' + s.isAuthed());
 
-    if (!c.isAuthed())
+    if (!s.isAuthed())
       return;
     
     var elId = j(this).attr('id');
@@ -51,7 +51,7 @@ ss.web.user.login.logout = function (event)
     w.user.auth.events.runEvent('logout_click', elId);
 
     // perform logout
-    c.user.login.logout(function(status){
+    s.user.login.logout(function(status){
       log.info('logout callback received. status:' + status);
     });
 
@@ -74,7 +74,7 @@ ss.web.user.login.bindLogin = function()
 {
   try {
 
-  var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
+  var win = window, j = $, c = ss, w = c.web, g = goog;
 
   var log = c.log('ss.web.user.login.bindLogin');
 

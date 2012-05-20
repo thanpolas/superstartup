@@ -117,7 +117,6 @@ ss.web.myapp.newUser = function()
  */
 ss.web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
 {
-  try {
 
     var c = ss, w = c.web, j = jQuery, g = goog;
 
@@ -143,9 +142,6 @@ ss.web.myapp.authState = function(state, opt_sourceId, opt_userDataObject)
       j('#logged_in').dispOff();  
     }
     
-  } catch (e) {
-    ss.error(e);
-  }  
 };
 
 // subscribe to the auth state master event hook

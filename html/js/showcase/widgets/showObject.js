@@ -42,7 +42,6 @@ goog.require('goog.debug');
  * @return {this}
  */
 showcase.widget.showObject = function(opt_params) {
-  try {
   /**
    * @private
    * @type {?Object} Contains our jQuery elements to bind on
@@ -62,7 +61,6 @@ showcase.widget.showObject = function(opt_params) {
   this._eventsBinded = false;
   
   return this;
-  } catch(e) {ss.error(e);}
 };
 
 /**
@@ -82,10 +80,11 @@ showcase.widget.showObject.prototype._objectItems = [];
  */
 showcase.widget.showObject.objectItem = function() {
   return {
-    id: '',
+    'itemId': '',
     title: '',
     comboTitle: '',
     objectPath: '',
+    item: null,
     def: false,
     objectActual: {}
   }
@@ -97,18 +96,21 @@ showcase.widget.showObject.objectItem = function() {
  * 
  * @param {string} id A unique identifier to be used for handling objects
  * @param {string} title Title to use when the object is selected
- * @param {string} path Liternal name of mixed. The path where the object, 
+ * @param {string} path Literal name of mixed. The path where the object, 
  *      array or whatever lives e.g. showcase.user.dataobject pass as a string
+ * @param {*} item The actual data object. Can be any type, if funcion we will
+ *      execute it
  * @param {boolean=} opt_default If we want this object to render first
  * @param {string=} opt_comboTitle The title to use in the combo box if different from title
  * @return {this}
  */
-showcase.widget.showObject.prototype.addObject = function(id, title, path, opt_default, opt_comboTitle) {
+showcase.widget.showObject.prototype.addObject = function(id, title, path, item, opt_default, opt_comboTitle) {
   var obj = new showcase.widget.showObject.objectItem();
-  obj.id = id;
+  obj['itemId'] = id;
   obj.title = title;
   obj.comboTitle = opt_comboTitle || title;
   obj.objectPath = path;
+  obj.item = item;
   obj.def = opt_default || false;
   this._objectItems.push(obj);
   return this;
@@ -120,7 +122,8 @@ showcase.widget.showObject.prototype.addObject = function(id, title, path, opt_d
  * @return {this} if we don't validate
  */
 showcase.widget.showObject.prototype.render = function() {
-  try {
+  var l = ss.log('showcase.widget.showObject.render');
+  l.info('ENTERED');
   // validate parameters, reset our containers and populate the combo box
   // if we haven't binded events
   if (!this._eventsBinded)
@@ -128,14 +131,13 @@ showcase.widget.showObject.prototype.render = function() {
   
   // Now show the selected object
   var itemId = this._params.comboBox.val();
-  var item = ss.arFind(this._objectItems, 'id', itemId);
-  
+  var item = ss.arFind(this._objectItems, 'itemId', itemId);
+  l.info('itemId:' + itemId);
+  l.info('item:' + goog.debug.expose(item));
+  console.log(item);
   this._renderItem(item);
   
   return this;
-  } catch(e) {
-    ss.error(e);
-  }
 };
 
 /**
@@ -147,16 +149,26 @@ showcase.widget.showObject.prototype.render = function() {
  * @return {this}
  */
 showcase.widget.showObject.prototype._renderItem = function(item) {
-  try {
+  var g = goog;
+  console.log('_renderItem!');
+  var l = ss.log('showcase.widget.showObject._renderItem');
+  l.info('HERE I SAY!');
+  l.info('item:' + g.debug.expose(item));
   this._jContent.children('h3').text(item.title);
   this._jContent.children('span').html('<b>Name literal:</b> <i>' + item.objectPath + '</i>');
-  this._jContent.children('pre').text(goog.debug.deepExpose(eval(item.objectPath), false, true));
+  var objItem = null;
+  if (g.isFunction(item.item))
+    objItem = item.item();
+  else
+    objItem = item.item;
+  console.log(item);
+  console.log(objItem);
+  this._jContent.children('pre').text(g.debug.deepExpose(objItem, false, true));
   this._params.displayBox.html(this._jContent);
   
   return this;
   
   
-  } catch(e) {ss.error(e);}
 };
 
 
@@ -170,7 +182,7 @@ showcase.widget.showObject.prototype.populateCombo = function () {
   try {
     var c = this._params.comboBox, newOption;
     $.each(this._objectItems, function(index, item) {
-      newOption = '<option' + (item.def ? ' selected' : '') + ' value="' + item.id + '">' + item.comboTitle + '</option>';
+      newOption = '<option' + (item.def ? ' selected' : '') + ' value="' + item['itemId'] + '">' + item.comboTitle + '</option>';
       c.append(newOption);
     });
     return this;
@@ -195,7 +207,7 @@ showcase.widget.showObject.prototype.reset = function () {
  * @return {this}
  */
 showcase.widget.showObject.prototype._validate = function() {
-  var w = window, g = w.goog, s = w.ss, j = $;
+  var w = window, g = goog, s = ss, j = $;
 
   if (g.isNull(this._params))
     throw new TypeError('Parameters not defined. Please set proper elements');
@@ -209,7 +221,7 @@ showcase.widget.showObject.prototype._validate = function() {
       else
         mixed = j(mixed);
     if (1 != mixed.length)
-      throw new Error(name + ' selector does not have one(1) element selected. It has:' + mixed.length + ' Selector:' + mixed.selector);
+      throw new Error(name + ' selector does not have one (1) element selected. It has:' + mixed.length + ' Selector:' + mixed.selector);
     
   };
   jQurator(this._params.comboBox, 'comboBox');
@@ -235,7 +247,6 @@ showcase.widget.showObject.prototype._bindEvents = function () {
   this._eventsBinded = true;
   var t = this;
   this._params.comboBox.change(function(e){
-    console.log('Change event fired');
     t.render();
   });
   return this;

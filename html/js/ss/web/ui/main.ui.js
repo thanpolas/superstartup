@@ -48,7 +48,7 @@ ss.web.ui.db = {
  */
 ss.web.ui.INIT = function ()
 {
-  var win = window, j = win.jQuery, c = win.ss, w = c.web;
+  var win = window, j = $, c = ss, w = c.web;
 
   var log = c.log('ss.web.ui.INIT');
 
@@ -113,7 +113,7 @@ ss.web.ui.getWindowRes = function ()
  */
 ss.web.ui.resize = function ()
 {
-  var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
+  var win = window, j = $, c = ss, w = c.web, g = goog;
   var log = g.debug.Logger.getLogger('ss.web.ui.resize');
   //var cp = s.conf.page;
   

@@ -29,5 +29,7 @@ goog.require('ss.web.system.tagLander');
 
 (function(goog){
   goog.exportSymbol('ss.tagLander', ss.web.system.tagLander);
+  //goog.exportSymbol('ss.STATIC.SOURCES', ss.STATIC.SOURCES);
+  //goog.exportProperty(ss.STATIC, 'zoo', ss.STATIC.zoo);
   window['ss']['taggg'] = ss.web.system.tagLander;
 })(goog);

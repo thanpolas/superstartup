@@ -29,6 +29,8 @@ goog.provide('ss.web.system.tagLander');
 
 goog.require('ss.error');
 goog.require('ss.user');
+goog.require('ss.user.auth');
+goog.require('ss.STATIC');
 
 /**
  * The master array where we will store the incoming data from
@@ -73,7 +75,7 @@ ss.web.system.tagLanderParse = function()
     //go through the array and check for values
     var arr = w.system.injArr;
     var log = s.log('ss.web.system.tagLanderParse');
-
+    
     log.info('Init');
 
     var obj = null;
@@ -106,8 +108,6 @@ ss.web.system.tagLanderParse = function()
       if (s.ONSERVER)
         s.WEBTRACK = true; // enable tracking
 
-
-
       log.info('Core Environment Set. DEBUG:' + s.DEBUG + ' ONSERVER:' + s.ONSERVER + ' PREPROD:' + s.PREPROD);
 
     }
@@ -120,7 +120,7 @@ ss.web.system.tagLanderParse = function()
         log.warning('obj.obj is not an object. obj:' + g.debug.expose(obj));
         return;
       }
-      // user is logged in...
+      // user is logged in...    
       s.user.auth.login(obj['obj'], function(state, opt_msg){}, s.STATIC.SOURCES.WEB);
     }
 

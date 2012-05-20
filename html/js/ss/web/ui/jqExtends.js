@@ -97,26 +97,6 @@ ss.web.jq.ext.dispOff = function()
 }; // method ss.web.jq.ext.dispOff
 
 /**
- * .on() :: returns boolean if display == block
- *
- * @return {boolean}
- */
-ss.web.jq.ext.on = function()
-{
-    return ('none' == this.css('display') ? false : true);
-}; // method ss.web.jq.ext.on
-
-/**
- * .off() ::  returns boolean if display == none
- *
- * @return {boolean}
- */
-ss.web.jq.ext.off = function()
-{
-    return ('none' == this.css('display')? true : false);
-}; // method ss.web.jq.ext.off
-
-/**
  * .del(callback) :: Performs a custom remove(), optionaly we can set a callback
  * Will remove an element with our remove effect.
  * [To be desided whitch, for now pulsate]

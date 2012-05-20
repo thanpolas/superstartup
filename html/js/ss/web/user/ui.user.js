@@ -45,7 +45,7 @@ ss.web.user.ui.db = {
 ss.web.user.ui.Init = function ()
 {
   try {
-    var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
+    var win = window, j = $, c = ss, w = c.web, g = goog;
 
     var log = c.log('ss.web.user.ui.Init');
 
