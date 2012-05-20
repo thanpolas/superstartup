@@ -2,8 +2,9 @@
 goog.addDependency("../../../deps.js", [], []);
 goog.addDependency("../../../init.js", [], ['ss.web', 'showcase']);
 goog.addDependency("../../../showcase/main.js", ['showcase'], ['ss', 'showcase.widget.showObject']);
-goog.addDependency("../../../showcase/widgets/showObject.js", ['showcase.widget.showObject'], []);
-goog.addDependency("../../../ss/main.js", ['ss', 'ss.DEBUG', 'ss.READY'], ['goog.debug', 'goog.debug.LogManager', 'goog.debug.Logger', 'ss.analytics', 'ss.date', 'ss.error', 'ss.ajax', 'ss.ready', 'ss.events', 'ss.user', 'ss.conf', 'ss.valid', 'ss.web2', 'ss.STATIC']);
+goog.addDependency("../../../showcase/widgets/showObject.js", ['showcase.widget.showObject'], ['goog.debug']);
+goog.addDependency("../../../ss/exports.js", ['ss.exports'], []);
+goog.addDependency("../../../ss/main.js", ['ss', 'ss.DEBUG', 'ss.READY'], ['goog.debug', 'goog.debug.LogManager', 'goog.debug.Logger', 'ss.analytics', 'ss.date', 'ss.error', 'ss.ajax', 'ss.ready', 'ss.events', 'ss.user', 'ss.conf', 'ss.valid', 'ss.web2', 'ss.STATIC', 'ss.exports']);
 goog.addDependency("../../../ss/ext/web2.0.main.js", ['ss.web2'], ['ss.user', 'ss.events', 'ss.fb', 'ss.fb.API', 'ss.twit']);
 goog.addDependency("../../../ss/ext/facebook/facebook.API.js", ['ss.fb.API'], ['ss.STATIC']);
 goog.addDependency("../../../ss/ext/facebook/facebook.comments.js", ['ss.fb.com'], []);

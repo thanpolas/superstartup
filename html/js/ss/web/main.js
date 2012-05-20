@@ -78,8 +78,7 @@ $().ready(function(){
  */
 ss.web.INIT = function () {
 
-
-  var win = window, c = win.ss, w = c.web, j = win.jQuery;
+  var win = window, c = ss, w = c.web, j = $;
 
   var log = c.log('ss.web.INIT');
 

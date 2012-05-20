@@ -30,6 +30,12 @@ goog.provide('ss.web.system.tagLander');
 goog.require('ss.error');
 goog.require('ss.user');
 
+/**
+ * The master array where we will store the incoming data from
+ * the server
+ * @type {array}
+ */
+ss.web.system.injArr = [];
 
 /**
  * Called within a script tag in html, invoked by the server
@@ -40,11 +46,6 @@ goog.require('ss.user');
  */
 ss.web.system.tagLander = function(arr)
 {
-
-  var log = goog.debug.Logger.getLogger('ss.web.system.tagLander');
-
-  log.info('Init');
-
   ss.web.system.injArr = arr;
 }; // method ss.web.system.tagLander
 
@@ -68,32 +69,31 @@ ss.web.system.tagLander = function(arr)
  */
 ss.web.system.tagLanderParse = function()
 {
-  try {
-
-    var win = window, j = win.jQuery, c = win.ss, w = c.web, g = win.goog;
+    var win = window, j = $, s = ss, w = s.web, g = goog;
     //go through the array and check for values
     var arr = w.system.injArr;
-    var log = g.debug.Logger.getLogger('ss.web.system.tagLanderParse');
+    var log = s.log('ss.web.system.tagLanderParse');
 
     log.info('Init');
 
     var obj = null;
 
     // check Core Env
-    obj = c.arFind(arr, 'action', 5);
+    obj = s.arFind(arr, 'action', 5);
     if (!g.isNull(obj)) {
+      var ob = obj['obj'];
       // we found ss states assign to web
-      if (g.isBoolean(obj.obj['DEVEL']))
-        c.DEBUG = obj.obj['DEVEL'];
-      if (g.isBoolean(obj.obj['PRODUCTION']))
-        c.ONSERVER = obj.obj['PRODUCTION'];
-      if (g.isBoolean(obj.obj['PREPROD']))
-        c.PREPROD = obj.obj['PREPROD'];
+      if (g.isBoolean(ob['DEVEL']))
+        s.DEBUG = ob['DEVEL'];
+      if (g.isBoolean(ob['PRODUCTION']))
+        s.ONSERVER = ob['PRODUCTION'];
+      if (g.isBoolean(ob['PREPROD']))
+        s.PREPROD = ob['PREPROD'];
 
       // now inform google
-      g.DEBUG = c.DEBUG;
+      g.DEBUG = s.DEBUG;
       // open debug win if in debug
-      if (c.DEBUG || c.PREPROD)
+      if (s.DEBUG || s.PREPROD)
         w.openFancyWin();
       else
       // check if we have the magic 'debugwindow' var in the url params
@@ -103,25 +103,25 @@ ss.web.system.tagLanderParse = function()
 
       // check if we are on server and enable tracking if
       // it is there
-      if (c.ONSERVER)
-        c.WEBTRACK = true; // enable tracking
+      if (s.ONSERVER)
+        s.WEBTRACK = true; // enable tracking
 
 
 
-      log.info('Core Environment Set. DEBUG:' + c.DEBUG + ' ONSERVER:' + c.ONSERVER + ' PREPROD:' + c.PREPROD);
+      log.info('Core Environment Set. DEBUG:' + s.DEBUG + ' ONSERVER:' + s.ONSERVER + ' PREPROD:' + s.PREPROD);
 
     }
 
     // now if the user is logged in
-    obj = c.arFind(arr, 'action', 102);
+    obj = s.arFind(arr, 'action', 102);
     if (!g.isNull(obj)) {
       log.info('Got action 102 - user is logged in');
-      if (!g.isObject(obj.obj)) {
+      if (!g.isObject(obj['obj'])) {
         log.warning('obj.obj is not an object. obj:' + g.debug.expose(obj));
         return;
       }
       // user is logged in...
-      c.user.auth.login(obj.obj, function(state, opt_msg){}, c.STATIC.SOURCES.WEB);
+      s.user.auth.login(obj['obj'], function(state, opt_msg){}, s.STATIC.SOURCES.WEB);
     }
 
 
@@ -141,22 +141,22 @@ ss.web.system.tagLanderParse = function()
       if (!l) return; //if empty exit
       while(l--) {
         obj = arr[l];
-        if (!g.isNumber(obj.action)) continue; //invalid
+        if (!g.isNumber(obj['action'])) continue; //invalid
 
-        switch(obj.action) {
+        switch(obj['action']) {
           // visitor from campaign
           case 55:
             var cdata = obj['obj'];
             log.info('ACTION 55 :: Visitor from campaign. Source' + cdata['source'] + ' Campaign:' + cdata['campaign'] + ' version:' + cdata['version']);
-            c.analytics.trackPageview('/campaigns/fb');
-            c.analytics.trackEvent('Campaigns', cdata['source'], cdata['campaign'], cdata['version'], 1);
+            s.analytics.trackPageview('/campaigns/fb');
+            s.analytics.trackEvent('Campaigns', cdata['source'], cdata['campaign'], cdata['version'], 1);
 
           break;
           // new user
           case 121:
             log.info('ACTION 121 :: New user');
             // trigger new user event
-            c.user.auth.events.runEvent('newUser');
+            s.user.auth.events.runEvent('newUser');
 
           break;
 
@@ -165,8 +165,8 @@ ss.web.system.tagLanderParse = function()
             log.info('ACTION 20 :: Mobile visitor');
             // mobile type is on:
             // obj['obj']['mobile']
-            w.MOB = true;
-            w.ui.mobile.Init();
+            s.MOB = true;
+            s.ui.mobile.Init();
 
           break;
 
@@ -175,7 +175,7 @@ ss.web.system.tagLanderParse = function()
             if (w.cookies.isEnabled()) {
               // cookies enabled, notify server
               log.info('Cookies enabled, notifying server');
-              var aj = new c.ajax('/users/pc', {
+              var aj = new s.ajax('/users/pc', {
                     postMethod: 'POST'
                    , showMsg: false // don't show default success message
                    , showErrorMsg: false // don't show error message if it happens
@@ -183,8 +183,8 @@ ss.web.system.tagLanderParse = function()
               aj.callback = function(res) {
                 // check if we got a new metadataObject ...
                 if (g.isObject(res['metadataObject'])) {
-                  c.analytics.trackMP('newVisitor');
-                  c.metadata.newObject(res['metadataObject']);
+                  s.analytics.trackMP('newVisitor');
+                  s.metadata.newObject(res['metadataObject']);
                 }
               }
               // send ajax request
@@ -204,13 +204,13 @@ ss.web.system.tagLanderParse = function()
            */
           case 56:
             log.info('ACTION 56 :: Perm Cook metadata');
-            c.metadata.newObject(obj['obj']);
+            s.metadata.newObject(obj['obj']);
           break;
         }
       }
       
       // trigger ready watch for rest of fucntionality
-      c.ready.check('ready', 'alldone');
+      s.ready.check('ready', 'alldone');
       } catch (e) {
         ss.error(e);
       }
@@ -221,14 +221,10 @@ ss.web.system.tagLanderParse = function()
 
     // check if we are ready (we are not) and attach
     // ourselves to the main ready watch
-    if (!c.READY) {
-      c.ready.addFunc('main', _parse);
+    if (!s.READY) {
+      s.ready.addFunc('main', _parse);
     } else {
       _parse();
     }
 
-    return;
-  } catch (e) {
-    ss.error(e);
-  }
 }; // method ss.web.system.tagLanderParse

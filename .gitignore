@@ -1,2 +1,3 @@
 engine/bin/compiler.out
 *.pyc
+html/compil*

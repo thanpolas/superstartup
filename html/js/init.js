@@ -22,7 +22,7 @@
  * Superstartup init file
  *
  */
-
+goog.provide('initFile');
 goog.require('ss.web');
 
 // If you plan on using the google closure library then insert here

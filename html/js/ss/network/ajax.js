@@ -279,7 +279,6 @@ ss.ajax.dbstatic = {
 /**
  * Define error  Statuses
  *
- * @define {object}
  * @enum {number}
  */
 ss.ajax.ERRORSTATUS = {

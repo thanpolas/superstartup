@@ -2,17 +2,24 @@
 use POSIX qw(strftime);
 use Time::Local;
 
+$DEBUG = 0;
+if ("--debug" eq $ARGV[0]) {
+  $DEBUG = 1;
+}
+
 ######################### CONFIG ###############################
 
 $java = "/usr/bin/java";
 
 
 ### Project Root
-$projectRoot = "../..";
+$projectRoot = "..";
 ### Rest subfolders
-$jsroot = $projectRoot . "/html/js";
+$jsroot = "js";
+$binPath = $projectRoot . "/engine/bin";
 $closurelib = $jsroot . "/closure-library";
 $googPath = $jsroot . "/closure-library/closure/goog";
+$externsPath = $binPath . "/externs";
 #3rd party apps...
 $asyncPath = $jsroot . "/closure-library/third_party/closure/goog";
 $calcdeps = $jsroot . "/closure-library/closure/bin/calcdeps.py";
@@ -21,42 +28,47 @@ $closurecompiler = $projectRoot . "/engine/bin/Third-Party/closure_compiler/comp
 ######################### CONFIG END ###########################
 
 $cmdBuild = "$closurebuilder ";
-$cmdBuild .= "-i $jsroot" . "/ss/main.js -i $jsroot" . "/deps.js ";
-$cmdBuild .= "--root $jsroot ";
-$cmdBuild .= " -o script --output_file=$projectRoot" . "/html/jsc/precompiled.js";
-$cmdBuild .= " > /dev/null 2>&1";
+$cmdBuild .= "-i $jsroot" . "/init.js";
+$cmdBuild .= " --root $jsroot";
+$cmdBuild .= " -o compiled --output_file=$projectRoot" . "/html/jsc/compiled.js";
+$cmdBuild .= " --compiler_jar=\"" . $closurecompiler . "\"";
+
+$cmdCompile = "  --compiler_flags=\"--compilation_level=ADVANCED_OPTIMIZATIONS\"";
+
+# Define all extern files here
+$cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/compiler_externs.js\"";
+$cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/jquery-1.7.js\"";
+
+#$cmdCompile .= " --compiler_flags=\"--common_js_entry_module=../../html/js\"";
+#$cmdCompile .= " --compiler_flags=\"--common_js_module_path_prefix=../../html/\"";
+$cmdCompile .= " --compiler_flags=\"--warning_level=verbose\"";
+$cmdCompile .= " --compiler_flags=\"--jscomp_off=fileoverviewTags\"";
+$cmdCompile .= " --compiler_flags=\"--summary_detail_level=3\"";
+$cmdCompile .= " --compiler_flags=\"--jscomp_off=checkTypes\"";
+
+$cmdCompile .- " --compiler_flags=\"--manage_closure_dependencies\"";
+if ($DEBUG) {
+  $cmdCompile .= " --compiler_flags=\"--source_map_format=V3\"";
+  $cmdCompile .= " --compiler_flags=\"--create_source_map=compiled.js.map\"";
+  #$cmdCompile .= " --compiler_flags=\"--debug\"";
+  $cmdCompile .= " --compiler_flags=\"--output_wrapper='(function(){%output%}).call(this); \\\n//@ sourceMappingURL=/compiled.js.map'\"";  
+} else {
+  $cmdCompile .= " --compiler_flags=\"--output_wrapper='(function(){%output%}).call(this);'\"";
+}
+
+$cmdBuild .= $cmdCompile;
+
+if ($DEBUG) {
+  $cmdBuild .= " > compiler.out";
+} else {
+  $cmdBuild .= " > compiler.out 2>&1";
+}
 
 system $cmdBuild;
 
-## Compile with WHITESPACE_ONLY to semicompiled.js
-$cmdCompile = "$java -jar $closurecompiler ";
-$cmdCompile .= "--js $projectRoot" . "/html/jsc/precompiled.js --jscomp_warning=checkTypes ";
-$cmdCompile .= "--js_output_file=$projectRoot" . "/html/jsc/semicompiled.js";
-$cmdCompile .= "  --compilation_level=WHITESPACE_ONLY";
-$cmdCompile .= "  --define='goog.COMPILED=true'";
-$cmdCompile .= " >> ./compiler.out 2>&1";
-system $cmdCompile;
-
-## Don't do SIMPLE_OPTIMIZATIONS
-
 ## Compile with ADVANCED_OPTIMIZATIONS to compiled.js
 ## Use -Xmx1024m for giving more memory to java: http://groups.google.com/group/closure-compiler-discuss/browse_thread/thread/522fd9e9a87b9c92?hl=en#
-$cmdCompile = "$java -Xmx1024m -jar $closurecompiler ";
-$cmdCompile .= "--js $projectRoot" . "/html/jsc/precompiled.js ";
-$cmdCompile .= "--js_output_file=$projectRoot" . "/html/jsc/compiled.js";
-$cmdCompile .= "  --compilation_level=ADVANCED_OPTIMIZATIONS";
-$cmdCompile .= "  --externs=$projectRoot" . "/engine/bin/Third-Party/compiler_externs.js";
-# Formatting: Pretty print
-#$cmdCompile .= "  --formatting PRETTY_PRINT";
-$cmdCompile .= " --warning_level=verbose";
-$cmdCompile .= " --jscomp_off=fileoverviewTags";
-$cmdCompile .= " --summary_detail_level=3";
-$cmdCompile .= " --jscomp_off=checkTypes";
-$cmdCompile .= " --jscomp_warning=undefinedVars ";
-$cmdCompile .= " ";
-$cmdCompile .= " >> ./compiler.out 2>&1";
-
-system $cmdCompile;
+#$cmdCompile = "$java -Xmx1024m -jar $closurecompiler ";
 
 print "JS Compiled. See output in engine/bin/compiler.out\n";
 
