@@ -69,11 +69,11 @@ ss.user.auth.login = function(user, cb, sourceId)
  {
    try {
     //shortcut assign
-    var c = ss;
-    var u = c.user;
+    var s = ss;
+    var u = s.user;
     var db = u.db;
     var g = goog;
-    var log = c.log('ss.user.auth.login');
+    var log = s.log('ss.user.auth.login');
     var genError = 'An error has occured. Please retry';
 
     log.info('Init. authed:' + db.isAuthed);
@@ -87,23 +87,22 @@ ss.user.auth.login = function(user, cb, sourceId)
     db.user = user;
 
     // validate it
-    if (!c.user.isUserObject(db.user)) {
+    if (!s.user.isUserObject(db.user)) {
         log.warning('User object provided is not valid:' + g.debug.expose(user));
         cb(false, genError);
         return;
     }
 
     // provide new metadata object to our metadata facility
-    c.metadata.newObject(user['metadataObject']);
+    s.metadata.newObject(user['metadataObject']);
 
     // turn on authed switch
     db.isAuthed = true;
 
-    c.user.auth.events.runEvent('authState', true, sourceId, user);
+    s.user.auth.events.runEvent('authState', true, sourceId, user);
 
-
-    // notify our analytics
-    c.analytics.userAuth(user);
+    // notify metrics
+    s.metrics.userAuth(user);
 
     cb(true);
 

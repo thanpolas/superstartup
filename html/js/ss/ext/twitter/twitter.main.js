@@ -132,26 +132,26 @@ ss.twit.eventTweet = function (event)
      */
 
     // succesfully shared on Twitter
-    c.analytics.trackSocial('twitter', 'tweet', twShare.shareUrl);
+    //c.analytics.trackSocial('twitter', 'tweet', twShare.shareUrl);
 
 
     switch(twShare.source) {
       case 'frame_hover':
-        c.analytics.trackEvent('Share-Frame', 'Twitter-hover-shared', '', 1);
-        c.analytics.trackMetrics('Share-frame', 'twitter-hover', twShare.item_id, 1);
+        //c.analytics.trackEvent('Share-Frame', 'Twitter-hover-shared', '', 1);
+        //c.analytics.trackMetrics('Share-frame', 'twitter-hover', twShare.item_id, 1);
 
       break;
       case 'frame_modal':
-        c.analytics.trackEvent('Share-Frame', 'Twitter-modal-shared', '', 1);
-        c.analytics.trackMetrics('Share-frame', 'modal-twitter', twShare.item_id, 1);
+        //c.analytics.trackEvent('Share-Frame', 'Twitter-modal-shared', '', 1);
+        //c.analytics.trackMetrics('Share-frame', 'modal-twitter', twShare.item_id, 1);
       break;
       case 'sfv_main':
-        c.analytics.trackEvent('Share-Frame', 'Twitter-sfv-shared', '', 1);
-        c.analytics.trackMetrics('Share-frame', 'sfv-twitter', twShare.item_id, 1);
+        //c.analytics.trackEvent('Share-Frame', 'Twitter-sfv-shared', '', 1);
+        //c.analytics.trackMetrics('Share-frame', 'sfv-twitter', twShare.item_id, 1);
       break;
       case 'booth_invite':
-        c.analytics.trackEvent('Invite', 'Twitter-shared', '', 1);
-        c.analytics.trackMetrics('Invite', 'twitter', 'shared', twShare.item_id);
+        //c.analytics.trackEvent('Invite', 'Twitter-shared', '', 1);
+        //c.analytics.trackMetrics('Invite', 'twitter', 'shared', twShare.item_id);
       break;
     }
 

@@ -36,8 +36,7 @@ goog.require('goog.debug');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 
-goog.require('ss.analytics');
-goog.require('ss.date');
+goog.require('ss.metrics');
 goog.require('ss.error');
 
 goog.require('ss.ajax');
@@ -45,7 +44,6 @@ goog.require('ss.ready');
 goog.require('ss.events');
 goog.require('ss.user');
 goog.require('ss.conf');
-goog.require('ss.valid');
 goog.require('ss.web2');
 goog.require('ss.STATIC');
 goog.require('ss.helpers');

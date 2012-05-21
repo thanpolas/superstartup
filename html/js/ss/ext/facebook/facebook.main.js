@@ -514,9 +514,9 @@ ss.fb.edgeCreate = function (result, fbobj)
 
     //strip
 
-    c.analytics.trackEvent('Share-Frame', 'Facebook-LIKE', ref + '::' + result, 1);
-    c.analytics.trackMetrics('Share', 'facebook-like', result, ref);
-    c.analytics.trackSocial('facebook', 'like', result);
+    //c.analytics.trackEvent('Share-Frame', 'Facebook-LIKE', ref + '::' + result, 1);
+    //c.analytics.trackMetrics('Share', 'facebook-like', result, ref);
+    //c.analytics.trackSocial('facebook', 'like', result);
 
 
   } catch(e) {
@@ -554,9 +554,9 @@ ss.fb.edgeRemove = function (result, fbobj)
 
     //strip
 
-    c.analytics.trackEvent('Share-Frame', 'Facebook-UNLIKE', ref + '::' + result, -1);
-    c.analytics.trackMetrics('Share', 'facebook-unlike', result, ref);
-    c.analytics.trackSocial('facebook', 'unlike', result);
+    //c.analytics.trackEvent('Share-Frame', 'Facebook-UNLIKE', ref + '::' + result, -1);
+    //c.analytics.trackMetrics('Share', 'facebook-unlike', result, ref);
+    //c.analytics.trackSocial('facebook', 'unlike', result);
 
 
   } catch(e) {

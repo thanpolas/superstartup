@@ -453,8 +453,6 @@ ss.web2.authStateTimeout = function ()
 
     log.info('web2.0 Ultimate timeout fired. db.finished:' + db.initialCheck.finished + ' Authed:' + c.isAuthed());
 
-
-
     // check if already finished or is already authed... (sour grapes)
     //if (db.initialCheck.finished || w.isAuthed())
       //  return;

@@ -70,8 +70,10 @@ ss.user.metadata.newObject = function (dataobj)
     log.info('Parsed new metadataObject. source:' + db.source + ' permId:' + db.permId);
 
     // check if we have a valid perm id and track it in mixpanel
-    if (0 != db.permId)
-      c.analytics.identify(db.permId);
+    if (0 != db.permId) {
+      //c.analytics.identify(db.permId);
+      // trigger event...
+    }
 
   } catch (e) {
     ss.error(e);

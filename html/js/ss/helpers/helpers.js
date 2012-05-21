@@ -25,10 +25,12 @@
  * 
  */
  
- goog.provide('ss.helpers');
+goog.provide('ss.helpers');
  
- goog.require('goog.array');
-  goog.require('goog.object');
+ 
+goog.require('ss.date');
+goog.require('goog.array');
+goog.require('goog.object');
  
  /**
   * Wrapper for goog.array.find

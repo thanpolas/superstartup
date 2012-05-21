@@ -56,8 +56,8 @@ ss.fb.com.create = function (event)
      c.fb.local.commentCreate(event);
 
      // track event
-     c.analytics.trackEvent('comments', 'created');
-     c.analytics.trackSocial('facebook', 'comment', event.href);
+     //c.analytics.trackEvent('comments', 'created');
+     //c.analytics.trackSocial('facebook', 'comment', event.href);
      
   } catch (e) {
     ss.error(e);
@@ -88,8 +88,8 @@ ss.fb.com.remove = function (event)
      // inform server
      c.fb.local.commentCreate(event, true);
      // track event
-     c.analytics.trackEvent('comments', 'removed');
-     c.analytics.trackSocial('facebook', 'commentRemoved', event.href);
+     //c.analytics.trackEvent('comments', 'removed');
+     //c.analytics.trackSocial('facebook', 'commentRemoved', event.href);
 
 
   } catch (e) {

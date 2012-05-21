@@ -81,7 +81,7 @@ ss.web.system.tagLanderParse = function()
     var obj = null;
 
     // check Core Env
-    obj = s.arFind(arr, 'action', 5);
+    obj = s.arFind(arr, 'action', '5');
     if (!g.isNull(obj)) {
       var ob = obj['obj'];
       // we found ss states assign to web
@@ -97,23 +97,20 @@ ss.web.system.tagLanderParse = function()
       // open debug win if in debug
       if (s.DEBUG || s.PREPROD)
         w.openFancyWin();
-      else
+      //else
       // check if we have the magic 'debugwindow' var in the url params
       //var uri = g.Uri(window.location.href);
       //if (g.isString(uri.getParameterValue('debugwindow')))
       //    s.debug.openFancyWin();
 
-      // check if we are on server and enable tracking if
-      // it is there
-      if (s.ONSERVER)
-        s.WEBTRACK = true; // enable tracking
+
 
       log.info('Core Environment Set. DEBUG:' + s.DEBUG + ' ONSERVER:' + s.ONSERVER + ' PREPROD:' + s.PREPROD);
 
     }
 
     // now if the user is logged in
-    obj = s.arFind(arr, 'action', 102);
+    obj = s.arFind(arr, 'action', '102');
     if (!g.isNull(obj)) {
       log.info('Got action 102 - user is logged in');
       if (!g.isObject(obj['obj'])) {
@@ -144,16 +141,22 @@ ss.web.system.tagLanderParse = function()
         if (!g.isNumber(obj['action'])) continue; //invalid
 
         switch(obj['action']) {
+          // analytics configuration
+          case 'analytics':
+            s.metrics.init(obj['obj']);
+          break;
           // visitor from campaign
-          case 55:
+          case '55':
             var cdata = obj['obj'];
             log.info('ACTION 55 :: Visitor from campaign. Source' + cdata['source'] + ' Campaign:' + cdata['campaign'] + ' version:' + cdata['version']);
-            s.analytics.trackPageview('/campaigns/fb');
-            s.analytics.trackEvent('Campaigns', cdata['source'], cdata['campaign'], cdata['version'], 1);
+            
+            //REFACTOR REFACTOR REFACTOR
+            //s.analytics.trackPageview('/campaigns/fb');
+            //s.analytics.trackEvent('Campaigns', cdata['source'], cdata['campaign'], cdata['version'], 1);
 
           break;
           // new user
-          case 121:
+          case '121':
             log.info('ACTION 121 :: New user');
             // trigger new user event
             s.user.auth.events.runEvent('newUser');
@@ -161,7 +164,7 @@ ss.web.system.tagLanderParse = function()
           break;
 
           // visitor is on mobile
-          case 20:
+          case '20':
             log.info('ACTION 20 :: Mobile visitor');
             // mobile type is on:
             // obj['obj']['mobile']
@@ -169,8 +172,8 @@ ss.web.system.tagLanderParse = function()
             s.ui.mobile.Init();
 
           break;
-
-          case 25:
+          // New visitor, make perm cookie request to server
+          case '25':
             log.info('ACTION 25 :: Check write cookies for permcook');
             if (w.cookies.isEnabled()) {
               // cookies enabled, notify server
@@ -183,7 +186,6 @@ ss.web.system.tagLanderParse = function()
               aj.callback = function(res) {
                 // check if we got a new metadataObject ...
                 if (g.isObject(res['metadataObject'])) {
-                  s.analytics.trackMP('newVisitor');
                   s.metadata.newObject(res['metadataObject']);
                 }
               }
@@ -202,7 +204,7 @@ ss.web.system.tagLanderParse = function()
            * visitCounter: Number
            * metadata: string (json encoded metadata)
            */
-          case 56:
+          case '56':
             log.info('ACTION 56 :: Perm Cook metadata');
             s.metadata.newObject(obj['obj']);
           break;
