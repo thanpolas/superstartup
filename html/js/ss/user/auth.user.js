@@ -278,4 +278,3 @@ ss.user.auth.getExtName = function(sourceId)
         ss.error(e);
     }
 };
-// function ss.user.auth.hasFacebook

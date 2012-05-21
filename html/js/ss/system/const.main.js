@@ -26,9 +26,6 @@
 
 goog.provide('ss.STATIC');
 
-ss.STATIC.zoo = 3;
-
-
 /**
  * The auth sources (web, mob, facebook...)
  */
