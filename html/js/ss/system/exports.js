@@ -26,10 +26,13 @@
  */
 goog.provide('ss.exports');
 goog.require('ss.web.system.tagLander');
+goog.require('ss.metrics');
 
 (function(goog){
   goog.exportSymbol('ss.tagLander', ss.web.system.tagLander);
-  //goog.exportSymbol('ss.STATIC.SOURCES', ss.STATIC.SOURCES);
+  goog.exportSymbol('ss.metrics.trackEvent', ss.metrics.trackEvent);
+  goog.exportSymbol('ss.metrics.trackMetrics', ss.metrics.trackMetrics);
+  goog.exportSymbol('ss.metrics.trackPageview', ss.metrics.trackPageview);    
   //goog.exportProperty(ss.STATIC, 'zoo', ss.STATIC.zoo);
-  window['ss']['taggg'] = ss.web.system.tagLander;
+
 })(goog);

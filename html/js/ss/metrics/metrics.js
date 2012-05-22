@@ -94,16 +94,14 @@ ss.metrics.trackEvent = function (category, action, opt_label, opt_value)
         return;
 
     // send the event to GA
-    s.metrics.ga.trackEvent(category, action, opt_label, opt_value);
+    s.metrics.db.GA_enable && s.metrics.ga.trackEvent(category, action, opt_label, opt_value);
 
     // prepare and send the event to Mixpanel
-    var props = {
+    s.metrics.db.MP_enable && s.metrics.mixpanel.track(category, {
       'action': action,
       'label' : opt_label || '',
       'value' : opt_value || ''
-    };
-
-    s.metrics.mixpanel.track(category, props);
+    });
 };
 
 
@@ -167,13 +165,12 @@ ss.metrics.trackPageview = function (opt_pageURL)
     var s = ss;
     if (!s.WEBTRACK)
         return;
-    s.metrics.ga.trackPageview(opt_pageURL);
+    s.metrics.db.GA_enable && s.metrics.ga.trackPageview(opt_pageURL);
     // prepare and send the pageview to Mixpanel
-    var props = {
+    s.metrics.db.MP_enable && s.metrics.mixpanel.track('pageview', {
       'page': opt_pageURL,
       'mp_note': opt_pageURL
-    };
-    s.metrics.mixpanel.track('pageview', props);
+    });
 }; 
 
 /**
@@ -188,14 +185,13 @@ ss.metrics.userAuth = function (user)
     if (!s.WEBTRACK)
         return;
     // check if we want to track auth custom vars
-    if (s.db.GA_enable_CV_auth) {
+    if (s.metrics.db.GA_enable && s.db.GA_enable_CV_auth) {
       var cv = s.db.GA_enable_CV_auth_params;
       s.metrics.ga.customVar(cv['slot'], cv['var_name'], cv['var_value'], cv['scope_level']);
     }
 
    // mixpanel name tag
-   if (s.db.MP_enable)
-      s.metrics.mixpanel.nameTag(user.userId + '::' + user.nickname);
+   s.metrics.db.MP_enable && s.metrics.mixpanel.nameTag(user.userId + '::' + user.nickname);
 
 };
 

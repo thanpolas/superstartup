@@ -84,14 +84,6 @@ ss.metrics.ga.trackPageview = function (opt_pageURL)
     window['_gaq'].push(['_trackPageview', opt_pageURL]);
 }; 
 
-
-
-
-
-
-
-
-
 /**
  * Track a social event (Sharing)
  *
@@ -124,9 +116,9 @@ ss.metrics.ga.trackPageview = function (opt_pageURL)
 ss.metrics.ga.trackSocial = function (network, socialAction, opt_target, opt_pagePath)
 {
   try {
-    var w = window;
+    var w = goog.global;
 
-    if (!w.ss.WEBTRACK)
+    if (!w.ss.WEBTRACK || !w.ss.metrics.db.GA_enable)
         return;
 
     w._gaq.push(['_trackSocial', network, socialAction, opt_target, opt_pagePath]);
