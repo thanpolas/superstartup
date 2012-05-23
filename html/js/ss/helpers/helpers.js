@@ -106,30 +106,6 @@ goog.require('goog.object');
  }; // method ss.arRemove
 
  /**
-  * Checks if a specific itam (value) exists in an array
-  *
-  * if it does, we return the index, else we return -1
-  *
-  * We only search in first level
-  *
-  * @param {array} ar The array we want to search inside
-  * @param {*} value The value we are looking for
-  * @return {number} -1 if not found or index
-  */
- ss.arInArrayIndex = function (ar, value)
- {
-     var ret = -1;
-     goog.array.forEach(ar, function (val, index){
-         if (val == value)
-             ret = index;
-     });
-     // not found
-     return ret;
-
- }; // ss.arInArrayIndex
-
-
- /**
   * Determines if the given object is a valid
   * jQuery array or the jQuery function
   *
@@ -147,20 +123,6 @@ goog.require('goog.object');
      return false;
    }
  }; // method ss.isjQ
-
- /**
-  * Will count an objects element
-  *
-  * @param {Object} obj any object
-  * @return {int}
-  */
- ss.objCount = function (obj)
- {
-     var count = 0;
-     goog.object.forEach(obj, function(){count++;});
-     return count;
-
- }; // method ss.object
 
  /**
   * Decode a URI string
@@ -323,7 +285,5 @@ goog.require('goog.object');
 
      return true;
 
- }; // function ss.inValue
-
-
+ };
  

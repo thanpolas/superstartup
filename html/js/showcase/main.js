@@ -37,8 +37,11 @@ showcase.init = function() {
   var log = ss.log('showcase.init'),
     j = $, s = showcase;
   
+  var jCombo = j('#comboBox');
+  if (!jCombo.length)
+    return;
   s.so = new showcase.widget.showObject({
-    comboBox: j('#comboBox'),
+    comboBox: jCombo,
     displayBox: j('#showObjects')
   });
   
