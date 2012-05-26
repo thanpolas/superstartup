@@ -138,7 +138,6 @@ ss.web.system.tagLanderParse = function()
       if (!l) return; //if empty exit
       while(l--) {
         obj = arr[l];
-        if (!g.isNumber(obj['action'])) continue; //invalid
 
         switch(obj['action']) {
           // analytics configuration
@@ -186,7 +185,7 @@ ss.web.system.tagLanderParse = function()
               aj.callback = function(res) {
                 // check if we got a new metadataObject ...
                 if (g.isObject(res['metadataObject'])) {
-                  s.metadata.newObject(res['metadataObject']);
+                  s.metadata.init(res['metadataObject']);
                 }
               }
               // send ajax request
@@ -197,16 +196,11 @@ ss.web.system.tagLanderParse = function()
  
 
           /**
-           * 56 :: permcook data
-           * Keys:
-           * permId: Number
-           * lastSeenDate: timestamp
-           * visitCounter: Number
            * metadata: string (json encoded metadata)
            */
-          case '56':
-            log.info('ACTION 56 :: Perm Cook metadata');
-            s.metadata.newObject(obj['obj']);
+          case 'metadata':
+            log.info('ACTION metadata :: metadata');
+            s.metadata.init(obj['obj']);
           break;
         }
       }

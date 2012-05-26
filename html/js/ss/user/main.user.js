@@ -29,7 +29,6 @@ goog.require('ss.user.auth');
 goog.require('ss.user.login');
 goog.require('ss.user.profile');
 goog.require('ss.user.pub');
-goog.require('ss.user.metadata');
 
 
 /**

@@ -94,7 +94,7 @@ ss.user.auth.login = function(user, cb, sourceId)
     }
 
     // provide new metadata object to our metadata facility
-    s.metadata.newObject(user['metadataObject']);
+    s.metadata.init(user['metadataObject']);
 
     // turn on authed switch
     db.isAuthed = true;

@@ -39,6 +39,8 @@ goog.require('goog.debug.Logger');
 goog.require('ss.metrics');
 goog.require('ss.error');
 
+goog.require('ss.metadata');
+
 goog.require('ss.ajax');
 goog.require('ss.ready');
 goog.require('ss.events');
@@ -115,6 +117,13 @@ ss.db = {};
  *
  */
 ss.log = goog.debug.Logger.getLogger;
+
+/**
+ * Suppresses all logging done by the Superstartup framework
+ *
+ * @type {boolean}
+ */
+ss.canLog = true;
 
 /**
  * The Init function should be called whenever
