@@ -20,9 +20,14 @@
  *
  *********
  * created on Sep 27, 2011
- * metadata.js Meta Data handler
- *
  */
+ 
+ /**
+  * @fileoverview Meta Data library. Stores and gets data persistently to the server
+  * 
+  */
+
+
 
 goog.provide('ss.metadata');
 
@@ -78,22 +83,22 @@ ss.metadata.init = function (metadataRoot)
   try {
     if (goog.DEBUG && ss.canLog) {
       var log = ss.log('ss.metadata.newObject');
-      log.info('dataobj:' + goog.debug.deepExpose(dataobj));
+      log.info('metadataRoot:' + goog.debug.deepExpose(metadataRoot));
     }
-    if (!ss.metadata.validate(dataobj))
+    if (!ss.metadata.validate(metadataRoot))
       return;
     
     var db = ss.metadata.db;
     // there are cases where we may call .init() twice
     // we want the isFirstTime to remain true if it was set to true
-    db.isFirstTime = db.isFirstTime || dataobj['isFirstTime'];
-    db.source = dataobj['source'];
-    db.permId = dataobj['permId'];
-    db.createDate = dataobj['createDate'];
-    db.visitCounter = dataobj['visitCounter'];
+    db.isFirstTime = db.isFirstTime || metadataRoot['isFirstTime'];
+    db.source = metadataRoot['source'];
+    db.permId = metadataRoot['permId'];
+    db.createDate = metadataRoot['createDate'];
+    db.visitCounter = metadataRoot['visitCounter'];
     // now try to JSON decode the metadata
     try {
-      db.metadata = JSON.parse(dataobj['metadata']);
+      db.metadata = JSON.parse(metadataRoot['metadata']);
     } catch(e) {
       db.metadata = {};
     }
@@ -112,15 +117,15 @@ ss.metadata.init = function (metadataRoot)
 
 /**
  * Validate if a metadata object is proper
- *
+ * @param {ss.metadata.metadataRoot}
  * @return {boolean}
  */
-ss.metadata.validate = function(dataObj)
+ss.metadata.validate = function(metadataRoot)
 {
-  if (!goog.isNumber(dataObj['permId']))
+  if (!goog.isNumber(metadataRoot['permId']))
     return false;
     
-  if (0 >= dataObj['permId'])
+  if (0 >= metadataRoot['permId'])
     return false;
     
   return true;
