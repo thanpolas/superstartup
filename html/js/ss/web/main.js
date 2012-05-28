@@ -52,7 +52,7 @@ goog.require('ss.web.myapp');
  */
 ss.web.db = {
   fbClicked: false
-}
+};
 
 /**
  * If visitor is accessing our page from a mobile device
@@ -61,14 +61,7 @@ ss.web.db = {
  */
 ss.web.MOB = false;
 
-/**
- * Set DOM Ready main hook
- *
- * @param {Function}
- */
-$().ready(function(){
-  ss.web.INIT();
-});
+
 
 /**
  * The main initialiser for web
@@ -76,38 +69,38 @@ $().ready(function(){
  *
  * @return {void}
  */
-ss.web.INIT = function () {
-
-  var win = window, c = ss, w = c.web, j = $;
-
-  var log = c.log('ss.web.INIT');
+ss.web.onDomReady = function () 
+{
+  var log = ss.log('ss.web.INIT');
 
   log.info('Init');
   
-  c.db.URL = win.location.protocol + '//' + win.location.hostname;
-
-  // execute the tag lander to parse injected JS instructions from
-  // the server
-  w.system.tagLanderParse();
+  ss.db.URL = window.location.protocol + '//' + window.location.hostname;
   
   // Init the ss framework
-  c.Init();
+  ss.Init();
 
   // initialize the web2.0 (FB/Twitter)
   // AUTH BALL IS HERE
-  c.fb.InitWeb();
+  ss.fb.InitWeb();
 
   // start loading twitter's widgets after 500ms
   setTimeout(function(){
     var twString = '<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>';
-    j('body').append(twString);
+    $('body').append(twString);
     // start init cycle for our twitter lib
-    c.twit.Init();
+    ss.twit.Init();
   }, 500);  
   
 
-}; // web.INIT
+}; // ss.web.INIT
 
+/**
+ * Set DOM Ready main hook
+ *
+ * @param {Function}
+ */
+$().ready(ss.web.onDomReady);
 
 /**
  * Will popup a debuging funcy window
@@ -119,4 +112,35 @@ ss.web.openFancyWin = function () {
   debugWindow.init();
 }; // method web.openFancyWin
 
+/**
+ * Triggers on server command when we don't have a permanent cookie set
+ * Check if we are on a cookie enabled browser and performs a special
+ * AJAX request to have the server write us a permanent cookie
+ *
+ * @return {void}
+ */
+ss.web.permCook = function()
+{
+  if (ss.web.cookies.isEnabled()) {
+    // cookies enabled, notify server
+    var aj = new ss.ajax('/users/pc', {
+          postMethod: 'POST'
+         , showMsg: false // don't show default success message
+         , showErrorMsg: false // don't show error message if it happens
+        });
+    aj.callback = function(res) {
+      // check if we got a new metadataObject ...
+      if (goog.isObject(res['metadataRoot'])) {
+        ss.metadata.init(res['metadataRoot']);
+      }
+    };
+    // send ajax request
+    aj.send();
+  }
+};
+
+// inline execution, hook on server2js
+(function(ss){
+  ss.server2js.hook('25', ss.web.permCook);
+})(ss);
 

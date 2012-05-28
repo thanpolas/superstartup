@@ -52,36 +52,38 @@ goog.require('ss.helpers');
 
 goog.require('ss.exports');
 
+goog.require('ss.server2js');
+
 
 /**
  * Debuging option, set to false for production
- * @define {boolean}
+ * @type {boolean}
  */
 ss.DEBUG = true;
 
 /**
  * ONSERVER switch.
- * @define {boolean}
+ * @type {boolean}
  */
 ss.ONSERVER = false;
 
 /**
  * Pre - production switch
- * @define {boolean}
+ * @type {boolean}
  */
 ss.PREPROD = false;
 
 /**
  * Mobile application mode
  *
- * @define {boolean}
+ * @type {boolean}
  */
 ss.MOBILE = false;
 
 /**
  * WEB app mode
  *
- * @define {boolean}
+ * @type {boolean}
  */
 ss.WEB = false;
 
@@ -134,20 +136,58 @@ ss.canLog = true;
  */
 ss.Init = function ()
 {
-    var s = ss, l = s.log('ss.Init');
-    s.ready('main');
-    s.ready.addCheck('main', 'loaded');
+    log = ss.log('ss.Init');
+    log.info('Starting...');
+    ss.ready('main');
+    ss.ready.addCheck('main', 'loaded');
 
     // the ready trigger for every other functionality beyond the framework
-    s.ready('ready');
+    ss.ready('ready');
     // for now this watch is finished at the end of taglander parse...
-    s.ready.addCheck('ready', 'alldone');
+    ss.ready.addCheck('ready', 'alldone');
 
-    s.READY = true;
-    s.ready.check('main', 'loaded');
+    ss.READY = true;
+    ss.ready.check('main', 'loaded');
 
 }; // function ss.Init
 
-// export root based properties
-(function(goog){
-})(goog);
+/**
+ * Trigger when server passes us environment data
+ *
+ * @param {Object}
+ * @return {void}
+ */
+ss.envReady = function(data)
+{
+  if (data['DEVEL'])
+    ss.DEBUG = true;
+  if (data['PRODUCTION'])
+    ss.ONSERVER = true;
+  if (data['PREPROD'])
+    ss.PREPROD = true;
+  
+  ss.web.openFancyWin();  
+};
+
+// inline execution - hooks for server2js
+(function(ss){
+  // hook for environment data from server
+  ss.server2js.hook('5', ss.envReady, 10);
+  
+  // hook for authed user from server
+  ss.server2js.hook('102', ss.user.auth.login, 50);
+  
+  // analytics
+  ss.server2js.hook('analytics', ss.metrics.init);
+
+  // new user event
+  ss.server2js.hook('121', newUserEvent);
+  
+  // metadata init call
+  ss.server2js.hook('metadata', ss.metadata.init);
+  
+  var newUserEvent = function() {
+    // trigger new user event
+    ss.user.auth.events.runEvent('newUser');      
+  };
+})(ss);

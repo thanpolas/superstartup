@@ -27,12 +27,11 @@
 goog.provide('ss.exports');
 goog.require('ss.web.system.tagLander');
 goog.require('ss.metrics');
+goog.require('ss.server2js');
 
 (function(goog){
-  goog.exportSymbol('ss.tagLander', ss.web.system.tagLander);
+  goog.exportSymbol('ss.server', ss.server2js.server);
   goog.exportSymbol('ss.metrics.trackEvent', ss.metrics.trackEvent);
   goog.exportSymbol('ss.metrics.trackMetrics', ss.metrics.trackMetrics);
   goog.exportSymbol('ss.metrics.trackPageview', ss.metrics.trackPageview);    
-  //goog.exportProperty(ss.STATIC, 'zoo', ss.STATIC.zoo);
-
 })(goog);

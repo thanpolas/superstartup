@@ -82,7 +82,7 @@ ss.metadata.init = function (metadataRoot)
 {
   try {
     if (goog.DEBUG && ss.canLog) {
-      var log = ss.log('ss.metadata.newObject');
+      var log = ss.log('ss.metadata.init');
       log.info('metadataRoot:' + goog.debug.deepExpose(metadataRoot));
     }
     if (!ss.metadata.validate(metadataRoot))

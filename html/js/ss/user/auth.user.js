@@ -61,11 +61,11 @@ ss.user.auth.events = new ss.events.listeners();
  *
  *
  * @param {object} user
- * @param {Function(boolean, opt_string)} cb callback function when auth finishes
- * @param {ss.STATIC.SOURCES} sourceId the source of authentication
+ * @param {Function(boolean, string=)=} cb callback function when auth finishes
+ * @param {ss.STATIC.SOURCES=} sourceId the source of authentication, default WEB
  * @return {void}
  */
-ss.user.auth.login = function(user, cb, sourceId)
+ss.user.auth.login = function(user, opt_cb, opt_sourceId)
  {
    try {
     //shortcut assign
@@ -77,6 +77,10 @@ ss.user.auth.login = function(user, cb, sourceId)
     var genError = 'An error has occured. Please retry';
 
     log.info('Init. authed:' + db.isAuthed);
+    
+    // set default values
+    var cb = opt_cb || function(){};
+    var sourceId = opt_sourceId || s.STATIC.SOURCES.WEB;
 
     if (db.isAuthed) {
       cb(true);
@@ -94,7 +98,7 @@ ss.user.auth.login = function(user, cb, sourceId)
     }
 
     // provide new metadata object to our metadata facility
-    s.metadata.init(user['metadataObject']);
+    s.metadata.init(user['metadataRoot']);
 
     // turn on authed switch
     db.isAuthed = true;

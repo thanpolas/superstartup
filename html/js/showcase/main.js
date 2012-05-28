@@ -34,21 +34,22 @@ ss.ready(function(){showcase.init();});
 
 showcase.init = function() {
   try {
-  var log = ss.log('showcase.init'),
-    j = $, s = showcase;
+  var log = ss.log('showcase.init');
+
+  log.info('Starting...');
   
-  var jCombo = j('#comboBox');
+  var jCombo = $('#comboBox');
   if (!jCombo.length)
     return;
-  s.so = new showcase.widget.showObject({
+  showcase.so = new showcase.widget.showObject({
     comboBox: jCombo,
-    displayBox: j('#showObjects')
+    displayBox: $('#showObjects')
   });
   
-  s.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()', ss.user.getUserDataObject);
-  s.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()', ss.user.getDummyObject);
+  showcase.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()', ss.user.getUserDataObject);
+  showcase.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()', ss.user.getDummyObject);
 
-  s.so.render();
+  showcase.so.render();
   
   } catch(e) {ss.error(e);}
 };
