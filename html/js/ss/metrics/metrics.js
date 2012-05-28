@@ -12,13 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 19/Nov/2010
  *
  *********
- *  File:: metrics/metrics.js 
+ *  File:: metrics/metrics.js
  * Metrics main file
  *********
  */
@@ -43,7 +43,7 @@ ss.metrics.db = {
 /**
  * Initialize metrics with parameters as passed
  * from the server
- * 
+ *
  * @param {object} params
  * @return {void}
  */
@@ -61,7 +61,7 @@ ss.metrics.init = function(params)
     // it is there
     if (s.ONSERVER)
       s.WEBTRACK = db.GA_enable || db.MP_enable; // enable tracking if any
-    
+
   } catch(e) {
     ss.metrics.init = false;
     ss.error(e);
@@ -171,7 +171,7 @@ ss.metrics.trackPageview = function (opt_pageURL)
       'page': opt_pageURL,
       'mp_note': opt_pageURL
     });
-}; 
+};
 
 /**
  * Trigger whenever we have an authentication event
@@ -194,5 +194,3 @@ ss.metrics.userAuth = function (user)
    s.metrics.db.MP_enable && s.metrics.mixpanel.nameTag(user.userId + '::' + user.nickname);
 
 };
-
-

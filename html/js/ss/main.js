@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @license Apache License, Version 2.0
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 03/Mar/2010
@@ -21,9 +21,9 @@
  *
  *********
  *  File:: main.js
- *  
+ *
  *********
- * 
+ *
  */
 
 goog.provide('ss');
@@ -137,10 +137,10 @@ ss.Init = function ()
     var s = ss, l = s.log('ss.Init');
     s.ready('main');
     s.ready.addCheck('main', 'loaded');
-    
+
     // the ready trigger for every other functionality beyond the framework
     s.ready('ready');
-    // for now this watch is finished at the end of taglander parse...    
+    // for now this watch is finished at the end of taglander parse...
     s.ready.addCheck('ready', 'alldone');
 
     s.READY = true;

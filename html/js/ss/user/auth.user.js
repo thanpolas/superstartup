@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 25/May/2011
  *
@@ -49,7 +49,7 @@ ss.user.auth.events = new ss.events.listeners();
 /**
  * Perform a user login.
  * We call this function after we have cleared with the authentication
- * procedures. 
+ * procedures.
  *
  * We need a user data object to be provided
  *
@@ -165,8 +165,6 @@ ss.user.auth.getPerm = function()
 };
 
 
-
-
 /**
  * Execute when we have an authentication event
  * from an external source.
@@ -179,7 +177,7 @@ ss.user.auth.getPerm = function()
  */
 ss.user.auth.extAuth = function(sourceId, user)
  {
-    try {
+    try { 
 
         var c = ss;
         var log = c.log('ss.user.auth.extAuth');
