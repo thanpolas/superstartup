@@ -152,13 +152,11 @@ ss.metadata.save = function (opt_callback)
     cb = opt_callback || function(){};
 
     // check if we have a null metadata object
-    if (g.isNull(db.metadata))
+    if (goog.isNull(db.metadata))
       db.metadata = {};
 
     var aj = new ss.ajax('/md/save', {
       postMethod: 'POST'
-      ,showMsg: false // don't show default success message
-      ,showErrorMsg: false // don't show error message if it happens
     });
 
     aj.addData('metadata', JSON.stringify(db.metadata));
@@ -251,7 +249,7 @@ ss.metadata.get = function(key) {
  * @return {void}
  */
 ss.metadata.remove = function(key) {
-    _resolvePath(key.split('.'), ss.metadata.db.metadata, {isDel:true});
+    ss.metadata._resolvePath(key.split('.'), ss.metadata.db.metadata, {isDel:true});
 };
 
 /**
@@ -304,7 +302,7 @@ ss.metadata._resolvePath = function(parts, obj, op, opt_val) {
         // previously set as this is the described functionality
         obj[part] = {};
     }
-    return _resolvePath(parts, obj[part], op, opt_val);
+    return ss.metadata._resolvePath(parts, obj[part], op, opt_val);
 };
 
 /**

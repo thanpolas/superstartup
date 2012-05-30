@@ -251,14 +251,6 @@ ss.fb.getInitialLoginStatus = function (response)
       // inform that our FB auth check is done
       c.ready.check('fb-auth', 'done');
 
-
-      // check if the auth source is facebook and we are authed
-      if (c.STATIC.SOURCES.FB == Number(c.ajax.dbstatic.session.sessSourceId) && c.isAuthed()) {
-        // it is, Perform logout
-        log.info('User is logged in and source is facebook. Logging out');
-        c.user.login.logout();
-      }
-
     }
 
   } catch(e) {

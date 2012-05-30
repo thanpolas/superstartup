@@ -44,10 +44,6 @@ ss.user.pub.get = function(nickname, cb)
 
     var aj = new c.ajax('/userp/get', {
       postMethod: 'POST'
-      ,
-      showMsg: false // don't show default success message
-      ,
-      showErrorMsg: false // don't show error message if it happens
     });
 
     // add our query data

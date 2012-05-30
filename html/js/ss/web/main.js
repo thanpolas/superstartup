@@ -125,8 +125,6 @@ ss.web.permCook = function()
     // cookies enabled, notify server
     var aj = new ss.ajax('/users/pc', {
           postMethod: 'POST'
-         , showMsg: false // don't show default success message
-         , showErrorMsg: false // don't show error message if it happens
         });
     aj.callback = function(res) {
       // check if we got a new metadataObject ...

@@ -27,7 +27,6 @@
 goog.provide('ss.user');
 goog.require('ss.user.auth');
 goog.require('ss.user.login');
-goog.require('ss.user.profile');
 goog.require('ss.user.pub');
 
 
@@ -127,128 +126,6 @@ ss.user.getUserData = function ()
 
     return c.user.db.user['userData'];
 }; // function ss.user.getUserData
-
-/**
- * Perform follow user
- *
- * @param {string} uid url unique user id
- * @param {Function({boolean}, {opt_error_message})} listener callback function with state for execution
- * @return {void}
- */
-ss.user.follow = function (uid, listener)
-{
-    try {
-
-    var w = ss;
-    var g = goog;
-
-    if (!w.isAuthed()) {
-        listener(false, 'Not logged in');
-        return;
-    }
-
-    // create request
-    var url = "/";
-    var a = new w.ajax(url, {
-        typeGet: 'json',
-        typeSend: 'html',
-        postMethod: 'POST',
-        oper: w.update.oper.user.follow,
-        origin: 131
-    });
-    a.addData("uid", uid);
-
-    // default error message
-    var errmsg = 'There was a problem, please retry';
-
-    a.callback = function(result) {
-        // inform pup that we have a follow
-        w.user.pup.userFollow(uid);
-        // update the user data object
-        w.user.db.user['userData']['stats']['following']++;
-        // check if less than 5 folloing
-        if (5 > w.user.db.user['userData']['stats']['following']) {
-            w.user.db.user['userData']['following'].push(uid);
-        }
-        // call listener
-        listener(true);
-    };
-    a.errorCallback = function (errObj)
-    {
-        listener(false, errObj.message);
-        return;
-    };
-
-    if (!a.send()) {
-        listener(false, errmsg);
-        return;
-    }
-
-    } catch(e) {ss.error(e);}
-}; // function ss.user.follow
-
-
-
-
-/**
- * Perform unfollow user
- *
- * @param {string} uid url unique user id
- * @param {Function({boolean}, {opt_error_message})} listener callback function with state for execution
- * @return {void}
- */
-ss.user.unfollow = function (uid, listener)
-{
-    try {
-
-    var w = ss;
-    var g = goog;
-
-    if (!w.isAuthed()) {
-        listener(false, 'Not logged in');
-        return;
-    }
-
-    // create request
-    var url = "/";
-    var a = new w.ajax(url, {
-        typeGet: 'json',
-        typeSend: 'html',
-        postMethod: 'POST',
-        oper: w.update.oper.user.follow,
-        origin: 132
-    });
-    a.addData("uid", uid);
-
-    // default error message
-    var errmsg = 'There was a problem, please retry';
-
-    a.callback = function(result) {
-        // inform pup that we have an unfollow
-        w.user.pup.userUnFollow(uid);
-        // update the user data object
-        w.user.db.user['userData']['stats']['following']--;
-        // check if less than 5 following
-        if (5 > w.user.db.user['userData']['stats']['following']) {
-            w.user.db.user['userData']['following'].push(uid);
-        }
-        // call listener
-        listener(true);
-    };
-    a.errorCallback = function (errObj)
-    {
-        listener(false, errObj.message);
-        return;
-    };
-
-    if (!a.send()) {
-        listener(false, errmsg);
-        return;
-    }
-
-    } catch(e) {ss.error(e);}
-}; // function ss.user.follow
-
 
 /**
  * Checks if the given object is a valid

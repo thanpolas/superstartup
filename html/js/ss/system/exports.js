@@ -25,7 +25,6 @@
  * 
  */
 goog.provide('ss.exports');
-goog.require('ss.web.system.tagLander');
 goog.require('ss.metrics');
 goog.require('ss.server2js');
 

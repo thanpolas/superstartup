@@ -126,8 +126,6 @@ ss.metrics.trackMetrics = function (category, action, opt_label, opt_value,
 {
     var aj = new ss.ajax('/mtr/track', {
       postMethod: 'POST'
-     , showMsg: false // don't show default success message
-     , showErrorMsg: false // don't show error message if it happens
     });
     aj.addData('category', category);
     aj.addData('mtraction', action);

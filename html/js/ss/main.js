@@ -104,7 +104,7 @@ ss.WEB = true;
 
 /**
  * Switch to true when DOM fires the ready() event
- * @define {boolean}
+ * @type {boolean}
  */
 ss.READY = false;
 
@@ -136,7 +136,7 @@ ss.canLog = true;
  */
 ss.Init = function ()
 {
-    log = ss.log('ss.Init');
+    var log = ss.log('ss.Init');
     log.info('Starting...');
     ss.ready('main');
     ss.ready.addCheck('main', 'loaded');
