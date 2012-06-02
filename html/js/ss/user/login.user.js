@@ -53,9 +53,9 @@ goog.provide('ss.user.login');
 ss.user.login.submitCallback = function(res, callback)
  {
     //var lang = c.lang.user;
-    var log = goog.debug.Logger.getLogger('ss.user.login.submitCallback');
+    var logger = goog.debug.Logger.getLogger('ss.user.login.submitCallback');
     var genError = 'An error has occured. Please retry';
-    log.info('Init');
+    logger.info('Init');
 
     try {
         // assign the recieved user data object to local db
@@ -86,11 +86,11 @@ ss.user.login.submitCallback = function(res, callback)
 ss.user.login.logout = function(opt_callback)
  {
    try {
-    var log = goog.debug.Logger.getLogger('ss.user.login.logout');
+    var logger = goog.debug.Logger.getLogger('ss.user.login.logout');
 
     var callback = opt_callback || function() {};
 
-    log.info('Init');
+    logger.info('Init');
 
     // clear user db
     ss.user.db.clear();
@@ -112,7 +112,7 @@ ss.user.login.logout = function(opt_callback)
     a.callback = function(result)
     {
         var res = result['status'];
-        log.info('logout server result:' + res);
+        logger.info('logout server result:' + res);
         // trigger global auth state event
         ss.user.auth.events.runEvent('authState', false);
         callback(true);

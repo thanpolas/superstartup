@@ -40,9 +40,9 @@ goog.require('ss.CONSTS');
 ss.fb.local.checkFacebookAuth = function (listener)
 {
     try {
-    var log = goog.debug.Logger.getLogger('ss.fb.local.checkFacebookAuth');
+    var logger = goog.debug.Logger.getLogger('ss.fb.local.checkFacebookAuth');
 
-    log.info('Init. Authed:' + ss.isAuthed());
+    logger.info('Init. Authed:' + ss.isAuthed());
 
     // if authed exit
     if (ss.isAuthed()) {
@@ -84,7 +84,7 @@ ss.fb.local.checkFacebookAuth = function (listener)
     }; //callback of AJAX
 
     a.errorCallback = function(errorobj) {
-        log.warning('Server did not authorize us! msg:' + errorobj.message + ' ::debug::' + errorobj.debugmessage);
+        logger.warning('Server did not authorize us! msg:' + errorobj.message + ' ::debug::' + errorobj.debugmessage);
         listener(false);
     }; // errorCallback of spot request
 
@@ -112,9 +112,9 @@ ss.fb.local.loginSubmit = function (opt_listener)
 {
     try {
 
-    var log = goog.debug.Logger.getLogger('ss.fb.local.loginSubmit');
+    var logger = goog.debug.Logger.getLogger('ss.fb.local.loginSubmit');
 
-    log.info('Init. Authed:' + ss.isAuthed());
+    logger.info('Init. Authed:' + ss.isAuthed());
 
     var listener = opt_listener || function (){};
 
@@ -141,7 +141,7 @@ ss.fb.local.loginSubmit = function (opt_listener)
         var user = result['user'];
         var newuser = result['newuser'];
 
-        log.info('Got callback. newuser:' + newuser);
+        logger.info('Got callback. newuser:' + newuser);
 
         // check if user is valid user object
         if (!ss.user.isUserObject(user)) {
@@ -167,7 +167,7 @@ ss.fb.local.loginSubmit = function (opt_listener)
     }; //callback of AJAX
 
     a.errorCallback = function(errorobj) {
-        log.warning('Server did not authorize us! msg:' + errorobj.message + ' ::debug::' + errorobj.debugmessage);
+        logger.warning('Server did not authorize us! msg:' + errorobj.message + ' ::debug::' + errorobj.debugmessage);
         listener(false);
     }; // errorCallback of spot request
 

@@ -166,14 +166,14 @@ ss.web2.getUserExt = function(userObj, opt_prefferedSource)
 ss.web2.extLogin = function (sourceId, user, opt_newuser)
 {
     try {
-    var log = goog.debug.Logger.getLogger('ss.web2.extLogin');
+    var logger = goog.debug.Logger.getLogger('ss.web2.extLogin');
 
-    log.info('Init. sourceId:' + sourceId + ' opt_newuser:' + opt_newuser);
+    logger.info('Init. sourceId:' + sourceId + ' opt_newuser:' + opt_newuser);
 
     // check if we already know that
     if (ss.web2.isExtAuthed(sourceId)) {
         // yes we do
-        log.warning('We already know that we are authed with this source');
+        logger.warning('We already know that we are authed with this source');
         return;
     }
 
@@ -264,9 +264,9 @@ ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
     try {
     var db = ss.web2.db;
 
-    var log = goog.debug.Logger.getLogger('ss.web2.collectInitialAuthChecks');
+    var logger = goog.debug.Logger.getLogger('ss.web2.collectInitialAuthChecks');
 
-    log.fine('Init. sourceId:' + sourceId + ' initState:' + initState + ' endState:' + opt_endState
+    logger.fine('Init. sourceId:' + sourceId + ' initState:' + initState + ' endState:' + opt_endState
         + ' finished:' + db.initialCheck.finished);
 
     // decide on endState
@@ -275,7 +275,7 @@ ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
     else
         var endState = null;
 
-    log.fine('endState type:' + goog.typeOf(endState) + ' typeOf opt_endState:' + goog.typeOf(opt_endState));
+    logger.fine('endState type:' + goog.typeOf(endState) + ' typeOf opt_endState:' + goog.typeOf(opt_endState));
 
     // check if we have checked this sourceId before
     var ind = ss.arFindIndex(db.initialCheck.checks, 'sourceId', sourceId);
@@ -314,7 +314,7 @@ ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
         try {
 
         if (db.initialCheck.finished) {
-          log.info('_checkState we were already finished, exiting');
+          logger.info('_checkState we were already finished, exiting');
           return;
         }
         // open this switch if check object needs closing
@@ -328,7 +328,7 @@ ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
                 clearTimeout(db.initialCheck.timeout);
                 db.initialCheck.timeout = null;
                 // notify local data object
-                log.info('Notifying local data object for sourceId:' + checkObj.sourceId);
+                logger.info('Notifying local data object for sourceId:' + checkObj.sourceId);
                 db.isExtAuthed = true;
                 if (!ss.web2.isExtAuthed(checkObj.sourceId))
                     db.extAuthSources.push(checkObj.sourceId);
@@ -346,7 +346,7 @@ ss.web2.collectInitialAuthChecks = function (sourceId, initState, opt_endState)
 
             if (goog.isNull(checkObj.endState)) {
                 // ss server auth validation pending...
-                log.fine('endState is null exiting');
+                logger.fine('endState is null exiting');
                 return;
             }
 
@@ -400,9 +400,9 @@ ss.web2.authStateTimeout = function ()
     try {
     var db = ss.web2.db;
 
-    var log = goog.debug.Logger.getLogger('ss.web2.authStateTimeout');
+    var logger = goog.debug.Logger.getLogger('ss.web2.authStateTimeout');
 
-    log.info('web2.0 Ultimate timeout fired. db.finished:' + db.initialCheck.finished + ' Authed:' + ss.isAuthed());
+    logger.info('web2.0 Ultimate timeout fired. db.finished:' + db.initialCheck.finished + ' Authed:' + ss.isAuthed());
 
     db.initialCheck.timeout = null;
 

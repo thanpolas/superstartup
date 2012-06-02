@@ -112,10 +112,10 @@ ss.Events.prototype.addEventListener = function (type, listener, opt_this, opt_i
 ss.Events.prototype.addEventListenerOnce = function (type, listener, opt_this)
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.Events.addEventOnce');
+    var logger = goog.debug.Logger.getLogger('ss.Events.addEventOnce');
 
     if (!goog.isFunction(listener)) {
-      log.warning('listener is not a function for type:' + type);
+      logger.warning('listener is not a function for type:' + type);
       return;
     }
 
@@ -169,7 +169,7 @@ ss.Events.prototype.removeEventListener = function (type, listener)
           // check if same listener
           if (listObj.listener == listener) {
             // great we found a listener
-            //log.info('Found listener at index:' + index);
+            //logger.info('Found listener at index:' + index);
             found = true;
             foundIndex = index;
           }
@@ -181,7 +181,7 @@ ss.Events.prototype.removeEventListener = function (type, listener)
         if (listObj.type == type) {
           if (listObj._id == listener) {
             // found it...
-            //log.info('Found listener at index:' + index);
+            //logger.info('Found listener at index:' + index);
             found = true;
             foundIndex = index;
           }

@@ -103,9 +103,9 @@ ss.fb.API.post.prototype.setParams = function (params)
 ss.fb.API.post.prototype.perform = function (listener)
 {
     try {
-    var log =  goog.debug.Logger.getLogger('ss.fb.API.post.perform');
+    var logger =  goog.debug.Logger.getLogger('ss.fb.API.post.perform');
 
-    log.info('Init');
+    logger.info('Init');
 
     if (this.db.editBeforePost)
         var action = FB.ui;
@@ -116,20 +116,20 @@ ss.fb.API.post.prototype.perform = function (listener)
         // if mode is edit before post then on error
         // res will be null
         if (goog.isNull(res) || !goog.isDef(res)) {
-            log.warning('Error from facebook. res is null');
+            logger.warning('Error from facebook. res is null');
             listener(false);
             return;
         }
 
         if (goog.isObject(res['error'])) {
-            log.warning('Error from facebook:' + res['error']['message']);
+            logger.warning('Error from facebook:' + res['error']['message']);
             listener(false, res['error']['message']);
         } else {
             if (this.db.editBeforePost)
                 this.savedId = res['post_id'];
             else
                 this.savedId = res;
-            log.info('Post ok to facebook. id:' + this.savedId);
+            logger.info('Post ok to facebook. id:' + this.savedId);
 
 
 

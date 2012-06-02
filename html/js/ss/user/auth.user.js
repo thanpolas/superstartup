@@ -69,10 +69,10 @@ ss.user.auth.login = function(user, opt_cb, opt_sourceId)
  {
    try {
     //shortcut assign
-    var log = goog.debug.Logger.getLogger('ss.user.auth.login');
+    var logger = goog.debug.Logger.getLogger('ss.user.auth.login');
     var genError = 'An error has occured. Please retry';
 
-    log.info('Init. authed:' + ss.user.db.isAuthed);
+    logger.info('Init. authed:' + ss.user.db.isAuthed);
     
     // set default values
     var cb = opt_cb || function(){};
@@ -88,7 +88,7 @@ ss.user.auth.login = function(user, opt_cb, opt_sourceId)
 
     // validate it
     if (!ss.user.isUserObject(ss.user.db.user)) {
-        log.warning('User object provided is not valid:' + goog.debug.expose(user));
+        logger.warning('User object provided is not valid:' + goog.debug.expose(user));
         cb(false, genError);
         return;
     }
@@ -106,7 +106,7 @@ ss.user.auth.login = function(user, opt_cb, opt_sourceId)
 
     cb(true);
 
-    log.info('Finished');
+    logger.info('Finished');
   } catch(e) {
       ss.error(e);
   }
@@ -178,9 +178,9 @@ ss.user.auth.getPerm = function()
 ss.user.auth.extAuth = function(sourceId, user)
  {
     try { 
-        var log = goog.debug.Logger.getLogger('ss.user.auth.extAuth');
+        var logger = goog.debug.Logger.getLogger('ss.user.auth.extAuth');
 
-        log.info('sourceId:' + sourceId + ' authed:' + ss.isAuthed());
+        logger.info('sourceId:' + sourceId + ' authed:' + ss.isAuthed());
 
         // if already authed exit
         if (ss.isAuthed())

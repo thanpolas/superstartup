@@ -36,9 +36,9 @@ goog.require('ss.ready');
 ss.web.user.ui.init = function ()
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.web.user.ui.Init');
+    var logger = goog.debug.Logger.getLogger('ss.web.user.ui.Init');
 
-    log.info('Init - Binding on login / logout elements');
+    logger.info('Init - Binding on login / logout elements');
 
     // catch all logout buttons / links
     $('.-logout').click(ss.web.user.login.logout);

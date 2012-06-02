@@ -83,9 +83,9 @@ ss.twit._checkTwttrLoad = function()
 ss.twit.libLoaded = function()
 {
   try {
-   var log = goog.debug.Logger.getLogger('ss.twit.libLoaded');
+   var logger = goog.debug.Logger.getLogger('ss.twit.libLoaded');
 
-   log.info('TWITTER LOADED');
+   logger.info('TWITTER LOADED');
    twttr.events.bind('tweet', ss.twit.eventTweet);
 
   } catch (e) {
@@ -258,7 +258,7 @@ ss.twit.getHref = function (text, uri, opt_params)
 ss.twit.linkUser = function()
 {
     try {
-    var log = goog.debug.Logger.getLogger('ss.twit.linkUser');
+    var logger = goog.debug.Logger.getLogger('ss.twit.linkUser');
 
     if (!ss.isAuthed())
         return;
@@ -297,13 +297,13 @@ ss.twit.linkUser = function()
 ss.twit.loginOpen = function ()
 {
     try {
-    var log = goog.debug.Logger.getLogger('ss.twit.loginOpen');
+    var logger = goog.debug.Logger.getLogger('ss.twit.loginOpen');
     // we have to redirect user to /signup/twitter.php
     // to start the authentication process
 
     // use the current path of the user for return
     var returnPath = '?url=' + ss.encURI(window.location.pathname);
-    log.info('Redirecting user to:' + returnPath);
+    logger.info('Redirecting user to:' + returnPath);
     // redirect the browser now
     window.location.href = ss.twit.db.loginUrl + returnPath;
 

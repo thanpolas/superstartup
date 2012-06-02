@@ -47,7 +47,7 @@ ss.date = function (opt_sDate)
 {
     var logger = goog.debug.Logger.getLogger('ss.date');
 
-    log.fine('Init - sDate:' + opt_sDate);
+    logger.fine('Init - sDate:' + opt_sDate);
 
 
 
@@ -187,9 +187,9 @@ ss.date.prototype.smallDatetime = function ()
     var c = ss;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var log = g.debug.Logger.getLogger('ss.date.smallDatetime');
+    var logger = g.debug.Logger.getLogger('ss.date.smallDatetime');
     var sdate = this.db.sDate;
-    log.fine('Init');
+    logger.fine('Init');
 
     var d = this.db.gdt;
 
@@ -229,7 +229,7 @@ ss.date.prototype.smallDatetime = function ()
     if (d.getYear() != n.getYear()) {
         // different year, display it as hh:MM mmm dd, yyyy
         var ret =  mmm + '/' + dd + '/' + d.getYear() + ' ' + hh + ':' + MM + '' + a_p;
-        log.finer('Year Orig:' + sdate + ' Formated:' + ret);
+        logger.finer('Year Orig:' + sdate + ' Formated:' + ret);
         return ret;
     }
 
@@ -237,7 +237,7 @@ ss.date.prototype.smallDatetime = function ()
     if (d.getMonth() != n.getMonth()) {
         // different month, display it as hh:MM mmm dd
         var ret =  mmm + '/' + dd  + ' ' + hh + ':' + MM + '' + a_p;
-        log.finer('Month Orig:' + sdate + ' Formated:' + ret);
+        logger.finer('Month Orig:' + sdate + ' Formated:' + ret);
         return ret;
     }
 
@@ -245,7 +245,7 @@ ss.date.prototype.smallDatetime = function ()
     if (d.getDate() == n.getDate()) {
         // same day, display as hh:mm
         var ret = d.getHours() + ':' + MM + '' + a_p;
-        log.finer('Date same Orig:' + sdate + ' Formated:' + ret);
+        logger.finer('Date same Orig:' + sdate + ' Formated:' + ret);
         return ret;
 
     }
@@ -256,7 +256,7 @@ ss.date.prototype.smallDatetime = function ()
 
 
 
-    log.finer('Date Not same Orig:' + sdate + ' Formated:' + ret);
+    logger.finer('Date Not same Orig:' + sdate + ' Formated:' + ret);
     return ret;
 
 }; // method ss.data.smallDatetime
@@ -273,9 +273,9 @@ ss.date.prototype.smallDate = function ()
     var c = ss;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var log = g.debug.Logger.getLogger('ss.date.smallDate');
+    var logger = g.debug.Logger.getLogger('ss.date.smallDate');
     var sdate = this.db.sDate;
-    log.fine('Init:' + g.typeOf(this.db.gdt));
+    logger.fine('Init:' + g.typeOf(this.db.gdt));
 
     var d = this.db.gdt;
 
@@ -315,7 +315,7 @@ ss.date.prototype.smallDate = function ()
     if (d.getYear() != n.getYear()) {
         // different year, display it as mm/dd/yyyy
         var ret = mm + '/' + dd + '/' + d.getYear();
-        log.finer('Year Orig:' + sdate + ' Formated:' + ret);
+        logger.finer('Year Orig:' + sdate + ' Formated:' + ret);
         return ret;
     }
 
@@ -323,7 +323,7 @@ ss.date.prototype.smallDate = function ()
     if (d.getMonth() != n.getMonth()) {
         // different month, display it as dd mmm
         var ret = mmm + ' ' + d.getDate();
-        log.finer('Month Orig:' + sdate + ' Formated:' + ret);
+        logger.finer('Month Orig:' + sdate + ' Formated:' + ret);
         return ret;
     }
 
@@ -331,7 +331,7 @@ ss.date.prototype.smallDate = function ()
     if (d.getDate() == n.getDate()) {
         // same day, display as hh:mm
         var ret = d.getHours() + ':' + MM + ' ' + a_p;
-        log.finer('Date same Orig:' + sdate + ' Formated:' + ret);
+        logger.finer('Date same Orig:' + sdate + ' Formated:' + ret);
         return ret;
 
     }
@@ -339,7 +339,7 @@ ss.date.prototype.smallDate = function ()
     // different day, display it as dd mmm
     //var ret = d.toLocaleFormat('mmm'); //d.getDate() + ' ' + m[d.getMonth()];
     var ret = mmm + ' ' + d.getDate();
-    log.finer('Date Not same Orig:' + sdate + ' Formated:' + ret);
+    logger.finer('Date Not same Orig:' + sdate + ' Formated:' + ret);
     return ret;
 
 
@@ -357,7 +357,7 @@ ss.date.prototype.getRFC822 = function ()
 {
     var c = ss;
     var g = goog;
-    var log = g.debug.Logger.getLogger('ss.date.getRFC822');
+    var logger = g.debug.Logger.getLogger('ss.date.getRFC822');
 
     // construct the string
     var ret = '';
@@ -393,9 +393,9 @@ ss.date.prototype.getFullDateTime = function ()
     var c = ss;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var log = g.debug.Logger.getLogger('ss.date.smallDatetime');
+    var logger = g.debug.Logger.getLogger('ss.date.smallDatetime');
     var sdate = this.db.sDate;
-    log.fine('Init');
+    logger.fine('Init');
 
     var d = this.db.gdt;
 

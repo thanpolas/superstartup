@@ -38,9 +38,9 @@ goog.provide('ss.fb.com');
 ss.fb.com.create = function (event)
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.com.create');
+    var logger = goog.debug.Logger.getLogger('ss.fb.com.create');
 
-    log.info('Init');
+    logger.info('Init');
 
     /**
      * Our passed variables are:
@@ -72,9 +72,9 @@ ss.fb.com.create = function (event)
 ss.fb.com.remove = function (event)
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.com.remove');
+    var logger = goog.debug.Logger.getLogger('ss.fb.com.remove');
 
-    log.info('Init');
+    logger.info('Init');
     /**
      * Our passed variables are:
      * commentID :: string (id number)

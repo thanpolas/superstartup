@@ -82,8 +82,8 @@ ss.metadata.init = function (metadataRoot)
 {
   try {
     if (goog.DEBUG) {
-      var log = goog.debug.Logger.getLogger('ss.metadata.init');
-      log.info('metadataRoot:' + goog.debug.deepExpose(metadataRoot));
+      var logger = goog.debug.Logger.getLogger('ss.metadata.init');
+      logger.info('metadataRoot:' + goog.debug.deepExpose(metadataRoot));
     }
     if (!ss.metadata.validate(metadataRoot))
       return;
@@ -107,7 +107,7 @@ ss.metadata.init = function (metadataRoot)
     if (db.isFirstTime)
       db.sessionStart = new Date().getTime();
 
-    goog.DEBUG && ss.canLog && log.info('Parsed new metadataObject. source:' + db.source + ' permId:' + db.permId);
+    goog.DEBUG && ss.canLog && logger.info('Parsed new metadataObject. source:' + db.source + ' permId:' + db.permId);
 
   } catch (e) {
     ss.error(e);
@@ -145,9 +145,9 @@ ss.metadata.save = function (opt_callback)
 {
   try {
 
-    var log = goog.debug.Logger.getLogger('ss.metadata.save');
+    var logger = goog.debug.Logger.getLogger('ss.metadata.save');
 
-    log.info('Saving metadata to server');
+    logger.info('Saving metadata to server');
     var db = ss.metadata.db,
     cb = opt_callback || function(){};
 

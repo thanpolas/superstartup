@@ -35,9 +35,9 @@ ss.web.user.login.logout = function (event)
 {
   try {
     event.preventDefault();
-    var log = goog.debug.Logger.getLogger('ss.web.user.login.logout');
+    var logger = goog.debug.Logger.getLogger('ss.web.user.login.logout');
 
-    log.info('Init. Authed:' + ss.isAuthed());
+    logger.info('Init. Authed:' + ss.isAuthed());
 
     if (!ss.isAuthed())
       return;
@@ -48,7 +48,7 @@ ss.web.user.login.logout = function (event)
 
     // perform logout
     ss.user.login.logout(function(status){
-      log.info('logout callback received. status:' + status);
+      logger.info('logout callback received. status:' + status);
     });
 
 
@@ -69,14 +69,14 @@ ss.web.user.login.logout = function (event)
 ss.web.user.login.bindLogin = function()
 {
   try {
-  var log = goog.debug.Logger.getLogger('ss.web.user.login.bindLogin');
+  var logger = goog.debug.Logger.getLogger('ss.web.user.login.bindLogin');
 
   // bind click events on FB / TWITTER LOGIN BUTTONS
   $(".-login-tw").click(function(event){
     try {
         event.preventDefault();
         var elId = $(this).attr('id');
-        log.info('Twitter login clicked:' + elId);
+        logger.info('Twitter login clicked:' + elId);
 
         ss.twit.loginOpen();
 
@@ -94,14 +94,14 @@ ss.web.user.login.bindLogin = function()
         // get id of element that triggered the event
         var elId = $(this).attr('id');
         var jel = $(this);
-        log.info('Facebook login clicked:' + elId);
+        logger.info('Facebook login clicked:' + elId);
 
         // check if facebook ready
         if (!ss.fb.haveAuthStatus()) {
           if (ss.web.user.db.fbClicked) {
             return;
           }
-          log.info('Facebook library not ready yet, created a listener and we now wait...');
+          logger.info('Facebook library not ready yet, created a listener and we now wait...');
           ss.web.user.db.fbClicked = true;
           // listen for FB auth event...
           ss.ready.addFunc('fb-auth', function(){
@@ -119,7 +119,7 @@ ss.web.user.login.bindLogin = function()
 
         // launch facebook login dialog
         ss.fb.loginOpen(function(state){
-          log.info('Login return state:' + state);
+          logger.info('Login return state:' + state);
           ss.web.user.auth.events.runEvent('fb_click_reply', state);
         });
 

@@ -134,26 +134,26 @@ ss.user.getUserData = function ()
 ss.user.isUserObject = function (user)
 {
     try {
-    var log = goog.debug.Logger.getLogger('ss.user.isUserObject');
+    var logger = goog.debug.Logger.getLogger('ss.user.isUserObject');
 
     if (!goog.isObject(user)) {
-      log.warning('user object passed is not an object');
+      logger.warning('user object passed is not an object');
       return false;
     }
 
     if (!goog.isString(user['nickname'])) {
-      log.warning('user object checked: Has no nickname');
+      logger.warning('user object checked: Has no nickname');
       return false;
     }
 
     if (!goog.isBoolean(user['hasExtSource'])) {
-      log.warning('user object checked: Has no hasExtSource');
+      logger.warning('user object checked: Has no hasExtSource');
       return false;
     }
 
     if (user['hasExtSource']) {
       if (!goog.isArray(user['extSource'])) {
-        log.warning('user object checked: Has no extSource data');
+        logger.warning('user object checked: Has no extSource data');
         return false;
       }
 

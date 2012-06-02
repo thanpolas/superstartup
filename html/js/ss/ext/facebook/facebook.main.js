@@ -116,9 +116,9 @@ ss.fb.db.clear = function ()
 ss.fb.InitWeb = function ()
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.InitWeb');
+    var logger = goog.debug.Logger.getLogger('ss.fb.InitWeb');
 
-    log.info('Init');
+    logger.info('Init');
 
     ss.ready('fb');
     ss.ready.addCheck('fb', 'loaded');
@@ -166,9 +166,9 @@ ss.fb.InitWeb = function ()
 ss.fb.Init = function ()
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.Init');
+    var logger = goog.debug.Logger.getLogger('ss.fb.Init');
 
-    log.info('Init - FB LIB LOADED. Our App ID:' + ss.fb.getAppId());
+    logger.info('Init - FB LIB LOADED. Our App ID:' + ss.fb.getAppId());
     FB.init({
       'appId'  : ss.fb.getAppId(),
       'status' : true, // check login status
@@ -210,13 +210,13 @@ ss.fb.Init = function ()
 ss.fb.getInitialLoginStatus = function (response)
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.getInitialLoginStatus');
+    var logger = goog.debug.Logger.getLogger('ss.fb.getInitialLoginStatus');
 
     // store the result
     ss.fb.db.haveInitialAuthStatus = true;
 
     if (ss.fb.isAuthedFromResponse(response)) {
-      log.info('FACEBOOK We are CONNECTED.');
+      logger.info('FACEBOOK We are CONNECTED.');
       ss.web2.collectInitialAuthChecks(ss.CONSTS.SOURCES.FB, true);
       // validate the auth with our server
       ss.fb.local.checkFacebookAuth(function(state){
@@ -233,7 +233,7 @@ ss.fb.getInitialLoginStatus = function (response)
       });
       return;
     } else {
-      log.info('FACEBOOK NOT connected. status:' + response.status);
+      logger.info('FACEBOOK NOT connected. status:' + response.status);
       ss.fb.db.initialAuthStatus = false;
       // notify web2.0 of no login here
       ss.web2.collectInitialAuthChecks(ss.CONSTS.SOURCES.FB, false);
@@ -277,10 +277,10 @@ ss.fb.getPermissions = function (callback)
 ss.fb.sessionChange = function (response)
 {
   try {
-    var log =  goog.debug.Logger.getLogger('ss.fb.sessionChange');
+    var logger =  goog.debug.Logger.getLogger('ss.fb.sessionChange');
 
-    log.info('Init. response.perms:' + response.perms);
-    log.info('Init. response.session.expose:' + goog.debug.expose(response.session));
+    logger.info('Init. response.perms:' + response.perms);
+    logger.info('Init. response.session.expose:' + goog.debug.expose(response.session));
     /**
      * response expose:
      *
@@ -351,9 +351,9 @@ ss.fb.isAuthedFromResponse = function(response)
 ss.fb.loginListener = function (response, opt_callback)
 {
   try {
-    var log =  goog.debug.Logger.getLogger('ss.fb.loginListener');
+    var logger =  goog.debug.Logger.getLogger('ss.fb.loginListener');
 
-    log.info('Init. response.status:' + response.status);
+    logger.info('Init. response.status:' + response.status);
 
     var callback = opt_callback || function (){};
 
@@ -410,7 +410,7 @@ ss.fb.loginOpen = function (opt_callback, opt_perms)
 ss.fb.linkUser = function(opt_callback)
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.linkUser');
+    var logger = goog.debug.Logger.getLogger('ss.fb.linkUser');
 
     var callback = opt_callback || function(){};
 
@@ -449,7 +449,7 @@ ss.fb.linkUser = function(opt_callback)
 ss.fb.edgeCreate = function (targetUrl, fbobj)
 {
   try {
-    var log =  goog.debug.Logger.getLogger('ss.fb.edgeCreate');
+    var logger =  goog.debug.Logger.getLogger('ss.fb.edgeCreate');
 
     // we can locate the ref inside the fobj, go carefully...
     var ref = '';
@@ -459,7 +459,7 @@ ss.fb.edgeCreate = function (targetUrl, fbobj)
       }
     }
 
-    log.info('Like Event fired:' + targetUrl + ' ref:' + ref);
+    logger.info('Like Event fired:' + targetUrl + ' ref:' + ref);
     //c.analytics.trackEvent('Share-Frame', 'Facebook-LIKE', ref + '::' + result, 1);
     //c.analytics.trackMetrics('Share', 'facebook-like', result, ref);
     //c.analytics.trackSocial('facebook', 'like', result);
@@ -481,7 +481,7 @@ ss.fb.edgeCreate = function (targetUrl, fbobj)
 ss.fb.edgeRemove = function (targetUrl, fbobj)
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.edgeRemove');
+    var logger = goog.debug.Logger.getLogger('ss.fb.edgeRemove');
 
     // we can locate the ref inside the fobj, go carefully...
     var ref = '';
@@ -491,7 +491,7 @@ ss.fb.edgeRemove = function (targetUrl, fbobj)
       }
     }
 
-    log.info('UNLike Event fired:' + targetUrl + ' ref:' + ref);
+    logger.info('UNLike Event fired:' + targetUrl + ' ref:' + ref);
 
     //c.analytics.trackEvent('Share-Frame', 'Facebook-UNLIKE', ref + '::' + result, -1);
     //c.analytics.trackMetrics('Share', 'facebook-unlike', result, ref);
@@ -571,9 +571,9 @@ ss.fb.getLikeButton = function (url, opt_params, opt_width)
 ss.fb.hasPerm = function (value, callback)
 {
   try {
-    var log = goog.debug.Logger.getLogger('ss.fb.hasPerm');
+    var logger = goog.debug.Logger.getLogger('ss.fb.hasPerm');
 
-    log.info('Init for:' + value);
+    logger.info('Init for:' + value);
 
     // check if we have this perm cached localy
     if (goog.isBoolean(db.hasPerms[value])) {
@@ -587,7 +587,7 @@ ss.fb.hasPerm = function (value, callback)
       ext_perm: value
     },
     function(response){
-      log.info('Got response:' + response);
+      logger.info('Got response:' + response);
       // we expect 1 or 0 or error... check for '1'
       if ('1' === response) {
         // user has permition, store it

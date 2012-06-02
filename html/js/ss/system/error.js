@@ -37,9 +37,9 @@ goog.provide('ss.error');
  */
 ss.error = function (e)
 {
-    var log = goog.debug.Logger.getLogger('ss.error');
+    var logger = goog.debug.Logger.getLogger('ss.error');
     var filename, line, msg, source, name;
-    //log.info(g.debug.expose(e));
+    //logger.info(g.debug.expose(e));
     /*
     if (ss.MOBILE) {
         filename = e.name;
@@ -63,7 +63,7 @@ ss.error = function (e)
   
     
     var errMsg = 'Error! name:' + name + ' Filename:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source;
-    log.severe(errMsg);
+    logger.severe(errMsg);
     if (console) { 
       console.debug(errMsg);
     }
