@@ -34,6 +34,7 @@ goog.provide('ss');
 goog.require('goog.debug');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
+goog.require('goog.debug.FancyWindow');
 
 goog.require('ss.debug');
 
@@ -44,11 +45,11 @@ goog.require('ss.metadata');
 
 goog.require('ss.ajax');
 goog.require('ss.ready');
-goog.require('ss.events');
+goog.require('ss.Events');
 goog.require('ss.user');
 goog.require('ss.conf');
 goog.require('ss.web2');
-goog.require('ss.STATIC');
+goog.require('ss.CONSTS');
 goog.require('ss.helpers');
 
 goog.require('ss.exports');
@@ -57,7 +58,6 @@ goog.require('ss.server2js');
 
 goog.require('ss.web.system');
 goog.require('ss.web.cookies');
-goog.require('ss.web.jq.ext');
 goog.require('ss.web.user');
 
 
@@ -91,6 +91,9 @@ ss.READY = false;
  * @type {Object}
  */
 ss.db = {};
+
+/** @type {goog.debug.Logger.getLogger} shortcut assign */
+ss.log = goog.debug.Logger.getLogger;
 
 /**
  * The Init function triggers inline as soon as execution
@@ -141,7 +144,7 @@ ss.webInit = function ()
   // AUTH BALL IS HERE
   ss.fb.InitWeb();    
   // start init cycle for our twitter lib
-  ss.twit.Init();
+  ss.twit.init();
 
   // start loading twitter's widgets after 500ms
   setTimeout(function(){

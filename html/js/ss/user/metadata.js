@@ -81,8 +81,8 @@ ss.metadata.metadataRoot;
 ss.metadata.init = function (metadataRoot)
 {
   try {
-    if (goog.DEBUG && ss.canLog) {
-      var log = ss.log('ss.metadata.init');
+    if (goog.DEBUG) {
+      var log = goog.debug.Logger.getLogger('ss.metadata.init');
       log.info('metadataRoot:' + goog.debug.deepExpose(metadataRoot));
     }
     if (!ss.metadata.validate(metadataRoot))
@@ -145,7 +145,7 @@ ss.metadata.save = function (opt_callback)
 {
   try {
 
-    var log = ss.log('ss.metadata.save');
+    var log = goog.debug.Logger.getLogger('ss.metadata.save');
 
     log.info('Saving metadata to server');
     var db = ss.metadata.db,

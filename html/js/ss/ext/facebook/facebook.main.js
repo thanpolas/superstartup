@@ -34,7 +34,7 @@
  */
 goog.provide('ss.fb');
 goog.require('ss.fb.local');
-goog.require('ss.STATIC');
+goog.require('ss.CONSTS');
 goog.require('ss.fb.com');
 goog.require('goog.Uri');
 
@@ -130,7 +130,7 @@ ss.fb.InitWeb = function ()
 
     // capture FB API Load event
     goog.global['fbAsyncInit'] = function() {
-      s.fb.Init();
+      ss.fb.Init();
     };
 
     // request the facebook api
@@ -217,15 +217,15 @@ ss.fb.getInitialLoginStatus = function (response)
 
     if (ss.fb.isAuthedFromResponse(response)) {
       log.info('FACEBOOK We are CONNECTED.');
-      ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, true);
+      ss.web2.collectInitialAuthChecks(ss.CONSTS.SOURCES.FB, true);
       // validate the auth with our server
       ss.fb.local.checkFacebookAuth(function(state){
         if (state) {
           ss.fb.db.initialAuthStatus = true;
-          ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, true, true);
+          ss.web2.collectInitialAuthChecks(ss.CONSTS.SOURCES.FB, true, true);
         } else {
           ss.fb.db.initialAuthStatus = false;
-          ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, true, false);
+          ss.web2.collectInitialAuthChecks(ss.CONSTS.SOURCES.FB, true, false);
         }
 
         // inform that our FB auth check is done
@@ -236,7 +236,7 @@ ss.fb.getInitialLoginStatus = function (response)
       log.info('FACEBOOK NOT connected. status:' + response.status);
       ss.fb.db.initialAuthStatus = false;
       // notify web2.0 of no login here
-      ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, false);
+      ss.web2.collectInitialAuthChecks(ss.CONSTS.SOURCES.FB, false);
 
       // inform that our FB auth check is done
       ss.ready.check('fb-auth', 'done');
@@ -420,7 +420,7 @@ ss.fb.linkUser = function(opt_callback)
     }
 
     // check if user already on facebook
-    if (ss.user.auth.hasExtSource(ss.STATIC.SOURCES.FB)) {
+    if (ss.user.auth.hasExtSource(ss.CONSTS.SOURCES.FB)) {
       callback(true);
       return;
     }

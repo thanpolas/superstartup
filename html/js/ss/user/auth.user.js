@@ -24,7 +24,7 @@
  */
 
 goog.provide('ss.user.auth');
-goog.require('ss.events');
+goog.require('ss.Events');
 
 
 /**
@@ -33,7 +33,7 @@ goog.require('ss.events');
  *
  * Valid events are, along with their parameters:
  *
- * authState (state{boolean}, opt_sourceId{ss.STATIC.SOURCES=}, opt_userDataObject{object=})
+ * authState (state{boolean}, opt_sourceId{ss.CONSTS.SOURCES=}, opt_userDataObject{object=})
  *      Whenever auth state changes, this event is triggered. facebook but
  *      state {boolean} :: Tells us if authed or not
  *      opt_sourceId :: The auth source in case of authed
@@ -44,7 +44,7 @@ goog.require('ss.events');
  *      Fired when initial check with external auth sources has finished.
  *
  */
-ss.user.auth.events = new ss.events.listeners();
+ss.user.auth.events = new ss.Events();
 
 /**
  * Perform a user login.
@@ -62,51 +62,47 @@ ss.user.auth.events = new ss.events.listeners();
  *
  * @param {object} user
  * @param {Function(boolean, string=)=} cb callback function when auth finishes
- * @param {ss.STATIC.SOURCES=} sourceId the source of authentication, default WEB
+ * @param {ss.CONSTS.SOURCES=} sourceId the source of authentication, default WEB
  * @return {void}
  */
 ss.user.auth.login = function(user, opt_cb, opt_sourceId)
  {
    try {
     //shortcut assign
-    var s = ss;
-    var u = s.user;
-    var db = u.db;
-    var g = goog;
-    var log = s.log('ss.user.auth.login');
+    var log = goog.debug.Logger.getLogger('ss.user.auth.login');
     var genError = 'An error has occured. Please retry';
 
-    log.info('Init. authed:' + db.isAuthed);
+    log.info('Init. authed:' + ss.user.db.isAuthed);
     
     // set default values
     var cb = opt_cb || function(){};
-    var sourceId = opt_sourceId || s.STATIC.SOURCES.WEB;
+    var sourceId = opt_sourceId || ss.CONSTS.SOURCES.WEB;
 
-    if (db.isAuthed) {
+    if (ss.user.db.isAuthed) {
       cb(true);
       return;
     }
 
     // assign the recieved user data object to local db
-    db.user = user;
+    ss.user.db.user = user;
 
     // validate it
-    if (!s.user.isUserObject(db.user)) {
-        log.warning('User object provided is not valid:' + g.debug.expose(user));
+    if (!ss.user.isUserObject(ss.user.db.user)) {
+        log.warning('User object provided is not valid:' + goog.debug.expose(user));
         cb(false, genError);
         return;
     }
 
     // provide new metadata object to our metadata facility
-    s.metadata.init(user['metadataRoot']);
+    ss.metadata.init(user['metadataRoot']);
 
     // turn on authed switch
-    db.isAuthed = true;
+    ss.user.db.isAuthed = true;
 
-    s.user.auth.events.runEvent('authState', true, sourceId, user);
+    ss.user.auth.events.runEvent('authState', true, sourceId, user);
 
     // notify metrics
-    s.metrics.userAuth(user);
+    ss.metrics.userAuth(user);
 
     cb(true);
 
@@ -175,25 +171,23 @@ ss.user.auth.getPerm = function()
  *
  * If we are not authed, we will perform auth procedures
  *
- * @param {ss.STATIC.SOURCES} sourceId
+ * @param {ss.CONSTS.SOURCES} sourceId
  * @param {object} user ss user data object verified
  * @return {void}
  */
 ss.user.auth.extAuth = function(sourceId, user)
  {
     try { 
+        var log = goog.debug.Logger.getLogger('ss.user.auth.extAuth');
 
-        var c = ss;
-        var log = c.log('ss.user.auth.extAuth');
-
-        log.info('sourceId:' + sourceId + ' authed:' + c.isAuthed());
+        log.info('sourceId:' + sourceId + ' authed:' + ss.isAuthed());
 
         // if already authed exit
-        if (c.isAuthed())
+        if (ss.isAuthed())
           return;
 
         // not authed, start auth
-        c.user.auth.login(user, function(){}, sourceId);
+        ss.user.auth.login(user, function(){}, sourceId);
 
     } catch(e) {
         ss.error(e);
@@ -206,29 +200,26 @@ ss.user.auth.extAuth = function(sourceId, user)
  * has external authentication for the provided
  * source id
  *
- * @param {ss.STATIC.SOURCES} sourceId
+ * @param {ss.CONSTS.SOURCES} sourceId
  * @return {boolean}
  */
 ss.user.auth.hasExtSource = function(sourceId)
  {
-    //ss.user.auth.hasFacebook = function ()
     try {
-        var c = ss;
-
-        if (!c.isAuthed())
+        if (!ss.isAuthed())
         return false;
 
         // get user object
-        var user = c.user.getUserDataObject();
+        var user = ss.user.getUserDataObject();
 
         if (!user['hasExtSource'])
         return false;
 
         // check for the source defined noc...
-        var ind = c.arFindIndex(user['extSource'], 'sourceId', sourceId);
+        var ind = ss.arFindIndex(user['extSource'], 'sourceId', sourceId);
 
-        if ( - 1 == ind)
-        return false;
+        if ( -1 == ind)
+          return false;
 
 
         return true;
@@ -243,33 +234,30 @@ ss.user.auth.hasExtSource = function(sourceId)
 /**
  * Gets the external auth source user's name
  *
- * @param {ss.STATIC.SOURCES.FB} sourceId
+ * @param {ss.CONSTS.SOURCES.FB} sourceId
  * @return {string|null} null if error / not found
  */
 ss.user.auth.getExtName = function(sourceId)
  {
 
     try {
-        var c = ss;
-        var g = goog;
-
-        if (!c.isAuthed())
-        return null;
+        if (!ss.isAuthed())
+          return null;
 
         // get user object
-        var user = c.user.getUserDataObject();
+        var user = ss.user.getUserDataObject();
 
         if (!user['hasExtSource'])
-        return null;
+          return null;
 
         // check for the source defined noc...
-        var ind = c.arFindIndex(user['extSource'], 'sourceId', sourceId);
+        var ind = ss.arFindIndex(user['extSource'], 'sourceId', sourceId);
 
-        if ( - 1 == ind)
-        return null;
+        if ( -1 == ind)
+          return null;
 
         // check if name value is there...
-        if (g.isString(user['extSource'][ind]['extUsername']))
+        if (goog.isString(user['extSource'][ind]['extUsername']))
         // got it
         return user['extSource'][ind]['extUsername'];
 

@@ -47,7 +47,7 @@ ss.twit.db = {
  *
  * @return {void}
  */
-ss.twit.Init = function ()
+ss.twit.init = function ()
 {
   ss.twit.db.twttrPoll = setInterval(ss.twit._checkTwttrLoad, 300);
 }; // function ss.twit.Init
@@ -264,7 +264,7 @@ ss.twit.linkUser = function()
         return;
 
     // check if user already on facebook
-    if (ss.user.auth.hasExtSource(ss.STATIC.SOURCES.TWIT))
+    if (ss.user.auth.hasExtSource(ss.CONSTS.SOURCES.TWIT))
         return;
 
       // we have to redirect user to /signup/twitter.php
@@ -302,7 +302,7 @@ ss.twit.loginOpen = function ()
     // to start the authentication process
 
     // use the current path of the user for return
-    var returnPath = '?url=' + ss.encURI(win.location.pathname);
+    var returnPath = '?url=' + ss.encURI(window.location.pathname);
     log.info('Redirecting user to:' + returnPath);
     // redirect the browser now
     window.location.href = ss.twit.db.loginUrl + returnPath;

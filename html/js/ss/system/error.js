@@ -37,8 +37,7 @@ goog.provide('ss.error');
  */
 ss.error = function (e)
 {
-    var s = ss;
-    var log = s.log('ss.error');
+    var log = goog.debug.Logger.getLogger('ss.error');
     var filename, line, msg, source, name;
     //log.info(g.debug.expose(e));
     /*

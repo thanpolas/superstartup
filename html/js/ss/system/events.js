@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 28/Sep/2010
  *
@@ -23,9 +23,7 @@
  *********
  */
 
-
-goog.provide('ss.events');
-goog.provide('ss.events.listeners');
+goog.provide('ss.Events');
 
 /**
  * Will provide event handling listener
@@ -36,7 +34,7 @@ goog.provide('ss.events.listeners');
  *
  * @constructor
  */
-ss.events.listeners = function ()
+ss.Events = function ()
 {
   try {
     /**
@@ -62,7 +60,7 @@ ss.events.listeners = function ()
     ss.error(e);
   }
 
-}; // class ss.events.listeners
+}; // class ss.Events
 
 /**
  * Adds an event listener for the specified type
@@ -73,20 +71,12 @@ ss.events.listeners = function ()
  * @param {string=} opt_id Optional id for listener (easy removal) use unique names
  * @return {void}
  */
-ss.events.listeners.prototype.addEventListener = function (type, listener, opt_this, opt_id)
+ss.Events.prototype.addEventListener = function (type, listener, opt_this, opt_id)
 {
   try {
-
-    var w = ss;
-    var g = goog;
-    var log = w.log('ss.events.listeners.addEvent');
-
-    if (!g.isFunction(listener)) {
-      log.warning('listener is not a function for type:' + type);
+    if (!goog.isFunction(listener)) {
       return;
     }
-
-
 
     // turn on events switch
     this._eventsdb.hasEvents = true;
@@ -96,10 +86,9 @@ ss.events.listeners.prototype.addEventListener = function (type, listener, opt_t
       type: type,
       runOnce: false,
       listener: listener,
-      _this: opt_this || g.global,
+      _this: opt_this || goog.global,
       _id : opt_id || null
-    }
-
+    };
     // push to listeners array
     this._eventsdb.listeners.push(listObj);
 
@@ -107,7 +96,7 @@ ss.events.listeners.prototype.addEventListener = function (type, listener, opt_t
     ss.error(e);
   }
 
-}; // ss.events.listeners.addEventListener
+}; // ss.Events.addEventListener
 
 
 /**
@@ -120,15 +109,12 @@ ss.events.listeners.prototype.addEventListener = function (type, listener, opt_t
  * @param {_this=} opt_this Optional this context to run the listener on
  * @return {void}
  */
-ss.events.listeners.prototype.addEventListenerOnce = function (type, listener, opt_this)
+ss.Events.prototype.addEventListenerOnce = function (type, listener, opt_this)
 {
   try {
+    var log = goog.debug.Logger.getLogger('ss.Events.addEventOnce');
 
-    var w = ss;
-    var g = goog;
-    var log = w.log('ss.events.listeners.addEventOnce');
-
-    if (!g.isFunction(listener)) {
+    if (!goog.isFunction(listener)) {
       log.warning('listener is not a function for type:' + type);
       return;
     }
@@ -142,7 +128,7 @@ ss.events.listeners.prototype.addEventListenerOnce = function (type, listener, o
       runOnce: true,
       listener: listener,
       _this: opt_this || g.global
-    }
+    };
 
     // push to listeners array
     this._eventsdb.listeners.push(listObj);
@@ -151,7 +137,7 @@ ss.events.listeners.prototype.addEventListenerOnce = function (type, listener, o
     ss.error(e);
   }
 
-}; // ss.events.listeners.addEventOnce
+}; // ss.Events.addEventOnce
 
 
 /**
@@ -163,18 +149,10 @@ ss.events.listeners.prototype.addEventListenerOnce = function (type, listener, o
  *      listener if we had set one...
  * @return {void}
  */
-ss.events.listeners.prototype.removeEventListener = function (type, listener)
+ss.Events.prototype.removeEventListener = function (type, listener)
 {
   try {
-
-    var w = ss;
-    var g = goog;
-    var log = w.log('ss.events.listeners.removeEvent');
-
-    log.info('Init. type:' + type);
-
     if (!this._eventsdb.hasEvents) {
-      log.warning('this._eventsdb.hasEvents is FALSE');
       return;
     }
 
@@ -182,10 +160,10 @@ ss.events.listeners.prototype.removeEventListener = function (type, listener)
     var found = false;
     var foundIndex = null;
     // check if listener is function or string
-    if (g.isFunction(listener)) {
+    if (goog.isFunction(listener)) {
 
       // try to locate it
-      g.array.forEach(this._eventsdb.listeners, function(listObj, index){
+      goog.array.forEach(this._eventsdb.listeners, function(listObj, index){
         // check if same type
         if (listObj.type == type) {
           // check if same listener
@@ -197,9 +175,9 @@ ss.events.listeners.prototype.removeEventListener = function (type, listener)
           }
         }
       }, this);
-    } else if (g.isString(listener)) {
+    } else if (goog.isString(listener)) {
       // we have a string (ID)
-      g.array.forEach(this._eventsdb.listeners, function(listObj, index){
+      goog.array.forEach(this._eventsdb.listeners, function(listObj, index){
         if (listObj.type == type) {
           if (listObj._id == listener) {
             // found it...
@@ -210,14 +188,11 @@ ss.events.listeners.prototype.removeEventListener = function (type, listener)
         }
       }, this);
     } else {
-      log.warning('listener is not a function or a string:' + listener);
       return;
     }
     if (found) {
       // remove it
       goog.array.removeAt(this._eventsdb.listeners, foundIndex);
-    } else {
-      log.warning('Listener not found');
     }
 
     // check if we are out of listeners
@@ -228,7 +203,7 @@ ss.events.listeners.prototype.removeEventListener = function (type, listener)
     ss.error(e);
   }
 
-}; // ss.events.listeners.removeEvent
+}; // ss.Events.removeEvent
 
 /**
  * Clears all listeners
@@ -236,11 +211,11 @@ ss.events.listeners.prototype.removeEventListener = function (type, listener)
  * @return {void}
  * @private
  */
-ss.events.listeners.prototype._clearListeners = function ()
+ss.Events.prototype._clearListeners = function ()
 {
   this._eventsdb.listeners = new Array();
   this._eventsdb.hasEvents = false;
-}; // ss.events.listeners._clearListeners
+}; // ss.Events._clearListeners
 
 
 
@@ -253,29 +228,21 @@ ss.events.listeners.prototype._clearListeners = function ()
  * @return {void}
  * @private
  */
-ss.events.listeners.prototype._runEventType = function(type, opt_var_args)
+ss.Events.prototype._runEventType = function(type, opt_var_args)
 {
   try {
-    var g = goog;
-    var c = ss;
-    var log = c.log('ss.events.listeners._runEventType');
-
-    log.finer('Init. type:' + type + ' total listeners:' + this._eventsdb.listeners.length);
-
     // check if no events
-    if (!this._eventsdb.hasEvents) return;
-    
-    // look for the triggered event in the events object
-    var ev = c.arFind(this.events, 'type', type);
+    if (!this._eventsdb.hasEvents)
+      return;
 
+    // look for the triggered event in the events object
+    var ev = ss.arFind(this.events, 'type', type);
 
     var args = Array.prototype.slice.call(arguments, 1);
 
-
-
     var removeListeners = [];
     // loop through the listeners object
-    g.array.forEach(this._eventsdb.listeners, function(listObj, index){
+    goog.array.forEach(this._eventsdb.listeners, function(listObj, index){
       if (listObj.type == type) {
         // Prepend the bound arguments to the current arguments.
         var newArgs = Array.prototype.slice.call(arguments);
@@ -290,15 +257,15 @@ ss.events.listeners.prototype._runEventType = function(type, opt_var_args)
 
     // now remove any listeners that were to run once...
     var substractIndex = 0;
-    g.array.forEach(removeListeners, function (listIndex, index){
-      g.array.removeAt(this._eventsdb.listeners, listIndex - substractIndex);
+    goog.array.forEach(removeListeners, function (listIndex, index){
+      goog.array.removeAt(this._eventsdb.listeners, listIndex - substractIndex);
       substractIndex++;
     }, this);
 
   } catch(e) {
     ss.error(e);
   }
-}; // method ss.events.listeners._runEventType
+}; // method ss.Events._runEventType
 
 
 /**
@@ -309,7 +276,7 @@ ss.events.listeners.prototype._runEventType = function(type, opt_var_args)
  *     applied to listeners.
  * @return {void}
  */
-ss.events.listeners.prototype.runEvent = ss.events.listeners.prototype._runEventType;
+ss.Events.prototype.runEvent = ss.Events.prototype._runEventType;
 
 
 

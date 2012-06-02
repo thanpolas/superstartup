@@ -80,11 +80,10 @@ ss.user.db.clear = function()
  */
 ss.user.getUserId = function ()
 {
-    var w = ss;
-    if (!w.isAuthed())
+    if (!ss.isAuthed())
         return null;
 
-    return w.user.db.user['userId'];
+    return ss.user.db.user['userId'];
 }; // method ss.user.getUserId
 
 /**
@@ -96,11 +95,10 @@ ss.user.getUserId = function ()
  */
 ss.user.getNickname = function ()
 {
-  var c = ss;
-  if (!c.isAuthed())
+  if (!ss.isAuthed())
     return null;
 
-  return c.user.db.user['nickname'];
+  return ss.user.db.user['nickname'];
 }
 
 /**
@@ -120,11 +118,10 @@ ss.user.getUserDataObject = function ()
  */
 ss.user.getUserData = function ()
 {
-    var c = ss;
-    if (!c.isAuthed())
+    if (!ss.isAuthed())
         return {};
 
-    return c.user.db.user['userData'];
+    return ss.user.db.user['userData'];
 }; // function ss.user.getUserData
 
 /**
@@ -137,41 +134,30 @@ ss.user.getUserData = function ()
 ss.user.isUserObject = function (user)
 {
     try {
+    var log = goog.debug.Logger.getLogger('ss.user.isUserObject');
 
-    var g = goog;
-    var log = ss.log('ss.user.isUserObject');
-
-    if (!g.isObject(user)) {
-      log.warning('user object passed not an object');
+    if (!goog.isObject(user)) {
+      log.warning('user object passed is not an object');
       return false;
     }
 
-
-
-    // check for vital keys
-    //if (!g.isString(user['uid']))
-    //    return false;
-
-
-    if (!g.isString(user['nickname'])) {
+    if (!goog.isString(user['nickname'])) {
       log.warning('user object checked: Has no nickname');
       return false;
     }
 
-    if (!g.isBoolean(user['hasExtSource'])) {
+    if (!goog.isBoolean(user['hasExtSource'])) {
       log.warning('user object checked: Has no hasExtSource');
       return false;
     }
 
     if (user['hasExtSource']) {
-      if (!g.isArray(user['extSource'])) {
+      if (!goog.isArray(user['extSource'])) {
         log.warning('user object checked: Has no extSource data');
         return false;
       }
 
     }
-
-
     return true;
     } catch(e) {ss.error(e);}
 }; // function ss.user.isUserObject

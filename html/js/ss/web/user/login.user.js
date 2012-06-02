@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
@@ -22,8 +22,6 @@
  * createdate 25/May/2011
  *
  */
-
-
 
 goog.provide('ss.web.user.login');
 
@@ -37,21 +35,19 @@ ss.web.user.login.logout = function (event)
 {
   try {
     event.preventDefault();
-        
-    var win = window, j = jQuery, s = ss, w = s.web;
-    var log = s.log('ss.web.user.login.logout');
+    var log = goog.debug.Logger.getLogger('ss.web.user.login.logout');
 
-    log.info('Init. Authed:' + s.isAuthed());
+    log.info('Init. Authed:' + ss.isAuthed());
 
-    if (!s.isAuthed())
+    if (!ss.isAuthed())
       return;
-    
-    var elId = j(this).attr('id');
+
+    var elId = $(this).attr('id');
     // trigger the logout click event
-    w.user.auth.events.runEvent('logout_click', elId);
+    ss.user.auth.events.runEvent('logout_click', elId);
 
     // perform logout
-    s.user.login.logout(function(status){
+    ss.user.login.logout(function(status){
       log.info('logout callback received. status:' + status);
     });
 
@@ -73,21 +69,18 @@ ss.web.user.login.logout = function (event)
 ss.web.user.login.bindLogin = function()
 {
   try {
-
-  var win = window, j = $, c = ss, w = c.web, g = goog;
-
-  var log = c.log('ss.web.user.login.bindLogin');
+  var log = goog.debug.Logger.getLogger('ss.web.user.login.bindLogin');
 
   // bind click events on FB / TWITTER LOGIN BUTTONS
-  j(".-login-tw").click(function(event){
+  $(".-login-tw").click(function(event){
     try {
         event.preventDefault();
-        var elId = j(this).attr('id');
+        var elId = $(this).attr('id');
         log.info('Twitter login clicked:' + elId);
 
-        c.twit.loginOpen();
+        ss.twit.loginOpen();
 
-        w.user.auth.events.runEvent('tw_click', elId);
+        ss.web.user.auth.events.runEvent('tw_click', elId);
 
       } catch (e) {
         ss.error(e);
@@ -95,25 +88,25 @@ ss.web.user.login.bindLogin = function()
 
   });
 
-  j(".-login-fb").click(function(event){
+  $(".-login-fb").click(function(event){
     try {
         event.preventDefault();
         // get id of element that triggered the event
-        var elId = j(this).attr('id');
-        var jel = j(this);
+        var elId = $(this).attr('id');
+        var jel = $(this);
         log.info('Facebook login clicked:' + elId);
 
         // check if facebook ready
-        if (!c.fb.haveAuthStatus()) {
-          if (w.db.fbClicked) {
+        if (!ss.fb.haveAuthStatus()) {
+          if (ss.web.user.db.fbClicked) {
             return;
           }
           log.info('Facebook library not ready yet, created a listener and we now wait...');
-          w.db.fbClicked = true;
+          ss.web.user.db.fbClicked = true;
           // listen for FB auth event...
-          c.ready.addFunc('fb-auth', function(){
-            w.db.fbClicked = false;
-            if (!c.isAuthed()) {
+          ss.ready.addFunc('fb-auth', function(){
+            ss.web.user.db.fbClicked = false;
+            if (!ss.isAuthed()) {
               // call ourselves
               jel.click();
             }
@@ -125,13 +118,13 @@ ss.web.user.login.bindLogin = function()
 
 
         // launch facebook login dialog
-        c.fb.loginOpen(function(state){
+        ss.fb.loginOpen(function(state){
           log.info('Login return state:' + state);
-          w.user.auth.events.runEvent('fb_click_reply', state);
+          ss.web.user.auth.events.runEvent('fb_click_reply', state);
         });
 
         // trigger the facebook click event now
-        w.user.auth.events.runEvent('fb_click', elId);
+        ss.web.user.auth.events.runEvent('fb_click', elId);
 
       } catch (e) {
         ss.error(e);

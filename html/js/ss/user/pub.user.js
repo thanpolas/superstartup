@@ -40,9 +40,7 @@ goog.provide('ss.user.pub');
 ss.user.pub.get = function(nickname, cb)
 {
   try {
-    var c = ss;
-
-    var aj = new c.ajax('/userp/get', {
+    var aj = new ss.ajax('/userp/get', {
       postMethod: 'POST'
     });
 
@@ -63,7 +61,7 @@ ss.user.pub.get = function(nickname, cb)
         }
 
         var u = result['user'];
-        if (c.user.isUserObject(u)) {
+        if (ss.user.isUserObject(u)) {
           cb(true, u);
           return;
         }

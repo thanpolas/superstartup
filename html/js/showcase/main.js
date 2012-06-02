@@ -28,12 +28,6 @@ goog.require('ss');
 
 goog.require('showcase.widget.showObject');
 
-// When Superstartup lib is ready, trigger our code
-ss.ready(function(){
-  showcase.init();
-});
-
-
 showcase.init = function() {
   try {
   var log = goog.debug.Logger.getLogger('showcase.init');
@@ -84,18 +78,21 @@ showcase.authState = function(state, opt_sourceId, opt_userDataObject)
       $('#auth_state_content h4').text('The user data object');
       $('#user_data_object').text(goog.debug.deepExpose(u));
       // make #login invisible
-      $('#login').dispOff();
-      $('#logged_in').dispOn();
+      $('#login').css('display', 'none');
+      $('#logged_in').css('display', 'block');
     } else {
       $('#auth_state h3').text('Not Authed');
       $('#auth_state_content h4').text('');
       $('#user_data_object').text('');
-      $('#login').dispOn();
-      $('#logged_in').dispOff();  
+      $('#login').css('display', 'block');
+      $('#logged_in').css('display', 'none');  
     }
     
 };
 
 // subscribe to the auth state master event hook
 ss.user.auth.events.addEventListener('authState', showcase.authState);
+
+// When Superstartup lib is ready, trigger our code
+ss.ready(showcase.init);
 

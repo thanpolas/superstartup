@@ -28,3 +28,8 @@ goog.provide('ss.web.user');
 goog.require('ss.web.user.auth');
 goog.require('ss.web.user.login');
 goog.require('ss.web.user.ui');
+
+/** @type {Object} */
+ss.web.user.db = {
+  fbClicked: false
+};

@@ -26,7 +26,7 @@
 
 
 goog.provide('ss.fb.local');
-goog.require('ss.STATIC');
+goog.require('ss.CONSTS');
 
 /**
  * Triggers when we have a facebook auth event
@@ -72,7 +72,7 @@ ss.fb.local.checkFacebookAuth = function (listener)
         }
 
         // user logged in
-        ss.web2.extLogin(ss.STATIC.SOURCES.FB, user);
+        ss.web2.extLogin(ss.CONSTS.SOURCES.FB, user);
 
         // check if newuser
         if (newuser) {
@@ -120,7 +120,7 @@ ss.fb.local.loginSubmit = function (opt_listener)
 
     // if authed exit
     if (ss.isAuthed()) {
-        ss.web2.extLogin(ss.STATIC.SOURCES.FB, ss.user.getUserDataObject());
+        ss.web2.extLogin(ss.CONSTS.SOURCES.FB, ss.user.getUserDataObject());
         listener(true);
         return;
     }
@@ -151,7 +151,7 @@ ss.fb.local.loginSubmit = function (opt_listener)
 
 
         // user logged in
-        ss.web2.extLogin(ss.STATIC.SOURCES.FB, user, newuser);
+        ss.web2.extLogin(ss.CONSTS.SOURCES.FB, user, newuser);
 
         listener(true);
 

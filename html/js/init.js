@@ -23,8 +23,8 @@
  *
  */
 goog.provide('__initFile__');
-goog.require('ss.web');
+goog.require('ss');
 
 // If you plan on using the google closure library then insert here
-// your bootsrap require file
+// your bootstrap require file
 goog.require('showcase');

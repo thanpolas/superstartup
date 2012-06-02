@@ -24,12 +24,13 @@
  */
 
 
-goog.provide('ss.STATIC');
+goog.provide('ss.CONSTS');
 
 /**
  * The auth sources (web, mob, facebook...)
+ * @const {Object.<number>}
  */
-ss.STATIC.SOURCES = {
+ss.CONSTS.SOURCES = {
     WEB: 1,
     MOB: 2,
     FB: 5,

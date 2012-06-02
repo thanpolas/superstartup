@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 25/May/2011
  *
@@ -52,32 +52,17 @@ goog.provide('ss.user.login');
  */
 ss.user.login.submitCallback = function(res, callback)
  {
-    //shortcut assign
-    var c = ss;
-    var err = c.err;
-    var u = c.user;
-    var db = u.db;
-    var g = goog;
     //var lang = c.lang.user;
-    var log = c.log('ss.user.login.submitCallback');
+    var log = goog.debug.Logger.getLogger('ss.user.login.submitCallback');
     var genError = 'An error has occured. Please retry';
     log.info('Init');
 
     try {
-
-
-
-        //log.shout('res:' + g.debug.expose(res));
         // assign the recieved user data object to local db
         var user = res['user'];
 
         // initialise our auth
-        c.user.auth.Init(user, callback);
-
-        return;
-
-
-
+        ss.user.auth.Init(user, callback);
     } catch(e) {
         ss.error(e);
     }
@@ -101,8 +86,6 @@ ss.user.login.submitCallback = function(res, callback)
 ss.user.login.logout = function(opt_callback)
  {
    try {
-    var c = ss;
-
     var log = goog.debug.Logger.getLogger('ss.user.login.logout');
 
     var callback = opt_callback || function() {};
@@ -110,10 +93,10 @@ ss.user.login.logout = function(opt_callback)
     log.info('Init');
 
     // clear user db
-    c.user.db.clear();
+    ss.user.db.clear();
     // clear web2.0 data objects
-    c.fb.db.clear();
-    c.web2.db.clear();
+    ss.fb.db.clear();
+    ss.web2.db.clear();
 
     //Parameters for AJAX
     var url = '/users/logout';
@@ -123,7 +106,7 @@ ss.user.login.logout = function(opt_callback)
     };
 
     // Initialise the object
-    var a = new c.ajax(url, params);
+    var a = new ss.ajax(url, params);
 
     //callback function
     a.callback = function(result)
@@ -131,7 +114,7 @@ ss.user.login.logout = function(opt_callback)
         var res = result['status'];
         log.info('logout server result:' + res);
         // trigger global auth state event
-        c.user.auth.events.runEvent('authState', false);
+        ss.user.auth.events.runEvent('authState', false);
         callback(true);
     };
     //callback

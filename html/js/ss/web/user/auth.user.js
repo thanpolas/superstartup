@@ -24,10 +24,10 @@
  */
 
 goog.provide('ss.web.user.auth');
-goog.require('ss.events');
+goog.require('ss.Events');
 
 // create the master auth events instance 
-ss.web.user.auth.events = new ss.events.listeners();
+ss.web.user.auth.events = new ss.Events();
 
 /**
  * The following events exist and can be listened to with:
