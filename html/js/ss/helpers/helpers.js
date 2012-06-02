@@ -27,8 +27,6 @@
  
 goog.provide('ss.helpers');
  
- 
-goog.require('ss.date');
 goog.require('goog.array');
 goog.require('goog.object');
  

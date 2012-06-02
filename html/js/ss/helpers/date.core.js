@@ -45,9 +45,7 @@ goog.require('goog.date.DateTime');
  */
 ss.date = function (opt_sDate)
 {
-    var c = ss;
-    var g = goog;
-    var log = g.debug.Logger.getLogger('ss.date');
+    var logger = goog.debug.Logger.getLogger('ss.date');
 
     log.fine('Init - sDate:' + opt_sDate);
 
@@ -57,73 +55,31 @@ ss.date = function (opt_sDate)
         sDate: opt_sDate || null, // the string date as passed from parameters
         gdt: {}, // the google date instance
         // get current date time
-        gdtnow: new g.date.DateTime()
+        gdtnow: new goog.date.DateTime()
     }
 
-    if (g.isString(opt_sDate)) {
+    if (goog.isString(opt_sDate)) {
         // execute method to fill our date data object (this.db.dt)
-        //this._getDatetimedb();
-        //log.info('Here:' + opt_sDate);
         //Wed, 02 Oct 2002 15:00:00 +0200
-        this.db.gdt = g.date.DateTime.fromRfc822String(opt_sDate);
+        this.db.gdt = goog.date.DateTime.fromRfc822String(opt_sDate);
 
         // check if the string validated ...
-        if (g.isNull(this.db.gdt)) {
+        if (goog.isNull(this.db.gdt)) {
           // no it didn't, let's try a normal MySQL string
-          // Code from: http://stackoverflow.com/questions/3075577/convert-mysql-datetime-stamp-into-javascripts-date-format
-          // Split timestamp into [ Y, M, D, h, m, s ]
-          //var t = opt_sDate.split(/[- :]/);
-
-          // Apply each element to the Date function
-          //this.db.gdt = new g.date.DateTime(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
 
           // try another way that'll work as well...
-          this.db.gdt = new g.date.fromIsoString(opt_sDate);
+          this.db.gdt = new goog.date.fromIsoString(opt_sDate);
         }
 
     } else {
-        this.db.gdt = new g.date.DateTime();
+        this.db.gdt = new goog.date.DateTime();
     }
 
     // check if gdt is set
-    if (g.isNull(this.db.gdt)) {
+    if (goog.isNull(this.db.gdt)) {
         // not set, use now
-        this.db.gdt = new g.date.DateTime();
+        this.db.gdt = new goog.date.DateTime();
     }
-    /**
-     * bring given date to UTC / GMT datetime
-     *
-     * 22/Oct/2010 No need for this, google's data class
-     * does this automaticaly
-     *
-    // first if there are hours offset make them minutes
-
-    var tzofst = Number(this.db.dt.ofstHours) * 60;
-    // now add up any minutes
-    tzofst = tzofst + Number(this.db.dt.ofstMinutes);
-    // if the sign is + then substract the minutes... else add
-    var tzofst = ('+' == this.db.dt.ofstSign ? tzofst * -1 : tzofst);
-    var clientOfst = this.db.gdtnow.getTimezoneOffset() * -1;
-    // now set the offset
-    log.fine('seting offset minutes:' + tzofst + ' our ofst:' + clientOfst);
-    //this.db.gdt.setUTCMinutes(tzofst);
-
-    */
-
-
-    /**
-     * Now make given date be at client's timezone
-     *
-     * Reverse sign of .getTimezoneOffset()
-     * for the calculation to work properly
-     */
-    //this.db.gdt.setUTCMinutes(clientOfst);
-
-    /**
-     * There seems to be a bug with setUTCMinutes
-     * it gets a little off each time...
-     */
-
 
     return this;
 }
@@ -178,30 +134,17 @@ ss.date.dbstatic = {
  */
 ss.date.prototype.getDiffStringAgo = function (opt_short)
 {
-    var c = ss;
-    var g = goog;
-    var log = g.debug.Logger.getLogger('ss.date.getDiffStringAgo');
-
-    log.fine('Init');
-
-    var dt = this.db.gdt;
-    /*new Date(
-        this.db.dt.year, this.db.dt.month, this.db.dt.date,
-        this.db.dt.hours, this.db.dt.minutes, this.db.dt.seconds
-    );*/
-
-    var diff = c.date.getDiffSecs(dt);
-
+    var diff = ss.date.getDiffSecs(this.db.gdt);
 
     // more than a day ago
     if (86400 < diff ) return this.smallDate();
 
 
-    if (60 > diff) return diff + (c.MOBILE || opt_short ? 'secs' : ' seconds ago');
-    if (120 > diff) return ( c.MOBILE || opt_short ? '1 min' : 'about a minute ago');
-    if (3600 > diff) return ( c.MOBILE || opt_short ? Math.floor(diff / 60) + ' min' : 'about ' + Math.floor(diff / 60) + ' minutes ago');
-    if (7200 > diff) return ( c.MOBILE || opt_short ? '1 hour' : 'about an hour ago');
-    if (86400 >= diff) return ( c.MOBILE || opt_short ? Math.floor(diff / 3600) + ' hours' : 'about ' + Math.floor(diff / 3600) + ' hours ago');
+    if (60 > diff) return diff + ( opt_short ? 'secs' : ' seconds ago');
+    if (120 > diff) return ( opt_short ? '1 min' : 'about a minute ago');
+    if (3600 > diff) return ( opt_short ? Math.floor(diff / 60) + ' min' : 'about ' + Math.floor(diff / 60) + ' minutes ago');
+    if (7200 > diff) return ( opt_short ? '1 hour' : 'about an hour ago');
+    if (86400 >= diff) return ( opt_short ? Math.floor(diff / 3600) + ' hours' : 'about ' + Math.floor(diff / 3600) + ' hours ago');
 
     return '';
 }; // method ss.date.getDiffStringAgo
@@ -403,55 +346,6 @@ ss.date.prototype.smallDate = function ()
 }; // method ss.date.smallDate
 
 
-/**
- * Calculate the date time object
- * from a RFC822 type: Wed, 26 May 2010 23:17:17 +0000
- *
- *
- * @private
- * @return {void}
- */
-ss.date.prototype._getDatetimedb = function ()
-{
-    var c = ss;
-    var g = goog;
-    var log = g.debug.Logger.getLogger('ss.date._getDatetimedb');
-
-    log.fine('Init');
-
-    var sdate = this.db.sDate;
-
-    // set parameter date
-    this.db.dt = {
-        year: Number(sdate.substr(11,5)), // year
-        month: c.date.dbstatic.monthRev[sdate.substr(8,3)], // month
-        date: sdate.substr(5,2), // date
-        hours: sdate.substr(17, 2), // hours
-        minutes: sdate.substr(20, 2), // minutes
-        seconds: sdate.substr(23,2), // seconds
-        ofst: sdate.substr(26,5), // offset
-        ofstSign: sdate.substr(26,1), // offset sign (+/-)
-        ofstHours: sdate.substr(27,2), // offset hours
-        ofstMinutes: sdate.substr(29,2) // offset minuts
-    };
-
-
-
-    log.fine('Chopped date to values::'
-        + ' year:' + this.db.dt.year
-        + ' month:' + this.db.dt.month
-        + ' date:' + this.db.dt.date
-        + ' hours:' + this.db.dt.hours
-        + ' minutes:' + this.db.dt.minutes
-        + ' seconds:' + this.db.dt.seconds
-        + ' offset:' + this.db.dt.ofst
-        + ' offset Sign:' + this.db.dt.ofstSign
-        + ' offset Hours:' + this.db.dt.ofstHours
-        + ' offset Minutes:' + this.db.dt.ofstMinutes
-        );
-
-
-}; // method ss.date._getDatetimedb
 
 /**
  * Get current date in RFC822 format: Wed, 26 May 2010 23:17:17 +0000

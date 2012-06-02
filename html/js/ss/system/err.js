@@ -18,22 +18,21 @@
  * createdate 05/Jul/2010
  *
  *********
- *  File:: system/err.js  
- *  Error handling functions
+ *  File:: system/error.js  
  *********
  */
-
-
-goog.provide('ss.err');
+ 
+ /**
+  * @fileoverview Error handling functions
+  */
 goog.provide('ss.error');
 
-ss.err = {};
 
 
 /**
  * Hook for try{}catch(e) statements
  *
- * @param {object} e error object
+ * @param {Object} e error object
  * @return {void}
  */
 ss.error = function (e)
@@ -42,29 +41,31 @@ ss.error = function (e)
     var log = s.log('ss.error');
     var filename, line, msg, source, name;
     //log.info(g.debug.expose(e));
+    /*
     if (ss.MOBILE) {
         filename = e.name;
         line = e.line;
         msg = e.message;
         source = e.sourceURL;
     } else {
-      name = e.name;
-      if (e.fileName) {
-        filename = e.fileName;
-        line = e.lineNumber;
-        msg = e.message;
-        source = '';
-      } else {
-        filename = e.stack.split("\n")[1];
-        line = '';
-        msg = e.message;
-        source = '';
-      }
+    */
+    name = e.name;
+    if (e.fileName) {
+      filename = e.fileName;
+      line = e.lineNumber;
+      msg = e.message;
+      source = '';
+    } else {
+      filename = e.stack.split("\n")[1];
+      line = '';
+      msg = e.message;
+      source = '';
     }
+  
     
     var errMsg = 'Error! name:' + name + ' Filename:' + filename + ' line:' + line + ' msg:' + msg + ' source:' + source;
     log.severe(errMsg);
-    if (ss.WEB && console) { 
+    if (console) { 
       console.debug(errMsg);
     }
     

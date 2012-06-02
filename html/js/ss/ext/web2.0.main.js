@@ -225,11 +225,6 @@ ss.web2.isExtAuthed = function (sourceId)
     var w = ss;
     var w2 = w.web2;
 
-    // ugly patch for mobile (FB Only now)
-    if (w.MOBILE) {
-        // TBD
-    }
-
     if (!w2.db.isExtAuthed)
         return false;
 
@@ -477,10 +472,6 @@ ss.web2.authStateTimeout = function ()
  */
 ss.web2.extLogout = function ()
 {
-    // if on mobile, exit... (no solution yet)
-    if (ss.MOBILE)
-        return;
-
     FB.logout(function(response) {
       // user is now logged out
     });

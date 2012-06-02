@@ -25,16 +25,17 @@
  *********
  *
  */
+ 
+ /** @fileoverview Superstartup library bootstrap file */
 
 goog.provide('ss');
-
-goog.provide('ss.DEBUG');
-goog.provide('ss.READY'); //DOM ready switch
 
 
 goog.require('goog.debug');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
+
+goog.require('ss.debug');
 
 goog.require('ss.metrics');
 goog.require('ss.error');
@@ -54,92 +55,64 @@ goog.require('ss.exports');
 
 goog.require('ss.server2js');
 
+goog.require('ss.web.system');
+goog.require('ss.web.cookies');
+goog.require('ss.web.jq.ext');
+goog.require('ss.web.user');
+
 
 /**
  * Debuging option, set to false for production
- * @type {boolean}
+ * @define {boolean}
  */
 ss.DEBUG = true;
 
 /**
  * ONSERVER switch.
- * @type {boolean}
+ * @define {boolean}
  */
 ss.ONSERVER = false;
 
 /**
  * Pre - production switch
- * @type {boolean}
+ * @define {boolean}
  */
 ss.PREPROD = false;
 
 /**
- * Mobile application mode
- *
- * @type {boolean}
- */
-ss.MOBILE = false;
-
-/**
- * WEB app mode
- *
- * @type {boolean}
- */
-ss.WEB = false;
-
-/**
- * If we have tracking (on web production)
- *
- *
- */
-
-if (ss.ONSERVER)
-  ss.WEBTRACK = true;
-else
-  ss.WEBTRACK = false;
-
-ss.MOBILE = false;
-ss.WEB = true;
-
-
-/**
- * Switch to true when DOM fires the ready() event
+ * Switch to true when the superstartup library has 
+ * initialized all and is ready to roll
  * @type {boolean}
  */
 ss.READY = false;
 
 /**
  * Global db (hash of values)
- *
+ * @type {Object}
  */
 ss.db = {};
 
 /**
- * Shortcut assign google's getLogger method to ours
- *
- */
-ss.log = goog.debug.Logger.getLogger;
-
-/**
- * Suppresses all logging done by the Superstartup framework
- *
- * @type {boolean}
- */
-ss.canLog = true;
-
-/**
- * The Init function should be called whenever
- * our environment is loaded and ready.
- *
+ * The Init function triggers inline as soon as execution
+ * reaches this point. Based on our requirement schema, this file
+ * is the last to be included.
  *
  * @return {void}
  */
-ss.Init = function ()
+ss.init = function ()
 {
-    var log = ss.log('ss.Init');
-    log.info('Starting...');
+    var logger = goog.debug.Logger.getLogger('ss.Init');
+    if (ss.DEBUG) {
+      ss.debug.openFancyWin();
+    }
+    
+    logger.info('Starting...');
     ss.ready('main');
     ss.ready.addCheck('main', 'loaded');
+
+    // Initialize web specific operations
+    // Auth Ball is here
+    ss.webInit();
 
     // the ready trigger for every other functionality beyond the framework
     ss.ready('ready');
@@ -151,29 +124,37 @@ ss.Init = function ()
 
 }; // function ss.Init
 
+
+
 /**
- * Trigger when server passes us environment data
+ * The initialiser for web
+ * Keep web logic isolated from our library's core for 
+ * easy exclusion when run on other environments
  *
- * @param {Object}
  * @return {void}
  */
-ss.envReady = function(data)
+ss.webInit = function () 
 {
-  if (data['DEVEL'])
-    ss.DEBUG = true;
-  if (data['PRODUCTION'])
-    ss.ONSERVER = true;
-  if (data['PREPROD'])
-    ss.PREPROD = true;
+  ss.db.URL = window.location.protocol + '//' + window.location.hostname;
+
+  // initialize the web2.0 (FB/Twitter)
+  // AUTH BALL IS HERE
+  ss.fb.InitWeb();    
+  // start init cycle for our twitter lib
+  ss.twit.Init();
+
+  // start loading twitter's widgets after 500ms
+  setTimeout(function(){
+    var twString = '<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>';
+    $('body').append(twString);    
+  }, 500);  
   
-  ss.web.openFancyWin();  
-};
+
+}; // ss.webInit
+
 
 // inline execution - hooks for server2js
 (function(ss){
-  // hook for environment data from server
-  ss.server2js.hook('5', ss.envReady, 10);
-  
   // hook for authed user from server
   ss.server2js.hook('102', ss.user.auth.login, 50);
   
@@ -186,8 +167,14 @@ ss.envReady = function(data)
   // metadata init call
   ss.server2js.hook('metadata', ss.metadata.init);
   
+  // Write permanent cookie request (first time ever visitor)
+  ss.server2js.hook('25', ss.web.cookies.writePermCook);
+  
   var newUserEvent = function() {
     // trigger new user event
     ss.user.auth.events.runEvent('newUser');      
   };
+  
+  // wake up the monster
+  ss.init();
 })(ss);

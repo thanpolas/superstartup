@@ -40,14 +40,12 @@ goog.require('ss.STATIC');
 ss.fb.local.checkFacebookAuth = function (listener)
 {
     try {
+    var log = goog.debug.Logger.getLogger('ss.fb.local.checkFacebookAuth');
 
-    var w = ss;
-    var log = w.log('ss.fb.local.checkFacebookAuth');
-
-    log.info('Init. Authed:' + w.isAuthed());
+    log.info('Init. Authed:' + ss.isAuthed());
 
     // if authed exit
-    if (w.isAuthed()) {
+    if (ss.isAuthed()) {
         listener(true);
         return;
     }
@@ -55,7 +53,7 @@ ss.fb.local.checkFacebookAuth = function (listener)
 
     // create request
     var url = "/users/facebook";
-    var a = new w.ajax(url, {
+    var a = new ss.ajax(url, {
         typeGet: 'json',
         postMethod: 'POST'
     });
@@ -64,31 +62,25 @@ ss.fb.local.checkFacebookAuth = function (listener)
     // responce from server
     a.callback = function(result) {
 
-
-
         var user = result['user'];
         var newuser = resylt['newuser'];
 
-
-
         // check if user is valid user object
-        if (!w.user.isUserObject(user)) {
+        if (!ss.user.isUserObject(user)) {
             listener(false);
             return; // no need to continue further
         }
 
         // user logged in
-        w.web2.extLogin(w.STATIC.SOURCES.FB, user);
+        ss.web2.extLogin(ss.STATIC.SOURCES.FB, user);
 
         // check if newuser
         if (newuser) {
             // open welcome window
-            w.user.auth.events.runEvent('newUser');
+            ss.user.auth.events.runEvent('newUser');
         }
 
         listener(true);
-
-
     }; //callback of AJAX
 
     a.errorCallback = function(errorobj) {
@@ -120,18 +112,15 @@ ss.fb.local.loginSubmit = function (opt_listener)
 {
     try {
 
-    var fb = FB;
-    var w = ss;
-    var g = goog;
-    var log = w.log('ss.fb.local.loginSubmit');
+    var log = goog.debug.Logger.getLogger('ss.fb.local.loginSubmit');
 
-    log.info('Init. Authed:' + w.isAuthed());
+    log.info('Init. Authed:' + ss.isAuthed());
 
     var listener = opt_listener || function (){};
 
     // if authed exit
-    if (w.isAuthed()) {
-        w.web2.extLogin(w.STATIC.SOURCES.FB, w.user.getUserDataObject());
+    if (ss.isAuthed()) {
+        ss.web2.extLogin(ss.STATIC.SOURCES.FB, ss.user.getUserDataObject());
         listener(true);
         return;
     }
@@ -139,7 +128,7 @@ ss.fb.local.loginSubmit = function (opt_listener)
 
     // create request
     var url = "/users/facebook";
-    var a = new w.ajax(url, {
+    var a = new ss.ajax(url, {
         typeGet: 'json',
         postMethod: 'POST'
     });
@@ -154,22 +143,20 @@ ss.fb.local.loginSubmit = function (opt_listener)
 
         log.info('Got callback. newuser:' + newuser);
 
-        //log.info('user:' + g.debug.expose(user));
-
         // check if user is valid user object
-        if (!w.user.isUserObject(user)) {
+        if (!ss.user.isUserObject(user)) {
             listener(false);
             return; // no need to continue further
         }
 
 
         // user logged in
-        w.web2.extLogin(w.STATIC.SOURCES.FB, user, newuser);
+        ss.web2.extLogin(ss.STATIC.SOURCES.FB, user, newuser);
 
         listener(true);
 
         if (newuser) {
-            w.user.auth.events.runEvent('newUser');
+            ss.user.auth.events.runEvent('newUser');
         }
 
       } catch(e) {
@@ -210,14 +197,12 @@ ss.fb.local.loginSubmit = function (opt_listener)
 ss.fb.local.commentCreate = function (data, opt_rem, opt_cb)
 {
   try {
-    var c = ss;
-
     var cb = opt_cb || function(){};
 
     // set REMOVE switch
     var rem = opt_rem || false;
 
-    var aj = new c.ajax((rem ? '/cmnts/fbremove' : '/cmnts/fbcreate'), {
+    var aj = new ss.ajax((rem ? '/cmnts/fbremove' : '/cmnts/fbcreate'), {
       postMethod: 'POST'
     });
     /**

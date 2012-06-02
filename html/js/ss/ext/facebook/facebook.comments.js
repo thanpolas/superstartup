@@ -32,15 +32,13 @@ goog.provide('ss.fb.com');
 /**
  * Listen for comment create events
  *
- * @param {object} event FB passed object
+ * @param {Object} event FB passed object
  * @return {void}
  */
 ss.fb.com.create = function (event)
 {
   try {
-    var c = ss, g = goog;
-
-    var log = c.log('ss.fb.com.create');
+    var log = goog.debug.Logger.getLogger('ss.fb.com.create');
 
     log.info('Init');
 
@@ -53,7 +51,7 @@ ss.fb.com.create = function (event)
      */
 
      // inform server
-     c.fb.local.commentCreate(event);
+     ss.fb.local.commentCreate(event);
 
      // track event
      //c.analytics.trackEvent('comments', 'created');
@@ -74,9 +72,7 @@ ss.fb.com.create = function (event)
 ss.fb.com.remove = function (event)
 {
   try {
-    var c = ss, g = goog;
-
-    var log = c.log('ss.fb.com.remove');
+    var log = goog.debug.Logger.getLogger('ss.fb.com.remove');
 
     log.info('Init');
     /**
@@ -86,7 +82,7 @@ ss.fb.com.remove = function (event)
      */
 
      // inform server
-     c.fb.local.commentCreate(event, true);
+     ss.fb.local.commentCreate(event, true);
      // track event
      //c.analytics.trackEvent('comments', 'removed');
      //c.analytics.trackSocial('facebook', 'commentRemoved', event.href);

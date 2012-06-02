@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 25/Oct/2010
  *
@@ -61,7 +61,7 @@ ss.fb.db = {
      * e.g. {publish_stream: true, email: false} [..]
      */
   hasPerms: {}
-}
+};
 
 
 /**
@@ -83,10 +83,7 @@ ss.fb.haveAuthStatus = function ()
  */
 ss.fb.getAppId = function ()
 {
-  var c = ss;
-
-  return c.conf.fb.app_id;
-
+  return ss.conf.fb.app_id;
 };
 
 
@@ -119,38 +116,37 @@ ss.fb.db.clear = function ()
 ss.fb.InitWeb = function ()
 {
   try {
-    var s = ss, g = goog;
-    var log = s.log('ss.fb.InitWeb');
+    var log = goog.debug.Logger.getLogger('ss.fb.InitWeb');
 
     log.info('Init');
 
-    s.ready('fb');
-    s.ready.addCheck('fb', 'loaded');
+    ss.ready('fb');
+    ss.ready.addCheck('fb', 'loaded');
 
     // create fb-auth check
-    s.ready('fb-auth');
-    s.ready.addCheck('fb-auth', 'done');
+    ss.ready('fb-auth');
+    ss.ready.addCheck('fb-auth', 'done');
 
 
     // capture FB API Load event
-    g.global['fbAsyncInit'] = function() {
+    goog.global['fbAsyncInit'] = function() {
       s.fb.Init();
     };
 
     // request the facebook api
-    var d = g.global['document'];
-    var e = d.createElement('script');
-    var src = d.location.protocol;
-    if (s.DEVEL)
+    var doc = goog.global['document'];
+    var e = doc.createElement('script');
+    var src = doc.location.protocol;
+    if (ss.DEVEL)
       src += '//static.ak.fbcdn.net/connect/en_US/core.debug.js';
     else
       src += '//connect.facebook.net/en_US/all.js';
     e.src = src;
     e.async = true;
-    d.getElementById('fb-root').appendChild(e);
+    doc.getElementById('fb-root').appendChild(e);
 
-    s.web2.db.initialCheck.timeout = setTimeout(s.web2.authStateTimeout,
-      s.web2.db.initialCheck.timeoutTime);
+    ss.web2.db.initialCheck.timeout = setTimeout(ss.web2.authStateTimeout,
+      ss.web2.db.initialCheck.timeoutTime);
 
 
   } catch(e){
@@ -170,14 +166,11 @@ ss.fb.InitWeb = function ()
 ss.fb.Init = function ()
 {
   try {
+    var log = goog.debug.Logger.getLogger('ss.fb.Init');
 
-    var fb = FB;
-    var c = ss;
-    var log = c.log('ss.fb.Init');
-
-    log.info('Init - FB LIB LOADED. Our App ID:' + c.fb.getAppId());
-    fb.init({
-      'appId'  : c.fb.getAppId(),
+    log.info('Init - FB LIB LOADED. Our App ID:' + ss.fb.getAppId());
+    FB.init({
+      'appId'  : ss.fb.getAppId(),
       'status' : true, // check login status
       'cookie' : true, // enable cookies to allow the server to access the session
       'xfbml'  : true,  // parse XFBML
@@ -185,23 +178,23 @@ ss.fb.Init = function ()
     });
 
     // catch session change events
-    fb.Event.subscribe('auth.sessionChange', c.fb.sessionChange);
+    FB.Event.subscribe('auth.sessionChange', ss.fb.sessionChange);
 
     // catch commenting and uncommenting
-    fb.Event.subscribe('comment.create', c.fb.com.create);
-    fb.Event.subscribe('comment.remove', c.fb.com.remove);
+    FB.Event.subscribe('comment.create', ss.fb.com.create);
+    FB.Event.subscribe('comment.remove', ss.fb.com.remove);
 
     // catch initial login status
-    fb.getLoginStatus(c.fb.getInitialLoginStatus);
+    FB.getLoginStatus(ss.fb.getInitialLoginStatus);
 
     // catch edge events 'like'
     // fired when the user likes something (fb:like)
-    fb.Event.subscribe('edge.create', c.fb.edgeCreate);
+    FB.Event.subscribe('edge.create', ss.fb.edgeCreate);
     // unlike event
-    fb.Event.subscribe('edge.remove', c.fb.edgeRemove);
+    FB.Event.subscribe('edge.remove', ss.fb.edgeRemove);
 
     // finish the ready watch, we are loaded
-    c.ready.check('fb', 'loaded');
+    ss.ready.check('fb', 'loaded');
 
   } catch(e) {
     ss.error(e);
@@ -217,39 +210,36 @@ ss.fb.Init = function ()
 ss.fb.getInitialLoginStatus = function (response)
 {
   try {
-    var c = ss;
-    var g = goog;
-    var log = c.log('ss.fb.getInitialLoginStatus');
+    var log = goog.debug.Logger.getLogger('ss.fb.getInitialLoginStatus');
 
     // store the result
-    c.fb.db.haveInitialAuthStatus = true;
+    ss.fb.db.haveInitialAuthStatus = true;
 
-    if (c.fb.isAuthedFromResponse(response)) {
+    if (ss.fb.isAuthedFromResponse(response)) {
       log.info('FACEBOOK We are CONNECTED.');
-      c.web2.collectInitialAuthChecks(c.STATIC.SOURCES.FB, true);
+      ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, true);
       // validate the auth with our server
-      c.fb.local.checkFacebookAuth(function(state){
-
+      ss.fb.local.checkFacebookAuth(function(state){
         if (state) {
-          c.fb.db.initialAuthStatus = true;
-          c.web2.collectInitialAuthChecks(c.STATIC.SOURCES.FB, true, true);
+          ss.fb.db.initialAuthStatus = true;
+          ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, true, true);
         } else {
-          c.fb.db.initialAuthStatus = false;
-          c.web2.collectInitialAuthChecks(c.STATIC.SOURCES.FB, true, false);
+          ss.fb.db.initialAuthStatus = false;
+          ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, true, false);
         }
 
         // inform that our FB auth check is done
-        c.ready.check('fb-auth', 'done');
+        ss.ready.check('fb-auth', 'done');
       });
       return;
     } else {
       log.info('FACEBOOK NOT connected. status:' + response.status);
-      c.fb.db.initialAuthStatus = false;
+      ss.fb.db.initialAuthStatus = false;
       // notify web2.0 of no login here
-      c.web2.collectInitialAuthChecks(c.STATIC.SOURCES.FB, false);
+      ss.web2.collectInitialAuthChecks(ss.STATIC.SOURCES.FB, false);
 
       // inform that our FB auth check is done
-      c.ready.check('fb-auth', 'done');
+      ss.ready.check('fb-auth', 'done');
 
     }
 
@@ -262,7 +252,7 @@ ss.fb.getInitialLoginStatus = function (response)
 /**
  * Request the permissions we have for the currently logged
  * in user.
- * 
+ *
  *
  * @param {Function()} Callback function for the result
  * @return {void}
@@ -270,7 +260,7 @@ ss.fb.getInitialLoginStatus = function (response)
 ss.fb.getPermissions = function (callback)
 {
   try {
-    
+
     FB.api('/me/permissions', function (response) {
     } );
   } catch(e) {
@@ -287,11 +277,10 @@ ss.fb.getPermissions = function (callback)
 ss.fb.sessionChange = function (response)
 {
   try {
-    var c = ss, g = goog;
-    var log = c.log('ss.fb.sessionChange');
+    var log =  goog.debug.Logger.getLogger('ss.fb.sessionChange');
 
     log.info('Init. response.perms:' + response.perms);
-    log.info('Init. response.session.expose:' + g.debug.expose(response.session));
+    log.info('Init. response.session.expose:' + goog.debug.expose(response.session));
     /**
      * response expose:
      *
@@ -311,13 +300,13 @@ ss.fb.sessionChange = function (response)
     */
 
 
-    if (c.fb.isAuthedFromResponse(response)) {
+    if (ss.fb.isAuthedFromResponse(response)) {
       // A user has logged in, and a new cookie has been saved
       // check if already logged in
-      if (c.isAuthed())
+      if (ss.isAuthed())
         return;
 
-    // neat, register ourselves with the server
+      // neat, register ourselves with the server
 
     } else {
   // The user has logged out, and the cookie has been cleared
@@ -329,13 +318,13 @@ ss.fb.sessionChange = function (response)
 }; // function sessionChange
 
 
-/** 
- * When an auth event / action is performed FB returns a response 
+/**
+ * When an auth event / action is performed FB returns a response
  * object. This object changes from times to times so we have
  * to create this function to rule them all
  *
  * We check the response if we have a successfull authentication
- * and respond acordingly 
+ * and respond acordingly
  *
  * @param {object} response the FB response object
  * @return {boolean} if we are authed or not
@@ -362,25 +351,16 @@ ss.fb.isAuthedFromResponse = function(response)
 ss.fb.loginListener = function (response, opt_callback)
 {
   try {
-    var c = ss;
-    var g = goog;
-    var log = c.log('ss.fb.loginListener');
+    var log =  goog.debug.Logger.getLogger('ss.fb.loginListener');
 
     log.info('Init. response.status:' + response.status);
 
     var callback = opt_callback || function (){};
 
-    if (c.fb.isAuthedFromResponse(response)) {
-      c.fb.local.loginSubmit(callback);
+    if (ss.fb.isAuthedFromResponse(response)) {
+      ss.fb.local.loginSubmit(callback);
     } else
       callback(false);
-
-
-
-  //FB.api('/me', function(res){
-
-  //log.info('me expose:' + g.debug.expose(res));
-  //})
 
   } catch(e) {
     ss.error(e);
@@ -401,27 +381,21 @@ ss.fb.loginListener = function (response, opt_callback)
  */
 ss.fb.loginOpen = function (opt_callback, opt_perms)
 {
-  var c = ss;
-  var g = goog;
-  var fb = FB;
-
   var callback = opt_callback || function (){};
 
-  if (g.isString(opt_perms))
+  if (goog.isString(opt_perms))
     var paramsObj = {
       perms: opt_perms
     };
   else
     var paramsObj = {
-      perms: c.conf.fb.permitions
+      perms: ss.conf.fb.permitions
     };
 
-  if (c.WEB) {
-    fb.login(function(response){
+  FB.login(function(response){
+    ss.fb.loginListener(response, callback);
+  }, paramsObj);
 
-      c.fb.loginListener(response, callback)
-    }, paramsObj);
-  }
 }; // function ss.fb.loginOpen
 
 
@@ -436,37 +410,28 @@ ss.fb.loginOpen = function (opt_callback, opt_perms)
 ss.fb.linkUser = function(opt_callback)
 {
   try {
-
-    var c = ss;
-    var g = goog;
-    var fb = FB;
-    var log = c.log('ss.fb.linkUser');
+    var log = goog.debug.Logger.getLogger('ss.fb.linkUser');
 
     var callback = opt_callback || function(){};
 
-    if (!c.isAuthed()) {
+    if (!ss.isAuthed()) {
       callback(false);
       return;
     }
 
-
     // check if user already on facebook
-    if (c.user.auth.hasExtSource(c.STATIC.SOURCES.FB)) {
+    if (ss.user.auth.hasExtSource(ss.STATIC.SOURCES.FB)) {
       callback(true);
       return;
     }
 
-
-
-    if (c.WEB) {
-      fb.login(function(response){
-        if (response.session) {
-          //console.debug(response);
-          c.fb.local.linkUser(callback);
-        } else
-          callback(false);
-      }, {});
-    }
+    FB.login(function(response){
+      if (response.session) {
+        //console.debug(response);
+        ss.fb.local.linkUser(callback);
+      } else
+        callback(false);
+    }, {});
 
 
   } catch(e) {
@@ -477,35 +442,24 @@ ss.fb.linkUser = function(opt_callback)
 /**
  * Fires when we have an edge event like fb:like
  *
- * @param {object} result
- * @param {object} fbobj an uknown object returned by FB
+ * @param {string} targetUrl
+ * @param {object} fbobj an unknown object returned by FB
  * @return {void}
  */
-ss.fb.edgeCreate = function (result, fbobj)
+ss.fb.edgeCreate = function (targetUrl, fbobj)
 {
   try {
-
-    var c = ss;
-    var g = goog;
-    var fb = FB;
-    var log = c.log('ss.fb.edgeCreate');
-
-
+    var log =  goog.debug.Logger.getLogger('ss.fb.edgeCreate');
 
     // we can locate the ref inside the fobj, go carefully...
     var ref = '';
-    if (g.isObject(fbobj._attr)) {
-      if (g.isString(fbobj._attr.ref)) {
+    if (goog.isObject(fbobj._attr)) {
+      if (goog.isString(fbobj._attr.ref)) {
         ref = fbobj._attr.ref;
       }
     }
 
-    log.info('Like Event fired:' + result + ' ref:' + ref);
-    //var uri = new g.Uri(result)
-    //var uriPath = uri.getPath();
-
-    //strip
-
+    log.info('Like Event fired:' + targetUrl + ' ref:' + ref);
     //c.analytics.trackEvent('Share-Frame', 'Facebook-LIKE', ref + '::' + result, 1);
     //c.analytics.trackMetrics('Share', 'facebook-like', result, ref);
     //c.analytics.trackSocial('facebook', 'like', result);
@@ -520,31 +474,24 @@ ss.fb.edgeCreate = function (result, fbobj)
 /**
  * Fires when we have an edge REMOVE event like fb:unlike
  *
- * @param {object} result targetURL
+ * @param {string} targetUrl
  * @param {object} fbobj an uknown object returned by FB
  * @return {void}
  */
-ss.fb.edgeRemove = function (result, fbobj)
+ss.fb.edgeRemove = function (targetUrl, fbobj)
 {
   try {
-
-    var c = ss;
-    var g = goog;
-    var log = c.log('ss.fb.edgeRemove');
+    var log = goog.debug.Logger.getLogger('ss.fb.edgeRemove');
 
     // we can locate the ref inside the fobj, go carefully...
     var ref = '';
-    if (g.isObject(fbobj._attr)) {
-      if (g.isString(fbobj._attr.ref)) {
+    if (goog.isObject(fbobj._attr)) {
+      if (goog.isString(fbobj._attr.ref)) {
         ref = fbobj._attr.ref;
       }
     }
 
-    log.info('UNLike Event fired:' + result + ' ref:' + ref);
-    //var uri = new g.Uri(result)
-    //var uriPath = uri.getPath();
-
-    //strip
+    log.info('UNLike Event fired:' + targetUrl + ' ref:' + ref);
 
     //c.analytics.trackEvent('Share-Frame', 'Facebook-UNLIKE', ref + '::' + result, -1);
     //c.analytics.trackMetrics('Share', 'facebook-unlike', result, ref);
@@ -581,24 +528,22 @@ jQuery("#mc_header").html('<fb:login-button></fb:login-button>')
  * Mostly for web ?
  *
  * For documentation go to:
- * https://developers.facebook.com/docs/reference/plugins/like/
+ * @see https://developers.facebook.com/docs/reference/plugins/like/
  *
  * @param {string} url
- * @param {Number=} opt_width default is 400
- * @param {Object=} opt_params Any number of parameter/value keys as 
+ * @param {number=} opt_width default is 400
+ * @param {Object=} opt_params Any number of parameter/value keys as
  *      described in FB Docs
- * @param {Number=} opt_width width for like button
+ * @param {number=} opt_width width for like button
  * @return {string}
  */
 ss.fb.getLikeButton = function (url, opt_params, opt_width)
 {
-  var g = goog;
-
   var params = opt_params || null;
   var width = opt_width || 60;
   var likeUrl = '<fb:like href="' + url + '" ';
-  if (!g.isNull(params)) {
-    g.object.forEach(params, function (value, key){
+  if (!goog.isNull(params)) {
+    goog.object.forEach(params, function (value, key){
       likeUrl += key + '="' + value + '" ';
     });
   }
@@ -626,21 +571,12 @@ ss.fb.getLikeButton = function (url, opt_params, opt_width)
 ss.fb.hasPerm = function (value, callback)
 {
   try {
-    var c = ss;
-    var g = goog;
-    var db = c.fb.db;
-    var log = c.log('ss.fb.hasPerm');
+    var log = goog.debug.Logger.getLogger('ss.fb.hasPerm');
 
     log.info('Init for:' + value);
 
-    // check if on mobile
-    if (c.MOBILE) {
-        // TBD
-      return;
-    }
-
     // check if we have this perm cached localy
-    if (g.isBoolean(db.hasPerms[value])) {
+    if (goog.isBoolean(db.hasPerms[value])) {
       callback(db.hasPerms[value]);
       return;
     }

@@ -12,19 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
- * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
  *
  *********
- * Superstartup master init file
+ *  File:: main.js
+ *
+ *********
  *
  */
-goog.provide('__initFile__');
-goog.require('ss.web');
+ 
+ /** @fileoverview Debug functions and helpers */
+ 
+goog.provide('ss.debug');
 
-// If you plan on using the google closure library then insert here
-// your bootsrap require file
-goog.require('showcase');
+/**
+ * Will popup a debuging funcy window
+ * @return {void}
+ */
+ss.debug.openFancyWin = function () {
+  var debugWindow = new goog.debug.FancyWindow('main');
+  debugWindow.setEnabled(true);
+  debugWindow.init();
+}; // method web.openFancyWin
+
+

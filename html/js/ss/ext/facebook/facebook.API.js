@@ -28,26 +28,13 @@
 goog.provide('ss.fb.API');
 goog.require('ss.STATIC');
 
-
-/**
- * The ss of the facebook API calls
- * We use restAPI for these functions
- * for now
- *
- * @constructor
- */
-ss.fb.API.ss = function ()
-{
-
-}; // class ss.fb.API.ss
-
 /**
  * The post API class
  *
  *
  * If you want to debug posting on a JS console:
  *
- * FB.api({method:'stream.publish', auto_publish:false, message:'asd add  dd',attachment:{name:'ddd', caption:'deeee', href:'http://chat.local/b/booth_10556'}}, function(e){console.debug(e)})
+ * FB.api({method:'stream.publish', auto_publish:false, message:'asd add  dd',attachment:{name:'ddd', caption:'deeee', href:'http://ss.local/a/path'}}, function(e){console.debug(e)})
  *
  * @constructor
  */
@@ -62,7 +49,7 @@ ss.fb.API.post = function ()
         caption: null,
         properties: null,
         media: null
-    }
+    };
     this.savedId = null;
     this.paramsAPI = null;
 
@@ -78,12 +65,12 @@ ss.fb.API.post = function ()
     properties: [
       { text: 'fbrell', href: 'http://fbrell.com/' }
     ],
-    picture: 'http://boothchat.com/img/boothchat_logo.png',
+    picture: 'http://superstartup.org/path/to/image.jpg',
     caption: 'this is caption',
     description:'this is description',
     name: 'Join me now',
-    actions: [{name: 'action one', link: 'http://boothchat.com'}],
-    link: 'http://boothchat.com/pages/about'
+    actions: [{name: 'action one', link: 'http://superstartup.org'}],
+    link: 'http://superstartup.org/about'
 
     We automaticaly set the 'method' and 'display' values
  *
@@ -100,11 +87,9 @@ ss.fb.API.post.prototype.setParams = function (params)
 {
     try {
 
-    this.paramsAPI = params
+    this.paramsAPI = params;
 
     this.paramsAPI['method'] = 'feed';
-    //this.paramsAPI['display'] = 'popup';
-
 
     } catch(e) {ss.error(e);}
 }; // method ss.fb.API.post.setParams
@@ -112,46 +97,31 @@ ss.fb.API.post.prototype.setParams = function (params)
 /**
  * Perform actual post of the post we have created
  *
- * @param {Function(boolean, string)} listener with state and error message or post ID
+ * @param {Function(boolean, string=)} listener with state and post ID or error message
  * @return {void}
  */
 ss.fb.API.post.prototype.perform = function (listener)
 {
     try {
-    var g = goog;
-    var w = ss;
-
-    var log = w.log ('ss.fb.API.post.perform');
+    var log =  goog.debug.Logger.getLogger('ss.fb.API.post.perform');
 
     log.info('Init');
 
-    // check if on mobile and execute a bit differently...
-    if (w.MOBILE) {
-        // TBD
-        return;
-    } // if on mobile
-
-    var fb = FB;
     if (this.db.editBeforePost)
-        var action = fb.ui;
+        var action = FB.ui;
     else
-        var action = fb.api;
-
-
-
-
-
+        var action = FB.api;
     // perform action
-    action(this.paramsAPI, g.bind(function (res){
+    action(this.paramsAPI, goog.bind(function (res){
         // if mode is edit before post then on error
         // res will be null
-        if (g.isNull(res) || !g.isDef(res)) {
+        if (goog.isNull(res) || !goog.isDef(res)) {
             log.warning('Error from facebook. res is null');
-            listener(false, w.errmsg);
+            listener(false);
             return;
         }
 
-        if (g.isObject(res['error'])) {
+        if (goog.isObject(res['error'])) {
             log.warning('Error from facebook:' + res['error']['message']);
             listener(false, res['error']['message']);
         } else {
@@ -169,11 +139,6 @@ ss.fb.API.post.prototype.perform = function (listener)
 
     } catch(e) {ss.error(e);}
 }; // method ss.fb.API.post.perform
-
-
-
-
-
 
 
 /**

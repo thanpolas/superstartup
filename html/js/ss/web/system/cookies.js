@@ -55,3 +55,30 @@ ss.web.cookies.isEnabled = function ()
   }
 
 };
+
+
+/**
+ * Triggers on server command when we don't have a permanent cookie set
+ * Check if we are on a cookie enabled browser and performs a special
+ * AJAX request to have the server write us a permanent cookie
+ *
+ * @return {void}
+ */
+ss.web.cookies.writePermCook = function()
+{
+  if (ss.web.cookies.isEnabled()) {
+    // cookies enabled, notify server
+    var aj = new ss.ajax('/users/pc', {
+          postMethod: 'POST'
+        });
+    aj.callback = function(res) {
+      // check if we got a new metadataObject ...
+      if (goog.isObject(res['metadataRoot'])) {
+        ss.metadata.init(res['metadataRoot']);
+      }
+    };
+    // send ajax request
+    aj.send();
+  }
+};
+

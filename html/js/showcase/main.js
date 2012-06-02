@@ -28,13 +28,15 @@ goog.require('ss');
 
 goog.require('showcase.widget.showObject');
 
-
-ss.ready(function(){showcase.init();});
+// When Superstartup lib is ready, trigger our code
+ss.ready(function(){
+  showcase.init();
+});
 
 
 showcase.init = function() {
   try {
-  var log = ss.log('showcase.init');
+  var log = goog.debug.Logger.getLogger('showcase.init');
 
   log.info('Starting...');
   
@@ -53,3 +55,47 @@ showcase.init = function() {
   
   } catch(e) {ss.error(e);}
 };
+
+
+
+
+/**
+ * Triggers when the master auth event hook changes state
+ *
+ * @param {boolean} state If we are authed or not
+ * @param {ss.STATIC.SOURCES=} if authed, which auth source was used
+ * @param {object=} opt_userDataObject if authed, the user data object is passed here
+ * @return {void}
+ */
+showcase.authState = function(state, opt_sourceId, opt_userDataObject)
+{
+
+    var c = ss, w = c.web, j = jQuery, g = goog;
+
+    var log = goog.debug.Logger.getLogger('showcase.authState');  
+    
+    log.info('Auth event is ready. State:' + state);
+    
+    if (state) {
+      // user is authed, get his data object...
+      var u = opt_userDataObject;
+      // now update our page...
+      $('#auth_state h3').text('User Authed');
+      $('#auth_state_content h4').text('The user data object');
+      $('#user_data_object').text(goog.debug.deepExpose(u));
+      // make #login invisible
+      $('#login').dispOff();
+      $('#logged_in').dispOn();
+    } else {
+      $('#auth_state h3').text('Not Authed');
+      $('#auth_state_content h4').text('');
+      $('#user_data_object').text('');
+      $('#login').dispOn();
+      $('#logged_in').dispOff();  
+    }
+    
+};
+
+// subscribe to the auth state master event hook
+ss.user.auth.events.addEventListener('authState', showcase.authState);
+

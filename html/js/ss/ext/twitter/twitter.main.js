@@ -19,14 +19,15 @@
  *
  *********
  *  File:: web2.0/twitter/twitter.main.js
- *  twitter library (auth/share/etc)
- *********
+ */
+ 
+ /**
+ * @fileoverview twitter library (auth/share/etc) 
  */
 
 
 goog.provide('ss.twit');
 
-//goog.require('TwitterHelper');
 
 /**
  * Our static db
@@ -37,11 +38,10 @@ ss.twit.db = {
     loginLinkAccountParams: '?link=1', // use when user wants to link account not login
     twttrPoll: null,
     target: null
-}
+};
 
 /**
- * We are triggered right after the script tag for
- * lazy loading has been injected into DOM
+ * We are triggered inline, so
  * Twitter (window.twttr) has not loaded yet
  * so we will loop until we find it...
  *
@@ -49,8 +49,7 @@ ss.twit.db = {
  */
 ss.twit.Init = function ()
 {
-  var c = ss;
-  c.twit.db.twttrPoll = setInterval(c.twit._checkTwttrLoad, 300);
+  ss.twit.db.twttrPoll = setInterval(ss.twit._checkTwttrLoad, 300);
 }; // function ss.twit.Init
 
 /**
@@ -65,9 +64,8 @@ ss.twit._checkTwttrLoad = function()
   try {
 
     if (goog.isDef(window.twttr)){
-      var c = ss;
-      clearInterval(c.twit.db.twttrPoll);
-      c.twit.libLoaded();
+      clearInterval(ss.twit.db.twttrPoll);
+      ss.twit.libLoaded();
     }
   } catch (e) {
     ss.error(e);
@@ -85,11 +83,10 @@ ss.twit._checkTwttrLoad = function()
 ss.twit.libLoaded = function()
 {
   try {
-   var t = twttr, c = ss;
-   var log = c.log('ss.twit.libLoaded');
+   var log = goog.debug.Logger.getLogger('ss.twit.libLoaded');
 
    log.info('TWITTER LOADED');
-   t.events.bind('tweet', c.twit.eventTweet);
+   twttr.events.bind('tweet', ss.twit.eventTweet);
 
   } catch (e) {
     ss.error(e);
@@ -107,18 +104,13 @@ ss.twit.libLoaded = function()
  * type : "tweet"
  *
  *
- * @param {object} event
+ * @param {Object} event
  * @return {void}
  */
 ss.twit.eventTweet = function (event)
 {
   try {
-
-
-    //event.target.id
-    var j = $, c = ss;
-
-    var twShare = j(event.target).data('twShare');
+    var twShare = $(event.target).data('twShare');
 
 
     /**
@@ -178,7 +170,7 @@ ss.twit.eventTweet = function (event)
  *
  * Here's an example function to extract a query parameter from a URI:
  *
- * @link http://code.google.com/apis/analytics/docs/tracking/gaTrackingSocial.html
+ * @see http://code.google.com/apis/analytics/docs/tracking/gaTrackingSocial.html
  * @param {string} uri
  * @param {string} paramName
  * @return {string|void}
@@ -230,29 +222,26 @@ ss.twit.extractParamFromUri = function(uri, paramName) {
 ss.twit.getHref = function (text, uri, opt_params)
 {
   try {
-    var c = ss, g = goog;
-
     var params = opt_params || {};
 
-    //var href = 'http://twitter.com/share?text=';
     var href = 'https://twitter.com/intent/tweet?text=';
-    href += c.encURI(text);
-    href += '&url=' + c.encURI(uri);
+    href += ss.encURI(text);
+    href += '&url=' + ss.encURI(uri);
 
-    if (g.isString(params.via))
-      href += '&via=' + c.encURI(params.via);
+    if (goog.isString(params.via))
+      href += '&via=' + ss.encURI(params.via);
 
-    if (g.isString(params.related))
-      href += '&related=' + c.encURI(params.related);
+    if (goog.isString(params.related))
+      href += '&related=' + ss.encURI(params.related);
     else
-      href += '&related=' + c.encURI('boothchat');
+      href += '&related=' + ss.encURI('boothchat');
 
-    if (g.isString(params.count))
-      href += '&count=' + c.encURI(params.count);
-    if (g.isString(params.lang))
-      href += '&lang=' + c.encURI(params.lang);
-    if (g.isString(params.counturl))
-      href += '&counturl=' + c.encURI(params.counturl);
+    if (ss.isString(params.count))
+      href += '&count=' + ss.encURI(params.count);
+    if (goog.isString(params.lang))
+      href += '&lang=' + ss.encURI(params.lang);
+    if (goog.isString(params.counturl))
+      href += '&counturl=' + ss.encURI(params.counturl);
 
     href += '&_=' + new Date().getTime();
 
@@ -269,38 +258,29 @@ ss.twit.getHref = function (text, uri, opt_params)
 ss.twit.linkUser = function()
 {
     try {
+    var log = goog.debug.Logger.getLogger('ss.twit.linkUser');
 
-    var w = ss;
-    var g = goog;
-    var fb = FB;
-    var log = w.log('ss.twit.linkUser');
-
-    if (!w.isAuthed())
+    if (!ss.isAuthed())
         return;
 
     // check if user already on facebook
-    if (w.user.auth.hasExtSource(w.STATIC.SOURCES.TWIT))
+    if (ss.user.auth.hasExtSource(ss.STATIC.SOURCES.TWIT))
         return;
 
+      // we have to redirect user to /signup/twitter.php
+      // to start the authentication process
+      // we will add the var link=1 to indicate that
+      // we want to link user, not log in...
+
+      // first we will capture the current url of the user
+      var url = window.location.hash;
+
+      // assign it as a url var for GET
+      url = '&url=' + ss.encURI(url);
 
 
-    if (w.WEB) {
-        // we have to redirect user to /signup/twitter.php
-        // to start the authentication process
-        // we will add the var link=1 to indicate that
-        // we want to link user, not log in...
-
-        // first we will capture the current url of the user
-        var url = window.location.hash;
-
-        // assign it as a url var for GET
-        url = '&url=' + w.encURI(url);
-
-
-        window.location.href =  w.twit.db.loginUrl + w.twit.db.loginLinkAccountParams + url;
-    }
-
-
+      window.location.href =  ss.twit.db.loginUrl + ss.twit.db.loginLinkAccountParams + url;
+      
     } catch(e) {ss.error(e);}
 }; // function ss.twit.linkUser
 
@@ -317,16 +297,15 @@ ss.twit.linkUser = function()
 ss.twit.loginOpen = function ()
 {
     try {
-    var c = ss, win = window;
-    var log = c.log('ss.twit.loginOpen');
+    var log = goog.debug.Logger.getLogger('ss.twit.loginOpen');
     // we have to redirect user to /signup/twitter.php
     // to start the authentication process
 
     // use the current path of the user for return
-    var returnPath = '?url=' + c.encURI(win.location.pathname);
+    var returnPath = '?url=' + ss.encURI(win.location.pathname);
     log.info('Redirecting user to:' + returnPath);
     // redirect the browser now
-    win.location.href = c.twit.db.loginUrl + returnPath;
+    window.location.href = ss.twit.db.loginUrl + returnPath;
 
     } catch(e) {ss.error(e);}
 }; // function ss.twit.loginOpen
@@ -342,80 +321,21 @@ ss.twit.loginOpen = function ()
 ss.twit.openShareWindow = function (url)
 {
   try {
-    var j = $;
-    var win = window;
-
     var width  = 575,
     height = 400,
-    left   = (j(win).width()  - width)  / 2,
-    top    = (j(win).height() - height) / 2,
+    left   = ($(window).width()  - width)  / 2,
+    top    = ($(window).height() - height) / 2,
     opts   = 'status=1' +
     ',width='  + width  +
     ',height=' + height +
     ',top='    + top    +
     ',left='   + left;
 
-    win.open(url, 'twitter', opts);
+    window.open(url, 'twitter', opts);
   } catch (e) {
     ss.error(e);
   }
 
-}
-
-
-/**
- * Post a tweet
- *
- * DOESNT WORK
- *
- * @param {string} warpmsg the message
- * @return {void}
- * @deprecated
- */
-ss.twit.post = function (warpmsg)
-{
-	try {
-
-	var log = ss.log('ss.twit.post');
-
-	log.info('Init');
-	var throbber = false;
-
-	var tw = new TwitterHelper('','', throbber, 'twitter');
-
-	tw.statuses.update(function(aTwitterHelper, aAnswer, aContext){
-		log.info('callback:' + goog.debug.expose(aAnswer));
-
-	},function(aTwitterHelper, aRequest, aContext){
-		log.info('errorcallback:' + goog.debug.expose(aRequest));
-	}, this, 'json', warpmsg);
-
-	/*
-	var afeedURL = 'http://api.twitter.com/' + "statuses/update.json";
-	afeedURL += "?status=" + ss.encURI(warpmsg);
-
-
-
-	// we can't use |new XMLHttpRequest()| in a JS module...
-	var xmlRequest = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
-	                     .createInstance(Components.interfaces.nsIXMLHttpRequest);
-
-
-
-	xmlRequest.onreadystatechange = function() {
-
-		//_self._onreadystatechangeTwitter(xmlRequest, aCallback, aErrorCallback, aContext, _self);
-	};
-
-	//xmlRequest.mozBackgroundRequest = true;
-	xmlRequest.open("POST", afeedURL, true);
-	xmlRequest.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2005 00:00:00 GMT");
-
-
-	xmlRequest.setRequestHeader("Content-length", 0);
-	xmlRequest.send(null);
-	*/
-	} catch(e) {ss.error(e);}
 };
 
 
