@@ -12,14 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 03/Mar/2010
  *
  *********
  *  File:: system/ready.js
- *  Create ready statuses when having to wait for multiple async 
+ *  Create ready statuses when having to wait for multiple async
  *  operations to finish before executing next step
  *********
  */
@@ -38,39 +38,33 @@ goog.require('ss.helpers');
  * watch or exit. If we need to force initialisation
  * we need to set the second parameter to true
  *
- * @param {string|function} nameId Unique identifier or function that will attach 
+ * @param {string|function} nameId Unique identifier or function that will attach
  *      to our framework's ready event...
  * @param {boolean=} opt_forceInit If we need to force Init
  * @return void
  */
 ss.ready = function(nameId, opt_forceInit)
 {
-    var s = ss, r = s.ready;
-    
     if(goog.isFunction(nameId)) {
-      r.addFunc('main', nameId);
+      ss.ready.addFunc('main', nameId);
       return;
     }
-
-    var nameId = nameId || null;
-
-
 
     opt_forceInit = opt_forceInit || false;
 
     //var newr = new r(nameId);
 
-    var arReady = s.arFindIndex(r.db.allReady, 'nameId', nameId);
+    var arReady = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (0 <= arReady) {
         // already instanciated
 
         if (opt_forceInit) {
             // we will reset the values
-            r.db.allReady[arReady]['nameId'] = nameId;
-            r.db.allReady[arReady].done = false;
-            r.db.allReady[arReady].execOk = true;
-            r.db.allReady[arReady].checks = [];
-            r.db.allReady[arReady].fn = [];
+            ss.ready.db.allReady[arReady]['nameId'] = nameId;
+            ss.ready.db.allReady[arReady].done = false;
+            ss.ready.db.allReady[arReady].execOk = true;
+            ss.ready.db.allReady[arReady].checks = [];
+            ss.ready.db.allReady[arReady].fn = [];
         }
 
         return;
@@ -115,7 +109,7 @@ ss.ready = function(nameId, opt_forceInit)
      * Declare ourselves to static DB
      */
 
-     r.db.allReady.push(readyObj);
+     ss.ready.db.allReady.push(readyObj);
 }; // ss.ready
 
 
@@ -136,8 +130,7 @@ ss.ready.db = {
  */
 ss.ready.isDone = function (nameId)
 {
-    var nId = nameId || null;
-    var arReady = ss.arFind(ss.ready.db.allReady, 'nameId', nId);
+    var arReady = ss.arFind(ss.ready.db.allReady, 'nameId', nameId);
     if (goog.isNull(arReady)) return false;
 
     return arReady.done;
@@ -153,12 +146,11 @@ ss.ready.isDone = function (nameId)
  */
 ss.ready.isDoneCheck = function (nameId, checkId)
 {
-    var g = goog, s = ss, r = s.ready;
-    var arReady = s.arFind(r.db.allReady, 'nameId', nameId);
-    if (g.isNull(arReady)) return false;
+    var arReady = ss.arFind(ss.ready.db.allReady, 'nameId', nameId);
+    if (goog.isNull(arReady)) return false;
     // find the check now
-    var arCheck = s.arFind(arReady.check, 'checkId', checkId);
-    if (g.isNull(arCheck)) return false;
+    var arCheck = ss.arFind(arReady.check, 'checkId', checkId);
+    if (goog.isNull(arCheck)) return false;
     return arCheck.done;
 }; // method ss.ready.isDoneCheck
 
@@ -174,14 +166,12 @@ ss.ready.isDoneCheck = function (nameId, checkId)
  */
 ss.ready.addFunc = function(nameId, fn, opt_delay)
 {
-    var s = ss;
-
     // find index of nameId or if it exists...
-    var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+    var ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
         // not initialised yet, init it...
-        s.ready(nameId);
-        var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+        ss.ready(nameId);
+        ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
         if (-1 == ind) {
             // thats a big oops
             return;
@@ -191,11 +181,11 @@ ss.ready.addFunc = function(nameId, fn, opt_delay)
     var fnObj = {
       fn: fn,
       delay: opt_delay || 0
-    }
-    s.ready.db.allReady[ind].fn.push(fnObj);
+    };
+    ss.ready.db.allReady[ind].fn.push(fnObj);
 
     // if watch is finished then we execute the function right away...
-    if (s.ready.isDone(nameId))
+    if (ss.ready.isDone(nameId))
         fn();
 }; // method ss.ready.addFunc
 
@@ -218,14 +208,12 @@ ss.ready.addFunc = function(nameId, fn, opt_delay)
  */
 ss.ready.addFuncCheck = function(nameId, checkId, fn)
 {
-    var s = ss, g = goog;
-
     // find index of nameId or if it existw...
-    var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+    var ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
         // not initialised yet, init it...
-        s.ready(nameId);
-        var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+        ss.ready(nameId);
+        ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
         if (-1 == ind) {
             // thats a big oops
             return;
@@ -233,11 +221,11 @@ ss.ready.addFuncCheck = function(nameId, checkId, fn)
     }
 
     // assign the ready data object
-    var rdb = s.ready.db.allReady[ind];
+    var rdb = ss.ready.db.allReady[ind];
 
     // now see if we can find this check
-    var arCheck = s.arFind(rdb.check, 'checkId', checkId);
-    if (g.isNull(arCheck)) {
+    var arCheck = ss.arFind(rdb.check, 'checkId', checkId);
+    if (goog.isNull(arCheck)) {
         // no, doesn't exist, create it
         rdb.checks.push({
             'checkId': checkId,
@@ -254,7 +242,7 @@ ss.ready.addFuncCheck = function(nameId, checkId, fn)
     });
 
     // if watch is finished then we execute the function right away...
-    if (s.ready.isDoneCheck(nameId, checkId))
+    if (ss.ready.isDoneCheck(nameId, checkId))
         fn();
 }; // method ss.ready.addFuncCheck
 
@@ -269,20 +257,19 @@ ss.ready.addFuncCheck = function(nameId, checkId, fn)
  */
 ss.ready.addCheck = function(nameId, checkId)
 {
-    var s = ss;
     // find index of nameId or if it exists...
-    var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+    var ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
         // create the main watch first
-        s.ready(nameId);
+        ss.ready(nameId);
         // now look it up again
-        var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+        ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     }
 
-    var readyObj = s.ready.db.allReady[ind];
+    var readyObj = ss.ready.db.allReady[ind];
 
     // check if this checkId is already created
-    var indCheck = s.arFindIndex(readyObj.checks, 'checkId', checkId);
+    var indCheck = ss.arFindIndex(readyObj.checks, 'checkId', checkId);
     if (-1 == indCheck) {
         // yup, not found...
         readyObj.checks.push({
@@ -304,31 +291,29 @@ ss.ready.addCheck = function(nameId, checkId)
  */
 ss.ready.check = function(nameId, checkId, opt_state)
 {
-    var g = goog, s = ss;
-
     var check_state = opt_state || true;
 
     // find index of nameId or if it exists...
-    var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+    var ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
         return false;
     }
     // shortcut assign the ready object
-    var readyObj = s.ready.db.allReady[ind];
+    var readyObj = ss.ready.db.allReady[ind];
 
     // check for check's method execution state and if false assign it
     if (!check_state) readyObj.execOk = false;
 
     // find the check string in our array of checks...
-    var indCheck = s.arFindIndex(readyObj.checks, 'checkId', checkId);
+    var indCheck = ss.arFindIndex(readyObj.checks, 'checkId', checkId);
 
     if (-1 == indCheck) {
         // not found in checks, check if we have no checks left
-        if (s.ready._isChecksComplete(nameId)) {
+        if (ss.ready._isChecksComplete(nameId)) {
             // all is done
             readyObj.done = true; // set Ready Watch's switch
             // run all listeners
-            s.ready._runAll(nameId);
+            ss.ready._runAll(nameId);
         }
         return;
     }
@@ -336,13 +321,13 @@ ss.ready.check = function(nameId, checkId, opt_state)
     // mark the check as done
     readyObj.checks[indCheck].done = true;
     // execute check's listeners (if any)
-    s.ready._runAllChecks(nameId, checkId);
+    ss.ready._runAllChecks(nameId, checkId);
 
     // check if all checks are done
-    if (s.ready._isChecksComplete(nameId)) {
+    if (ss.ready._isChecksComplete(nameId)) {
         readyObj.done = true;
         // run all listeners
-        s.ready._runAll(nameId);
+        ss.ready._runAll(nameId);
     } else {
       // not done
     }
@@ -358,28 +343,27 @@ ss.ready.check = function(nameId, checkId, opt_state)
  */
 ss.ready._isChecksComplete = function (nameId)
 {
-    var g = goog, s = ss;
     // find index of nameId or if it exists...
-    var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+    var ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
         // severe, watch not found
         return false;
     }
 
     // shortcut assign the ready object
-    var readyObj = s.ready.db.allReady[ind];
+    var readyObj = ss.ready.db.allReady[ind];
 
     // check if we have no checks in this warch
     if (0 == readyObj.checks.length) {
         //No checks for this watch (length 0)
-        return false
+        return false;
     }
 
     var allChecksDone = true;
     // now go through all the checks in this ready watch
-    g.array.forEach(readyObj.checks, function (checkObj, index){
+    goog.array.forEach(readyObj.checks, function (checkObj, index){
         if (!checkObj.done) {
-            allChecksDone = false
+            allChecksDone = false;
         }
     });
     return allChecksDone;
@@ -397,20 +381,18 @@ ss.ready._isChecksComplete = function (nameId)
  */
 ss.ready._runAll = function (nameId)
 {
-    var g = goog, s = ss;
-
     // find index of nameId or if it exists...
-    var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+    var ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
         // ready watch was not found!
         return false;
     }
 
-    var readyObj = s.ready.db.allReady[ind];
+    var readyObj = ss.ready.db.allReady[ind];
 
     // go for all checks listeners first
-    g.array.forEach(readyObj.fnCheck, function (fnObj, index){
-        if (!g.isFunction(fnObj.fn)) {
+    goog.array.forEach(readyObj.fnCheck, function (fnObj, index){
+        if (!goog.isFunction(fnObj.fn)) {
           //Listener not a function
         } else {
           fnObj.fn(readyObj.execOk);
@@ -420,9 +402,9 @@ ss.ready._runAll = function (nameId)
     readyObj.fnCheck = new Array();
 
     // now go for all main ready watch listeners
-    g.array.forEach(readyObj.fn, function(fnObj, index) {
+    goog.array.forEach(readyObj.fn, function(fnObj, index) {
         var fn = fnObj.fn;
-        if (!g.isFunction(fn)) {
+        if (!goog.isFunction(fn)) {
           //We found a non function to execute
           return;
         }
@@ -449,21 +431,19 @@ ss.ready._runAll = function (nameId)
  */
 ss.ready._runAllChecks = function (nameId, checkId)
 {
-    var g = goog, s = ss;
-
     // find index of nameId or if it exists...
-    var ind = s.arFindIndex(s.ready.db.allReady, 'nameId', nameId);
+    var ind = ss.arFindIndex(ss.ready.db.allReady, 'nameId', nameId);
     if (-1 == ind) {
         return;
     }
 
-    var readyObj = s.ready.db.allReady[ind];
+    var readyObj = ss.ready.db.allReady[ind];
 
 
     // init array for all check's listeners' ID
     var removeFuncs = new Array();
     // go for all checks' listeners
-    g.array.forEach(readyObj.fnCheck, function (fnObj, index){
+    goog.array.forEach(readyObj.fnCheck, function (fnObj, index){
         if (fnObj.checkId == checkId) {
             // execute the listener
             fnObj.fn(readyObj.execOk);
@@ -472,8 +452,8 @@ ss.ready._runAllChecks = function (nameId, checkId)
         }
     });
     // remove all listeners we executed
-    g.array.forEachRight(removeFuncs, function (fnIndex, index){
-        g.array.removeAt(readyObj.fnCheck, fnIndex);
+    goog.array.forEachRight(removeFuncs, function (fnIndex, index){
+        goog.array.removeAt(readyObj.fnCheck, fnIndex);
     });
 
     // all done

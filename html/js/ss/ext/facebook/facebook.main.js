@@ -398,47 +398,6 @@ ss.fb.loginOpen = function (opt_callback, opt_perms)
 
 }; // function ss.fb.loginOpen
 
-
-
-/**
- * We will attempt to link the logged in current user
- * with his facebook account
- *
- * @param {Function(boolean)=} opt_callback function
- * @return {void}
- */
-ss.fb.linkUser = function(opt_callback)
-{
-  try {
-    var logger = goog.debug.Logger.getLogger('ss.fb.linkUser');
-
-    var callback = opt_callback || function(){};
-
-    if (!ss.isAuthed()) {
-      callback(false);
-      return;
-    }
-
-    // check if user already on facebook
-    if (ss.user.auth.hasExtSource(ss.CONSTS.SOURCES.FB)) {
-      callback(true);
-      return;
-    }
-
-    FB.login(function(response){
-      if (response.session) {
-        //console.debug(response);
-        ss.fb.local.linkUser(callback);
-      } else
-        callback(false);
-    }, {});
-
-
-  } catch(e) {
-    ss.error(e);
-  }
-}; // function ss.fb.linkUser
-
 /**
  * Fires when we have an edge event like fb:like
  *
@@ -550,11 +509,6 @@ ss.fb.getLikeButton = function (url, opt_params, opt_width)
 
 
   return likeUrl + '></fb:like>';
-  return '<fb:like href="' + url + '" width="' + width + '"></fb:like>';
-
-
-
-
 
 }; // function ss.fb.getLikeButton
 
@@ -576,8 +530,8 @@ ss.fb.hasPerm = function (value, callback)
     logger.info('Init for:' + value);
 
     // check if we have this perm cached localy
-    if (goog.isBoolean(db.hasPerms[value])) {
-      callback(db.hasPerms[value]);
+    if (goog.isBoolean(ss.fb.db.hasPerms[value])) {
+      callback(ss.fb.db.hasPerms[value]);
       return;
     }
 
@@ -591,11 +545,11 @@ ss.fb.hasPerm = function (value, callback)
       // we expect 1 or 0 or error... check for '1'
       if ('1' === response) {
         // user has permition, store it
-        db.hasPerms[value] = true;
+        ss.fb.db.hasPerms[value] = true;
         callback(true);
       } else {
         // not
-        db.hasPerms[value] = false;
+        ss.fb.db.hasPerms[value] = false;
         callback(false);
       }
     }

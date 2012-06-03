@@ -29,20 +29,10 @@
  /** @fileoverview Superstartup library bootstrap file */
 
 goog.provide('ss');
-
-
-goog.require('goog.debug');
-goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger');
-goog.require('goog.debug.FancyWindow');
-
 goog.require('ss.debug');
-
 goog.require('ss.metrics');
 goog.require('ss.error');
-
 goog.require('ss.metadata');
-
 goog.require('ss.ajax');
 goog.require('ss.ready');
 goog.require('ss.Events');
@@ -51,11 +41,8 @@ goog.require('ss.conf');
 goog.require('ss.web2');
 goog.require('ss.CONSTS');
 goog.require('ss.helpers');
-
 goog.require('ss.exports');
-
 goog.require('ss.server2js');
-
 goog.require('ss.web.system');
 goog.require('ss.web.cookies');
 goog.require('ss.web.user');
@@ -105,7 +92,7 @@ ss.log = goog.debug.Logger.getLogger;
 ss.init = function ()
 {
     var logger = goog.debug.Logger.getLogger('ss.Init');
-    if (ss.DEBUG) {
+    if (goog.DEBUG) {
       ss.debug.openFancyWin();
     }
     
@@ -158,6 +145,11 @@ ss.webInit = function ()
 
 // inline execution - hooks for server2js
 (function(ss){
+  var newUserEvent = function() {
+    // trigger new user event
+    ss.user.auth.events.runEvent('newUser');      
+  };
+    
   // hook for authed user from server
   ss.server2js.hook('102', ss.user.auth.login, 50);
   
@@ -172,11 +164,6 @@ ss.webInit = function ()
   
   // Write permanent cookie request (first time ever visitor)
   ss.server2js.hook('25', ss.web.cookies.writePermCook);
-  
-  var newUserEvent = function() {
-    // trigger new user event
-    ss.user.auth.events.runEvent('newUser');      
-  };
   
   // wake up the monster
   ss.init();

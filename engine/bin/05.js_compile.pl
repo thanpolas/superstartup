@@ -20,11 +20,26 @@ $binPath = $projectRoot . "/engine/bin";
 $closurelib = $jsroot . "/closure-library";
 $googPath = $jsroot . "/closure-library/closure/goog";
 $externsPath = $binPath . "/externs";
+# Debug file full path
+$debugFile = $jsroot . "/ss/helpers/debug.js";
+$debugTmp = $binPath . "/tmp/d.tmp";
+
 #3rd party apps...
 $asyncPath = $jsroot . "/closure-library/third_party/closure/goog";
 $calcdeps = $jsroot . "/closure-library/closure/bin/calcdeps.py";
 $closurebuilder = $jsroot . "/closure-library/closure/bin/build/closurebuilder.py";
-$closurecompiler = $projectRoot . "/engine/bin/Third-Party/closure_compiler/compiler.jar";
+
+if ($DEBUG) {
+  $closurecompiler = $projectRoot . "/engine/bin/Third-Party/closure_compiler/compiler.jar";
+} else {
+  $closurecompiler = $projectRoot . "/engine/bin/Third-Party/closure_compiler/sscompiler.jar";
+  #prepare debug file
+  $cmdCopy = "cp -f $debugFile $debugTmp";
+  system $cmdCopy;
+  $cmdEcho = 'echo "goog.provide(\'ss.debug\');" > ' . $debugFile;
+  system $cmdEcho;
+}
+
 ######################### CONFIG END ###########################
 
 $cmdBuild = "$closurebuilder ";
@@ -41,6 +56,7 @@ $cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/jquery-1.7.js\"";
 $cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/facebook_javascript_sdk.js\"";
 $cmdCompile .= "  --compiler_flags=\"--externs=$externsPath/json.js\"";
 
+$cmdCompile .= " --compiler_flags=\"--define='goog.DEBUG=false'\"";
 $cmdCompile .= " --compiler_flags=\"--warning_level=verbose\"";
 $cmdCompile .= " --compiler_flags=\"--jscomp_off=fileoverviewTags\"";
 $cmdCompile .= " --compiler_flags=\"--summary_detail_level=3\"";
@@ -51,24 +67,26 @@ if ($DEBUG) {
   $cmdCompile .= " --compiler_flags=\"--source_map_format=V3\"";
   $cmdCompile .= " --compiler_flags=\"--create_source_map=$projectRoot/html/compiled.js.map\"";
   #$cmdCompile .= " --compiler_flags=\"--debug\"";
-  $cmdCompile .= " --compiler_flags=\"--output_wrapper='(function(){%output%}).call(this); \\\n//@ sourceMappingURL=/compiled.js.map'\"";  
+  $cmdCompile .= " --compiler_flags=\"--output_wrapper='(function(){%output%}).call(this); \\\n//@ sourceMappingURL=/compiled.js.map'\"";
 } else {
   $cmdCompile .= " --compiler_flags=\"--output_wrapper='(function(){%output%}).call(this);'\"";
 }
 
 $cmdBuild .= $cmdCompile;
 
-if ($DEBUG) {
+#if ($DEBUG) {
   $cmdBuild .= " > compiler.out";
-} else {
-  $cmdBuild .= " > compiler.out 2>&1";
-}
-
+#} else {
+#  $cmdBuild .= " > compiler.out 2>&1";
+#}
+print $cmdBuild;
 system $cmdBuild;
 
-## Compile with ADVANCED_OPTIMIZATIONS to compiled.js
-## Use -Xmx1024m for giving more memory to java: http://groups.google.com/group/closure-compiler-discuss/browse_thread/thread/522fd9e9a87b9c92?hl=en#
-#$cmdCompile = "$java -Xmx1024m -jar $closurecompiler ";
+
+if (!$DEBUG) {
+  $cmdCopy = "mv $debugTmp $debugFile";
+  system $cmdCopy;
+}
 
 print "JS Compiled. See output in engine/bin/compiler.out\n";
 

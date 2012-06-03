@@ -52,17 +52,12 @@ goog.provide('ss.user.login');
  */
 ss.user.login.submitCallback = function(res, callback)
  {
-    //var lang = c.lang.user;
     var logger = goog.debug.Logger.getLogger('ss.user.login.submitCallback');
-    var genError = 'An error has occured. Please retry';
     logger.info('Init');
 
     try {
         // assign the recieved user data object to local db
         var user = res['user'];
-
-        // initialise our auth
-        ss.user.auth.Init(user, callback);
     } catch(e) {
         ss.error(e);
     }

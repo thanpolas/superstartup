@@ -16,15 +16,20 @@
  *
  *
  *********
- *  File:: main.js
+ *  File:: debug.js
  *
  *********
  *
  */
- 
+
  /** @fileoverview Debug functions and helpers */
- 
+
 goog.provide('ss.debug');
+
+goog.require('goog.debug');
+goog.require('goog.debug.LogManager');
+goog.require('goog.debug.Logger');
+goog.require('goog.debug.FancyWindow');
 
 /**
  * Will popup a debuging funcy window

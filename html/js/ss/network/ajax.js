@@ -42,9 +42,9 @@ goog.provide('ss.ajax');
  */
 ss.ajax = function(url, params)
 {
-  /* @type {Object} params passed */
+  /** @type {Object} params passed */
   this.p = params;
-  /* @type {string} url to post to */
+  /** @type {string} url to post to */
   this.url = url;
   return this;
 };

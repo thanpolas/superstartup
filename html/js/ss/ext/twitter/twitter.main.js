@@ -179,7 +179,7 @@ ss.twit.extractParamFromUri = function(uri, paramName) {
   if (!uri) {
     return;
   }
-  var uri = uri.split('#')[0];  // Remove anchor.
+  uri = uri.split('#')[0];  // Remove hashbang.
   var parts = uri.split('?');  // Check for query params.
   if (parts.length == 1) {
     return;

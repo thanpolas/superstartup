@@ -63,7 +63,7 @@ ss.fb.local.checkFacebookAuth = function (listener)
     a.callback = function(result) {
 
         var user = result['user'];
-        var newuser = resylt['newuser'];
+        var newuser = result['newuser'];
 
         // check if user is valid user object
         if (!ss.user.isUserObject(user)) {

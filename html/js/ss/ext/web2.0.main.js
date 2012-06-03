@@ -127,7 +127,7 @@ ss.web2.db.clear = function ()
 ss.web2.getUserExt = function(userObj, opt_prefferedSource)
 {
   try {
-    var prefSource = opt_prefferedSource || c.CONSTS.SOURCES.FB;
+    var prefSource = opt_prefferedSource || ss.CONSTS.SOURCES.FB;
 
     var u = userObj;
     var extObj = {};

@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 25/May/2011
  *
@@ -99,7 +99,7 @@ ss.user.getNickname = function ()
     return null;
 
   return ss.user.db.user['nickname'];
-}
+};
 
 /**
  * return the user data object
@@ -169,7 +169,6 @@ ss.user.isUserObject = function (user)
  */
 ss.user.getDummyObject = function ()
 {
-  try {
     return {
     'userId' : 0,
     'nickname' : '',
@@ -185,11 +184,4 @@ ss.user.getDummyObject = function ()
         'extProfileImageUrl' : ''
       }
     ]};
-
-  } catch (e) {
-    ss.error(e);
-  }
-
-
-
 };

@@ -127,7 +127,7 @@ ss.Events.prototype.addEventListenerOnce = function (type, listener, opt_this)
       type: type,
       runOnce: true,
       listener: listener,
-      _this: opt_this || g.global
+      _this: opt_this || goog.global
     };
 
     // push to listeners array
