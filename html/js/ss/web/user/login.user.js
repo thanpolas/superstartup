@@ -104,7 +104,7 @@ ss.web.user.login.bindLogin = function()
           logger.info('Facebook library not ready yet, created a listener and we now wait...');
           ss.web.user.db.fbClicked = true;
           // listen for FB auth event...
-          ss.ready.addFunc('fb-auth', function(){
+          ss.ready('fb-auth').addListener(function(){
             ss.web.user.db.fbClicked = false;
             if (!ss.isAuthed()) {
               // call ourselves

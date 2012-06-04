@@ -30,9 +30,9 @@ goog.require('showcase.widget.showObject');
 
 showcase.init = function() {
   try {
-  var log = goog.debug.Logger.getLogger('showcase.init');
+  var logger = goog.debug.Logger.getLogger('showcase.init');
 
-  log.info('Starting...');
+  logger.info('Starting...');
   
   var jCombo = $('#comboBox');
   if (!jCombo.length)

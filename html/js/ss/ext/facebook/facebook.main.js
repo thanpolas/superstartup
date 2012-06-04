@@ -120,12 +120,12 @@ ss.fb.InitWeb = function ()
 
     logger.info('Init');
 
-    ss.ready('fb');
-    ss.ready.addCheck('fb', 'loaded');
+    var fbReady = ss.ready('fb');
+    fbReady.addCheck('fb-loaded');
 
     // create fb-auth check
-    ss.ready('fb-auth');
-    ss.ready.addCheck('fb-auth', 'done');
+    var fbAuth = ss.ready('fb-auth');
+    fbAuth.addCheck('auth-done');
 
 
     // capture FB API Load event
@@ -193,8 +193,8 @@ ss.fb.Init = function ()
     // unlike event
     FB.Event.subscribe('edge.remove', ss.fb.edgeRemove);
 
-    // finish the ready watch, we are loaded
-    ss.ready.check('fb', 'loaded');
+    // finish the ready watch, we are loaded    
+    ss.ready('fb').check('fb-loaded');
 
   } catch(e) {
     ss.error(e);
@@ -229,7 +229,7 @@ ss.fb.getInitialLoginStatus = function (response)
         }
 
         // inform that our FB auth check is done
-        ss.ready.check('fb-auth', 'done');
+        ss.ready('fb-auth').check('auth-done');
       });
       return;
     } else {
@@ -239,7 +239,7 @@ ss.fb.getInitialLoginStatus = function (response)
       ss.web2.collectInitialAuthChecks(ss.CONSTS.SOURCES.FB, false);
 
       // inform that our FB auth check is done
-      ss.ready.check('fb-auth', 'done');
+      ss.ready('fb-auth').check('auth-done');
 
     }
 

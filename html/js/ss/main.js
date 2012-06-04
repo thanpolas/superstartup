@@ -97,20 +97,15 @@ ss.init = function ()
     }
     
     logger.info('Starting...');
-    ss.ready('main');
-    ss.ready.addCheck('main', 'loaded');
+    var main = ss.ready('main');
+    main.addCheck('loaded');
 
     // Initialize web specific operations
     // Auth Ball is here
     ss.webInit();
 
-    // the ready trigger for every other functionality beyond the framework
-    ss.ready('ready');
-    // for now this watch is finished at the end of taglander parse...
-    ss.ready.addCheck('ready', 'alldone');
-
     ss.READY = true;
-    ss.ready.check('main', 'loaded');
+    main.check('loaded');
 
 }; // function ss.Init
 

@@ -19,9 +19,13 @@
  *
  *********
  *  File:: web2.0/web2.0.main.js
- *  main file for social integration libraries (auth/share/etc)
+ *
  *********
  */
+
+ /**
+  * @fileoverview main file for social integration libraries (auth/share/etc)
+  */
 
 
 goog.provide('ss.web2');

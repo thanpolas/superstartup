@@ -52,7 +52,7 @@ ss.web.user.ui.init = function ()
 
 }; // ss.web.user.ui.Init
 // listen for ready event
-ss.ready.addFunc('main', ss.web.user.ui.init);
+ss.ready(ss.web.user.ui.init);
 
 
 
