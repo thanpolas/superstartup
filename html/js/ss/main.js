@@ -25,7 +25,7 @@
  *********
  *
  */
- 
+
  /** @fileoverview Superstartup library bootstrap file */
 
 goog.provide('ss');
@@ -38,7 +38,7 @@ goog.require('ss.ready');
 goog.require('ss.Events');
 goog.require('ss.user');
 goog.require('ss.conf');
-goog.require('ss.web2');
+goog.require('ss.ext.auth.Facebook');
 goog.require('ss.CONSTS');
 goog.require('ss.helpers');
 goog.require('ss.exports');
@@ -67,7 +67,7 @@ ss.ONSERVER = false;
 ss.PREPROD = false;
 
 /**
- * Switch to true when the superstartup library has 
+ * Switch to true when the superstartup library has
  * initialized all and is ready to roll
  * @type {boolean}
  */
@@ -83,7 +83,7 @@ ss.db = {};
 ss.log = goog.debug.Logger.getLogger;
 
 /**
- * The Init function triggers inline as soon as execution
+ * The Init function triggers synchronously as soon as execution
  * reaches this point. Based on our requirement schema, this file
  * is the last to be included.
  *
@@ -95,7 +95,7 @@ ss.init = function ()
     if (goog.DEBUG) {
       ss.debug.openFancyWin();
     }
-    
+
     logger.info('Starting...');
     var main = ss.ready('main');
     main.addCheck('loaded');
@@ -113,53 +113,52 @@ ss.init = function ()
 
 /**
  * The initialiser for web
- * Keep web logic isolated from our library's core for 
+ * Keep web logic isolated from our library's core for
  * easy exclusion when run on other environments
  *
  * @return {void}
  */
-ss.webInit = function () 
+ss.webInit = function ()
 {
   ss.db.URL = window.location.protocol + '//' + window.location.hostname;
 
   // initialize the web2.0 (FB/Twitter)
   // AUTH BALL IS HERE
-  ss.fb.InitWeb();    
+  window.fb = ss.ext.auth.Facebook.getInstance();
   // start init cycle for our twitter lib
-  ss.twit.init();
+  //ss.twit.init();
 
   // start loading twitter's widgets after 500ms
   setTimeout(function(){
     var twString = '<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>';
-    $('body').append(twString);    
-  }, 500);  
-  
+    $('body').append(twString);
+  }, 500);
 
 }; // ss.webInit
 
 
-// inline execution - hooks for server2js
-(function(ss){
+// synchronous execution - hooks for server2js
+(function(){
   var newUserEvent = function() {
     // trigger new user event
-    ss.user.auth.events.runEvent('newUser');      
+    ss.user.auth.events.runEvent('newUser');
   };
-    
+
   // hook for authed user from server
   ss.server2js.hook('102', ss.user.auth.login, 50);
-  
+
   // analytics
   ss.server2js.hook('analytics', ss.metrics.init);
 
   // new user event
   ss.server2js.hook('121', newUserEvent);
-  
+
   // metadata init call
   ss.server2js.hook('metadata', ss.metadata.init);
-  
+
   // Write permanent cookie request (first time ever visitor)
   ss.server2js.hook('25', ss.web.cookies.writePermCook);
-  
+
   // wake up the monster
   ss.init();
-})(ss);
+})();

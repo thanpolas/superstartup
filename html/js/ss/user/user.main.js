@@ -25,9 +25,11 @@
 
 
 goog.provide('ss.user');
+goog.require('ss.user.types');
 goog.require('ss.user.auth');
 goog.require('ss.user.login');
 goog.require('ss.user.pub');
+goog.require('ss.user.Item');
 
 
 /**
@@ -166,22 +168,11 @@ ss.user.isUserObject = function (user)
  * Return an empty dummy user data object
  *
  * @return {object}
+ * @deprecated use user.Item class
  */
 ss.user.getDummyObject = function ()
 {
-    return {
-    'userId' : 0,
-    'nickname' : '',
-    'fullname' : '',
-    'createDate' : '2011-06-11 13:00:23',
-    'hasExtSource' : 1,
-    'extSource' : [
-      {
-        'sourceId' : 0,
-        'extUserId' : 0,
-        'extUrl' : '',
-        'extUsername' : '',
-        'extProfileImageUrl' : ''
-      }
-    ]};
+    return ss.user.types.user;
 };
+
+

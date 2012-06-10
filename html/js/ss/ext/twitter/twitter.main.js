@@ -291,7 +291,6 @@ ss.twit.linkUser = function()
  * NOTE this is very WEB stuff, amend when using for
  * mobile
  *
- * @this {DOM}
  * @return {void}
  */
 ss.twit.loginOpen = function ()

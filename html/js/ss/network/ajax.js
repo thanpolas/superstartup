@@ -36,15 +36,21 @@ goog.provide('ss.ajax');
  * postMethod :: POST, GET - default POST
  *
  * @param {string} url The URL we will contact for connection
- * @param {Object} params the parameters for the AJAX execution
+ * @param {Object=} opt_params the parameters for the AJAX execution
  * @constructor
  * @return {this}
  */
-ss.ajax = function(url, params)
+ss.ajax = function(url, opt_params)
 {
-  /** @type {Object} params passed */
-  this.p = params;
-  /** @type {string} url to post to */
+  /** 
+   * @private
+   * @type {Object} params passed 
+   */
+  this.p = opt_params || {};
+  /** 
+   * @private
+   * @type {string} url to post to 
+   */
   this.url = url;
   return this;
 };
@@ -74,7 +80,10 @@ ss.ajax.prototype.errorCallback = function(){};
  *
  * @return {string}
  */
-ss.ajax.prototype.getError = function(){};
+ss.ajax.prototype.getError = function()
+{
+  return this._errorMsg;
+};
 
 /**
  * @private 

@@ -17,14 +17,14 @@
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 25/May/2011
  *
- *********
- *  File:: user/auth.user.js
- *  Core Auth User file
- *********
  */
 
+/**
+ * @fileoverview Handles user authentication
+ */
 goog.provide('ss.user.auth');
-goog.require('ss.Events');
+
+goog.require('ss.Module');
 
 
 /**
