@@ -91,7 +91,7 @@ showcase.authState = function(state, opt_sourceId, opt_userDataObject)
 };
 
 // subscribe to the auth state master event hook
-ss.user.auth.events.addEventListener('authState', showcase.authState);
+//ss.user.auth.events.addEventListener('authState', showcase.authState);
 
 // When Superstartup lib is ready, trigger our code
 ss.ready(showcase.init);

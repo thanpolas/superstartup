@@ -48,7 +48,7 @@ ss.user.types.extSources;
  * - profileImageUrl: Default profile photo of user from ext auth source
  *
  * @typedef {{
- *   sourceId: (ss.CONSTS.SOURCES),
+ *   sourceId: (ss.user.types.extSourceId),
  *   userId: (number|string),
  *   profileUrl: (string),
  *   username: (string),
@@ -60,7 +60,7 @@ ss.user.types.extSource;
 
 
 /**
- * An authenticated user's data object
+ * An public user's data object
  *
  * @type {Object}
  */
@@ -83,4 +83,17 @@ ss.user.types.user = {
   hasExtSource: false,
   /** @type {Array.<ss.user.types.extSource>} */
   extSource: []
+};
+
+/**
+ * An extension to ss.user.types.user for the currently logged
+ * in user's data object. Contains keys that are only available to 
+ * the owner of this data object
+ * @type {Object}
+ */
+ss.user.types.ownuser = {
+  /** @type {string} */
+  email: '',
+  /** @type {boolean} */
+  verfified: false
 };

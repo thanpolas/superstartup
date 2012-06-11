@@ -37,6 +37,19 @@ ss.ext.auth.PluginInterface = function() {};
 ss.ext.auth.PluginInterface.prototype.sourceId;
 
 /**
+ * @const {boolean} If this plugin needs to follow up authentication 
+ *      with server
+ */
+ss.ext.auth.PluginInterface.prototype.LOCALAUTH;
+
+/**
+ * Used by our instance handlers to know if we have started
+ * an auth crosscheck with local (server)
+ * @type {boolean}
+ */
+ss.ext.auth.PluginModule.prototype.localAuthInit;
+
+/**
  * @protected {boolean} Auth switch
  */
 ss.ext.auth.PluginInterface.prototype._isAuthed;
@@ -49,7 +62,7 @@ ss.ext.auth.PluginInterface.prototype._isAuthed;
 *      comma separate them
 * @return {void}
 */
-ss.ext.auth.PluginInterface.prototype.login = function(opt_callback, opt_perms){};;
+ss.ext.auth.PluginInterface.prototype.login = function(opt_callback, opt_perms){};
 
 /**
 * Perform a logout action

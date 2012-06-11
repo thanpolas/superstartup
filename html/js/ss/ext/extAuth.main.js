@@ -16,11 +16,6 @@
  *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 29/Oct/2010
- *
- *********
- *  File:: web2.0/web2.0.main.js
- *
- *********
  */
 
  /**
@@ -47,9 +42,7 @@ ss.ext.auth.Main = function()
   goog.base(this);
 };
 goog.inherits(ss.ext.auth.Main, ss.Module);
-
 goog.addSingletonGetter(ss.ext.auth.Main);
-
 
 /**
  * Errors thrown by main external auth class.
@@ -57,13 +50,16 @@ goog.addSingletonGetter(ss.ext.auth.Main);
  */
 ss.ext.auth.Error = {
   /**
-   * Error when a method is not supported.
+   * External auth plugin has already registered
    */
-  ALREADY_REGISTERED: 'This ext auth plugin is already registered: '
+  ALREADY_REGISTERED: 'This ext auth plugin is already registered: ',
+  // Instanced passed not an intance of pluginModule
+  WRONG_TYPE: 'Not an instance of ss.ext.auth.PluginModule'  
 };
 
 /**
- * Events that must be implemented by all plugins
+ * Events supported by this class and all ext auth plugins
+ * All plugin events are propagated to this class instance too
  * @enum {string}
  */
 ss.ext.auth.EventType = {
@@ -120,6 +116,11 @@ ss.ext.auth.Main.prototype._extSupportedSources = new ss.Map();
 ss.ext.auth.Main.prototype.addExtSource = function(selfObj)
 {
   this.logger.info('Adding external auth source :' + selfObj.sourceId);
+  
+  // check if plugin is of right type
+  if (!selfObj instanceof ss.ext.auth.PluginModule) {
+    throw Error(ss.ext.auth.Error.WRONG_TYPE);
+  }
   // check if plugin already registered
   if (this._extSupportedSources.get(selfObj.sourceId)) {
     throw Error(ss.ext.auth.Error.ALREADY_REGISTERED + selfObj.sourceId);
@@ -140,7 +141,7 @@ ss.ext.auth.Main.prototype.addExtSource = function(selfObj)
  * Triggers when a plugin has an initial auth check done
  *
  * @private
- * @param {Event} e
+ * @param {goog.events.Event} e
  */
 ss.ext.auth.Main.prototype._initAuthStatus = function(e)
 {
@@ -153,11 +154,13 @@ ss.ext.auth.Main.prototype._initAuthStatus = function(e)
 
   // we are authed with that source! Save it to our map
   this._extAuthedSources.set(e.target.sourceId, true);
+  
+  // check if this auth plugin requires authentication with our server
+  e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);
 
   // check if we were in a not authed state and change that
   if (!this._isExtAuthed) {
     this._isExtAuthed = true;
-    this.dispatchEvent(ss.ext.auth.EventType.INITIALAUTHSTATUS);
   }
 };
 
@@ -165,7 +168,7 @@ ss.ext.auth.Main.prototype._initAuthStatus = function(e)
  * Triggers when a plugin has an auth change event
  *
  * @private
- * @param {Event} e
+ * @param {goog.events.Event} e
  */
 ss.ext.auth.Main.prototype._authChange = function(e)
 {
@@ -180,11 +183,15 @@ ss.ext.auth.Main.prototype._authChange = function(e)
       this.logger.warning('_authChange() BOGUS situation. Received auth event but we already had a record of this source being authed. Double trigger');
       return;
     }
+
     this._extAuthedSources.set(e.target.sourceId, true);
+    
+    // check if this auth plugin requires authentication with our server
+    e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);    
+    
     // check if we were in a not authed state and change that
     if (!this._isExtAuthed) {
       this._isExtAuthed = true;
-      this.dispatchEvent(ss.ext.auth.EventType.AUTHCHANGE);
     }
   } else {
     // got logged out from ext source
@@ -198,75 +205,15 @@ ss.ext.auth.Main.prototype._authChange = function(e)
 
     // check if was last auth source left and we were authed
     if (0 === this._extAuthedSources.getCount() && this._isExtAuthed) {
-      this._isExtAuthed = false;
-      this.dispatchEvent(ss.ext.auth.EventType.AUTHCHANGE);
+      this._isExtAuthed = false;    
     }
   }
-}
-
-/**
- * Triggers when we have an external auth
- *
- * This method only runs if we are not authed, asks server to validate
- * the external authentication source and provide us with a native auth
- * session
- *
- * @private
- * @param {ss.user.types.extSourceId} sourceId
- * @return {void}
- */
-ss.ext.auth.Main.prototype._checkFacebookAuth = function (sourceId)
-{
-  this.logger.info('Init. _checkFacebookAuth(). sourceId :' + sourceId);
-
-  // if authed exit
-  if (ss.isAuthed()) {
-      return;
-  }
-
-
-  // create request
-  var url = '/users/facebook';
-  var a = new ss.ajax(url);
-
-
-  // response from server
-  a.callback = function(result) {
-
-      var user = result['user'];
-      var newuser = result['newuser'];
-
-      // check if user is valid user object
-      if (!ss.user.isUserObject(user)) {
-          listener(false);
-          return; // no need to continue further
-      }
-
-      // user logged in
-      ss.web2.extLogin(ss.CONSTS.SOURCES.FB, user);
-
-      // check if newuser
-      if (newuser) {
-          // open welcome window
-          ss.user.auth.events.runEvent('newUser');
-      }
-
-      listener(true);
-  }; //callback of AJAX
-
-  a.errorCallback = function(errorobj) {
-      logger.warning('Server did not authorize us! msg:' + errorobj.message + ' ::debug::' + errorobj.debugmessage);
-      listener(false);
-  }; // errorCallback of spot request
-
-  //send the query
-  a.send();
-
 };
+
 
 /**
  * We will return one external source data object
- * from the user data obejct provided.
+ * from the user data object provided.
  *
  * Optionaly we may set a preffered source
  *
@@ -367,3 +314,41 @@ ss.ext.auth.Main.prototype._clear = function ()
 
 };
 
+/**
+ * When an external auth source changes state and becomes authenticated
+ * we use this method to inform the server. 
+ * If we are not authed, an authentication is performed localy and a native
+ * auth session is created, propagating from server back to the client
+ *
+ * @protected
+ * @param {ss.user.types.extSourceId} sourceId
+ * @return {void}
+ */
+ss.ext.auth.Main.prototype.verifyExtAuthWithLocal = function (sourceId)
+{
+  if (!ss.conf.auth.ext.performLocalAuth) {
+    return;
+  }
+
+  // get plugin instance
+  var extInst = this._extSupportedSources.get(sourceId);
+  
+  this.logger.info('Init. _verifyExtAuthWithLocal(). sourceId :' + sourceId + ' Local auth started:' + extInst.localAuthInit);  
+
+  //check if we have already started auth with server
+  if (extInst.localAuthInit) {
+    return;
+  }  
+  extInst.localAuthInit = true;
+
+  // create request
+  var a = new ss.ajax(ss.conf.auth.ext.authUrl);
+  a.addData(ss.conf.auth.ext.sourceId, sourceId);
+
+  // response from server
+  a.callback = s; //callback of AJAX
+
+  //send the query
+  a.send();
+
+};

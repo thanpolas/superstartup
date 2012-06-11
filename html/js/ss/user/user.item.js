@@ -27,6 +27,7 @@
 goog.provide('ss.user.Item');
 
 goog.require('ss.DynamicMap');
+goog.require('ss.user.types');
 
 /**
  * A single user data object item, can be used both for 
@@ -40,7 +41,7 @@ goog.require('ss.DynamicMap');
  */
 ss.user.Item = function(opt_user)
 {
-  goog.base(opt_user || ss.user.types.user);
+  ss.DynamicMap.call(this, opt_user || ss.user.types.user);
 };
 goog.inherits(ss.user.Item, ss.DynamicMap);
 
@@ -53,6 +54,5 @@ ss.user.Item.prototype.disposeInternal = function()
 
   // empty our data object
   this.clear();
-
 };
 

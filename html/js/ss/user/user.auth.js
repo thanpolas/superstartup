@@ -22,29 +22,108 @@
 /**
  * @fileoverview Handles user authentication
  */
-goog.provide('ss.user.auth');
+goog.provide('ss.user.Auth');
+goog.provide('ss.user.Auth.EventType');
 
 goog.require('ss.Module');
-
+goog.require('ss.user.Item');
+goog.require('ss.ext.auth.Main');
+goog.require('ss.ext.auth.EventType');
+goog.require('ss.user.types');
 
 /**
- * The ss auth events. Everything about authentication is handled from
- * here.
+ * User authentication class
  *
- * Valid events are, along with their parameters:
- *
- * authState (state{boolean}, opt_sourceId{ss.CONSTS.SOURCES=}, opt_userDataObject{object=})
- *      Whenever auth state changes, this event is triggered. facebook but
- *      state {boolean} :: Tells us if authed or not
- *      opt_sourceId :: The auth source in case of authed
- *      opt_userDataObjet :: In case of auth, the user data object
- * newUser ()
- *      If the authed user is a new user
- * initAuthState (state{boolean})
- *      Fired when initial check with external auth sources has finished.
- *
+ * @constructor
+ * @extends {ss.Module}
  */
-ss.user.auth.events = new ss.Events();
+ss.user.Auth = function()
+{
+  goog.base();
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this._isAuthed = false;
+
+  /**
+   * The user data object
+   * @type {ss.user.Item}
+   * @private
+   */
+  this._user = new ss.user.Item();
+  // extend our data object with the own user key/value pairs
+  this._user.addAll(ss.user.types.ownuser);
+
+  /**
+   * The external auth main class
+   * @type {ss.ext.auth.Main}
+   * @private
+   */
+  this._ext = ss.ext.auth.Main.getInstance();
+  // Add listeners to ext auth events
+  this._ext.addEventListener(ss.ext.auth.EventType.INITIALAUTHSTATUS, this._extInitAuth, false, this);
+  this._ext.addEventListener(ss.ext.auth.EventType.AUTHCHANGE, this._extAuthChange, false, this);
+};
+goog.inherits(ss.user.Auth, ss.Module);
+goog.addSingletonGetter(ss.user.Auth);
+
+/**
+ * Events supported by this class
+ * @enum {string}
+ */
+ss.user.Auth.EventType = {
+  // Triggers whenever we have an auth change event
+  // (from not authed to authed and vice verca)
+  AUTHCHANGE: 'authChange',
+  // Triggers if authed user is new, first time signup
+  NEWUSER: 'newUser'
+};
+
+/**
+ * A logger to help debugging
+ * @type {goog.debug.Logger}
+ * @private
+ */
+ss.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ss.user.Auth');
+
+/**
+ * Listener for external (FB, TW ...) initial auth event
+ *
+ * @private
+ * @param {goog.events.Event} e
+ */
+ss.user.Auth.prototype._extInitAuth = function(e)
+{
+  this.logger.info('_extInitAuth(). e:' + goog.debug.expose(e));
+  goog.global.ee = e;
+  
+  if (this._isAuthed) {
+    return;
+  }
+  this._isAuthed = true;
+  this.dispatchEvent(ss.user.Auth.EventType.AUTHCHANGE);
+};
+
+/**
+ * Listener for external (FB, TW ...) initial auth event
+ *
+ * @private
+ * @param {goog.events.Event} e
+ */
+ss.user.Auth.prototype._extAuthChange = function(e)
+{
+  // nothing changed (!)
+  if (this._isAuthed == this._ext.isAuthed()) {
+    return;
+  }
+
+  this._isAuthed = this._ext.isAuthed();
+  this.dispatchEvent(ss.user.Auth.EventType.AUTHCHANGE);
+};
+
+
 
 /**
  * Perform a user login.
@@ -65,15 +144,15 @@ ss.user.auth.events = new ss.Events();
  * @param {ss.CONSTS.SOURCES=} sourceId the source of authentication, default WEB
  * @return {void}
  */
-ss.user.auth.login = function(user, opt_cb, opt_sourceId)
+ss.user.Auth.prototype.login = function(user, opt_cb, opt_sourceId)
  {
    try {
     //shortcut assign
-    var logger = goog.debug.Logger.getLogger('ss.user.auth.login');
+    var logger = goog.debug.Logger.getLogger('ss.user.Auth.prototype.login');
     var genError = 'An error has occured. Please retry';
 
     logger.info('Init. authed:' + ss.user.db.isAuthed);
-    
+
     // set default values
     var cb = opt_cb || function(){};
     var sourceId = opt_sourceId || ss.CONSTS.SOURCES.WEB;
@@ -99,7 +178,7 @@ ss.user.auth.login = function(user, opt_cb, opt_sourceId)
     // turn on authed switch
     ss.user.db.isAuthed = true;
 
-    ss.user.auth.events.runEvent('authState', true, sourceId, user);
+    ss.user.Auth.prototype.events.runEvent('authState', true, sourceId, user);
 
     // notify metrics
     ss.metrics.userAuth(user);
@@ -111,59 +190,27 @@ ss.user.auth.login = function(user, opt_cb, opt_sourceId)
       ss.error(e);
   }
 };
-// method ss.user.auth.loginManual
 
 /**
  * Tells us if user is authed
  *
- * @return boolean
+ * @return {boolean}
  */
-ss.user.auth.isAuthed = function()
+ss.user.Auth.prototype.isAuthed = function()
  {
-    return ss.user.db.isAuthed;
+    return this._isAuthed;
 };
-// method ss.user.auth.isAuthed
+// method ss.user.Auth.prototype.isAuthed
 
 /**
  * Tells us if user if verified
  *
- * @return boolean
- */
-ss.user.auth.isVerified = function()
- {
-    return ss.user.db.user.verified;
-};
-// method ss.user.auth.isVerified
-/**
- * Tells us if the user has perm login credentials
- * stored
- *
  * @return {boolean}
  */
-ss.user.auth.isPerm = function()
+ss.user.Auth.prototype.isVerified = function()
 {
-    return ss.user.db.permLogin;
+    return this._isAuthed && this._user.get('verified');
 };
-
-/**
- * Returns the permanent login server cookie object
- *
- * permCook Object schema:
-     token = "fdaabfc8d47286424445d10b9213ae608f8d072e0b97d3175e46802fac16fe16"
-     uid = "babbos"
-     timeset = 1284027551
-     permId = 50
-     duration = 1318587551
-     cookieDomain = ".ss.local"
-     cookieName = "cookie_perm"
- *
- * @return {string}
- */
-ss.user.auth.getPerm = function()
- {
-    return ss.user.db.permCook;
-};
-
 
 /**
  * Execute when we have an authentication event
@@ -175,10 +222,10 @@ ss.user.auth.getPerm = function()
  * @param {object} user ss user data object verified
  * @return {void}
  */
-ss.user.auth.extAuth = function(sourceId, user)
+ss.user.Auth.prototype.extAuth = function(sourceId, user)
  {
-    try { 
-        var logger = goog.debug.Logger.getLogger('ss.user.auth.extAuth');
+    try {
+        var logger = goog.debug.Logger.getLogger('ss.user.Auth.prototype.extAuth');
 
         logger.info('sourceId:' + sourceId + ' authed:' + ss.isAuthed());
 
@@ -187,13 +234,13 @@ ss.user.auth.extAuth = function(sourceId, user)
           return;
 
         // not authed, start auth
-        ss.user.auth.login(user, function(){}, sourceId);
+        ss.user.Auth.prototype.login(user, function(){}, sourceId);
 
     } catch(e) {
         ss.error(e);
     }
 };
-// function ss.user.auth.extAuth
+// function ss.user.Auth.prototype.extAuth
 
 /**
  * Lets us know if currently logged in user
@@ -203,7 +250,7 @@ ss.user.auth.extAuth = function(sourceId, user)
  * @param {ss.CONSTS.SOURCES} sourceId
  * @return {boolean}
  */
-ss.user.auth.hasExtSource = function(sourceId)
+ss.user.Auth.prototype.hasExtSource = function(sourceId)
  {
     try {
         if (!ss.isAuthed())
@@ -228,7 +275,7 @@ ss.user.auth.hasExtSource = function(sourceId)
         ss.error(e);
     }
 };
-// function ss.user.auth.hasFacebook
+// function ss.user.Auth.prototype.hasFacebook
 
 
 /**
@@ -237,7 +284,7 @@ ss.user.auth.hasExtSource = function(sourceId)
  * @param {ss.CONSTS.SOURCES.FB} sourceId
  * @return {string|null} null if error / not found
  */
-ss.user.auth.getExtName = function(sourceId)
+ss.user.Auth.prototype.getExtName = function(sourceId)
  {
 
     try {
@@ -267,3 +314,7 @@ ss.user.auth.getExtName = function(sourceId)
         ss.error(e);
     }
 };
+
+
+
+

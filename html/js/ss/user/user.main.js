@@ -26,7 +26,7 @@
 
 goog.provide('ss.user');
 goog.require('ss.user.types');
-goog.require('ss.user.auth');
+goog.require('ss.user.Auth');
 goog.require('ss.user.login');
 goog.require('ss.user.pub');
 goog.require('ss.user.Item');

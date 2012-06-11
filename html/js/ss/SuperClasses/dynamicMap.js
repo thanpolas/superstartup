@@ -26,6 +26,7 @@ goog.provide('ss.DynamicMap');
 
 goog.require('ss.Map');
 goog.require('goog.events.EventTarget');
+goog.require('goog.object');
 
 /**
  * Class for Hash Map datastructure.
@@ -49,7 +50,7 @@ ss.DynamicMap = function(opt_map, var_args) {
   this._canDispatch = true;
 };
 goog.inherits(ss.DynamicMap, goog.structs.Map);
-goog.mixin(ss.DynamicMap.prototype, goog.events.EventTarget.prototype);
+goog.object.extend(ss.DynamicMap.prototype, goog.events.EventTarget.prototype);
 
 /**
  * Events triggered by the Dynamic Map

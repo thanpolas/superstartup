@@ -41,13 +41,23 @@ goog.require('ss.ext.auth.Main');
 ss.ext.auth.Facebook = function()
 {
   goog.base(this);
+  
+  /** @const {boolean} */
+  this.LOCALAUTH = true;
+
+  /**
+   * @type {number?}
+   * @private
+   */
+  this._appId;
 
   // start async loading of FB JS API
   this._loadExtAPI();
 
   // register ourselves to main external auth class
-  var extMain = ss.ext.auth.Main.getInstance();
-  extMain.addExtSource(this);
+  this._extMain.addExtSource(this);
+
+
 };
 goog.inherits(ss.ext.auth.Facebook, ss.ext.auth.PluginModule);
 goog.addSingletonGetter(ss.ext.auth.Facebook);
@@ -79,11 +89,6 @@ ss.ext.auth.Facebook.prototype._FBGotResponce = false;
 ss.ext.auth.Facebook.prototype.sourceId = 'Facebook';
 
 /**
- * @private {boolean} Auth switch
- */
-ss.ext.auth.Facebook.prototype._isAuthed = false;
-
-/**
  * Start initial authentication checks
  * When a definitive result is produced, dispatch the INITIALAUTHSTATUS
  * event
@@ -92,7 +97,7 @@ ss.ext.auth.Facebook.prototype._isAuthed = false;
 ss.ext.auth.Facebook.prototype.initAuthCheck = function()
 {
   this.logger.info('Init initAuthCheck(). FB JS API loaded:' + this._FBAPILoaded);
-  
+
   if (!this._FBAPILoaded) {
     // API not loaded yet, listen for event and exit
     this.addEventListener(ss.ext.auth.Facebook.EventType.JSAPILOADED, this.initAuthCheck, false, this);
@@ -112,13 +117,12 @@ ss.ext.auth.Facebook.prototype.initAuthCheck = function()
 ss.ext.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
 {
   this.logger.info('Init _gotInitialAuthStatus()');
-  
-  var isAuthed = this._isAuthedFromResponse(response);
-  
-  this._FBGotResponce = true;
-  
-  this.dispatchEvent(ss.ext.auth.EventType.INITIALAUTHSTATUS);
 
+  this._isAuthedFromResponse(response);
+
+  this._FBGotResponce = true;
+
+  this.dispatchEvent(ss.ext.auth.EventType.INITIALAUTHSTATUS);
 };
 
 /**
@@ -130,7 +134,7 @@ ss.ext.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
  */
 ss.ext.auth.Facebook.prototype._getAppId = function ()
 {
-  return ss.conf.fb.app_id;
+  return this._appId || (this._appId = ss.config.get('ext.fb.app_id'));
 };
 
 /**
@@ -175,7 +179,7 @@ ss.ext.auth.Facebook.prototype._extAPIloaded = function ()
 {
   this.logger.info('FB JS API Loaded');
   this._FBAPILoaded = true;
-  this._FBinit();  
+  this._FBinit();
   // dispatch fb init first, then js api loaded event
   this.dispatchEvent(ss.ext.auth.Facebook.EventType.JSAPILOADED);
 
@@ -184,7 +188,7 @@ ss.ext.auth.Facebook.prototype._extAPIloaded = function ()
 /**
  * Fires when facebook API is ready and loaded
  *
- * We initialize the FB API and register event listeners 
+ * We initialize the FB API and register event listeners
  * to FB events related to authentication
  *
  * @private
@@ -192,7 +196,7 @@ ss.ext.auth.Facebook.prototype._extAPIloaded = function ()
  */
 ss.ext.auth.Facebook.prototype._FBinit = function ()
 {
-  try {
+  this.logger.info('Init _FBinit(). FB appId:' + this._getAppId());
     FB.init({
       'appId'  : this._getAppId(),
       'status' : true, // check login status
@@ -204,9 +208,6 @@ ss.ext.auth.Facebook.prototype._FBinit = function ()
     // catch session change events
     FB.Event.subscribe('auth.sessionChange', this._sessionChange);
 
-  } catch(e) {
-    ss.error(e);
-  }
 };
 
 /**
@@ -219,7 +220,7 @@ ss.ext.auth.Facebook.prototype._FBinit = function ()
 ss.ext.auth.Facebook.prototype._sessionChange = function (response)
 {
   this.logger.info('Init _sessionChange()');
-  this._isAuthedFromResponse(response);  
+  this._isAuthedFromResponse(response);
     /**
      * response expose:
      *
@@ -255,7 +256,7 @@ ss.ext.auth.Facebook.prototype.login = function(opt_callback, opt_perms)
   var callback = opt_callback || function (){};
 
   var paramObj = {
-    perms: opt_perms || ss.conf.fb.permitions
+    perms: opt_perms || ss.config.get('ext.fb.permitions')
   };
 
   FB.login(goog.bind(this._loginListener, this, callback), paramObj);
@@ -299,7 +300,7 @@ ss.ext.auth.Facebook.prototype._isAuthedFromResponse = function(response)
   // check if the response received differs from our stored state
   if (isAuthed != this._isAuthed) {
     this._isAuthed = isAuthed;
-    // only dispatch AUTHCHANGE event AFTER we got initial auth response 
+    // only dispatch AUTHCHANGE event AFTER we got initial auth response
     this._FBGotResponce && this.dispatchEvent(ss.ext.auth.EventType.AUTHCHANGE);
   }
 

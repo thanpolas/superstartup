@@ -38,6 +38,7 @@ goog.require('ss.ready');
 goog.require('ss.Events');
 goog.require('ss.user');
 goog.require('ss.conf');
+goog.require('ss.Config');
 goog.require('ss.ext.auth.Facebook');
 goog.require('ss.CONSTS');
 goog.require('ss.helpers');
@@ -74,15 +75,6 @@ ss.PREPROD = false;
 ss.READY = false;
 
 /**
- * Global db (hash of values)
- * @type {Object}
- */
-ss.db = {};
-
-/** @type {goog.debug.Logger.getLogger} shortcut assign */
-ss.log = goog.debug.Logger.getLogger;
-
-/**
  * The Init function triggers synchronously as soon as execution
  * reaches this point. Based on our requirement schema, this file
  * is the last to be included.
@@ -99,6 +91,10 @@ ss.init = function ()
     logger.info('Starting...');
     var main = ss.ready('main');
     main.addCheck('loaded');
+    
+    // init the Config class
+    ss.config = new ss.Config.getInstance();
+    ss.config.addRaw(ss.conf);
 
     // Initialize web specific operations
     // Auth Ball is here
@@ -120,7 +116,9 @@ ss.init = function ()
  */
 ss.webInit = function ()
 {
-  ss.db.URL = window.location.protocol + '//' + window.location.hostname;
+  //ss.db.URL = window.location.protocol + '//' + window.location.hostname;
+
+  window.UAuth = ss.user.Auth.getInstance();
 
   // initialize the web2.0 (FB/Twitter)
   // AUTH BALL IS HERE
@@ -145,7 +143,7 @@ ss.webInit = function ()
   };
 
   // hook for authed user from server
-  ss.server2js.hook('102', ss.user.auth.login, 50);
+  //ss.server2js.hook('102', ss.user.auth.login, 50);
 
   // analytics
   ss.server2js.hook('analytics', ss.metrics.init);
