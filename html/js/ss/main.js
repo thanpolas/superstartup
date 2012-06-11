@@ -40,7 +40,6 @@ goog.require('ss.user');
 goog.require('ss.conf');
 goog.require('ss.Config');
 goog.require('ss.ext.auth.Facebook');
-goog.require('ss.CONSTS');
 goog.require('ss.helpers');
 goog.require('ss.exports');
 goog.require('ss.server2js');
