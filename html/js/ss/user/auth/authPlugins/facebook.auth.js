@@ -45,9 +45,6 @@ ss.user.auth.Facebook = function()
   
   /** @const {boolean} */
   this.LOCALAUTH = true;
-  
-  /** @type {ss.user.Auth} The user Auth class singleton instance */
-  this._auth = ss.user.Auth.getInstance();
 
   /**
    * @type {number?}
@@ -144,7 +141,7 @@ ss.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
  */
 ss.user.auth.Facebook.prototype._getAppId = function ()
 {
-  return this._appId || (this._appId = ss.conf.ext.fb.app_id);
+  return this._appId || (this._appId = ss.conf.auth.ext.fb.app_id);
 };
 
 /**
@@ -266,7 +263,7 @@ ss.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms)
   var callback = opt_callback || function (){};
 
   var paramObj = {
-    perms: opt_perms || ss.conf.ext.fb.permissions
+    perms: opt_perms || ss.conf.auth.ext.fb.permissions
   };
 
   FB.login(goog.bind(this._loginListener, this, callback), paramObj);
@@ -335,15 +332,6 @@ ss.user.auth.Facebook.prototype.logout = function()
   FB.logout(function(response) {
     this.logger.info('Logout callback. Deep expose of response:' + goog.debug.deepExpose(response, false, true));
   });
-};
-
-/**
- * Tells us if user is authenticated with service
- * @return {boolean}
- */
-ss.user.auth.Facebook.prototype.isAuthed = function()
-{
-  return this._isAuthed;
 };
 
 /**

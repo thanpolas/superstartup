@@ -38,9 +38,9 @@ ss.user.auth.PluginModule = function() {
    * @private
    * @type {ss.user.Auth}
    */
-  this._Auth = ss.user.Auth.getInstance();
+  this._auth = ss.user.Auth.getInstance();
   // set auth main as the parent event target
-  this.setParentEventTarget(this._Auth);
+  this.setParentEventTarget(this._auth);
   
 };
 goog.inherits(ss.user.auth.PluginModule, ss.Module);
@@ -58,4 +58,11 @@ ss.user.auth.PluginModule.prototype._isAuthed = false;
  */
 ss.user.auth.PluginModule.prototype.localAuthInit = false;
 
-
+/**
+ * Current user is authenticated with (ext auth source) service
+ * @return {boolean}
+ */
+ss.user.auth.PluginModule.prototype.isAuthed = function()
+{
+  return this._isAuthed;
+};

@@ -63,10 +63,18 @@ ss.conf.auth.ext = {
   localAuthSourceId: 'sourceId'
 };
 
-/** @type {Object} Facebook */
-ss.conf.ext.fb = {
+/** @type {Object} Facebook auth plugin */
+ss.conf.auth.ext.fb = {
   app_id: '186392014808053',
   permissions: 'email,publish_stream'  
+};
+
+/** @type {Object} Twitter auth plugin */
+ss.conf.auth.ext.twttr = {
+  loginUrl: '/users/twitter',
+  loginLinkAccountParams: '?link=1', // use when user wants to link account not login
+  twttrPoll: null,
+  target: null  
 };
 
 /**
