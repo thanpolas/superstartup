@@ -23,12 +23,11 @@
  * @fileoverview Handles user authentication
  */
 goog.provide('ss.user.Auth');
-goog.provide('ss.user.Auth.EventType');
+goog.provide('ss.user.auth.EventType');
+goog.provide('ss.user.auth.Error');
 
 goog.require('ss.Module');
-goog.require('ss.user.Item');
-goog.require('ss.ext.auth.Main');
-goog.require('ss.ext.auth.EventType');
+goog.require('ss.DynamicMap');
 goog.require('ss.user.types');
 
 /**
@@ -39,7 +38,7 @@ goog.require('ss.user.types');
  */
 ss.user.Auth = function()
 {
-  goog.base();
+  goog.base(this);
 
   /**
    * @type {boolean}
@@ -49,34 +48,47 @@ ss.user.Auth = function()
 
   /**
    * The user data object
-   * @type {ss.user.Item}
+   * @type {ss.DynamicMap.<ss.user.types.user>}
    * @private
    */
-  this._user = new ss.user.Item();
+  this._user = new ss.DynamicMap(ss.user.types.user);
   // extend our data object with the own user key/value pairs
   this._user.addAll(ss.user.types.ownuser);
 
-  /**
-   * The external auth main class
-   * @type {ss.ext.auth.Main}
-   * @private
-   */
-  this._ext = ss.ext.auth.Main.getInstance();
-  // Add listeners to ext auth events
-  this._ext.addEventListener(ss.ext.auth.EventType.INITIALAUTHSTATUS, this._extInitAuth, false, this);
-  this._ext.addEventListener(ss.ext.auth.EventType.AUTHCHANGE, this._extAuthChange, false, this);
 };
 goog.inherits(ss.user.Auth, ss.Module);
 goog.addSingletonGetter(ss.user.Auth);
 
+
 /**
- * Events supported by this class
+ * Errors thrown by main external auth class.
  * @enum {string}
  */
-ss.user.Auth.EventType = {
-  // Triggers whenever we have an auth change event
+ss.user.auth.Error = {
+  /**
+   * External auth plugin has already registered
+   */
+  ALREADY_REGISTERED: 'This ext auth plugin is already registered: ',
+  // Instanced passed not an intance of pluginModule
+  WRONG_TYPE: 'Not an instance of ss.ext.auth.PluginModule'
+};
+
+
+/**
+ * Events supported for the user auth module
+ * @enum {string}
+ */
+ss.user.auth.EventType = {
+  // An external auth source has an auth change event
   // (from not authed to authed and vice verca)
-  AUTHCHANGE: 'authChange',
+  EXTAUTHCHANGE: 'extAuthChange',
+  // We have a global auth change event
+  // (from not authed to authed and vice verca)
+  // use this eventype for authoritative changes
+  AUTHCHANGE: 'authChange',  
+  // Trigger this event as soon as we can resolve
+  // the auth status from an ext source
+  INITIALAUTHSTATUS: 'initialAuthStatus',
   // Triggers if authed user is new, first time signup
   NEWUSER: 'newUser'
 };
@@ -89,118 +101,221 @@ ss.user.Auth.EventType = {
 ss.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ss.user.Auth');
 
 /**
- * Listener for external (FB, TW ...) initial auth event
- *
+ * This var contains an array of extSource ID
+ * values, indicating that we are authed on these
+ * external sources
  * @private
- * @param {goog.events.Event} e
+ * @type {goog.structs.Map.<ss.user.types.extSourceId, boolean>} bool is always true
  */
-ss.user.Auth.prototype._extInitAuth = function(e)
-{
-  this.logger.info('_extInitAuth(). e:' + goog.debug.expose(e));
-  goog.global.ee = e;
-  
-  if (this._isAuthed) {
-    return;
-  }
-  this._isAuthed = true;
-  this.dispatchEvent(ss.user.Auth.EventType.AUTHCHANGE);
-};
+ss.user.Auth.prototype._extAuthedSources = new ss.Map();
 
 /**
- * Listener for external (FB, TW ...) initial auth event
- *
+ * This var contains a map of external sources.
+ * The external Sources IDs will be used as keys and the
+ * instanciations of the ext auth plugins as values
  * @private
- * @param {goog.events.Event} e
+ * @type {goog.structs.Map.<ss.user.types.extSourceId, Object>}
  */
-ss.user.Auth.prototype._extAuthChange = function(e)
-{
-  // nothing changed (!)
-  if (this._isAuthed == this._ext.isAuthed()) {
-    return;
-  }
-
-  this._isAuthed = this._ext.isAuthed();
-  this.dispatchEvent(ss.user.Auth.EventType.AUTHCHANGE);
-};
-
-
+ss.user.Auth.prototype._extSupportedSources = new ss.Map();
 
 /**
- * Perform a user login.
- * We call this function after we have cleared with the authentication
- * procedures.
+ * Registers an external authentication plugin.
  *
- * We need a user data object to be provided
+ * Right after registration, we start the initial auth check
+ * for this source
  *
- * Your callback fn will be executed as:
- * callback(status, opt_error_msg)
- * status is boolean
- * if false, we get error msg as well for user
- *
- *
- *
- * @param {object} user
- * @param {Function(boolean, string=)=} cb callback function when auth finishes
- * @param {ss.CONSTS.SOURCES=} sourceId the source of authentication, default WEB
+ * @param {!Object} selfObj the instance of the ext auth plugin
  * @return {void}
  */
-ss.user.Auth.prototype.login = function(user, opt_cb, opt_sourceId)
- {
-   try {
-    //shortcut assign
-    var logger = goog.debug.Logger.getLogger('ss.user.Auth.prototype.login');
-    var genError = 'An error has occured. Please retry';
+ss.user.Auth.prototype.addExtSource = function(selfObj)
+{
+  this.logger.info('Adding auth source:' + selfObj.sourceId);
 
-    logger.info('Init. authed:' + ss.user.db.isAuthed);
+  // check if plugin is of right type
+  if (!selfObj instanceof ss.user.auth.PluginModule) {
+    throw Error(ss.user.auth.Error.WRONG_TYPE);
+  }
+  // check if plugin already registered
+  if (this._extSupportedSources.get(selfObj.sourceId)) {
+    throw Error(ss.user.auth.Error.ALREADY_REGISTERED + selfObj.sourceId);
+  }
 
-    // set default values
-    var cb = opt_cb || function(){};
-    var sourceId = opt_sourceId || ss.CONSTS.SOURCES.WEB;
+  // add the new plugin to our map
+  this._extSupportedSources.set(selfObj.sourceId, selfObj);
 
-    if (ss.user.db.isAuthed) {
-      cb(true);
+  // event listeners
+  selfObj.addEventListener(ss.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
+  selfObj.addEventListener(ss.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
+
+  // initialize the authentication process for this plugin
+  selfObj.initAuthCheck();
+};
+
+
+/**
+ * Listener for external (FB, TW ...) initial auth event
+ *
+ * @private
+ * @param {goog.events.Event} e
+ */
+ss.user.Auth.prototype._initAuthStatus = function(e)
+{
+  this.logger.info('init Auth status dispatched From:' + e.target.sourceId + ' Source authed:' + e.target.isAuthed());
+
+  // if not authed no need to go further
+  if (!e.target.isAuthed()) {
+    return;
+  }
+
+  // we are authed with that source! Save it to our map
+  this._extAuthedSources.set(e.target.sourceId, true);
+
+  // check if this auth plugin requires authentication with our server
+  e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);
+
+  // check if we were in a not authed state and change that
+  if (!this._isAuthed && !ss.conf.auth.performLocalAuth) {
+    this._doAuth(true);
+  }
+};
+
+/**
+ * Listener for external (FB, TW ...) initial auth event
+ *
+ * @private
+ * @param {goog.events.Event} e
+ */
+ss.user.Auth.prototype._authChange = function(e)
+{
+  this.logger.info('Auth CHANGE dispatched from:' + e.target.sourceId + ' Authed:' + e.target.isAuthed());
+
+  // check if in our authed map
+  var inAuthMap = this._extAuthedSources.get(e.target.sourceId);
+
+  if (e.target.isAuthed()) {
+    // If authed and we already have it in map then it's a double trigger, ignore
+    if (inAuthMap) {
+      this.logger.warning('_authChange() BOGUS situation. Received auth event but we already had a record of this source being authed. Double trigger');
       return;
     }
 
-    // assign the recieved user data object to local db
-    ss.user.db.user = user;
+    this._extAuthedSources.set(e.target.sourceId, true);
 
-    // validate it
-    if (!ss.user.isUserObject(ss.user.db.user)) {
-        logger.warning('User object provided is not valid:' + goog.debug.expose(user));
-        cb(false, genError);
-        return;
+    // check if this auth plugin requires authentication with our server
+    e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);
+
+    // check if we were in a not authed state and change that
+    if (!this._isAuthed && !ss.conf.auth.performLocalAuth) {
+      this._doAuth(true);
+    }
+  } else {
+    // got logged out from ext source
+    if (!inAuthMap) {
+      this.logger.warning('_authChange() BOGUS situation. Received de-auth event but had no record of being authed');
+      return;
     }
 
-    // provide new metadata object to our metadata facility
-    ss.metadata.init(user['metadataRoot']);
+    // remove from map
+    this._extAuthedSources.remove(e.target.sourceId);
 
-    // turn on authed switch
-    ss.user.db.isAuthed = true;
-
-    ss.user.Auth.prototype.events.runEvent('authState', true, sourceId, user);
-
-    // notify metrics
-    ss.metrics.userAuth(user);
-
-    cb(true);
-
-    logger.info('Finished');
-  } catch(e) {
-      ss.error(e);
+    // check if was last auth source left and we were authed
+    if (0 === this._extAuthedSources.getCount() && this._isAuthed) {
+      this._doAuth(false);
+    }
   }
 };
 
 /**
- * Tells us if user is authed
+ * When an external auth source changes state and becomes authenticated
+ * we use this method to inform the server.
+ * If we are not authed, an authentication is performed localy and a native
+ * auth session is created, propagating from server back to the client
+ *
+ * @protected
+ * @param {ss.user.types.extSourceId} sourceId
+ * @return {void}
+ */
+ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
+{
+  if (!ss.conf.auth.performLocalAuth) {
+    return;
+  }
+
+  // get plugin instance
+  var extInst = this._extSupportedSources.get(sourceId);
+
+  this.logger.info('Init. _verifyExtAuthWithLocal(). sourceId :' + sourceId + ' Local auth started:' + extInst.localAuthInit);
+
+  //check if we have already started auth with server
+  if (extInst.localAuthInit) {
+    return;
+  }
+  extInst.localAuthInit = true;
+
+  // create request
+  var a = new ss.ajax(ss.conf.auth.ext.authUrl);
+  a.addData(ss.conf.auth.ext.sourceId, sourceId);
+
+  // response from server
+  a.callback = goog.bind(this._serverAuthResponse, this); //callback of AJAX
+
+  //send the query
+  a.send();
+};
+
+/**
+ * Callback method for AJAX requests that will result in a
+ * user authentication
+ *
+ * @param {Object} response Response from server
+ * @private
+ */
+ss.user.Auth.prototype._serverAuthResponse = function(response)
+{
+  this.logger.info('Init _serverAuthResponse(). status:' + response.status);
+  
+  // if not a positive response, stop
+  if (!response.status) {
+    return;
+  }
+  
+  //TODO Implement this
+};
+
+/**
+ * Perform an auth or deauth based on parameter
+ *
+ * @param {boolean} isAuthed
+ * @private
+ */
+ss.user.Auth.prototype._doAuth = function (isAuthed)
+{
+  this.logger.info('Init _doAuth(). isAuthed:' + isAuthed);
+  this._isAuthed = isAuthed;
+  this.dispatchEvent(ss.user.auth.EventType.AUTHCHANGE);
+};
+
+/**
+ * If current user is authenticated
  *
  * @return {boolean}
  */
 ss.user.Auth.prototype.isAuthed = function()
- {
+{
     return this._isAuthed;
 };
-// method ss.user.Auth.prototype.isAuthed
+
+/**
+ * If current user is authenticated with specified external 
+ * auth source
+ *
+ * @param {ss.user.types.extSourceId} sourceId
+ * @return {boolean}
+ */
+ss.user.Auth.prototype.isExtAuthed = function(sourceId)
+{
+    return this._extAuthedSources.get(sourceId) || false;
+};
 
 /**
  * Tells us if user if verified
@@ -213,108 +328,20 @@ ss.user.Auth.prototype.isVerified = function()
 };
 
 /**
- * Execute when we have an authentication event
- * from an external source.
- *
- * If we are not authed, we will perform auth procedures
- *
- * @param {ss.CONSTS.SOURCES} sourceId
- * @param {object} user ss user data object verified
+ * Logout from all auth sources, clear data objects 
+ * and dispose everything
  * @return {void}
  */
-ss.user.Auth.prototype.extAuth = function(sourceId, user)
- {
-    try {
-        var logger = goog.debug.Logger.getLogger('ss.user.Auth.prototype.extAuth');
-
-        logger.info('sourceId:' + sourceId + ' authed:' + ss.isAuthed());
-
-        // if already authed exit
-        if (ss.isAuthed())
-          return;
-
-        // not authed, start auth
-        ss.user.Auth.prototype.login(user, function(){}, sourceId);
-
-    } catch(e) {
-        ss.error(e);
-    }
+ss.user.Auth.prototype.logout = function()
+{
+  // clear our dynamic map data object
+  this._user.clear();
+  
+  // we used goog.mixin() to do multiple inheritance for
+  // events, thus we have to directly call event's disposeInternal
+  goog.events.EventTarget.prototype.disposeInternal.call(this._user);
+  
+  this._doAuth(false);
 };
-// function ss.user.Auth.prototype.extAuth
-
-/**
- * Lets us know if currently logged in user
- * has external authentication for the provided
- * source id
- *
- * @param {ss.CONSTS.SOURCES} sourceId
- * @return {boolean}
- */
-ss.user.Auth.prototype.hasExtSource = function(sourceId)
- {
-    try {
-        if (!ss.isAuthed())
-        return false;
-
-        // get user object
-        var user = ss.user.getUserDataObject();
-
-        if (!user['hasExtSource'])
-        return false;
-
-        // check for the source defined noc...
-        var ind = ss.arFindIndex(user['extSource'], 'sourceId', sourceId);
-
-        if ( -1 == ind)
-          return false;
-
-
-        return true;
-
-    } catch(e) {
-        ss.error(e);
-    }
-};
-// function ss.user.Auth.prototype.hasFacebook
-
-
-/**
- * Gets the external auth source user's name
- *
- * @param {ss.CONSTS.SOURCES.FB} sourceId
- * @return {string|null} null if error / not found
- */
-ss.user.Auth.prototype.getExtName = function(sourceId)
- {
-
-    try {
-        if (!ss.isAuthed())
-          return null;
-
-        // get user object
-        var user = ss.user.getUserDataObject();
-
-        if (!user['hasExtSource'])
-          return null;
-
-        // check for the source defined noc...
-        var ind = ss.arFindIndex(user['extSource'], 'sourceId', sourceId);
-
-        if ( -1 == ind)
-          return null;
-
-        // check if name value is there...
-        if (goog.isString(user['extSource'][ind]['extUsername']))
-        // got it
-        return user['extSource'][ind]['extUsername'];
-
-        return null;
-
-    } catch(e) {
-        ss.error(e);
-    }
-};
-
-
 
 

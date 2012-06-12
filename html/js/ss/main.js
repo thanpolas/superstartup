@@ -39,7 +39,7 @@ goog.require('ss.Events');
 goog.require('ss.user');
 goog.require('ss.conf');
 goog.require('ss.Config');
-goog.require('ss.ext.auth.Facebook');
+goog.require('ss.user.auth.Facebook');
 goog.require('ss.helpers');
 goog.require('ss.exports');
 goog.require('ss.server2js');
@@ -121,7 +121,7 @@ ss.webInit = function ()
 
   // initialize the web2.0 (FB/Twitter)
   // AUTH BALL IS HERE
-  window.fb = ss.ext.auth.Facebook.getInstance();
+  window.fb = ss.user.auth.Facebook.getInstance();
   // start init cycle for our twitter lib
   //ss.twit.init();
 

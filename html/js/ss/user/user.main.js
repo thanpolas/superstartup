@@ -176,3 +176,72 @@ ss.user.getDummyObject = function ()
 };
 
 
+
+
+
+
+
+
+
+/**
+ * Lets us know if this user has the specified auth source
+ *
+ * @param {ss.user.types.extSourceId} sourceId
+ * @return {boolean}
+ */
+ss.user.Item.prototype.hasExtSource = function(sourceId)
+ {
+    if (!this.get(ss.conf.user.typeMappings.user.hasExtSource))
+      return false;
+
+    // check for the source defined noc...
+    var ind = ss.arFindIndex(ss.conf.user.typeMappings.user.extSource, 
+        ss.conf.user.typeMappings.extSource.sourceId, sourceId);
+
+    if ( -1 == ind)
+      return false;
+
+
+    return true;
+
+};
+// function ss.user.Auth.prototype.hasFacebook
+
+
+/**
+ * Gets the external auth source user's name
+ *
+ * @param {ss.CONSTS.SOURCES.FB} sourceId
+ * @return {string|null} null if error / not found
+ */
+ss.user.Auth.prototype.getExtName = function(sourceId)
+ {
+
+    try {
+        if (!ss.isAuthed())
+          return null;
+
+        // get user object
+        var user = ss.user.getUserDataObject();
+
+        if (!user['hasExtSource'])
+          return null;
+
+        // check for the source defined noc...
+        var ind = ss.arFindIndex(user['extSource'], 'sourceId', sourceId);
+
+        if ( -1 == ind)
+          return null;
+
+        // check if name value is there...
+        if (goog.isString(user['extSource'][ind]['extUsername']))
+        // got it
+        return user['extSource'][ind]['extUsername'];
+
+        return null;
+
+    } catch(e) {
+        ss.error(e);
+    }
+};
+

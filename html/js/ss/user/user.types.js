@@ -25,6 +25,8 @@
 
 goog.provide('ss.user.types');
 
+goog.require('ss.Map');
+
 /**
  * @typedef {string} The plugin's name type, a single unique string
  *    for the external authentication service (e.g. Facebook)
@@ -60,7 +62,7 @@ ss.user.types.extSource;
 
 
 /**
- * An public user's data object
+ * A public user's data object
  *
  * @type {Object}
  */
@@ -77,12 +79,10 @@ ss.user.types.user = {
   fullName: '',
   /** @type {number} Unix timestamp */
   createDate: 0,
-  /** @type {number} Unix timestamp */
-  updateDate: 0,
   /** @type {boolean} If user has external authentication sources */
   hasExtSource: false,
-  /** @type {Array.<ss.user.types.extSource>} */
-  extSource: []
+  /** @type {ss.Map.<ss.user.types.extSourceId>} */
+  extSource: new ss.Map()
 };
 
 /**
@@ -95,5 +95,5 @@ ss.user.types.ownuser = {
   /** @type {string} */
   email: '',
   /** @type {boolean} */
-  verfified: false
+  verified: false
 };

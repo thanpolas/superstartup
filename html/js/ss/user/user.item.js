@@ -48,7 +48,7 @@ goog.inherits(ss.user.Item, ss.DynamicMap);
 /** @inheritDoc */
 ss.user.Item.prototype.disposeInternal = function()
 {
-  // we used goog.mixin() to do multiple injeritance for 
+  // we used goog.mixin() to do multiple inheritance for 
   // events, thus we have to directly call event's disposeInternal
   goog.events.EventTarget.prototype.disposeInternal.call(this);
 

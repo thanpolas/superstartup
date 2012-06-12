@@ -22,37 +22,37 @@
   *     Every ext auth class must implement this interface
   */
 
-goog.provide('ss.ext.auth.PluginInterface');
+goog.provide('ss.user.auth.PluginInterface');
 
 /**
  * The interface for external authentication plugins
  * @interface
  */
-ss.ext.auth.PluginInterface = function() {};
+ss.user.auth.PluginInterface = function() {};
 
 
 /**
  * @type {ss.user.types.extSourceId} The plugin's name (e.g. Facebook)
  */
-ss.ext.auth.PluginInterface.prototype.sourceId;
+ss.user.auth.PluginInterface.prototype.sourceId;
 
 /**
  * @const {boolean} If this plugin needs to follow up authentication 
  *      with server
  */
-ss.ext.auth.PluginInterface.prototype.LOCALAUTH;
+ss.user.auth.PluginInterface.prototype.LOCALAUTH;
 
 /**
  * Used by our instance handlers to know if we have started
  * an auth crosscheck with local (server)
  * @type {boolean}
  */
-ss.ext.auth.PluginModule.prototype.localAuthInit;
+ss.user.auth.PluginModule.prototype.localAuthInit;
 
 /**
  * @protected {boolean} Auth switch
  */
-ss.ext.auth.PluginInterface.prototype._isAuthed;
+ss.user.auth.PluginInterface.prototype._isAuthed;
 
 /**
 * Opens the login dialog or starts the authentication flow
@@ -62,27 +62,27 @@ ss.ext.auth.PluginInterface.prototype._isAuthed;
 *      comma separate them
 * @return {void}
 */
-ss.ext.auth.PluginInterface.prototype.login = function(opt_callback, opt_perms){};
+ss.user.auth.PluginInterface.prototype.login = function(opt_callback, opt_perms){};
 
 /**
 * Perform a logout action
 *
 * @return {void}
 */
-ss.ext.auth.PluginInterface.prototype.logout = function(){};
+ss.user.auth.PluginInterface.prototype.logout = function(){};
 
 /**
  * Tells us if user is authenticated with service
  * @return {boolean}
  */
-ss.ext.auth.PluginInterface.prototype.isAuthed = function(){};
+ss.user.auth.PluginInterface.prototype.isAuthed = function(){};
 
 /**
  * If user is authed returns us a {@link ss.user.types.extSource}
  * data object
  * @return {ss.user.types.extSource|null} null if not authed
  */
-ss.ext.auth.PluginInterface.prototype.getUser = function(){};
+ss.user.auth.PluginInterface.prototype.getUser = function(){};
 
 /**
  * Starts initial authentication checks for the ext auth plugin
@@ -90,6 +90,6 @@ ss.ext.auth.PluginInterface.prototype.getUser = function(){};
  * event
  * @return {void}
  */
-ss.ext.auth.PluginInterface.prototype.initAuthCheck = function(){};
+ss.user.auth.PluginInterface.prototype.initAuthCheck = function(){};
 
 

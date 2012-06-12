@@ -31,10 +31,23 @@ goog.provide('ss.conf');
  * @type {Object}
  */
 ss.conf = {
-  /** @type {Object} Authentication related confs */
-  auth: {},
   /** @type {Object} third party integrations */
-  ext: {}
+  ext: {},
+  /** @type {Object} user related configurations */
+  user: {
+    /** @type {Object} user related configurations */    
+    typeMappings: {}
+  }
+};
+
+/** @type {Object} Authentication related confs */
+ss.conf.auth = {
+  /** 
+   * @param {boolean} If we want to perform local auth with our servers
+   *    on external source auth events
+   */
+  performLocalAuth: false
+  
 };
 
 /** @type {Object} External authentication related confs */
@@ -44,16 +57,56 @@ ss.conf.auth.ext = {
    * we use this URL to inform the server.
    */
   authUrl: '/users/extAuth',
-  // Set if we want to perform local auth from ext auth sources
-  performLocalAuth: false,
-  // The string literal to use when posting the sourceId to the server
-  localAuthSourceId: 'sourceId',
-  // ext auth sources configurations
-  sources: {}
+  /**
+   * @param {string} The string literal to use when posting the sourceId to the server
+   */
+  localAuthSourceId: 'sourceId'
 };
 
 /** @type {Object} Facebook */
 ss.conf.ext.fb = {
   app_id: '186392014808053',
-  permitions: 'email,publish_stream'  
+  permissions: 'email,publish_stream'  
 };
+
+/**
+ * A mapping of keys for a public user's data object
+ *
+ * @enum {string}
+ */
+ss.conf.user.typeMappings.user = {
+  id: 'id',
+  username: 'username',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  fullName: 'fullName',
+  createDate: 'createDate',
+  hasExtSource: 'hasExtSource',
+  extSource: 'extSource'
+};
+
+/**
+ * A mapping of the keys in the external auth source items DO
+ * @enum {string}
+ */
+ss.conf.user.typeMappings.extSource = {
+  sourceId: 'sourceId',
+  userId: 'userId',
+  profileUrl: 'profileUrl',
+  username: 'username',
+  profileImageUrl: 'profileImageUrl'
+};
+
+/**
+ * An extension to ss.user.types.user for the currently logged
+ * in user's data object. Contains keys that are only available to 
+ * the owner of this data object
+ * @enum {string}
+ */
+ss.conf.user.typeMappings.ownuser = {
+  email: 'email',
+  verified: 'verified'
+};
+
+
+
