@@ -47,6 +47,11 @@ showcase.init = function() {
 
   showcase.so.render();
   
+  // Interface with ss
+  ss.config.set('auth.performLocalAuth', true);
+  
+  ss.webInit();
+  
   } catch(e) {ss.error(e);}
 };
 

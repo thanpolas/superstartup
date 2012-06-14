@@ -67,7 +67,7 @@ ss.StringPath.Errors = {
 ss.StringPath.prototype.addRaw = function(obj)
 {
   if (obj instanceof ss.StringPath) {
-    this._data = obj.getRaw();
+    this._data = obj.toObject();
   } else if (goog.isObject(obj)){
     this._data = obj;
   } else {
@@ -80,7 +80,7 @@ ss.StringPath.prototype.addRaw = function(obj)
  * (Native JS Object)
  * @return {Object}
  */
-ss.StringPath.prototype.getRaw = function()
+ss.StringPath.prototype.toObject = function()
 {
   return this._data;
 };
@@ -146,7 +146,7 @@ ss.StringPath.prototype.remove = function(key) {
  * @private
  * @param {array} parts Our path split into an array ['a','b','c'] --> a.b.c
  * @param {Object} obj The object we will dive into
- * @param {Object} An object containing a boolean true value for one of
+ * @param {Object.<boolean>} An object containing a boolean true value for one of
  *          they following keys / operations:
  *          isSet if we want to SET a variable
  *          isGet if we want to GET a variable
@@ -154,11 +154,11 @@ ss.StringPath.prototype.remove = function(key) {
  * @param {*=} opt_val If we want to set, include here the value
  * @return {*} The value we resolved
  */
-ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val) {
-    var len = parts.length;
+ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val) 
+{
     var part = parts.shift();
     // check if we are in the last part of our path
-    if (1 == len) {
+    if (0 == parts.length) {
         if (op.isSet) {
             // force overwrite
             obj[part] = opt_val;
@@ -170,6 +170,7 @@ ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val) {
             return obj[part];
         }
     }
+    
     if (obj[part] == null) {
         if (op.isSet) {
             obj[part] = {};

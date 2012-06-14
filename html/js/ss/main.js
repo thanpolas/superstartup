@@ -40,6 +40,7 @@ goog.require('ss.user');
 goog.require('ss.conf');
 goog.require('ss.Config');
 goog.require('ss.user.auth.Facebook');
+goog.require('ss.user.auth.Twitter');
 goog.require('ss.helpers');
 goog.require('ss.exports');
 goog.require('ss.server2js');
@@ -73,6 +74,9 @@ ss.PREPROD = false;
  */
 ss.READY = false;
 
+/** @type {ss.Config} Singleton config instance */
+ss.config;
+
 /**
  * The Init function triggers synchronously as soon as execution
  * reaches this point. Based on our requirement schema, this file
@@ -93,11 +97,11 @@ ss.init = function ()
     
     // init the Config class
     ss.config = new ss.Config.getInstance();
-    ss.config.addRaw(ss.conf);
+    ss.config.setDefault(ss.conf);
 
     // Initialize web specific operations
     // Auth Ball is here
-    ss.webInit();
+    //ss.webInit();
 
     ss.READY = true;
     main.check('loaded');
@@ -115,15 +119,21 @@ ss.init = function ()
  */
 ss.webInit = function ()
 {
-  //ss.db.URL = window.location.protocol + '//' + window.location.hostname;
-
-  window.UAuth = ss.user.Auth.getInstance();
+  // validate config
+  if (!ss.config.validate()) {
+    throw new Error('Config does not validate. Could not find key:' + ss.config.getInvalidKey());
+  }
+  
+  // write back our conf
+  ss.conf = ss.config.toObject();
+  
+  ss.user.Auth.getInstance();
 
   // initialize the web2.0 (FB/Twitter)
   // AUTH BALL IS HERE
-  window.fb = ss.user.auth.Facebook.getInstance();
+  ss.user.auth.Facebook.getInstance();
   // start init cycle for our twitter lib
-  //ss.twit.init();
+  ss.user.auth.Twitter.getInstance();
 
   // start loading twitter's widgets after 500ms
   setTimeout(function(){

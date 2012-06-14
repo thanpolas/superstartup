@@ -318,13 +318,13 @@ ss.user.Auth.prototype.isExtAuthed = function(sourceId)
 };
 
 /**
- * Tells us if user if verified
+ * Tells us if user is verified
  *
  * @return {boolean}
  */
 ss.user.Auth.prototype.isVerified = function()
 {
-    return this._isAuthed && this._user.get('verified');
+    return this._isAuthed && this._user.get(ss.conf.user.typeMappings.ownuser.verified);
 };
 
 /**
@@ -339,7 +339,7 @@ ss.user.Auth.prototype.logout = function()
   
   // we used goog.mixin() to do multiple inheritance for
   // events, thus we have to directly call event's disposeInternal
-  goog.events.EventTarget.prototype.disposeInternal.call(this._user);
+  goog.events.EventTarget.disposeInternal.call(this._user);
   
   this._doAuth(false);
 };

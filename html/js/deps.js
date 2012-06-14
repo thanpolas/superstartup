@@ -4,7 +4,7 @@ goog.addDependency("../../../deps.js", [], []);
 goog.addDependency("../../../init.js", ['__initFile__'], ['ss', 'showcase']);
 goog.addDependency("../../../showcase/main.js", ['showcase'], ['ss', 'showcase.widget.showObject']);
 goog.addDependency("../../../showcase/widgets/showObject.js", ['showcase.widget.showObject'], ['goog.debug']);
-goog.addDependency("../../../ss/main.js", ['ss'], ['ss.debug', 'ss.metrics', 'ss.error', 'ss.metadata', 'ss.ajax', 'ss.ready', 'ss.Events', 'ss.user', 'ss.conf', 'ss.Config', 'ss.user.auth.Facebook', 'ss.helpers', 'ss.exports', 'ss.server2js', 'ss.web.system', 'ss.web.cookies', 'ss.web.user']);
+goog.addDependency("../../../ss/main.js", ['ss'], ['ss.debug', 'ss.metrics', 'ss.error', 'ss.metadata', 'ss.ajax', 'ss.ready', 'ss.Events', 'ss.user', 'ss.conf', 'ss.Config', 'ss.user.auth.Facebook', 'ss.user.auth.Twitter', 'ss.helpers', 'ss.exports', 'ss.server2js', 'ss.web.system', 'ss.web.cookies', 'ss.web.user']);
 goog.addDependency("../../../ss/ext/extAuth.main.js", ['ss.ext.auth.Main', 'ss.ext.auth.Error', 'ss.ext.auth.EventType'], ['ss.Map', 'ss.user', 'ss.Module', 'goog.object']);
 goog.addDependency("../../../ss/ext/facebook/facebook.API.js", ['ss.fb.API'], ['ss.CONSTS']);
 goog.addDependency("../../../ss/ext/facebook/facebook.comments.js", ['ss.fb.com'], []);
@@ -23,7 +23,7 @@ goog.addDependency("../../../ss/SuperClasses/dynamicMap.js", ['ss.DynamicMap'], 
 goog.addDependency("../../../ss/SuperClasses/map.js", ['ss.Map'], ['goog.structs.Map']);
 goog.addDependency("../../../ss/SuperClasses/Module.js", ['ss.Module'], ['goog.events', 'goog.events.EventTarget']);
 goog.addDependency("../../../ss/SuperClasses/stringPath.js", ['ss.StringPath', 'ss.StringPath.Errors'], []);
-goog.addDependency("../../../ss/system/config.js", ['ss.Config'], ['ss.StringPath']);
+goog.addDependency("../../../ss/system/config.js", ['ss.Config'], ['ss.StringPath', 'goog.object']);
 goog.addDependency("../../../ss/system/configuration.js", ['ss.conf'], []);
 goog.addDependency("../../../ss/system/error.js", ['ss.error'], []);
 goog.addDependency("../../../ss/system/events.js", ['ss.Events'], []);
@@ -39,6 +39,7 @@ goog.addDependency("../../../ss/user/auth/authPluginInterface.js", ['ss.user.aut
 goog.addDependency("../../../ss/user/auth/authPluginModule.js", ['ss.user.auth.PluginModule'], ['ss.Module']);
 goog.addDependency("../../../ss/user/auth/user.auth.js", ['ss.user.Auth', 'ss.user.auth.EventType', 'ss.user.auth.Error'], ['ss.Module', 'ss.DynamicMap', 'ss.user.types']);
 goog.addDependency("../../../ss/user/auth/authPlugins/facebook.auth.js", ['ss.user.auth.Facebook', 'ss.user.auth.Facebook.EventType'], ['ss.user.auth.PluginModule', 'ss.user.Auth', 'ss.user.auth.EventType']);
+goog.addDependency("../../../ss/user/auth/authPlugins/twitter.auth.js", ['ss.user.auth.Twitter', 'ss.user.auth.Twitter.EventType'], ['ss.user.auth.PluginModule', 'ss.user.Auth', 'ss.user.auth.EventType']);
 goog.addDependency("../../../ss/web/system/cookies.js", ['ss.web.cookies'], []);
 goog.addDependency("../../../ss/web/system/server2.js", ['ss.server2js'], []);
 goog.addDependency("../../../ss/web/system/system.main.js", ['ss.web.system'], ['ss.server2js']);
