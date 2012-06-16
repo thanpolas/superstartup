@@ -77,9 +77,11 @@ ss.Config.prototype.register = function(path, selfObj)
   if (exists) {
     throw new Error('Key / path already exists');
   }
-  
+  // set to original config map
   this._origConf.set(path, selfObj);
-  this.set(path, selfObj);
+  // set to own map
+  ss.Config.superClass_.set.call(this, path, selfObj);
+
 };
 
 /**
@@ -87,18 +89,32 @@ ss.Config.prototype.register = function(path, selfObj)
  * Current validations include:
  * - Type checking. If the set value is of same type as the one set
  *      via this method.
- * - Defined checking. If the set key was defined via this method first.
+ * - Overwrite checking. We cannot overwrite keys / path
+ * - No objects allowed. Objects are not allowed as value
  *
- * @inheritdoc
+ * @override
+ * @throws Errors depending on validation checks
  */
 ss.Config.prototype.set = function(key, value)
 {
-  // get the value with throw ReferenceError parameter set to true
-  // if the key doesn't exist an error will be thrown
-  var val = this._origConf.get(key, true);
-
-  if (goog.typeOf(value) != goog.typeOf(val)) {
-    throw new TypeError();
+  // check if value is object
+  if (goog.isObject(value)) {
+    throw new TypeError('Object type for value not allowed');
+  }
+  
+  // get the value from original config with the throw ReferenceError 
+  // parameter set to true
+  // if the key doesn't exist do not do a type check
+  var val;
+  var exists = true;
+  try {
+    val = this._origConf.get(key, true);
+  } catch(e) {
+    exists = false;
+  }
+  
+  if (exists && goog.typeOf(value) != goog.typeOf(val)) {
+    throw new TypeError('Expected:' + goog.typeOf(val) + ' got:' + goog.typeOf(value));
   }
   // call our parent set method
   ss.Config.superClass_.set.call(this, key, value);

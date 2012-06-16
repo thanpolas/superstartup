@@ -107,7 +107,7 @@ goog.require('goog.object');
   * Determines if the given object is a valid
   * jQuery array or the jQuery function
   *
-  * @param {mixed} ar The object we want to examine
+  * @param {*} ar The object we want to examine
   * @return boolean
   */
  ss.isjQ = function (ar)

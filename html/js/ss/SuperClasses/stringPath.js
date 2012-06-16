@@ -107,6 +107,7 @@ ss.StringPath.prototype.set = function(key, value) {
  * @param {string} key
  * @param {boolean=} opt_throwError optionally throw a ReferenceError if key not found
  * @return {*} null if value not found
+ * @throws {TypeError} if key not string
  */
 ss.StringPath.prototype.get = function(key, opt_throwError) 
 {

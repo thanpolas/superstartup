@@ -42,9 +42,19 @@ goog.require('ss.user.auth.EventType');
 ss.user.auth.Twitter = function()
 {
   goog.base(this);
-  
+
   /** @const {boolean} */
   this.LOCALAUTH = false;
+
+  this.config('loginUrl', '/users/twitter');
+  // name of GET param to use when redirecting for twitter
+  // oAuth login, which will contain the current url so 
+  // we know where to redirect the user once he/she comes
+  // back from Twitter
+  this.config('returnPathParam', 'url');
+  
+  // register our configuration
+  ss.config && ss.config.register('user.auth.ext.twitter', this._config);  
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -71,10 +81,10 @@ ss.user.auth.Twitter.prototype.sourceId = 'Twitter';
  *
  * @return {void}
  */
-ss.user.auth.Twitter.prototype.initAuthCheck = function()
+ss.user.auth.Twitter.prototype.init = function()
 {
-  this.logger.info('Init initAuthCheck(). Dispatching dummy event');
-  
+  this.logger.info('Init init(). Dispatching dummy event');
+
   this.dispatchEvent(ss.user.auth.EventType.INITIALAUTHSTATUS);
 };
 
@@ -89,15 +99,15 @@ ss.user.auth.Twitter.prototype.initAuthCheck = function()
 ss.user.auth.Twitter.prototype.login = function(opt_callback, opt_perms)
 {
   // use the current path of the user for return
-  var returnPath = '?url=' + ss.encURI(window.location.pathname);
+  var returnPath = '?' + this.config('returnPathParam') + '=' + ss.encURI(window.location.pathname);
 
   this.logger.info('Init login(). Return path:' + returnPath);
 
   // we have to redirect user to /signup/twitter.php
   // to start the authentication process
-  
+
   // redirect the browser now
-  window.location.href = ss.conf.auth.ext.twttr.loginUrl + returnPath;
+  window.location.href = this.config('loginUrl') + returnPath;
 };
 
 /**

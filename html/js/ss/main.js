@@ -29,6 +29,8 @@
  /** @fileoverview Superstartup library bootstrap file */
 
 goog.provide('ss');
+goog.provide('ss.config');
+
 goog.require('ss.debug');
 goog.require('ss.metrics');
 goog.require('ss.error');
@@ -37,7 +39,6 @@ goog.require('ss.ajax');
 goog.require('ss.ready');
 goog.require('ss.Events');
 goog.require('ss.user');
-goog.require('ss.config');
 goog.require('ss.Config');
 goog.require('ss.user.auth.Facebook');
 goog.require('ss.user.auth.Twitter');
@@ -47,6 +48,8 @@ goog.require('ss.server2js');
 goog.require('ss.web.system');
 goog.require('ss.web.cookies');
 goog.require('ss.web.user');
+
+
 
 
 /**
@@ -75,7 +78,7 @@ ss.PREPROD = false;
 ss.READY = false;
 
 /** @type {ss.Config} Singleton config instance */
-ss.config;
+ss.config = ss.Config.getInstance();
 
 /**
  * The Init function triggers synchronously as soon as execution
@@ -86,7 +89,7 @@ ss.config;
  */
 ss.init = function ()
 {
-    var logger = goog.debug.Logger.getLogger('ss.Init');
+    var logger = goog.debug.Logger.getLogger('ss.init');
     if (goog.DEBUG) {
       ss.debug.openFancyWin();
     }
@@ -94,17 +97,10 @@ ss.init = function ()
     logger.info('Starting...');
     var main = ss.ready('main');
     main.addCheck('loaded');
-    
-    // init the Config class
-    //ss.config = new ss.Config.getInstance();
-    //ss.config.setDefault(ss.conf);
 
-    // Initialize web specific operations
-    // Auth Ball is here
-    //ss.webInit();
 
     ss.READY = true;
-    //main.check('loaded');
+    main.check('loaded');
 
 }; // function ss.Init
 
@@ -120,15 +116,11 @@ ss.init = function ()
 ss.webInit = function ()
 {
   
-  // write back our conf
-  ss.conf = ss.config.toObject();
-  
+  // initialize the auth class
   ss.user.Auth.getInstance();
 
-  // initialize the web2.0 (FB/Twitter)
-  // AUTH BALL IS HERE
+  // initialize ext auth plugins
   ss.user.auth.Facebook.getInstance();
-  // start init cycle for our twitter lib
   ss.user.auth.Twitter.getInstance();
 
   // start loading twitter's widgets after 500ms

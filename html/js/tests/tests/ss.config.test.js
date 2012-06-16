@@ -75,11 +75,18 @@
     config = new ss.Config();
     var plainObject = new PlainObject();
     config.register('the.path.for.plainObject', plainObject);
-    ok('true', 'all ok');
-    
+
     raises(function(){
-      config.set('the.path.for.plainObject.nonExisting', 'two');
-      }, ReferenceError, 'We cannot set a value to a non existing key / path');
+      config.set('the.path.for.plainObject.foo', {});
+      }, Error, 'We cannot set an object as a value to a specific parameter');
+
+    raises(function(){
+      config.set('the.path.for', {});
+      }, Error, 'We cannot overwrite a path with an object');
+
+    raises(function(){
+      config.set('the.path.for', 1);
+      }, Error, 'We cannot overwrite a path with a number');
 
     raises(function(){
       config.set('the.path.for.plainObject.foo', 3);

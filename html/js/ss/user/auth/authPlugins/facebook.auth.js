@@ -31,7 +31,6 @@ goog.provide('ss.user.auth.Facebook.EventType');
 goog.require('ss.user.auth.PluginModule');
 goog.require('ss.user.Auth');
 goog.require('ss.user.auth.EventType');
-goog.require('ss.config');
 
 /**
  * The Facebook auth constructor
@@ -43,27 +42,23 @@ goog.require('ss.config');
 ss.user.auth.Facebook = function()
 {
   goog.base(this);
-  
+
   /** @const {boolean} */
   this.LOCALAUTH = true;
-  
+
+  // set required confs
+  this.config('app_id', '');
+  this.config('permissions', '');
   // register our configuration
-  this._config = {
-    'app_id': '',
-    'permissions': ''    
-  };
-  if (ss.config) {
-    ss.config.register('user.auth.ext.fb', this);
-  }
+  ss.config && ss.config.register('user.auth.ext.fb', this._config);
 
   /**
-   * @type {number?}
+   * @type {string?}
    * @private
    */
   this._appId;
 
-  // start async loading of FB JS API
-  this._loadExtAPI();
+
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -105,21 +100,24 @@ ss.user.auth.Facebook.prototype.sourceId = 'Facebook';
  *      listen for the relevant event
  * @return {void}
  */
-ss.user.auth.Facebook.prototype.initAuthCheck = function(opt_e)
+ss.user.auth.Facebook.prototype.init = function(opt_e)
 {
-  this.logger.info('Init initAuthCheck(). FB JS API loaded:' + this._FBAPILoaded);
-
+  this.logger.info('Init init(). FB JS API loaded:' + this._FBAPILoaded);
+  
   if (!this._FBAPILoaded) {
-    // API not loaded yet, listen for event and exit
+    // API not loaded yet
+    // start async loading of FB JS API
+    // and listen for load event
+    this._loadExtAPI();    
     this.addEventListener(ss.user.auth.Facebook.EventType.JSAPILOADED, this.initAuthCheck, false, this);
     return;
   }
-  
+
   // check if called from event listener and stop propagation
   if(opt_e) {
     opt_e.stopPropagation();
   }
-  
+
   // catch initial login status
   FB.getLoginStatus(goog.bind(this._gotInitialAuthStatus, this));
 };
@@ -151,7 +149,7 @@ ss.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
  */
 ss.user.auth.Facebook.prototype._getAppId = function ()
 {
-  return this._appId || (this._appId = ss.conf.auth.ext.fb.app_id);
+  return this._appId || (this._appId = this.config('app_id'));
 };
 
 /**
@@ -273,7 +271,7 @@ ss.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms)
   var callback = opt_callback || function (){};
 
   var paramObj = {
-    perms: opt_perms || ss.conf.auth.ext.fb.permissions
+    perms: opt_perms || this.config('permissions')
   };
 
   FB.login(goog.bind(this._loginListener, this, callback), paramObj);

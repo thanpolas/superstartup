@@ -21,15 +21,15 @@
   * @fileoverview A fancy get / set class
   */
 
-goog.provide('ss.fancySetGet');
+goog.provide('ss.FancyGetSet');
 
 /**
- * The fancy Set Get constructor.
- * Returns the .setGet method which does the fancy Set/Get
+ * The fancy Get Set constructor.
+ * Returns the .getSet method which does the fancy Get/Set
  * @constructor
  * @param {!Object}
  */
-ss.fancySetGet = function(object)
+ss.FancyGetSet = function(object)
 {
   /**
    * The object we are setting / getting
@@ -37,21 +37,22 @@ ss.fancySetGet = function(object)
    * @type {!Object}
    */
   this._obj = object;
-  return this.setGet;
+  return goog.bind(this.getSet, this);
 };
 /**
- * Set or get config values. 
- * 
+ * Set or get config values.
+ *
  * No parameters, we GET the whole object
  * First parameter a string with no second one, act as key, GET specified value
- * First parameter an object, we parse and SET key / value pairs 
- * First parameter a string, second a mixed, we SET as key / value 
+ * First parameter an object, we parse and SET key / value pairs
+ * First parameter a string, second a mixed, we SET as key / value
  *
  * @param {string|Object=} opt_key
  * @param {*=} opt_value
  * @return {*}
+ * @throws {TypeError} if parameters of not valid type
  */
-ss.fancySetGet.prototype.setGet = function(opt_key, opt_value)
+ss.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
 {
   switch (goog.typeOf(opt_key)) {
     case 'object':

@@ -28,8 +28,7 @@ goog.provide('ss.user.auth.PluginInterface');
  * The interface for external authentication plugins
  * @interface
  */
-ss.user.auth.PluginInterface = function() {};
-
+ss.user.auth.PluginInterface = function(){};
 
 /**
  * @type {ss.user.types.extSourceId} The plugin's name (e.g. Facebook)
@@ -50,7 +49,8 @@ ss.user.auth.PluginInterface.prototype.LOCALAUTH;
 ss.user.auth.PluginModule.prototype.localAuthInit;
 
 /**
- * @protected {boolean} Auth switch
+ * @protected
+ * @type {boolean} Auth switch
  */
 ss.user.auth.PluginInterface.prototype._isAuthed;
 
@@ -85,11 +85,27 @@ ss.user.auth.PluginInterface.prototype.isAuthed = function(){};
 ss.user.auth.PluginInterface.prototype.getUser = function(){};
 
 /**
- * Starts initial authentication checks for the ext auth plugin
- * When a definitive result is produced, dispatch the INITIALAUTHSTATUS
+ * Starts off the plugin. 
+ * (lazy) Loads any required JS API. 
+ * And performs initial authentication checks
+ * When a definitive result is produced, dispatches the INITIALAUTHSTATUS
  * event
  * @return {void}
  */
-ss.user.auth.PluginInterface.prototype.initAuthCheck = function(){};
+ss.user.auth.PluginInterface.prototype.init = function(){};
 
+/**
+ * The local config of the ext auth plugin
+ *
+ * @private
+ * @type {Object}
+ */
+ss.user.auth.PluginInterface.prototype._config;
 
+/**
+ * A fancy setter / getter instance
+ * Manages the local config (_config)
+ *
+ * @type {ss.fancyGetSet}
+ */
+ss.user.auth.PluginInterface.prototype.config;

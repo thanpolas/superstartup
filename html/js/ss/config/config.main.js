@@ -78,44 +78,7 @@ ss.conf.auth.ext.twttr = {
   target: null
 };
 
-**
- * A mapping of keys for a public user's data object
- *
- * @enum {string}
- *
-ss.config.user.typeMappings.user = {
-  id: 'id',
-  username: 'username',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  fullName: 'fullName',
-  createDate: 'createDate',
-  hasExtSource: 'hasExtSource',
-  extSource: 'extSource'
-};
 
-**
- * A mapping of the keys in the external auth source items DO
- * @enum {string}
- *
-ss.config.user.typeMappings.extSource = {
-  sourceId: 'sourceId',
-  userId: 'userId',
-  profileUrl: 'profileUrl',
-  username: 'username',
-  profileImageUrl: 'profileImageUrl'
-};
-
-**
- * An extension to ss.user.types.user for the currently logged
- * in user's data object. Contains keys that are only available to
- * the owner of this data object
- * @enum {string}
- *
-ss.config.user.typeMappings.ownuser = {
-  email: 'email',
-  verified: 'verified'
-};
 
 */
 

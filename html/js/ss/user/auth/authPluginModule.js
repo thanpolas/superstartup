@@ -24,12 +24,14 @@
 goog.provide('ss.user.auth.PluginModule');
 
 goog.require('ss.Module');
+goog.require('ss.FancyGetSet');
+goog.require('ss.user.Auth');
 
 /**
  * The basic auth plugin class
  *
  * @constructor
- * @extends {ss.Module}ss.user.auth
+ * @extends {ss.Module}
  */
 ss.user.auth.PluginModule = function() {
   goog.base(this);
@@ -39,10 +41,21 @@ ss.user.auth.PluginModule = function() {
    * @type {ss.user.Auth}
    */
   this._auth = ss.user.Auth.getInstance();
+  
   // set auth main as the parent event target
   this.setParentEventTarget(this._auth);
+  
+  /**
+   * A fancy setter / getter instance
+   * Manages the local config (_config)
+   *
+   * @type {ss.fancyGetSet}
+   */
+   this.config = new ss.FancyGetSet(this._config);  
 };
 goog.inherits(ss.user.auth.PluginModule, ss.Module);
+
+
 
 /**
  * @private

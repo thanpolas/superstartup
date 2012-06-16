@@ -34,12 +34,11 @@ goog.require('goog.events.EventTarget');
  */
 ss.Module = function() {
   goog.base(this);
+  /**
+   * A config hash
+   * @protected
+   * @type {!Object}
+   */
+  this._config = {};  
 };
 goog.inherits(ss.Module, goog.events.EventTarget);
-
-/**
- * A config hash
- * @protected
- * @type {!Object}
- */
-ss.Module.prototype._config = {};

@@ -1,1 +1,0 @@
-var __allTests = ['ss/helpers/helpers_test.html'];

@@ -45,6 +45,34 @@ ss.user.Auth = function()
    * @private
    */
   this._isAuthed = false;
+  
+  /**
+   * Our config
+   * @inheritdoc
+   */
+  this._config = {
+    // if we'll check auth events of ext sources with our server
+    'performLocalAuth': false,
+    // The var name to use when (ajax) posting the sourceId to the server
+    // depends on 'performLocalAuth'
+    'localAuthSourceId': 'sourceId',
+    // When an external auth source becomes authenticated
+    // we use this URL to inform the server.
+    // Depends on 'performLocalAuth'
+    // If ext auth plugin has own url set we use that instead
+    'authUrl': '/users/extAuth'
+  };
+    
+  // register to config class if it exists
+  ss.config && ss.config.register('user.auth', this._config);
+
+  /**
+   * performLocalAuth is used multiple times
+   * assign it to a compressable by the compiler private property
+   * @private
+   * @type {boolean}
+   */
+  this._localAuth = this._config['performLocalAuth'];
 
   /**
    * The user data object
@@ -146,9 +174,6 @@ ss.user.Auth.prototype.addExtSource = function(selfObj)
   // event listeners
   selfObj.addEventListener(ss.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
   selfObj.addEventListener(ss.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
-
-  // initialize the authentication process for this plugin
-  selfObj.initAuthCheck();
 };
 
 
@@ -174,7 +199,7 @@ ss.user.Auth.prototype._initAuthStatus = function(e)
   e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);
 
   // check if we were in a not authed state and change that
-  if (!this._isAuthed && !ss.conf.auth.performLocalAuth) {
+  if (!this._isAuthed && !this._localAuth) {
     this._doAuth(true);
   }
 };
@@ -205,7 +230,7 @@ ss.user.Auth.prototype._authChange = function(e)
     e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);
 
     // check if we were in a not authed state and change that
-    if (!this._isAuthed && !ss.conf.auth.performLocalAuth) {
+    if (!this._isAuthed && !this._localAuth) {
       this._doAuth(true);
     }
   } else {
@@ -237,7 +262,7 @@ ss.user.Auth.prototype._authChange = function(e)
  */
 ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 {
-  if (!ss.conf.auth.performLocalAuth) {
+  if (!this._localAuth) {
     return;
   }
 
@@ -251,10 +276,11 @@ ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
     return;
   }
   extInst.localAuthInit = true;
-
-  // create request
-  var a = new ss.ajax(ss.conf.auth.ext.authUrl);
-  a.addData(ss.conf.auth.ext.localAuthSourceId, sourceId);
+  // get local auth url from ext plugin if it exists
+  var url = this._extSupportedSources.get(sourceId).config('authUrl');
+  // create and start request
+  var a = new ss.ajax(url || this._config['authUrl']);
+  a.addData(this._config['localAuthSourceId'], sourceId);
 
   // response from server
   a.callback = goog.bind(this._serverAuthResponse, this); //callback of AJAX
