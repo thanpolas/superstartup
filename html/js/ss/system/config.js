@@ -140,6 +140,11 @@ ss.Config.prototype._validateKeysRecurse = function(defConf, newConf)
       }
     }
   }
+  
+//  goog.exportSymbol(example.ct.stringPath, obj[key]);
+//  var tmpAr = example.ct.stringPath.split('.');
+//  tmpAr.pop();
+//  example.ct.stringPath = tmpAr.join('.');  
   return true;
 };
 

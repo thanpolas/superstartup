@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 31/May/2010
  *
@@ -42,24 +42,33 @@ goog.provide('ss.ajax');
  */
 ss.ajax = function(url, opt_params)
 {
-  /** 
+  /**
    * @private
-   * @type {Object} params passed 
+   * @type {Object} params passed
    */
   this.p = opt_params || {};
-  /** 
+  /**
    * @private
-   * @type {string} url to post to 
+   * @type {string} url to post to
    */
   this.url = url;
+
+  this.logger.config('Init. url:' + url);
   return this;
 };
 
 /**
+ * A logger to help debugging
+ * @type {goog.debug.Logger}
  * @private
- * @type {Array} Store all data to pass
  */
-ss.ajax.prototype._dataPass = [];
+ss.ajax.prototype.logger = goog.debug.Logger.getLogger('ss.ajax');
+
+/**
+ * @private
+ * @type {Object} Store all data to pass
+ */
+ss.ajax.prototype._dataPass = {};
 
 /**
  * Overwrite to get a callback
@@ -86,13 +95,13 @@ ss.ajax.prototype.getError = function()
 };
 
 /**
- * @private 
- * @type {string} 
+ * @private
+ * @type {string}
  */
 ss.ajax.prototype._errorMsg;
 
 /**
- * 
+ *
  * @param {jQuery.jqXHR} jqXHR
  * @param {string} textStatus
  * @param {string} errorThrown
@@ -120,7 +129,7 @@ ss.ajax.prototype._handleSuccess = function(data, textStatus, jqXHR)
  * Add data to send
  *
  * @param {string} key The key of the data to be added
- * @param {mixed} value The value we need to store 
+ * @param {mixed} value The value we need to store
  * @return {void}
  */
 ss.ajax.prototype.addData = function(key, value)
@@ -130,7 +139,7 @@ ss.ajax.prototype.addData = function(key, value)
 
 /**
  * Perform the actual send
- * 
+ *
  * @return {void}
  */
 ss.ajax.prototype.send = function()
@@ -138,11 +147,13 @@ ss.ajax.prototype.send = function()
   if (!jQuery) {
     throw new Error('We require jQuery for ss.ajax class');
   }
-  
+  this.logger.config('Sending. data:' + goog.debug.expose(this._dataPass));
   jQuery.ajax(this.url, {
     type: this.p.postMethod || 'POST',
     data: this._dataPass,
-    dataType: this.p.typeGet || 'JSON',
+    dataType: this.p.typeGet || 'json',
+    cache: false,
+    global: false,
     success: goog.bind(this._handleSuccess, this),
     error: goog.bind(this._handleError, this)
   });

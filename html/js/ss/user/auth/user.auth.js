@@ -160,7 +160,7 @@ ss.user.Auth.prototype.addExtSource = function(selfObj)
  */
 ss.user.Auth.prototype._initAuthStatus = function(e)
 {
-  this.logger.info('init Auth status dispatched From:' + e.target.sourceId + ' Source authed:' + e.target.isAuthed());
+  this.logger.info('initial auth status dispatched From:' + e.target.sourceId + ' Source authed:' + e.target.isAuthed());
 
   // if not authed no need to go further
   if (!e.target.isAuthed()) {
@@ -254,7 +254,7 @@ ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 
   // create request
   var a = new ss.ajax(ss.conf.auth.ext.authUrl);
-  a.addData(ss.conf.auth.ext.sourceId, sourceId);
+  a.addData(ss.conf.auth.ext.localAuthSourceId, sourceId);
 
   // response from server
   a.callback = goog.bind(this._serverAuthResponse, this); //callback of AJAX
