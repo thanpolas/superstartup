@@ -52,14 +52,6 @@ ss.StringPath = function(opt_obj)
 };
 
 /**
- * Errors thrown by this class
- * @enum {string}
- */
-ss.StringPath.Errors = {
-  WRONGTYPE: 'Wrong type passed'
-};
-
-/**
  * Add raw data, either an object hash or an instance of ss.StringPath
  * NOTE: Overwrites any existing data
  * @param {Object|ss.StringPath}
@@ -71,7 +63,7 @@ ss.StringPath.prototype.addRaw = function(obj)
   } else if (goog.isObject(obj)){
     this._data = obj;
   } else {
-    throw new Error(ss.StringPath.Errors.WRONGTYPE);
+    throw new TypeError();
   }
 };
 
@@ -100,7 +92,7 @@ ss.StringPath.prototype.toObject = function()
 ss.StringPath.prototype.set = function(key, value) {
   // some plain validations
   if('string' != typeof key) {
-      throw new Error(ss.StringPath.Errors.WRONGTYPE);
+      throw new TypeError();
   }
   this._resolvePath(key.split(this._dot), this._data, {isSet:true}, value);
 };
@@ -113,14 +105,15 @@ ss.StringPath.prototype.set = function(key, value) {
  * 'guest' would return the full guest object
  *
  * @param {string} key
+ * @param {boolean=} opt_throwError optionally throw a ReferenceError if key not found
  * @return {*} null if value not found
  */
-ss.StringPath.prototype.get = function(key) 
+ss.StringPath.prototype.get = function(key, opt_throwError) 
 {
   if('string' != typeof key) {
-    throw new Error(ss.StringPath.Errors.WRONGTYPE);
+    throw new TypeError();
   }
-  return this._resolvePath(key.split(this._dot), this._data, {isGet:true});
+  return this._resolvePath(key.split(this._dot), this._data, {isGet:true}, null, opt_throwError);
 };
 
 /**
@@ -152,9 +145,11 @@ ss.StringPath.prototype.remove = function(key) {
  *          isGet if we want to GET a variable
  *          isDel if we want to DELETE a variable
  * @param {*=} opt_val If we want to set, include here the value
+ * @param {boolean=} opt_throwError optionally throw a ReferenceError if key not found
+ *      Only valid for isGet and isDel mode
  * @return {*} The value we resolved
  */
-ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val) 
+ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError) 
 {
     var part = parts.shift();
     // check if we are in the last part of our path
@@ -167,7 +162,11 @@ ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val)
         if (op.isDel) {
             delete obj[part];
         } else {
-            return obj[part];
+            if (!goog.isDef(obj[part]) && opt_throwError) {
+              throw new ReferenceError();              
+            } else {
+              return obj[part];
+            }
         }
     }
     
@@ -175,7 +174,11 @@ ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val)
         if (op.isSet) {
             obj[part] = {};
         } else {
+          if (opt_throwError) {
+            throw new ReferenceError();
+          } else {
             return null;
+          }
         }
     } else if (op.isSet && 'object' != goog.typeOf(obj[part])) {
         // This is the case where we want to SET a value
@@ -184,5 +187,5 @@ ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val)
         // previously set as this is the described functionality
         obj[part] = {};
     }
-    return this._resolvePath(parts, obj[part], op, opt_val);
+    return this._resolvePath(parts, obj[part], op, opt_val, opt_throwError);
 };

@@ -23,66 +23,67 @@
  *********
  */
 
-goog.provide('ss.conf');
+goog.provide('ss.config');
 
-/**
- * Master configuration hash
- *
- * @type {Object}
- */
-ss.conf = {
-  /** @type {Object} third party integrations */
-  ext: {},
-  /** @type {Object} user related configurations */
-  user: {
-    /** @type {Object} user related configurations */    
-    typeMappings: {}
-  }
-};
+goog.require('ss.Config');
+
+ss.config = ss.Config.getInstance();
+
+//ss.config.setDefault({
+  /** Third party integrations */
+//  'ext': {},
+  
+  /** User related configurations */
+//  'user': {
+    /** @type {Object} user related configurations */
+ //   'typeMappings': {}
+//  }
+  
+///});
 
 /** @type {Object} Authentication related confs */
-ss.conf.auth = {
-  /** 
+//ss.config['auth'] = {
+  /**
    * @param {boolean} If we want to perform local auth with our servers
    *    on external source auth events
    */
-  performLocalAuth: false
-  
-};
+ // /'performLocalAuth': false
+//
+//};
 
 /** @type {Object} External authentication related confs */
-ss.conf.auth.ext = {
+//ss.config['auth']['ext'] = {
   /**
    * When an external auth source changes state and becomes authenticated
    * we use this URL to inform the server.
    */
-  authUrl: '/users/extAuth',
+  //'authUrl': '/users/extAuth',
   /**
    * @param {string} The string literal to use when posting the sourceId to the server
    */
-  localAuthSourceId: 'sourceId'
-};
+  //'localAuthSourceId': 'sourceId'
+//};
 
 /** @type {Object} Facebook auth plugin */
-ss.conf.auth.ext.fb = {
-  app_id: '186392014808053',
-  permissions: 'email,publish_stream'  
-};
+//ss.conf['auth'].ext.fb = {
+ // app_id: '186392014808053',
+ // permissions: 'email,publish_stream'
+//};
 
-/** @type {Object} Twitter auth plugin */
+/** @type {Object} Twitter auth plugin *
 ss.conf.auth.ext.twttr = {
   loginUrl: '/users/twitter',
   loginLinkAccountParams: '?link=1', // use when user wants to link account not login
   twttrPoll: null,
-  target: null  
+  target: null
 };
 
-/**
+**
  * A mapping of keys for a public user's data object
  *
  * @enum {string}
- */
-ss.conf.user.typeMappings.user = {
+ *
+ss.config.user.typeMappings.user = {
   id: 'id',
   username: 'username',
   firstName: 'firstName',
@@ -93,11 +94,11 @@ ss.conf.user.typeMappings.user = {
   extSource: 'extSource'
 };
 
-/**
+**
  * A mapping of the keys in the external auth source items DO
  * @enum {string}
- */
-ss.conf.user.typeMappings.extSource = {
+ *
+ss.config.user.typeMappings.extSource = {
   sourceId: 'sourceId',
   userId: 'userId',
   profileUrl: 'profileUrl',
@@ -105,16 +106,16 @@ ss.conf.user.typeMappings.extSource = {
   profileImageUrl: 'profileImageUrl'
 };
 
-/**
+**
  * An extension to ss.user.types.user for the currently logged
- * in user's data object. Contains keys that are only available to 
+ * in user's data object. Contains keys that are only available to
  * the owner of this data object
  * @enum {string}
- */
-ss.conf.user.typeMappings.ownuser = {
+ *
+ss.config.user.typeMappings.ownuser = {
   email: 'email',
   verified: 'verified'
 };
 
-
+*/
 

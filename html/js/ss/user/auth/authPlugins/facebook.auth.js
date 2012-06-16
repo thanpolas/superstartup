@@ -31,6 +31,7 @@ goog.provide('ss.user.auth.Facebook.EventType');
 goog.require('ss.user.auth.PluginModule');
 goog.require('ss.user.Auth');
 goog.require('ss.user.auth.EventType');
+goog.require('ss.config');
 
 /**
  * The Facebook auth constructor
@@ -45,6 +46,15 @@ ss.user.auth.Facebook = function()
   
   /** @const {boolean} */
   this.LOCALAUTH = true;
+  
+  // register our configuration
+  this._config = {
+    'app_id': '',
+    'permissions': ''    
+  };
+  if (ss.config) {
+    ss.config.register('user.auth.ext.fb', this);
+  }
 
   /**
    * @type {number?}

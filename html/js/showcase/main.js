@@ -49,6 +49,8 @@ showcase.init = function() {
   
   // Interface with ss
   ss.config.set('auth.performLocalAuth', true);
+  //app_id: '186392014808053',
+//  permissions: 'email,publish_stream'    
   
   ss.webInit();
   

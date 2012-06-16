@@ -37,3 +37,9 @@ ss.Module = function() {
 };
 goog.inherits(ss.Module, goog.events.EventTarget);
 
+/**
+ * A config hash
+ * @protected
+ * @type {!Object}
+ */
+ss.Module.prototype._config = {};

@@ -37,7 +37,7 @@ goog.require('ss.ajax');
 goog.require('ss.ready');
 goog.require('ss.Events');
 goog.require('ss.user');
-goog.require('ss.conf');
+goog.require('ss.config');
 goog.require('ss.Config');
 goog.require('ss.user.auth.Facebook');
 goog.require('ss.user.auth.Twitter');
@@ -96,15 +96,15 @@ ss.init = function ()
     main.addCheck('loaded');
     
     // init the Config class
-    ss.config = new ss.Config.getInstance();
-    ss.config.setDefault(ss.conf);
+    //ss.config = new ss.Config.getInstance();
+    //ss.config.setDefault(ss.conf);
 
     // Initialize web specific operations
     // Auth Ball is here
     //ss.webInit();
 
     ss.READY = true;
-    main.check('loaded');
+    //main.check('loaded');
 
 }; // function ss.Init
 
@@ -119,10 +119,6 @@ ss.init = function ()
  */
 ss.webInit = function ()
 {
-  // validate config
-  if (!ss.config.validate()) {
-    throw new Error('Config does not validate. Could not find key:' + ss.config.getInvalidKey());
-  }
   
   // write back our conf
   ss.conf = ss.config.toObject();

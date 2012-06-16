@@ -41,12 +41,11 @@ ss.user.auth.PluginModule = function() {
   this._auth = ss.user.Auth.getInstance();
   // set auth main as the parent event target
   this.setParentEventTarget(this._auth);
-  
 };
 goog.inherits(ss.user.auth.PluginModule, ss.Module);
 
 /**
- * @private 
+ * @private
  * @type {boolean} External source's Auth switch
  */
 ss.user.auth.PluginModule.prototype._isAuthed = false;
