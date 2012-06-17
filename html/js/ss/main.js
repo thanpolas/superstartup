@@ -81,30 +81,42 @@ ss.READY = false;
 ss.config = ss.Config.getInstance();
 
 /**
- * The Init function triggers synchronously as soon as execution
- * reaches this point. Based on our requirement schema, this file
- * is the last to be included.
+ * Kicks off the library.
+ *
+ * This funcion is exposed and is invoked by our handlers
  *
  * @return {void}
  */
 ss.init = function ()
 {
-    var logger = goog.debug.Logger.getLogger('ss.init');
-    if (goog.DEBUG) {
-      ss.debug.openFancyWin();
-    }
+  // start authentication process
+  ss.user.Auth.getInstance().init();
+};
 
-    logger.info('Starting...');
-    var main = ss.ready('main');
-    main.addCheck('loaded');
+/**
+ * The synchronous init
+ * This init is called synchronously as soon as the lib is loaded
+ * You can find the call at the end of this file
+ *
+ * Will initialize all classes and prepare library to get started
+ *
+ * @return {void}
+ */
+ss.syncInit = function()
+{
+  var logger = goog.debug.Logger.getLogger('ss.init');
+  if (goog.DEBUG) {
+    ss.debug.openFancyWin();
+  }
+  logger.info('Starting...');
+  
+  // initialize the auth class
+  ss.user.Auth.getInstance();
 
-
-    ss.READY = true;
-    main.check('loaded');
-
-}; // function ss.Init
-
-
+  // initialize ext auth plugins
+  ss.user.auth.Facebook.getInstance();
+  ss.user.auth.Twitter.getInstance();  
+};
 
 /**
  * The initialiser for web
@@ -116,12 +128,6 @@ ss.init = function ()
 ss.webInit = function ()
 {
   
-  // initialize the auth class
-  ss.user.Auth.getInstance();
-
-  // initialize ext auth plugins
-  ss.user.auth.Facebook.getInstance();
-  ss.user.auth.Twitter.getInstance();
 
   // start loading twitter's widgets after 500ms
   setTimeout(function(){
@@ -132,8 +138,14 @@ ss.webInit = function ()
 }; // ss.webInit
 
 
-// synchronous execution - hooks for server2js
+// synchronous execution
+// hooks for server2js
+// start of synchronous (silent) initialization of the library
 (function(){
+
+  // wake up the monster
+  ss.syncInit();
+    
   var newUserEvent = function() {
     // trigger new user event
     ss.user.auth.events.runEvent('newUser');
@@ -154,6 +166,5 @@ ss.webInit = function ()
   // Write permanent cookie request (first time ever visitor)
   ss.server2js.hook('25', ss.web.cookies.writePermCook);
 
-  // wake up the monster
-  ss.init();
+
 })();

@@ -49,6 +49,12 @@ ss.user.auth.Facebook = function()
   // set required confs
   this.config('app_id', '');
   this.config('permissions', '');
+  // If this is set to false, we assume that the FB JS API was loaded
+  // synchronously
+  this.config('loadFBjsAPI', true);
+  this.config('jsAPI', 'connect.facebook.net/en_US/all.js');
+  this.config('jsAPIdebug', 'static.ak.fbcdn.net/connect/en_US/core.debug.js');
+
   // register our configuration
   ss.config && ss.config.register('user.auth.ext.fb', this._config);
 
@@ -57,8 +63,6 @@ ss.user.auth.Facebook = function()
    * @private
    */
   this._appId;
-
-
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -103,13 +107,14 @@ ss.user.auth.Facebook.prototype.sourceId = 'Facebook';
 ss.user.auth.Facebook.prototype.init = function(opt_e)
 {
   this.logger.info('Init init(). FB JS API loaded:' + this._FBAPILoaded);
-  
+
   if (!this._FBAPILoaded) {
     // API not loaded yet
-    // start async loading of FB JS API
-    // and listen for load event
-    this._loadExtAPI();    
-    this.addEventListener(ss.user.auth.Facebook.EventType.JSAPILOADED, this.initAuthCheck, false, this);
+    // listen for load event
+    // and start async loading of FB JS API
+    this.addEventListener(ss.user.auth.Facebook.EventType.JSAPILOADED, this.init, false, this);    
+    this._loadExtAPI();
+
     return;
   }
 
@@ -161,9 +166,20 @@ ss.user.auth.Facebook.prototype._getAppId = function ()
 ss.user.auth.Facebook.prototype._loadExtAPI = function ()
 {
   try {
-    if (this._FBAPILoaded)
+    this.logger.info('Init _loadExtAPI(). FB API Loaded:' + this._FBAPILoaded);
+
+    if (this._FBAPILoaded ) {
       return;
-    this.logger.info('Init _loadExtAPI()');
+    }
+
+    // If JS API loading is closed by config, we assume the API has been loaded
+    // synchronously
+    if (!this.config('loadFBjsAPI')) {
+      this.logger.warning('JS API load is closed from Config. Assuming API loaded synchronously');
+      this.extAPIloaded();
+      return;
+    }
+
 
     // capture FB API Load event
     goog.global['fbAsyncInit'] = goog.bind(this._extAPIloaded, this);
@@ -172,9 +188,9 @@ ss.user.auth.Facebook.prototype._loadExtAPI = function ()
     var e = document.createElement('script');
     var src = document.location.protocol;
     if (ss.DEVEL) {
-      src += '//static.ak.fbcdn.net/connect/en_US/core.debug.js';
+      src += '//' + this.config('jsAPIdebug');
     } else {
-      src += '//connect.facebook.net/en_US/all.js';
+      src += '//' + this.config('jsAPI');
     }
     e['src'] = src;
     e['async'] = true;
@@ -197,7 +213,6 @@ ss.user.auth.Facebook.prototype._extAPIloaded = function ()
   this._FBinit();
   // dispatch fb init first, then js api loaded event
   this.dispatchEvent(ss.user.auth.Facebook.EventType.JSAPILOADED);
-
 };
 
 /**
@@ -222,7 +237,6 @@ ss.user.auth.Facebook.prototype._FBinit = function ()
 
     // catch session change events
     FB.Event.subscribe('auth.sessionChange', this._sessionChange);
-
 };
 
 /**

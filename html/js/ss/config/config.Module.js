@@ -51,8 +51,16 @@ goog.addSingletonGetter(ss.Config);
 
 /** @enum {string} Error strings this class throws */
 ss.Config.Error = {
-  methodRemoved: 'This method has been removed from this Class'
+  methodRemoved: 'method not supported'
 };
+
+/**
+ * A logger to help debugging
+ * @type {goog.debug.Logger}
+ * @private
+ */
+ss.Config.prototype.logger =  goog.debug.Logger.getLogger('ss.Config');
+
 
 /**
  * Use this setter to setup the original (default) configuration.
@@ -63,11 +71,12 @@ ss.Config.Error = {
  * set paths / keys by throwing an Error
  *
  * @param {string} path a string path
- * @param {Object} selfObj an Object or an instance of ss.Module
+ * @param {Object} objConf an Object with the key/value pairs
  * @return {void}
  */
-ss.Config.prototype.register = function(path, selfObj)
+ss.Config.prototype.register = function(path, objConf)
 {
+  this.logger.config('Registering: ' + path);
   var exists = true;
   try {
     this._origConf.get(path, true);
@@ -77,11 +86,11 @@ ss.Config.prototype.register = function(path, selfObj)
   if (exists) {
     throw new Error('Key / path already exists');
   }
+  
   // set to original config map
-  this._origConf.set(path, selfObj);
+  this._origConf.set(path, objConf);
   // set to own map
-  ss.Config.superClass_.set.call(this, path, selfObj);
-
+  ss.Config.superClass_.set.call(this, path, objConf);
 };
 
 /**
@@ -97,9 +106,11 @@ ss.Config.prototype.register = function(path, selfObj)
  */
 ss.Config.prototype.set = function(key, value)
 {
+  this.logger.fine('Setting: ' + key);
+  
   // check if value is object
   if (goog.isObject(value)) {
-    throw new TypeError('Object type for value not allowed');
+    throw new TypeError('value cannot be object type');
   }
   
   // get the value from original config with the throw ReferenceError 
@@ -114,10 +125,10 @@ ss.Config.prototype.set = function(key, value)
   }
   
   if (exists && goog.typeOf(value) != goog.typeOf(val)) {
-    throw new TypeError('Expected:' + goog.typeOf(val) + ' got:' + goog.typeOf(value));
+    throw new TypeError('Expected:' + goog.typeOf(val) + ' got:' + goog.typeOf(value) + ' for:' + key);
   }
   // call our parent set method
-  ss.Config.superClass_.set.call(this, key, value);
+  goog.base(this, 'set', key, value);
 };
 
 /**

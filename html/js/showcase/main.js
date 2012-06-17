@@ -52,7 +52,7 @@ showcase.init = function() {
   ss.config.set('user.auth.ext.fb.app_id', '186392014808053');
   ss.config.set('user.auth.ext.fb.permissions', 'email,publish_stream');  
   
-  ss.webInit();
+  ss.init();
   
   } catch(e) {ss.error(e);}
 };
@@ -100,6 +100,6 @@ showcase.authState = function(state, opt_sourceId, opt_userDataObject)
 // subscribe to the auth state master event hook
 //ss.user.auth.events.addEventListener('authState', showcase.authState);
 
-// When Superstartup lib is ready, trigger our code
-ss.ready(showcase.init);
+// Kick off!
+showcase.init();
 

@@ -96,9 +96,7 @@ ss.user.auth.Error = {
   /**
    * External auth plugin has already registered
    */
-  ALREADY_REGISTERED: 'This ext auth plugin is already registered: ',
-  // Instanced passed not an intance of pluginModule
-  WRONG_TYPE: 'Not an instance of ss.ext.auth.PluginModule'
+  ALREADY_REGISTERED: 'This ext auth plugin is already registered: '
 };
 
 
@@ -147,6 +145,19 @@ ss.user.Auth.prototype._extAuthedSources = new ss.Map();
 ss.user.Auth.prototype._extSupportedSources = new ss.Map();
 
 /**
+ * Kicks off authentication flows for all ext auth sources
+ *
+ * @return {void}
+ */
+ss.user.Auth.prototype.init = function()
+{
+  this._extSupportedSources.forEach(function(key, value){
+    value.init();
+  });
+};
+
+
+/**
  * Registers an external authentication plugin.
  *
  * Right after registration, we start the initial auth check
@@ -161,7 +172,7 @@ ss.user.Auth.prototype.addExtSource = function(selfObj)
 
   // check if plugin is of right type
   if (!selfObj instanceof ss.user.auth.PluginModule) {
-    throw Error(ss.user.auth.Error.WRONG_TYPE);
+    throw TypeError();
   }
   // check if plugin already registered
   if (this._extSupportedSources.get(selfObj.sourceId)) {
