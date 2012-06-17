@@ -14,9 +14,6 @@
  * limitations under the License.
  * 
  * 
- * @author Athanasios Polychronakis <thanpolas@gmail.com>
- *
- *
  *
  *********
  * Superstartup master init file
@@ -25,6 +22,6 @@
 goog.provide('__initFile__');
 goog.require('ss');
 
-// If you plan on using the google closure library then insert here
-// your bootstrap require file
+// If you plan on using the google closure library and fusing with
+// this library then insert bellow the require to your namespace
 goog.require('showcase');
