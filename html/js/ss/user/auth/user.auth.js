@@ -83,6 +83,9 @@ ss.user.Auth = function()
   // extend our data object with the own user key/value pairs
   this._user.addAll(ss.user.types.ownuser);
 
+
+  // set the core API as the parent event target
+  this.setParentEventTarget(goog.global.s);
 };
 goog.inherits(ss.user.Auth, ss.Module);
 goog.addSingletonGetter(ss.user.Auth);
@@ -107,16 +110,16 @@ ss.user.auth.Error = {
 ss.user.auth.EventType = {
   // An external auth source has an auth change event
   // (from not authed to authed and vice verca)
-  EXTAUTHCHANGE: 'extAuthChange',
+  EXTAUTHCHANGE: 'user.extAuthChange',
   // We have a global auth change event
   // (from not authed to authed and vice verca)
   // use this eventype for authoritative changes
-  AUTHCHANGE: 'authChange',  
+  AUTHCHANGE: 'user.authChange',  
   // Trigger this event as soon as we can resolve
   // the auth status from an ext source
-  INITIALAUTHSTATUS: 'initialAuthStatus',
+  INITIALAUTHSTATUS: 'user.initialAuthStatus',
   // Triggers if authed user is new, first time signup
-  NEWUSER: 'newUser'
+  NEWUSER: 'user.newUser'
 };
 
 /**

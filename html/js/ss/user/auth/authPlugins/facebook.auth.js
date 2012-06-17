@@ -75,7 +75,7 @@ goog.addSingletonGetter(ss.user.auth.Facebook);
  * @enum {string}
  */
 ss.user.auth.Facebook.EventType = {
-  JSAPILOADED: 'jsAPIloaded'
+  JSAPILOADED: 'user.facebook.jsAPIloaded'
 };
 
 /**

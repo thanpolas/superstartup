@@ -17,7 +17,7 @@
  * @license Apache License, Version 2.0
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 03/Mar/2010
- * @package Superstartup framework
+ * @package Superstartup library
  *
  *********
  *  File:: main.js
@@ -30,6 +30,7 @@
 
 goog.provide('ss');
 goog.provide('ss.config');
+goog.provide('ss.Core');
 
 goog.require('ss.debug');
 goog.require('ss.metrics');
@@ -48,6 +49,8 @@ goog.require('ss.server2js');
 goog.require('ss.web.system');
 goog.require('ss.web.cookies');
 goog.require('ss.web.user');
+
+goog.require('s');
 
 
 
@@ -81,16 +84,43 @@ ss.READY = false;
 ss.config = ss.Config.getInstance();
 
 /**
+ * The base class
+ *
+ * This class will be exported as our main entry point
+ *
+ * @constructor
+ * @extends {ss.Module}
+ */
+ss.Core = function()
+{
+  goog.base(this);
+  
+  /** @type {ss.Config} Singleton config instance */
+  this.config = ss.Config.getInstance();  
+  
+  /**
+   * The instance of the user auth class
+   * @type {ss.user.Auth}
+   */
+  this.user;  
+};
+goog.inherits(ss.Core, ss.Module);
+goog.addSingletonGetter(ss.Core);
+
+ss.Core.prototype.logger = goog.debug.Logger.getLogger('ss.Core');
+
+/**
  * Kicks off the library.
  *
  * This funcion is exposed and is invoked by our handlers
  *
  * @return {void}
  */
-ss.init = function ()
+ss.Core.prototype.init = function ()
 {
+  this.logger.info('Kicking off init()');
   // start authentication process
-  ss.user.Auth.getInstance().init();
+  this.user.init();
 };
 
 /**
@@ -102,20 +132,23 @@ ss.init = function ()
  *
  * @return {void}
  */
-ss.syncInit = function()
+ss.Core.prototype.synchInit = function()
 {
-  var logger = goog.debug.Logger.getLogger('ss.init');
+
   if (goog.DEBUG) {
     ss.debug.openFancyWin();
   }
-  logger.info('Starting...');
+  this.logger.info('synchInit() Starting...');
+  /**
+   * The instance of the user auth class
+   * @type {ss.user.Auth}
+   */
+  this.user = ss.user.Auth.getInstance();
   
-  // initialize the auth class
-  ss.user.Auth.getInstance();
-
   // initialize ext auth plugins
   ss.user.auth.Facebook.getInstance();
-  ss.user.auth.Twitter.getInstance();  
+  ss.user.auth.Twitter.getInstance();
+ 
 };
 
 /**
@@ -143,8 +176,11 @@ ss.webInit = function ()
 // start of synchronous (silent) initialization of the library
 (function(){
 
+
+  // init our exposed API
+  var s = goog.global.s = ss.Core.getInstance();  
   // wake up the monster
-  ss.syncInit();
+  s.synchInit();
     
   var newUserEvent = function() {
     // trigger new user event
