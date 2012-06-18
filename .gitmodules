@@ -3,7 +3,7 @@
 	url = git@github.com:thanpolas/CodeIgniter.git
 [submodule "source/closure-library"]
 	path = source/closure-library
-	url = git@github.com:thanpolas/google-closure-library.git
+	url = https://github.com/jarib/google-closure-library.git
 [submodule "source/tests/qunit"]
 	path = source/tests/qunit
 	url = https://github.com/jquery/qunit.git
