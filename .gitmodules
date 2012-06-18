@@ -1,9 +1,9 @@
 [submodule "engine/CI/origin"]
 	path = engine/CI/origin
 	url = git@github.com:thanpolas/CodeIgniter.git
-[submodule "html/js/closure-library"]
-	path = html/js/closure-library
+[submodule "source/closure-library"]
+	path = source/closure-library
 	url = git@github.com:thanpolas/google-closure-library.git
-[submodule "html/js/tests/qunit"]
-	path = html/js/tests/qunit
+[submodule "source/tests/qunit"]
+	path = source/tests/qunit
 	url = https://github.com/jquery/qunit.git
