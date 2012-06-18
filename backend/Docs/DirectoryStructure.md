@@ -14,9 +14,8 @@ Directory Structure
     `assets/`
     `css/`
   `codeigniter/`
-    `www/`
-      `application/`
-      `system/`
-      `js` link to ~source/
-      `common` link to ~backend/common/
+    `application/`
+    `system/`
+    `js` link to ~source/
+    `common` link to ~backend/common/
 `workbench` Showcase / website required files
