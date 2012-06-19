@@ -9,7 +9,7 @@ use Time::Local;
 $dateStamp = strftime("%d-%m-%Y", localtime);
 ### Project Root
 $projectRoot = "../..";
-$jsroot = $projectRoot . "/html/js";
+$jsroot = $projectRoot . "/source";
 $closurelib = $jsroot . "/closure-library";
 $googPath = $jsroot . "/closure-library/closure/goog";
 $asyncPath = $jsroot . "/closure-library/third_party/closure/goog";

@@ -26,7 +26,6 @@
 
 
 goog.provide('ss.fb.API');
-goog.require('ss.CONSTS');
 
 /**
  * The post API class

@@ -18,12 +18,6 @@
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 03/Mar/2010
  * @package Superstartup library
- *
- *********
- *  File:: main.js
- *
- *********
- *
  */
 
  /** @fileoverview Superstartup library bootstrap file */

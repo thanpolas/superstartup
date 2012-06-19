@@ -26,7 +26,6 @@
 
 
 goog.provide('ss.fb.local');
-goog.require('ss.CONSTS');
 
 /**
  * Triggers when we have a facebook auth event

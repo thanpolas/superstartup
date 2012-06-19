@@ -14,8 +14,6 @@
  * limitations under the License.
  * 
  * 
- * @license Apache License, Version 2.0
- * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 20/May/2012
  *
  *********

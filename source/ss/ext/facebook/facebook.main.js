@@ -34,7 +34,6 @@
  */
 goog.provide('ss.fb');
 goog.require('ss.fb.local');
-goog.require('ss.CONSTS');
 goog.require('ss.fb.com');
 goog.require('goog.Uri');
 

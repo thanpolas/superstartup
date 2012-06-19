@@ -14,8 +14,6 @@
  * limitations under the License.
  * 
  * 
- * @license Apache License, Version 2.0
- * @author Athanasios Polychronakis <thanpolas@gmail.com>
  * createdate 19/May/2012
  *
  *********
@@ -28,6 +26,7 @@ goog.provide('ss.exports');
 goog.require('ss.metrics');
 goog.require('ss.server2js');
 
+goog.exportSymbol('ss', s);
 goog.exportSymbol('ss.server', ss.server2js.server);
 goog.exportSymbol('ss.metrics.trackEvent', ss.metrics.trackEvent);
 goog.exportSymbol('ss.metrics.trackMetrics', ss.metrics.trackMetrics);

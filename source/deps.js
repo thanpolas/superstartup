@@ -4,7 +4,7 @@ goog.addDependency("../../../init.js", ['__initFile__'], ['ss', 'showcase']);
 goog.addDependency("../../../showcase/main.js", ['showcase'], ['ss', 'showcase.widget.showObject']);
 goog.addDependency("../../../showcase/widgets/showObject.js", ['showcase.widget.showObject'], ['goog.debug']);
 goog.addDependency("../../../ss/api.js", ['s'], []);
-goog.addDependency("../../../ss/main.js", ['ss', 'ss.config'], ['ss.debug', 'ss.metrics', 'ss.error', 'ss.metadata', 'ss.ajax', 'ss.ready', 'ss.Events', 'ss.user', 'ss.Config', 'ss.user.auth.Facebook', 'ss.user.auth.Twitter', 'ss.helpers', 'ss.exports', 'ss.server2js', 'ss.web.system', 'ss.web.cookies', 'ss.web.user', 's']);
+goog.addDependency("../../../ss/main.js", ['ss', 'ss.config', 'ss.Core'], ['ss.debug', 'ss.metrics', 'ss.error', 'ss.metadata', 'ss.ajax', 'ss.ready', 'ss.Events', 'ss.user', 'ss.Config', 'ss.user.auth.Facebook', 'ss.user.auth.Twitter', 'ss.helpers', 'ss.exports', 'ss.server2js', 'ss.web.system', 'ss.web.cookies', 'ss.web.user', 's']);
 goog.addDependency("../../../ss/ssAPI.js", [], []);
 goog.addDependency("../../../ss/config/config.Module.js", ['ss.Config'], ['ss.StringPath']);
 goog.addDependency("../../../ss/config/mappings.user.js", [], []);
