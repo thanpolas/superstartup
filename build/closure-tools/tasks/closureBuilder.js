@@ -30,7 +30,9 @@
        
        // the following options are optional.
        options: {
-         output_mode: '', // 'list', 'script' or 'compiled'
+         // 'list', 'script' or 'compiled'. 
+         // If compiler is set 'compiled' mode is enforced
+         output_mode: '', 
          output_file: '', // if not set output to stdout
          compiler: '', // if we also want to compile, location of the compiler .jar
          compiler_options: {
@@ -209,7 +211,7 @@ function compileCommand(grunt, params, data)
 
   // check if output file is defined
   if (data.options.output_file && data.options.output_file.length) {
-    cmd += ' --output_file=' + data.options.output_path;
+    cmd += ' --output_file=' + data.options.output_file;
   }
 
   // if compile modestart digging
@@ -245,8 +247,7 @@ function compileCommand(grunt, params, data)
 function executeCommand(grunt, command, done)
 {
   grunt.log.writeln('Executing: '.blue + command);
-  exec(command, function(err, stdout, stderr) {
-    console.log('stuff stuff stuff');
+  exec(command, function execCB(err, stdout, stderr) {
     if (err) {
       grunt.warn(err);
       done(false);

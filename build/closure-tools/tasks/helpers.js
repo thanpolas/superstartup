@@ -1,5 +1,4 @@
 module.exports = function(grunt) {
-
   /**
    * Determines if given parameter is an array or a string and 
    * returns proper string
@@ -15,5 +14,4 @@ module.exports = function(grunt) {
       return ' ' + directive + ' ' + String(param);
     }
   });
-
 };

@@ -52,6 +52,7 @@ module.exports = function(grunt) {
         root: 'source',
         options: {
           compiler: 'build/bin/Third-Party/closure_compiler/compiler.jar',
+          output_file: 'dist/compiled.js',
           compiler_options: {
             compilation_level: 'ADVANCED_OPTIMIZATIONS',
             externs: [externsPath + 'compiler_externs.js',
