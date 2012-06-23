@@ -1,9 +1,12 @@
-[submodule "engine/CI/origin"]
-	path = engine/CI/origin
-	url = git@github.com:thanpolas/CodeIgniter.git
-[submodule "html/js/closure-library"]
-	path = html/js/closure-library
-	url = git@github.com:thanpolas/google-closure-library.git
-[submodule "html/js/tests/qunit"]
-	path = html/js/tests/qunit
+[submodule "source/closure-library"]
+	path = source/closure-library
+	url = https://github.com/jarib/google-closure-library.git
+[submodule "source/tests/qunit"]
+	path = source/tests/qunit
 	url = https://github.com/jquery/qunit.git
+[submodule "backend/codeigniter"]
+	path = backend/codeigniter
+	url = git@github.com:thanpolas/CodeIgniter.git
+[submodule "build/grunt-closure-tools"]
+	path = build/grunt-closure-tools
+	url = https://github.com/thanpolas/grunt-closure-tools.git

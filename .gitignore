@@ -1,4 +1,4 @@
-engine/bin/compiler.out
+build/bin/compiler.out
 *.pyc
 html/compil*
-engine/bin/modules/compiler.out
+build/bin/modules/compiler.out
