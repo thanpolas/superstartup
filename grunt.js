@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
-  grunt.loadTasks('build/closure-tools/tasks');
+  
+  grunt.loadTasks('build/grunt-closure-tools/tasks');
 
   var externsPath = 'build/bin/externs/';
 
@@ -36,38 +37,45 @@ module.exports = function(grunt) {
         poke: 'yes'
       }
     },
-    closureCalcDeps: {
+    closureDepsWriter: {
       run: {
         closureLibraryPath: 'source/closure-library/',
-        paths: 'source',
+        //files: 'source/init.js',
+        output_file: 'zit.deps',
         options: {
-          deps: 'source/closure-library'
+          //root: ['source/ss', 'source/closure-library', 'source/showcase']
+          root_with_prefix: '"source/ss ../.."'
+          //path_with_depspath
         }
       }
     },
     closureBuilder: {
-      complete: {
+      superstartup: {
         closureLibraryPath: 'source/closure-library',
         inputs: ['source/init.js'],
         root: 'source',
-        options: {
-          compiler: 'build/bin/Third-Party/closure_compiler/compiler.jar',
-          output_file: 'dist/compiled.js',
-          compiler_options: {
-            compilation_level: 'ADVANCED_OPTIMIZATIONS',
-            externs: [externsPath + 'compiler_externs.js',
-                externsPath + 'jquery-1.7.js',
-                externsPath + 'facebook_javascript_sdk.js',
-                externsPath + 'json.js'],
-            define: ["'goog.DEBUG=false'"],
-            warning_level: 'verbose',
-            jscomp_off: ['checkTypes', 'fileoverviewTags'],
-            summary_detail_level: 3,
-            only_closure_dependencies: null,
-            closure_entry_point: 'ss',            
-            output_wrapper: '(function(){%output%}).call(this);'
-          }
+        compile: true,
+        compiler: 'build/bin/Third-Party/closure_compiler/compiler.jar',
+        output_file: 'dist/compiled.js',
+        compiler_options: {
+          compilation_level: 'ADVANCED_OPTIMIZATIONS',
+          externs: [externsPath + '*.js'],
+          define: ["'goog.DEBUG=false'"],
+          warning_level: 'verbose',
+          jscomp_off: ['checkTypes', 'fileoverviewTags'],
+          summary_detail_level: 3,
+          only_closure_dependencies: null,
+          closure_entry_point: 'ss',            
+          output_wrapper: '(function(){%output%}).call(this);'
         }
+        
+      }
+    },
+    closureCompiler: {
+      target: {
+        closureCompiler: 'build/bin/Third-Party/closure_compiler/compiler.jar',
+        js: 'source/init.js',
+        output_file: 'compiled.js'
       }
     }
   });

@@ -7,3 +7,6 @@
 [submodule "backend/codeigniter"]
 	path = backend/codeigniter
 	url = git@github.com:thanpolas/CodeIgniter.git
+[submodule "build/grunt-closure-tools"]
+	path = build/grunt-closure-tools
+	url = https://github.com/thanpolas/grunt-closure-tools.git
