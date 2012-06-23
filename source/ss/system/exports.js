@@ -15,20 +15,17 @@
  * 
  * 
  * createdate 19/May/2012
- *
- *********
- *  File:: exports.js
- *  Declare all the symbols we want to export
- *********
- * 
  */
+ 
+/**
+ * @fileoverview Declare all the symbols we want to export
+ */
+ 
 goog.provide('ss.exports');
 goog.require('ss.metrics');
 goog.require('ss.server2js');
 
-goog.exportSymbol('ss', s);
 goog.exportSymbol('ss.server', ss.server2js.server);
 goog.exportSymbol('ss.metrics.trackEvent', ss.metrics.trackEvent);
 goog.exportSymbol('ss.metrics.trackMetrics', ss.metrics.trackMetrics);
 goog.exportSymbol('ss.metrics.trackPageview', ss.metrics.trackPageview);
-

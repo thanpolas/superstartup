@@ -23,10 +23,10 @@
  /** @fileoverview Superstartup library bootstrap file */
 
 goog.provide('ss');
+goog.provide('s');
+goog.require('ss.debug');
 goog.provide('ss.config');
 goog.provide('ss.Core');
-
-goog.require('ss.debug');
 goog.require('ss.metrics');
 goog.require('ss.error');
 goog.require('ss.metadata');
@@ -38,13 +38,14 @@ goog.require('ss.Config');
 goog.require('ss.user.auth.Facebook');
 goog.require('ss.user.auth.Twitter');
 goog.require('ss.helpers');
-goog.require('ss.exports');
-goog.require('ss.server2js');
 goog.require('ss.web.system');
 goog.require('ss.web.cookies');
 goog.require('ss.web.user');
-
 goog.require('s');
+goog.require('ss.server2js');
+goog.require('ss.exports');
+
+
 
 
 
@@ -144,25 +145,6 @@ ss.Core.prototype.synchInit = function()
   ss.user.auth.Twitter.getInstance();
  
 };
-
-/**
- * The initialiser for web
- * Keep web logic isolated from our library's core for
- * easy exclusion when run on other environments
- *
- * @return {void}
- */
-ss.webInit = function ()
-{
-  
-
-  // start loading twitter's widgets after 500ms
-  setTimeout(function(){
-    var twString = '<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>';
-    $('body').append(twString);
-  }, 500);
-
-}; // ss.webInit
 
 
 // synchronous execution

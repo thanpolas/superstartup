@@ -24,4 +24,3 @@
 
  /** @fileoverview The publicly exposed API */
 
-goog.provide('s');

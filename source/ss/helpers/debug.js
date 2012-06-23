@@ -25,7 +25,6 @@
  /** @fileoverview Debug functions and helpers */
 
 goog.provide('ss.debug');
-
 goog.require('goog.debug');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');

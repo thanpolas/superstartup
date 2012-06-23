@@ -29,9 +29,8 @@
   */
 
 goog.provide('ss.Config');
-
+goog.require('ss.debug');
 goog.require('ss.StringPath');
-
 
 /**
  * A generic config setter / getter

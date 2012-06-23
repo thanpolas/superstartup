@@ -28,24 +28,19 @@ module.exports = function(grunt) {
       bar: 'hello world',
       baz: false
     },
-    closureTools: {
-      go: {
-        run: 'wtf',
-        fart: 1
-      },
-      zit: {
-        poke: 'yes'
-      }
-    },
     closureDepsWriter: {
-      run: {
+      ss: {
         closureLibraryPath: 'source/closure-library/',
-        //files: 'source/init.js',
-        output_file: 'zit.deps',
+        output_file: 'source/deps-ss.js',
         options: {
-          //root: ['source/ss', 'source/closure-library', 'source/showcase']
-          root_with_prefix: '"source/ss ../.."'
-          //path_with_depspath
+          root_with_prefix: ['"source/ss ../../../ss"']
+        }
+      },      
+      showcase: {
+        closureLibraryPath: 'source/closure-library/',
+        output_file: 'source/deps-showcase.js',
+        options: {
+          root_with_prefix: ['"source/showcase ../../../showcase"']
         }
       }
     },
@@ -81,7 +76,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'closureBuilder');
+  grunt.registerTask('default', 'closureDepsWriter');
 
   // Create a new task.
   grunt.registerTask('awesome', 'Print out "awesome!!!"', function() {

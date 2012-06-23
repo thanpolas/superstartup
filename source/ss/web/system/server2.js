@@ -22,7 +22,6 @@
  *
  * @see https://github.com/thanpolas/server2js
  */
-
 goog.provide('ss.server2js');
 
 /**
@@ -57,7 +56,7 @@ ss.server2js._readyHooks = [];
 
 
 /**
- * Run this function from inlined JS code in your DOM
+ * Run this function synchronously on your html page
  *
  * @export
  * @param {ss.server2js.dataInput} dataInput

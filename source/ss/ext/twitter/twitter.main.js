@@ -50,6 +50,13 @@ ss.twit.db = {
 ss.twit.init = function ()
 {
   ss.twit.db.twttrPoll = setInterval(ss.twit._checkTwttrLoad, 300);
+  
+  // start loading twitter's widgets after 500ms
+  setTimeout(function(){
+    var twString = '<script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>';
+    $('body').append(twString);
+  }, 500);
+    
 }; // function ss.twit.Init
 
 /**
