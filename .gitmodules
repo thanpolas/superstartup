@@ -10,3 +10,6 @@
 [submodule "build/grunt-closure-tools"]
 	path = build/grunt-closure-tools
 	url = https://github.com/thanpolas/grunt-closure-tools.git
+[submodule "source/ss/modules/server2.js"]
+	path = source/ss/modules/server2.js
+	url = https://github.com/thanpolas/server2js.git
