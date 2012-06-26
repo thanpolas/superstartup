@@ -2,3 +2,4 @@ build/bin/compiler.out
 *.pyc
 html/compil*
 build/bin/modules/compiler.out
+node_modules
