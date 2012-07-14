@@ -354,12 +354,12 @@ ss.user.Auth.prototype.isAuthed = function()
  * If current user is authenticated with specified external
  * auth source
  *
- * @param {ss.user.types.extSourceId} SOURCEID
+ * @param {ss.user.types.extSourceId} sourceId
  * @return {boolean}
  */
-ss.user.Auth.prototype.isExtAuthed = function(SOURCEID)
+ss.user.Auth.prototype.isExtAuthed = function(sourceId)
 {
-    return this._extAuthedSources.get(SOURCEID) || false;
+    return this._extAuthedSources.get(sourceId) || false;
 };
 
 /**

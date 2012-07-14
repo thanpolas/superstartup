@@ -31,12 +31,12 @@ goog.provide('ss.user.auth.PluginInterface');
 ss.user.auth.PluginInterface = function(){};
 
 /**
- * @type {ss.user.types.extSourceId} The plugin's name (e.g. Facebook)
+ * @const {ss.user.types.extSourceId} The plugin's name (e.g. Facebook)
  */
-ss.user.auth.PluginInterface.prototype.sourceId;
+ss.user.auth.PluginInterface.prototype.SOURCEID;
 
 /**
- * @const {boolean} If this plugin needs to follow up authentication 
+ * @const {boolean} If this plugin needs to follow up authentication
  *      with server
  */
 ss.user.auth.PluginInterface.prototype.LOCALAUTH;
@@ -85,8 +85,8 @@ ss.user.auth.PluginInterface.prototype.isAuthed = function(){};
 ss.user.auth.PluginInterface.prototype.getUser = function(){};
 
 /**
- * Starts off the plugin. 
- * (lazy) Loads any required JS API. 
+ * Starts off the plugin.
+ * (lazy) Loads any required JS API.
  * And performs initial authentication checks
  * When a definitive result is produced, dispatches the INITIALAUTHSTATUS
  * event

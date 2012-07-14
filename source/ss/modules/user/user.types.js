@@ -29,7 +29,7 @@ goog.require('ss.Map');
 
 /**
  * @typedef {string} The plugin's name type, a single unique string
- *    for the external authentication service (e.g. Facebook)
+ *    for the external authentication service (e.g. Facebook).
  */
 ss.user.types.extSourceId;
 
@@ -87,7 +87,7 @@ ss.user.types.user = {
 
 /**
  * An extension to ss.user.types.user for the currently logged
- * in user's data object. Contains keys that are only available to 
+ * in user's data object. Contains keys that are only available to
  * the owner of this data object
  * @type {Object}
  */
