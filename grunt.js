@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-  
+
   grunt.loadTasks('build/grunt-closure-tools/tasks');
 
   var externsPath = 'build/bin/externs/';
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
         options: {
           root_with_prefix: ['"source/ss ../../../ss"']
         }
-      },      
+      },
       showcase: {
         closureLibraryPath: 'source/closure-library/',
         output_file: 'source/deps-showcase.js',
@@ -60,10 +60,10 @@ module.exports = function(grunt) {
           jscomp_off: ['checkTypes', 'fileoverviewTags'],
           summary_detail_level: 3,
           only_closure_dependencies: null,
-          closure_entry_point: 'ss',            
+          closure_entry_point: 'ss',
           output_wrapper: '(function(){%output%}).call(this);'
         }
-        
+
       }
     },
     closureCompiler: {
@@ -79,10 +79,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', 'closureDepsWriter');
 
   // Create a new task.
-  grunt.registerTask('awesome', 'Print out "awesome!!!"', function() {
-    var awesome = grunt.helper('awesome');
-    grunt.log.write(awesome);
-  });
+  grunt.registerTask('deps','closureDepsWriter');
 
   // Register a helper.
   grunt.registerHelper('awesome', function() {

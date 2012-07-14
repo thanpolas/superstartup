@@ -27,18 +27,29 @@ goog.provide('ss.FancyGetSet');
  * The fancy Get Set constructor.
  * Returns the .getSet method which does the fancy Get/Set
  * @constructor
- * @param {!Object}
+ * @param {Object=} opt_object Give an object or use a new one.
+ * @return {function(string=, *=)} returns the getSet method
+ *                            along with all other methods.
  */
-ss.FancyGetSet = function(object)
+ss.FancyGetSet = function(opt_object)
 {
   /**
    * The object we are setting / getting
    * @private
    * @type {!Object}
    */
-  this._obj = object;
-  return goog.bind(this.getSet, this);
+  this._obj = opt_object || {};
+
+  // HACK HACK
+  // encapsulation hack so returned object with the 'new' keyword
+  // is actually the getSet method which has all other methods
+  // attached
+  var capsule = goog.bind(this.getSet, this);
+  capsule.toObject = goog.bind(this.toObject, this);
+
+  return capsule;
 };
+
 /**
  * Set or get config values.
  *
@@ -75,3 +86,14 @@ ss.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
     break;
   }
 };
+
+/**
+ * Return the object representation of the instance
+ *
+ * @return {!Object} The stored object.
+ */
+ss.FancyGetSet.prototype.toObject = function()
+{
+  return this._obj;
+};
+

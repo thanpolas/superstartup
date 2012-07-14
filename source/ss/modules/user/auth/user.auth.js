@@ -23,12 +23,14 @@
  * @fileoverview Handles user authentication
  */
 goog.provide('ss.user.Auth');
+goog.provide('ss.user.auth');
 goog.provide('ss.user.auth.EventType');
 goog.provide('ss.user.auth.Error');
 
 goog.require('ss.Module');
 goog.require('ss.DynamicMap');
 goog.require('ss.user.types');
+goog.require('ss.Config');
 
 /**
  * User authentication class
@@ -45,34 +47,31 @@ ss.user.Auth = function()
    * @private
    */
   this._isAuthed = false;
-  
-  /**
-   * Our config
-   * @inheritdoc
-   */
-  this._config = {
-    // if we'll check auth events of ext sources with our server
-    'performLocalAuth': false,
-    // The var name to use when (ajax) posting the sourceId to the server
-    // depends on 'performLocalAuth'
-    'localAuthSourceId': 'sourceId',
-    // When an external auth source becomes authenticated
-    // we use this URL to inform the server.
-    // Depends on 'performLocalAuth'
-    // If ext auth plugin has own url set we use that instead
-    'authUrl': '/users/extAuth'
-  };
-    
-  // register to config class if it exists
-  ss.config && ss.config.register('user.auth', this._config);
 
   /**
-   * performLocalAuth is used multiple times
-   * assign it to a compressable by the compiler private property
+   * Config parameters
+   */
+  // if we'll check auth events of ext sources with our server
+  this.config('performLocalAuth', false);
+  // The var name to use when (ajax) posting the SOURCEID to the server
+  // depends on 'performLocalAuth'
+  this.config('localAuthSourceId', 'sourceId');
+  // When an external auth source becomes authenticated
+  // we use this URL to inform the server.
+  // Depends on 'performLocalAuth'
+  // If ext auth plugin has own url set we use that instead
+  this.config('authUrl', '/users/extAuth');
+  // register our config
+  ss.Config.getInstance().register(ss.user.auth.CONFIG_PATH, this.config.toObject());
+
+  /**
+   * performLocalAuth config parameter is used multiple times
+   * we'll use this private symbol to assign it so it can get
+   * compressed better by the compiler
    * @private
    * @type {boolean}
    */
-  this._localAuth = this._config['performLocalAuth'];
+  this._localAuth = false;
 
   /**
    * The user data object
@@ -83,13 +82,16 @@ ss.user.Auth = function()
   // extend our data object with the own user key/value pairs
   this._user.addAll(ss.user.types.ownuser);
 
-
-  // set the core API as the parent event target
-  this.setParentEventTarget(goog.global.s);
 };
 goog.inherits(ss.user.Auth, ss.Module);
 goog.addSingletonGetter(ss.user.Auth);
 
+
+/**
+ * String path that we'll store the config
+ * @const {string}
+ */
+ss.user.auth.CONFIG_PATH = 'user.auth';
 
 /**
  * Errors thrown by main external auth class.
@@ -114,7 +116,7 @@ ss.user.auth.EventType = {
   // We have a global auth change event
   // (from not authed to authed and vice verca)
   // use this eventype for authoritative changes
-  AUTHCHANGE: 'user.authChange',  
+  AUTHCHANGE: 'user.authChange',
   // Trigger this event as soon as we can resolve
   // the auth status from an ext source
   INITIALAUTHSTATUS: 'user.initialAuthStatus',
@@ -134,7 +136,7 @@ ss.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ss.user.Auth');
  * values, indicating that we are authed on these
  * external sources
  * @private
- * @type {goog.structs.Map.<ss.user.types.extSourceId, boolean>} bool is always true
+ * @type {ss.Map.<ss.user.types.extSourceId, boolean>} bool is always true
  */
 ss.user.Auth.prototype._extAuthedSources = new ss.Map();
 
@@ -143,7 +145,7 @@ ss.user.Auth.prototype._extAuthedSources = new ss.Map();
  * The external Sources IDs will be used as keys and the
  * instanciations of the ext auth plugins as values
  * @private
- * @type {goog.structs.Map.<ss.user.types.extSourceId, Object>}
+ * @type {ss.Map.<ss.user.types.extSourceId, Object>}
  */
 ss.user.Auth.prototype._extSupportedSources = new ss.Map();
 
@@ -154,6 +156,9 @@ ss.user.Auth.prototype._extSupportedSources = new ss.Map();
  */
 ss.user.Auth.prototype.init = function()
 {
+  // get config parameters and apply them to our local config container
+  this._configApply(ss.Config.getInstance().get(ss.user.auth.CONFIG_PATH));
+
   this._extSupportedSources.forEach(function(key, value){
     value.init();
   });
@@ -171,19 +176,19 @@ ss.user.Auth.prototype.init = function()
  */
 ss.user.Auth.prototype.addExtSource = function(selfObj)
 {
-  this.logger.info('Adding auth source:' + selfObj.sourceId);
+  this.logger.info('Adding auth source:' + selfObj.SOURCEID);
 
   // check if plugin is of right type
   if (!selfObj instanceof ss.user.auth.PluginModule) {
     throw TypeError();
   }
   // check if plugin already registered
-  if (this._extSupportedSources.get(selfObj.sourceId)) {
-    throw Error(ss.user.auth.Error.ALREADY_REGISTERED + selfObj.sourceId);
+  if (this._extSupportedSources.get(selfObj.SOURCEID)) {
+    throw Error(ss.user.auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
   }
 
   // add the new plugin to our map
-  this._extSupportedSources.set(selfObj.sourceId, selfObj);
+  this._extSupportedSources.set(selfObj.SOURCEID, selfObj);
 
   // event listeners
   selfObj.addEventListener(ss.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
@@ -199,7 +204,7 @@ ss.user.Auth.prototype.addExtSource = function(selfObj)
  */
 ss.user.Auth.prototype._initAuthStatus = function(e)
 {
-  this.logger.info('initial auth status dispatched From:' + e.target.sourceId + ' Source authed:' + e.target.isAuthed());
+  this.logger.info('initial auth status dispatched From:' + e.target.SOURCEID + ' Source authed:' + e.target.isAuthed());
 
   // if not authed no need to go further
   if (!e.target.isAuthed()) {
@@ -207,10 +212,10 @@ ss.user.Auth.prototype._initAuthStatus = function(e)
   }
 
   // we are authed with that source! Save it to our map
-  this._extAuthedSources.set(e.target.sourceId, true);
+  this._extAuthedSources.set(e.target.SOURCEID, true);
 
   // check if this auth plugin requires authentication with our server
-  e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);
+  e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.SOURCEID);
 
   // check if we were in a not authed state and change that
   if (!this._isAuthed && !this._localAuth) {
@@ -226,10 +231,10 @@ ss.user.Auth.prototype._initAuthStatus = function(e)
  */
 ss.user.Auth.prototype._authChange = function(e)
 {
-  this.logger.info('Auth CHANGE dispatched from:' + e.target.sourceId + ' Authed:' + e.target.isAuthed());
+  this.logger.info('Auth CHANGE dispatched from:' + e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
 
   // check if in our authed map
-  var inAuthMap = this._extAuthedSources.get(e.target.sourceId);
+  var inAuthMap = this._extAuthedSources.get(e.target.SOURCEID);
 
   if (e.target.isAuthed()) {
     // If authed and we already have it in map then it's a double trigger, ignore
@@ -238,10 +243,10 @@ ss.user.Auth.prototype._authChange = function(e)
       return;
     }
 
-    this._extAuthedSources.set(e.target.sourceId, true);
+    this._extAuthedSources.set(e.target.SOURCEID, true);
 
     // check if this auth plugin requires authentication with our server
-    e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.sourceId);
+    e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.SOURCEID);
 
     // check if we were in a not authed state and change that
     if (!this._isAuthed && !this._localAuth) {
@@ -255,7 +260,7 @@ ss.user.Auth.prototype._authChange = function(e)
     }
 
     // remove from map
-    this._extAuthedSources.remove(e.target.sourceId);
+    this._extAuthedSources.remove(e.target.SOURCEID);
 
     // check if was last auth source left and we were authed
     if (0 === this._extAuthedSources.getCount() && this._isAuthed) {
@@ -271,19 +276,19 @@ ss.user.Auth.prototype._authChange = function(e)
  * auth session is created, propagating from server back to the client
  *
  * @protected
- * @param {ss.user.types.extSourceId} sourceId
+ * @param {ss.user.types.extSourceId} SOURCEID
  * @return {void}
  */
-ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
+ss.user.Auth.prototype.verifyExtAuthWithLocal = function (SOURCEID)
 {
   if (!this._localAuth) {
     return;
   }
 
   // get plugin instance
-  var extInst = this._extSupportedSources.get(sourceId);
+  var extInst = this._extSupportedSources.get(SOURCEID);
 
-  this.logger.info('Init. _verifyExtAuthWithLocal(). sourceId :' + sourceId + ' Local auth started:' + extInst.localAuthInit);
+  this.logger.info('Init. _verifyExtAuthWithLocal(). SOURCEID :' + SOURCEID + ' Local auth started:' + extInst.localAuthInit);
 
   //check if we have already started auth with server
   if (extInst.localAuthInit) {
@@ -291,10 +296,10 @@ ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
   }
   extInst.localAuthInit = true;
   // get local auth url from ext plugin if it exists
-  var url = this._extSupportedSources.get(sourceId).config('authUrl');
+  var url = this._extSupportedSources.get(SOURCEID).config('authUrl');
   // create and start request
   var a = new ss.ajax(url || this._config['authUrl']);
-  a.addData(this._config['localAuthSourceId'], sourceId);
+  a.addData(this._config['localAuthSourceId'], SOURCEID);
 
   // response from server
   a.callback = goog.bind(this._serverAuthResponse, this); //callback of AJAX
@@ -313,12 +318,12 @@ ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 ss.user.Auth.prototype._serverAuthResponse = function(response)
 {
   this.logger.info('Init _serverAuthResponse(). status:' + response.status);
-  
+
   // if not a positive response, stop
   if (!response.status) {
     return;
   }
-  
+
   //TODO Implement this
 };
 
@@ -346,15 +351,15 @@ ss.user.Auth.prototype.isAuthed = function()
 };
 
 /**
- * If current user is authenticated with specified external 
+ * If current user is authenticated with specified external
  * auth source
  *
- * @param {ss.user.types.extSourceId} sourceId
+ * @param {ss.user.types.extSourceId} SOURCEID
  * @return {boolean}
  */
-ss.user.Auth.prototype.isExtAuthed = function(sourceId)
+ss.user.Auth.prototype.isExtAuthed = function(SOURCEID)
 {
-    return this._extAuthedSources.get(sourceId) || false;
+    return this._extAuthedSources.get(SOURCEID) || false;
 };
 
 /**
@@ -368,7 +373,7 @@ ss.user.Auth.prototype.isVerified = function()
 };
 
 /**
- * Logout from all auth sources, clear data objects 
+ * Logout from all auth sources, clear data objects
  * and dispose everything
  * @return {void}
  */
@@ -376,11 +381,11 @@ ss.user.Auth.prototype.logout = function()
 {
   // clear our dynamic map data object
   this._user.clear();
-  
+
   // we used goog.mixin() to do multiple inheritance for
   // events, thus we have to directly call event's disposeInternal
   goog.events.EventTarget.disposeInternal.call(this._user);
-  
+
   this._doAuth(false);
 };
 
