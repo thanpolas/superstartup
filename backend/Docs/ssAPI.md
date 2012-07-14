@@ -1,9 +1,7 @@
-/**
- * A scafolding of the superstartup API
- *
- * Draw a typical flow of initialization
- */
+# Scafolding of the superstartup API
 
+## Core functions
+```javascript
 // the main class, does ???
 ss();
 
@@ -14,21 +12,26 @@ ss.init();
 
 // check auth status
 ss.isAuthed();
+```
 
-/**
- * USER AUTHENTICATION
- */
+## User system
+
+The main dish of the superstartup library.
+
+### User Authentication
+
+```javascript
 // auth a user with given data object
 ss.user.auth(userObj);
 // login a user natively, opt_data is arbitrary dat to pass to server
 ss.user.login(username, password, perm, callback, opt_data);
 // logout
 ss.user.logout(opt_callback);
+```
 
-/**
- * USER MANIPULATION
- * of currently logged in user
- */
+### User Manipulation
+
+```javascript
 // get current user's complete data object
 ss.user() === ss.user.get() === ss.user.toObject();
 // get a specific param of user
@@ -39,11 +42,10 @@ ss.user(a, b, opt_callback) === ss.user.set(a, b, opt_callback);
 ss.user.set(a, b, false);
 // perform a save
 ss.user.save(opt_callback);
+```
 
-/**
- * EXTERNAL AUTH SOURCES
- *
- */
+### External Auth Sources
+```javascript
 // returns an array of strings with the supported external auth sources
 // we will name them 'sourceId'
 ss.user.getExtSources();
@@ -62,11 +64,11 @@ ext.logout(opt_callback);
 ext.getUser();
 // returns the string literal of the sourceId
 ext.sourceId();
+```
 
+### Other Users
 
-/**
- * OTHER USERS
- */
+```javascript
 // load other users
 ss.users.criteria({'id': [1,2,3]}).links('address').get(callback());
 
@@ -75,11 +77,11 @@ ss.users.criteria({'id': [1,2,3]}).links('address').get(callback());
 u() === u.get() === u.toObject();
 // get a specific param of user
 u('id') === u.get('id');
+```
 
+## Helper Functions
 
-/**
- * Helper functions
- */
+```javascript
 // set configuration
 ss.config.set('user.auth.param', b);
 
@@ -87,5 +89,5 @@ ss.config.set('user.auth.param', b);
 ss.server.hook(str, fn);
 // server interfaces with
 ss.server(str, obj);
-
+```
 
