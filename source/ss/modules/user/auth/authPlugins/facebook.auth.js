@@ -56,7 +56,7 @@ ss.user.auth.Facebook = function()
   this.config('jsAPIdebug', 'static.ak.fbcdn.net/connect/en_US/core.debug.js');
 
   // register our configuration
-  ss.config && ss.config.register('user.auth.ext.fb', this._config);
+  ss.Config.getInstance().register(ss.user.auth.Facebook.CONFIG_PATH, this.config());
 
   /**
    * @type {string?}
@@ -69,6 +69,13 @@ ss.user.auth.Facebook = function()
 };
 goog.inherits(ss.user.auth.Facebook, ss.user.auth.PluginModule);
 goog.addSingletonGetter(ss.user.auth.Facebook);
+
+/**
+ * String path that we'll store the config
+ * @const {string}
+ */
+ss.user.auth.Facebook.CONFIG_PATH = 'user.auth.ext.fb';
+
 
 /**
  * Special events dispatched by this plugin
@@ -85,16 +92,34 @@ ss.user.auth.Facebook.EventType = {
  */
 ss.user.auth.Facebook.prototype.logger =  goog.debug.Logger.getLogger('ss.user.auth.Facebook');
 
-/** @type {boolean} FB JS API is loaded */
+/**
+ * @type {boolean} FB JS API is loading...
+ * @private
+ */
+ss.user.auth.Facebook.prototype._FBAPILoading = false;
+
+/**
+ * @type {boolean} FB JS API is loaded
+ * @private
+ */
 ss.user.auth.Facebook.prototype._FBAPILoaded = false;
 
-/** @type {boolean} Got initial auth response from FB */
+/**
+ * @type {boolean} FB JS API has initialized successfully
+ * @private
+ */
+ss.user.auth.Facebook.prototype._FBAPIInited = false;
+
+/**
+ * @type {boolean} Got initial auth response from FB
+ * @private
+ */
 ss.user.auth.Facebook.prototype._FBGotResponce = false;
 
 /**
- * @type {ss.user.types.extSourceId} The plugin's name (e.g. Facebook)
+ * @const {ss.user.types.extSourceId} The plugin's name (e.g. Facebook)
  */
-ss.user.auth.Facebook.prototype.sourceId = 'Facebook';
+ss.user.auth.Facebook.prototype.SOURCEID = 'Facebook';
 
 /**
  * Start initial authentication checks
@@ -108,19 +133,24 @@ ss.user.auth.Facebook.prototype.init = function(opt_e)
 {
   this.logger.info('Init init(). FB JS API loaded:' + this._FBAPILoaded);
 
+  // get config parameters and apply them to our local config container
+  this._configApply(ss.Config.getInstance().get(ss.user.auth.Facebook.CONFIG_PATH));
+
+  // now that we have the new config check if we already have the API loaded
+  if (!this.config('loadFBjsAPI')) {
+    // trigger API load manually
+    this._extAPIloaded();
+  }
+
   if (!this._FBAPILoaded) {
     // API not loaded yet
     // listen for load event
     // and start async loading of FB JS API
-    this.addEventListener(ss.user.auth.Facebook.EventType.JSAPILOADED, this.init, false, this);    
+    this.addEventListener(ss.user.auth.Facebook.EventType.JSAPILOADED, this.init, false, this);
+
     this._loadExtAPI();
 
     return;
-  }
-
-  // check if called from event listener and stop propagation
-  if(opt_e) {
-    opt_e.stopPropagation();
   }
 
   // catch initial login status
@@ -166,9 +196,9 @@ ss.user.auth.Facebook.prototype._getAppId = function ()
 ss.user.auth.Facebook.prototype._loadExtAPI = function ()
 {
   try {
-    this.logger.info('Init _loadExtAPI(). FB API Loaded:' + this._FBAPILoaded);
+    this.logger.info('Init _loadExtAPI(). FB API Loading:' + this._FBAPILoading + ' Loaded:' + this._FBAPILoaded);
 
-    if (this._FBAPILoaded ) {
+    if (this._FBAPILoaded || this._FBAPILoading) {
       return;
     }
 
@@ -210,8 +240,11 @@ ss.user.auth.Facebook.prototype._extAPIloaded = function ()
 {
   this.logger.info('FB JS API Loaded');
   this._FBAPILoaded = true;
+
+  // attempt to initialize Facebook JS API
   this._FBinit();
-  // dispatch fb init first, then js api loaded event
+
+  // dispatch js api loaded event
   this.dispatchEvent(ss.user.auth.Facebook.EventType.JSAPILOADED);
 };
 
@@ -226,17 +259,27 @@ ss.user.auth.Facebook.prototype._extAPIloaded = function ()
  */
 ss.user.auth.Facebook.prototype._FBinit = function ()
 {
-  this.logger.info('Init _FBinit(). FB appId:' + this._getAppId());
-    FB.init({
-      'appId'  : this._getAppId(),
-      'status' : true, // check login status
-      'cookie' : true, // enable cookies to allow the server to access the session
-      'xfbml'  : true,  // parse XFBML
-      'oauth'  : true
-    });
+  // get app id
+  var appId = this._getAppId();
+  this.logger.info('Init _FBinit(). FB appId:' + appId);
+  // check if we have appId set
+  if ('' === appId) {
+    this.logger.warning('_FBinit:: Facebook application id was not set!');
+    throw new Error('FB appId not set');
+  }
+  var resp = FB.init({
+    'appId'  : this._getAppId(),
+    'status' : true, // check login status
+    'cookie' : true, // enable cookies to allow the server to access the session
+    'xfbml'  : true,  // parse XFBML
+    'oauth'  : true
+  });
 
-    // catch session change events
-    FB.Event.subscribe('auth.sessionChange', this._sessionChange);
+  // we initialized
+  this._FBAPIInited = true;
+
+  // catch session change events
+  FB.Event.subscribe('auth.sessionChange', this._sessionChange);
 };
 
 /**

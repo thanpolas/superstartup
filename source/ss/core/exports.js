@@ -12,20 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * createdate 19/May/2012
  */
- 
+
 /**
  * @fileoverview Declare all the symbols we want to export
  */
- 
+
 goog.provide('ss.exports');
 goog.require('ss.metrics');
 goog.require('ss.server2js');
+goog.require('ss.Core');
 
-goog.exportSymbol('ss.server', ss.server2js.server);
+goog.exportSymbol('ss.server', ss.Server2js.getInstance());
 goog.exportSymbol('ss.metrics.trackEvent', ss.metrics.trackEvent);
 goog.exportSymbol('ss.metrics.trackMetrics', ss.metrics.trackMetrics);
 goog.exportSymbol('ss.metrics.trackPageview', ss.metrics.trackPageview);
+
+
+if (!COMPILED) {
+  goog.exportSymbol('s', ss.Core.getInstance());
+}

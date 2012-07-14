@@ -33,7 +33,8 @@ goog.require('ss.user.Auth');
  * @constructor
  * @extends {ss.Module}
  */
-ss.user.auth.PluginModule = function() {
+ss.user.auth.PluginModule = function()
+{
   goog.base(this);
   /**
    * The user auth Class
@@ -41,34 +42,26 @@ ss.user.auth.PluginModule = function() {
    * @type {ss.user.Auth}
    */
   this._auth = ss.user.Auth.getInstance();
-  
+
   // set auth main as the parent event target
   this.setParentEventTarget(this._auth);
-  
+
   /**
-   * A fancy setter / getter instance
-   * Manages the local config (_config)
-   *
-   * @type {ss.fancyGetSet}
+   * @private
+   * @type {boolean} External source's Auth switch
    */
-   this.config = new ss.FancyGetSet(this._config);  
+  this._isAuthed = false;
+
+  /**
+   * Used by our instance handlers to know if we have started
+   * an auth crosscheck with local (server)
+   * @type {boolean}
+   */
+  this.localAuthInit = false;
+
+
 };
 goog.inherits(ss.user.auth.PluginModule, ss.Module);
-
-
-
-/**
- * @private
- * @type {boolean} External source's Auth switch
- */
-ss.user.auth.PluginModule.prototype._isAuthed = false;
-
-/**
- * Used by our instance handlers to know if we have started
- * an auth crosscheck with local (server)
- * @type {boolean}
- */
-ss.user.auth.PluginModule.prototype.localAuthInit = false;
 
 /**
  * Current user is authenticated with (ext auth source) service

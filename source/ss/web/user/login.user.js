@@ -80,7 +80,7 @@ ss.web.user.login.bindLogin = function()
 
         ss.twit.loginOpen();
 
-        ss.web.user.auth.events.runEvent('tw_click', elId);
+        //ss.web.user.auth.events.runEvent('tw_click', elId);
 
       } catch (e) {
         ss.error(e);
@@ -104,13 +104,13 @@ ss.web.user.login.bindLogin = function()
           logger.info('Facebook library not ready yet, created a listener and we now wait...');
           ss.web.user.db.fbClicked = true;
           // listen for FB auth event...
-          ss.ready('fb-auth').addListener(function(){
-            ss.web.user.db.fbClicked = false;
-            if (!ss.isAuthed()) {
-              // call ourselves
-              jel.click();
-            }
-          });
+          // ss.ready('fb-auth').addListener(function(){
+          //   ss.web.user.db.fbClicked = false;
+          //   if (!ss.isAuthed()) {
+          //     // call ourselves
+          //     jel.click();
+          //   }
+          // });
 
           // facebook not ready yet
           return;
@@ -120,11 +120,11 @@ ss.web.user.login.bindLogin = function()
         // launch facebook login dialog
         ss.fb.loginOpen(function(state){
           logger.info('Login return state:' + state);
-          ss.web.user.auth.events.runEvent('fb_click_reply', state);
+          //ss.web.user.auth.events.runEvent('fb_click_reply', state);
         });
 
         // trigger the facebook click event now
-        ss.web.user.auth.events.runEvent('fb_click', elId);
+        //ss.web.user.auth.events.runEvent('fb_click', elId);
 
       } catch (e) {
         ss.error(e);
