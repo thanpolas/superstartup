@@ -1,4 +1,4 @@
-# Scafolding of the superstartup API
+# Superstartup API Scaffolding
 
 ## Core functions
 ```javascript
@@ -68,9 +68,15 @@ ext.sourceId();
 
 ### Other Users
 
+Loading other users will rely heavily on the server's API. This part of the library will be optional. Will provide 2 basic layers of functionality:
+
+1. Delegating the REST API. Act as a cache container, storing every data object (user) which can be later queried with a rich expression format.
+2. Full stack operation. Achieving configurability of internal REST API to match the server's API.
+
 ```javascript
-// load other users
-ss.users.criteria({'id': [1,2,3]}).links('address').get(callback());
+// load the small data object of a set of users
+// based on given criteria
+ss.users.criteria({'id': [1,2,3]}).type('small').get(callback());
 
 // Callback will return an array of user objects, we'll name then u
 // get current user's complete data object
@@ -79,7 +85,46 @@ u() === u.get() === u.toObject();
 u('id') === u.get('id');
 ```
 
-## Helper Functions
+## Metrics System
+
+### Metadata Library
+
+The metadata library is the bridge between the current visitor [and or user] and metrics.
+
+### Analytics
+
+Thin wrappers for analytics services.
+
+```javascript
+// track an event
+ss.metrics.trackEvent(category, action, opt_label, opt_value);
+// track a page view
+ss.metrics.trackPageview(opt_pageURL);
+// Track an arbitrary event and save it to OUR server
+ss.metrics.trackMetrics(category, action, opt_label, opt_value, opt_value2, /*...*/);
+// A custom method that applies only to a specific analytics driver
+ss.metrics.mixpanel.nameTag(nameId);
+```
+
+## Social System
+
+The social systems implement known features of popular social networks in the form of plugins.
+
+```javascript
+// get a FB like button
+ss.social.fb.getLikeButton(url, opt_params, opt_width);
+
+// create a FB post
+var post = new ss.social.fb.Post();
+// set params
+post.setParams({picture: picUrl, caption: picCaption, link: picLink});
+// don't allow edit before post
+post.setEditBeforePost(false);
+// go
+post.perform();
+```
+
+## Helper Functions & Components
 
 ```javascript
 // set configuration

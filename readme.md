@@ -3,14 +3,14 @@
 Superstartup is a Javascript library that helps startups focus on what really matters for them. It does so by providing a robust, flexible and well tested solution on these high level tasks:
 
 * **User Authentication** External authentications (FB, Twitter, oAuth2...), data object management, query for users, manage users and all that jazz.
-* **Metrics** Inteligent set of libraries that help penetrate on visitors' behavior, convertions, regency and any small or big metric that needs to be measured.
-* **Social Tools** Sharing widgets, mechanisms and integrations with all the major social networks, interplexed with the metrics libraries for a crystal clear view on what is happening and where it happens in your site.
+* **Metrics** Intelligent set of libraries that help penetrate on visitors' behavior, conversions, regency and any small or big metric that needs to be measured.
+* **Social Tools** Sharing widgets, mechanisms and integrations for all the major social networks, wired to the metrics libraries for a crystal clear view on what is happening and where it happens in your site.
 
 Build to be framework and server API agnostic, superstartup will integrate seamlessly with any technology stack you may have.
 
 ## Status
 
-Still under heavy development, designing the API, deep wiring and grinding. A great time to pop in and [help steer the project]().
+Still under heavy development, designing the API, deep wiring and grinding. A great time to pop in and [help steer the project](https://github.com/thanpolas/superstartup/blob/master/backend/Docs/ssAPI.md).
 
 In the meantime please check the libraries that sprang out and are the foundations of Superstartup:
 
@@ -22,5 +22,7 @@ In the meantime please check the libraries that sprang out and are the foundatio
 
 ## Technology Stack
 
-Superstartup is being developed using the Google Closure Library, achieving maximum performance, extensibility and the smallest possible size a library could ever hope for.
+Superstartup is being developed using the [Google Closure Library](https://developers.google.com/closure/library/), achieving maximum performance, extensibility and utilizing the powerful [Closure Compiler](https://developers.google.com/closure/compiler/) to generate the smallest possible size a JS lib can have.
+
+To help with automating build tasks, the awesome [Grunt](https://github.com/cowboy/grunt#readme) is used.
 

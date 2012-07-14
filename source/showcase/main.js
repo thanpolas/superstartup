@@ -39,15 +39,15 @@ showcase.init = function() {
   var jCombo = $('#comboBox');
   if (!jCombo.length)
     return;
-  showcase.so = new showcase.widget.showObject({
-    comboBox: jCombo,
-    displayBox: $('#showObjects')
-  });
+  // showcase.so = new showcase.widget.showObject({
+  //   comboBox: jCombo,
+  //   displayBox: $('#showObjects')
+  // });
 
-  showcase.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()', ss.user.getUserDataObject);
-  showcase.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()', ss.user.getDummyObject);
+  // showcase.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()', ss.user.getUserDataObject);
+  // showcase.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()', ss.user.getDummyObject);
 
-  showcase.so.render();
+  // showcase.so.render();
 
   // Interface with ss
   s.config.set('user.auth.performLocalAuth', true);

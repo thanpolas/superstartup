@@ -29,14 +29,11 @@ goog.require('ss.metrics');
 goog.require('ss.error');
 goog.require('ss.metadata');
 goog.require('ss.ajax');
-goog.require('ss.user');
 goog.require('ss.Config');
 goog.require('ss.user.auth.Facebook');
 goog.require('ss.user.auth.Twitter');
 goog.require('ss.helpers');
-goog.require('ss.web.system');
 goog.require('ss.web.cookies');
-goog.require('ss.web.user');
 goog.require('ss.server2js');
 
 // ss.Core is special, is our core
