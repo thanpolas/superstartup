@@ -276,19 +276,19 @@ ss.user.Auth.prototype._authChange = function(e)
  * auth session is created, propagating from server back to the client
  *
  * @protected
- * @param {ss.user.types.extSourceId} SOURCEID
+ * @param {ss.user.types.extSourceId} sourceId
  * @return {void}
  */
-ss.user.Auth.prototype.verifyExtAuthWithLocal = function (SOURCEID)
+ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 {
   if (!this._localAuth) {
     return;
   }
 
   // get plugin instance
-  var extInst = this._extSupportedSources.get(SOURCEID);
+  var extInst = this._extSupportedSources.get(sourceId);
 
-  this.logger.info('Init. _verifyExtAuthWithLocal(). SOURCEID :' + SOURCEID + ' Local auth started:' + extInst.localAuthInit);
+  this.logger.info('Init. _verifyExtAuthWithLocal(). sourceId :' + sourceId + ' Local auth started:' + extInst.localAuthInit);
 
   //check if we have already started auth with server
   if (extInst.localAuthInit) {
@@ -296,10 +296,10 @@ ss.user.Auth.prototype.verifyExtAuthWithLocal = function (SOURCEID)
   }
   extInst.localAuthInit = true;
   // get local auth url from ext plugin if it exists
-  var url = this._extSupportedSources.get(SOURCEID).config('authUrl');
+  var url = this._extSupportedSources.get(sourceId).config('authUrl');
   // create and start request
   var a = new ss.ajax(url || this._config['authUrl']);
-  a.addData(this._config['localAuthSourceId'], SOURCEID);
+  a.addData(this._config['localAuthSourceId'], sourceId);
 
   // response from server
   a.callback = goog.bind(this._serverAuthResponse, this); //callback of AJAX

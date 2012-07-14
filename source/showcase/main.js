@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
@@ -28,12 +28,14 @@ goog.require('ss');
 
 goog.require('showcase.widget.showObject');
 
+var showcase = {};
+
 showcase.init = function() {
   try {
   var logger = goog.debug.Logger.getLogger('showcase.init');
 
   logger.info('Starting...');
-  
+
   var jCombo = $('#comboBox');
   if (!jCombo.length)
     return;
@@ -41,19 +43,19 @@ showcase.init = function() {
     comboBox: jCombo,
     displayBox: $('#showObjects')
   });
-  
+
   showcase.so.addObject('userObject', 'The user data object', 'ss.user.getUserDataObject()', ss.user.getUserDataObject);
   showcase.so.addObject('userDummyObject', 'A dummy user data object', 'ss.user.getDummyObject()', ss.user.getDummyObject);
 
   showcase.so.render();
-  
+
   // Interface with ss
   s.config.set('user.auth.performLocalAuth', true);
   s.config.set('user.auth.ext.fb.app_id', '186392014808053');
-  s.config.set('user.auth.ext.fb.permissions', 'email,publish_stream');  
-  
+  s.config.set('user.auth.ext.fb.permissions', 'email,publish_stream');
+
   s.init();
-  
+
   } catch(e) {ss.error(e);}
 };
 
@@ -73,10 +75,10 @@ showcase.authState = function(state, opt_sourceId, opt_userDataObject)
 
     var c = ss, w = c.web, j = jQuery, g = goog;
 
-    var log = goog.debug.Logger.getLogger('showcase.authState');  
-    
+    var log = goog.debug.Logger.getLogger('showcase.authState');
+
     log.info('Auth event is ready. State:' + state);
-    
+
     if (state) {
       // user is authed, get his data object...
       var u = opt_userDataObject;
@@ -92,9 +94,9 @@ showcase.authState = function(state, opt_sourceId, opt_userDataObject)
       $('#auth_state_content h4').text('');
       $('#user_data_object').text('');
       $('#login').css('display', 'block');
-      $('#logged_in').css('display', 'none');  
+      $('#logged_in').css('display', 'none');
     }
-    
+
 };
 
 // subscribe to the auth state master event hook

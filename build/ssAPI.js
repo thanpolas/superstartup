@@ -42,6 +42,7 @@ ss.user.save(opt_callback);
 
 /**
  * EXTERNAL AUTH SOURCES
+ *
  */
 // returns an array of strings with the supported external auth sources
 // we will name them 'sourceId'
@@ -51,8 +52,12 @@ ss.user.isExtAuthed(sourceId);
 // return the singleton instance of the specified source
 // we'll name it 'ext'
 ss.user.getExt(sourceId);
-
+// return boolean
 ext.isAuthed();
+// perform login with this service
+ext.login(opt_callback, opt_perms);
+// prefer the global logout
+ext.logout(opt_callback);
 // get the raw data object as passed from ext Source
 ext.getUser();
 // returns the string literal of the sourceId
@@ -63,20 +68,24 @@ ext.sourceId();
  * OTHER USERS
  */
 // load other users
-ss.users.criteria({'id': [1,2,3]}).links('address').get(fn);
+ss.users.criteria({'id': [1,2,3]}).links('address').get(callback());
+
+// Callback will return an array of user objects, we'll name then u
+// get current user's complete data object
+u() === u.get() === u.toObject();
+// get a specific param of user
+u('id') === u.get('id');
 
 
-
+/**
+ * Helper functions
+ */
 // set configuration
 ss.config.set('user.auth.param', b);
 
 // optionally, hook to server2js
-ss.server(str, fn);
+ss.server.hook(str, fn);
 // server interfaces with
-ss.server.server(str, obj);
-
-// listen on events
-ss.addEventListener(eventType, listener);
-
+ss.server(str, obj);
 
 
