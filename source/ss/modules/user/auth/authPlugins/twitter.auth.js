@@ -48,19 +48,25 @@ ss.user.auth.Twitter = function()
 
   this.config('loginUrl', '/users/twitter');
   // name of GET param to use when redirecting for twitter
-  // oAuth login, which will contain the current url so 
+  // oAuth login, which will contain the current url so
   // we know where to redirect the user once he/she comes
   // back from Twitter
   this.config('returnPathParam', 'url');
-  
+
   // register our configuration
-  ss.config && ss.config.register('user.auth.ext.twitter', this._config);  
+  ss.Config.getInstance().register(ss.user.auth.Twitter.CONFIG_PATH, this.config.toObject());
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
 };
 goog.inherits(ss.user.auth.Twitter, ss.user.auth.PluginModule);
 goog.addSingletonGetter(ss.user.auth.Twitter);
+
+/**
+ * String path that we'll store the config
+ * @const {string}
+ */
+ss.user.auth.Twitter.CONFIG_PATH = 'user.auth.ext.twitter';
 
 /**
  * A logger to help debugging
@@ -70,9 +76,9 @@ goog.addSingletonGetter(ss.user.auth.Twitter);
 ss.user.auth.Twitter.prototype.logger =  goog.debug.Logger.getLogger('ss.user.auth.Twitter');
 
 /**
- * @type {ss.user.types.extSourceId} The plugin's name (e.g. Twitter)
+ * @const {ss.user.types.extSourceId} The plugin's name (e.g. Twitter)
  */
-ss.user.auth.Twitter.prototype.sourceId = 'Twitter';
+ss.user.auth.Twitter.prototype.SOURCEID = 'Twitter';
 
 /**
  * Start initial authentication checks
@@ -84,6 +90,8 @@ ss.user.auth.Twitter.prototype.sourceId = 'Twitter';
 ss.user.auth.Twitter.prototype.init = function()
 {
   this.logger.info('Init init(). Dispatching dummy event');
+  // get config parameters and apply them to our local config container
+  this._configApply(ss.Config.getInstance().get(ss.user.auth.Twitter.CONFIG_PATH));
 
   this.dispatchEvent(ss.user.auth.EventType.INITIALAUTHSTATUS);
 };

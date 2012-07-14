@@ -26,7 +26,7 @@
 
 
 goog.provide('ss.web.user.ui');
-goog.require('ss.ready');
+
 
 /**
  * Triggers when library is ready, we bind social
@@ -52,7 +52,7 @@ ss.web.user.ui.init = function ()
 
 }; // ss.web.user.ui.Init
 // listen for ready event
-ss.ready(ss.web.user.ui.init);
+//ss.ready(ss.web.user.ui.init);
 
 
 

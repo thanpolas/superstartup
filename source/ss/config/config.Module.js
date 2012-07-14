@@ -66,7 +66,7 @@ ss.Config.prototype.logger =  goog.debug.Logger.getLogger('ss.Config');
  * All key / value pairs passed through this method will
  * validate anything passed via the set() method.
  *
- * This method will also protect you from overwritting previously 
+ * This method will also protect you from overwritting previously
  * set paths / keys by throwing an Error
  *
  * @param {string} path a string path
@@ -85,7 +85,7 @@ ss.Config.prototype.register = function(path, objConf)
   if (exists) {
     throw new Error('Key / path already exists');
   }
-  
+
   // set to original config map
   this._origConf.set(path, objConf);
   // set to own map
@@ -106,13 +106,13 @@ ss.Config.prototype.register = function(path, objConf)
 ss.Config.prototype.set = function(key, value)
 {
   this.logger.fine('Setting: ' + key);
-  
+
   // check if value is object
   if (goog.isObject(value)) {
     throw new TypeError('value cannot be object type');
   }
-  
-  // get the value from original config with the throw ReferenceError 
+
+  // get the value from original config with the throw ReferenceError
   // parameter set to true
   // if the key doesn't exist do not do a type check
   var val;
@@ -122,7 +122,7 @@ ss.Config.prototype.set = function(key, value)
   } catch(e) {
     exists = false;
   }
-  
+
   if (exists && goog.typeOf(value) != goog.typeOf(val)) {
     throw new TypeError('Expected:' + goog.typeOf(val) + ' got:' + goog.typeOf(value) + ' for:' + key);
   }
