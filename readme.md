@@ -1,15 +1,20 @@
 # Super Startup Library
 
-Superstartup is a Javascript library that helps startups skip the trivial [or not] tasks of building a user system, doing metrics properly and rediscovering the wheel each time.
+Superstartup is a Javascript library that helps startups focus on what really matters for them. It does so by providing a robust, flexible and well tested solution on these high level tasks:
 
-Build to be framework and server API agnostic, superstartup will integrate seamlessly with any technology stack you may have. 
+* **User Authentication** External authentications (FB, Twitter, oAuth2...), data object management, query for users, manage users and all that jazz.
+* **Metrics** Inteligent set of libraries that help penetrate on visitors' behavior, convertions, regency and any small or big metric that needs to be measured.
+* **Social Tools** Sharing widgets, mechanisms and integrations with all the major social networks, interplexed with the metrics libraries for a crystal clear view on what is happening and where it happens in your site.
+
+Build to be framework and server API agnostic, superstartup will integrate seamlessly with any technology stack you may have.
 
 ## Status
 
-Still under heavy development, designing the API, deep wiring and grinding. A great time to pop in and help steer the project. 
+Still under heavy development, designing the API, deep wiring and grinding. A great time to pop in and [help steer the project]().
 
 In the meantime please check the libraries that sprang out and are the foundations of Superstartup:
 
+* **[ready.js](https://github.com/thanpolas/server2js)** Watch multiple async operations and trigger listeners when all are complete.
 * **[server.js](https://github.com/thanpolas/server2js)** Transfer data objects from server to javascript on page load.
 * **[Grunt Closure Tools](https://github.com/thanpolas/grunt-closure-tools)** [Google Closure](https://developers.google.com/closure/library/) DepsWriter, Builder and Compiler tasks for grunt.
 * **[Google Closure Library Boilerpate](https://github.com/thanpolas/closure-boilerplate)** The Google Closure Library boilerplate. Checkout, start working.
