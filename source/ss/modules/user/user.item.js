@@ -24,29 +24,29 @@
  * @fileoverview A single user data object
  */
 
-goog.provide('ss.user.Item');
+goog.provide('ssd.user.Item');
 
-goog.require('ss.DynamicMap');
-goog.require('ss.user.types');
+goog.require('ssd.DynamicMap');
+goog.require('ssd.user.types');
 
 /**
  * A single user data object item, can be used both for 
  * public or private use. If private use (own user data object)
- * we extent the contained keys with the ss.user.types.ownuser
+ * we extent the contained keys with the ssd.user.types.ownuser
  * additional key/value pairs
  *
  * @constructor
- * @param {ss.user.types.user=} opt_user a user data object to init with
- * @extends {ss.DynamicMap}
+ * @param {ssd.user.types.user=} opt_user a user data object to init with
+ * @extends {ssd.DynamicMap}
  */
-ss.user.Item = function(opt_user)
+ssd.user.Item = function(opt_user)
 {
-  ss.DynamicMap.call(this, opt_user || ss.user.types.user);
+  ssd.DynamicMap.call(this, opt_user || ssd.user.types.user);
 };
-goog.inherits(ss.user.Item, ss.DynamicMap);
+goog.inherits(ssd.user.Item, ssd.DynamicMap);
 
 /** @inheritDoc */
-ss.user.Item.prototype.disposeInternal = function()
+ssd.user.Item.prototype.disposeInternal = function()
 {
   // we used goog.mixin() to do multiple inheritance for 
   // events, thus we have to directly call event's disposeInternal

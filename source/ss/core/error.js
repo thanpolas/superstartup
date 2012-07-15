@@ -25,7 +25,7 @@
  /**
   * @fileoverview Error handling functions
   */
-goog.provide('ss.error');
+goog.provide('ssd.error');
 
 
 
@@ -35,13 +35,13 @@ goog.provide('ss.error');
  * @param {Object} e error object
  * @return {void}
  */
-ss.error = function (e)
+ssd.error = function (e)
 {
-    var logger = goog.debug.Logger.getLogger('ss.error');
+    var logger = goog.debug.Logger.getLogger('ssd.error');
     var filename, line, msg, source, name;
     //logger.info(g.debug.expose(e));
     /*
-    if (ss.MOBILE) {
+    if (ssd.MOBILE) {
         filename = e.name;
         line = e.line;
         msg = e.message;
@@ -68,5 +68,5 @@ ss.error = function (e)
       console.debug(errMsg);
     }
     
-}; // method ss.error
+}; // method ssd.error
 

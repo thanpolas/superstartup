@@ -28,28 +28,28 @@
   *       configuration
   */
 
-goog.provide('ss.Config');
-goog.require('ss.debug');
-goog.require('ss.StringPath');
+goog.provide('ssd.Config');
+goog.require('ssd.debug');
+goog.require('ssd.StringPath');
 
 /**
  * A generic config setter / getter
  *
  * @constructor
- * @extends {ss.StringPath}
+ * @extends {ssd.StringPath}
  */
-ss.Config = function()
+ssd.Config = function()
 {
   goog.base(this);
 
-  this._origConf = new ss.StringPath();
+  this._origConf = new ssd.StringPath();
 
 };
-goog.inherits(ss.Config, ss.StringPath);
-goog.addSingletonGetter(ss.Config);
+goog.inherits(ssd.Config, ssd.StringPath);
+goog.addSingletonGetter(ssd.Config);
 
 /** @enum {string} Error strings this class throws */
-ss.Config.Error = {
+ssd.Config.Error = {
   methodRemoved: 'method not supported'
 };
 
@@ -58,7 +58,7 @@ ss.Config.Error = {
  * @type {goog.debug.Logger}
  * @private
  */
-ss.Config.prototype.logger =  goog.debug.Logger.getLogger('ss.Config');
+ssd.Config.prototype.logger =  goog.debug.Logger.getLogger('ssd.Config');
 
 
 /**
@@ -73,7 +73,7 @@ ss.Config.prototype.logger =  goog.debug.Logger.getLogger('ss.Config');
  * @param {Object} objConf an Object with the key/value pairs
  * @return {void}
  */
-ss.Config.prototype.register = function(path, objConf)
+ssd.Config.prototype.register = function(path, objConf)
 {
   this.logger.config('Registering: ' + path);
   var exists = true;
@@ -89,7 +89,7 @@ ss.Config.prototype.register = function(path, objConf)
   // set to original config map
   this._origConf.set(path, objConf);
   // set to own map
-  ss.Config.superClass_.set.call(this, path, objConf);
+  ssd.Config.superClass_.set.call(this, path, objConf);
 };
 
 /**
@@ -103,7 +103,7 @@ ss.Config.prototype.register = function(path, objConf)
  * @override
  * @throws Errors depending on validation checks
  */
-ss.Config.prototype.set = function(key, value)
+ssd.Config.prototype.set = function(key, value)
 {
   this.logger.fine('Setting: ' + key);
 
@@ -135,9 +135,9 @@ ss.Config.prototype.set = function(key, value)
  * @override
  * @throws Error always
  */
-ss.Config.prototype.remove = function()
+ssd.Config.prototype.remove = function()
 {
-  throw new Error(ss.Config.Error.methodRemoved);
+  throw new Error(ssd.Config.Error.methodRemoved);
 };
 
 /**
@@ -145,9 +145,9 @@ ss.Config.prototype.remove = function()
  * @override
  * @throws Error always
  */
-ss.Config.prototype.addRaw = function()
+ssd.Config.prototype.addRaw = function()
 {
-  throw new Error(ss.Config.Error.methodRemoved);
+  throw new Error(ssd.Config.Error.methodRemoved);
 };
 
 

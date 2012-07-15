@@ -1,12 +1,12 @@
-goog.require('ss.helpers');
+goog.require('ssd.helpers');
 goog.require('goog.testing.jsunit');
 
 function testisjQ(){
   var jq = $('<div></div>');
   var notjQ = new Array('2');
   
-  ok(ss.isjQ(jq), 'A jQuery array');
-  ok(!ss.isjQ(notjQ), 'Not a jQuery array');
+  ok(ssd.isjQ(jq), 'A jQuery array');
+  ok(!ssd.isjQ(notjQ), 'Not a jQuery array');
 };
 function testIsDef() {
   var defined = 'foo';

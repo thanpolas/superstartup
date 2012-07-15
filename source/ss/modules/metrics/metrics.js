@@ -23,16 +23,16 @@
  *********
  */
 
-goog.provide('ss.metrics');
+goog.provide('ssd.metrics');
 
-goog.require('ss.metrics.ga');
-goog.require('ss.metrics.mixpanel');
+goog.require('ssd.metrics.ga');
+goog.require('ssd.metrics.mixpanel');
 
 /**
  * Our local data object
  * @type {Object}
  */
-ss.metrics.db = {
+ssd.metrics.db = {
   init: false,
   GA_enable: false,
   GA_property_id: '',
@@ -47,10 +47,10 @@ ss.metrics.db = {
  * @param {object} params
  * @return {void}
  */
-ss.metrics.init = function(params)
+ssd.metrics.init = function(params)
 {
   try {
-    var s = ss, db = s.metrics.db;
+    var s = ssd, db = s.metrics.db;
     db.init = true;
     db.GA_enable = params['GA_enable'];
     db.GA_property_id = params['GA_property_id'];
@@ -63,8 +63,8 @@ ss.metrics.init = function(params)
       s.WEBTRACK = db.GA_enable || db.MP_enable; // enable tracking if any
 
   } catch(e) {
-    ss.metrics.init = false;
-    ss.error(e);
+    ssd.metrics.init = false;
+    ssd.error(e);
   }
 };
 
@@ -86,9 +86,9 @@ ss.metrics.init = function(params)
  * @param {Number=} opt_value An integer that you can use to provide numerical data about the user event.
  * @return {void}
  */
-ss.metrics.trackEvent = function (category, action, opt_label, opt_value)
+ssd.metrics.trackEvent = function (category, action, opt_label, opt_value)
 {
-    var s = ss;
+    var s = ssd;
 
     if (!s.WEBTRACK)
         return;
@@ -121,10 +121,10 @@ ss.metrics.trackEvent = function (category, action, opt_label, opt_value)
  * @param {string=} opt_value4 Additional data to store
  * @return {void}
  */
-ss.metrics.trackMetrics = function (category, action, opt_label, opt_value,
+ssd.metrics.trackMetrics = function (category, action, opt_label, opt_value,
     opt_value2, opt_value3, opt_value4)
 {
-    var aj = new ss.ajax('/mtr/track', {
+    var aj = new ssd.ajax('/mtr/track', {
       postMethod: 'POST'
     });
     aj.addData('category', category);
@@ -158,9 +158,9 @@ ss.metrics.trackMetrics = function (category, action, opt_label, opt_value,
  *      to indicate the page URL.
  * @return {void}
  */
-ss.metrics.trackPageview = function (opt_pageURL)
+ssd.metrics.trackPageview = function (opt_pageURL)
 {
-    var s = ss;
+    var s = ssd;
     if (!s.WEBTRACK)
         return;
     s.metrics.db.GA_enable && s.metrics.ga.trackPageview(opt_pageURL);
@@ -177,9 +177,9 @@ ss.metrics.trackPageview = function (opt_pageURL)
  * @param {object} user user standard object
  * @return {void}
  */
-ss.metrics.userAuth = function (user)
+ssd.metrics.userAuth = function (user)
 {
-    var s = ss;
+    var s = ssd;
     if (!s.WEBTRACK)
         return;
     // check if we want to track auth custom vars
