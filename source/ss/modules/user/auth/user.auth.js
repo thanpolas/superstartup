@@ -22,23 +22,23 @@
 /**
  * @fileoverview Handles user authentication
  */
-goog.provide('ss.user.Auth');
-goog.provide('ss.user.auth');
-goog.provide('ss.user.auth.EventType');
-goog.provide('ss.user.auth.Error');
+goog.provide('ssd.user.Auth');
+goog.provide('ssd.user.auth');
+goog.provide('ssd.user.auth.EventType');
+goog.provide('ssd.user.auth.Error');
 
-goog.require('ss.Module');
-goog.require('ss.DynamicMap');
-goog.require('ss.user.types');
-goog.require('ss.Config');
+goog.require('ssd.Module');
+goog.require('ssd.DynamicMap');
+goog.require('ssd.user.types');
+goog.require('ssd.Config');
 
 /**
  * User authentication class
  *
  * @constructor
- * @extends {ss.Module}
+ * @extends {ssd.Module}
  */
-ss.user.Auth = function()
+ssd.user.Auth = function()
 {
   goog.base(this);
 
@@ -62,7 +62,7 @@ ss.user.Auth = function()
   // If ext auth plugin has own url set we use that instead
   this.config('authUrl', '/users/extAuth');
   // register our config
-  ss.Config.getInstance().register(ss.user.auth.CONFIG_PATH, this.config.toObject());
+  ssd.Config.getInstance().register(ssd.user.auth.CONFIG_PATH, this.config.toObject());
 
   /**
    * performLocalAuth config parameter is used multiple times
@@ -75,29 +75,29 @@ ss.user.Auth = function()
 
   /**
    * The user data object
-   * @type {ss.DynamicMap.<ss.user.types.user>}
+   * @type {ssd.DynamicMap.<ssd.user.types.user>}
    * @private
    */
-  this._user = new ss.DynamicMap(ss.user.types.user);
+  this._user = new ssd.DynamicMap(ssd.user.types.user);
   // extend our data object with the own user key/value pairs
-  this._user.addAll(ss.user.types.ownuser);
+  this._user.addAll(ssd.user.types.ownuser);
 
 };
-goog.inherits(ss.user.Auth, ss.Module);
-goog.addSingletonGetter(ss.user.Auth);
+goog.inherits(ssd.user.Auth, ssd.Module);
+goog.addSingletonGetter(ssd.user.Auth);
 
 
 /**
  * String path that we'll store the config
  * @const {string}
  */
-ss.user.auth.CONFIG_PATH = 'user.auth';
+ssd.user.auth.CONFIG_PATH = 'user.auth';
 
 /**
  * Errors thrown by main external auth class.
  * @enum {string}
  */
-ss.user.auth.Error = {
+ssd.user.auth.Error = {
   /**
    * External auth plugin has already registered
    */
@@ -109,7 +109,7 @@ ss.user.auth.Error = {
  * Events supported for the user auth module
  * @enum {string}
  */
-ss.user.auth.EventType = {
+ssd.user.auth.EventType = {
   // An external auth source has an auth change event
   // (from not authed to authed and vice verca)
   EXTAUTHCHANGE: 'user.extAuthChange',
@@ -129,35 +129,36 @@ ss.user.auth.EventType = {
  * @type {goog.debug.Logger}
  * @private
  */
-ss.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ss.user.Auth');
+ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
 
 /**
  * This var contains an array of extSource ID
  * values, indicating that we are authed on these
  * external sources
  * @private
- * @type {ss.Map.<ss.user.types.extSourceId, boolean>} bool is always true
+ * @type {ssd.Map.<ssd.user.types.extSourceId, boolean>} bool is always true
  */
-ss.user.Auth.prototype._extAuthedSources = new ss.Map();
+ssd.user.Auth.prototype._extAuthedSources = new ssd.Map();
 
 /**
  * This var contains a map of external sources.
  * The external Sources IDs will be used as keys and the
  * instanciations of the ext auth plugins as values
  * @private
- * @type {ss.Map.<ss.user.types.extSourceId, Object>}
+ * @type {ssd.Map.<ssd.user.types.extSourceId, Object>}
  */
-ss.user.Auth.prototype._extSupportedSources = new ss.Map();
+ssd.user.Auth.prototype._extSupportedSources = new ssd.Map();
 
 /**
  * Kicks off authentication flows for all ext auth sources
  *
  * @return {void}
  */
-ss.user.Auth.prototype.init = function()
+ssd.user.Auth.prototype.init = function()
 {
+  this.logger.info('user.Auth.init() starting...');
   // get config parameters and apply them to our local config container
-  this._configApply(ss.Config.getInstance().get(ss.user.auth.CONFIG_PATH));
+  this._configApply(ssd.Config.getInstance().get(ssd.user.auth.CONFIG_PATH));
 
   this._extSupportedSources.forEach(function(key, value){
     value.init();
@@ -174,25 +175,25 @@ ss.user.Auth.prototype.init = function()
  * @param {!Object} selfObj the instance of the ext auth plugin
  * @return {void}
  */
-ss.user.Auth.prototype.addExtSource = function(selfObj)
+ssd.user.Auth.prototype.addExtSource = function(selfObj)
 {
   this.logger.info('Adding auth source:' + selfObj.SOURCEID);
 
   // check if plugin is of right type
-  if (!selfObj instanceof ss.user.auth.PluginModule) {
+  if (!selfObj instanceof ssd.user.auth.PluginModule) {
     throw TypeError();
   }
   // check if plugin already registered
   if (this._extSupportedSources.get(selfObj.SOURCEID)) {
-    throw Error(ss.user.auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
+    throw Error(ssd.user.auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
   }
 
   // add the new plugin to our map
   this._extSupportedSources.set(selfObj.SOURCEID, selfObj);
 
   // event listeners
-  selfObj.addEventListener(ss.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
-  selfObj.addEventListener(ss.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
+  selfObj.addEventListener(ssd.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
+  selfObj.addEventListener(ssd.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
 };
 
 
@@ -202,7 +203,7 @@ ss.user.Auth.prototype.addExtSource = function(selfObj)
  * @private
  * @param {goog.events.Event} e
  */
-ss.user.Auth.prototype._initAuthStatus = function(e)
+ssd.user.Auth.prototype._initAuthStatus = function(e)
 {
   this.logger.info('initial auth status dispatched From:' + e.target.SOURCEID + ' Source authed:' + e.target.isAuthed());
 
@@ -229,7 +230,7 @@ ss.user.Auth.prototype._initAuthStatus = function(e)
  * @private
  * @param {goog.events.Event} e
  */
-ss.user.Auth.prototype._authChange = function(e)
+ssd.user.Auth.prototype._authChange = function(e)
 {
   this.logger.info('Auth CHANGE dispatched from:' + e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
 
@@ -276,10 +277,10 @@ ss.user.Auth.prototype._authChange = function(e)
  * auth session is created, propagating from server back to the client
  *
  * @protected
- * @param {ss.user.types.extSourceId} sourceId
+ * @param {ssd.user.types.extSourceId} sourceId
  * @return {void}
  */
-ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
+ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 {
   if (!this._localAuth) {
     return;
@@ -298,7 +299,7 @@ ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
   // get local auth url from ext plugin if it exists
   var url = this._extSupportedSources.get(sourceId).config('authUrl');
   // create and start request
-  var a = new ss.ajax(url || this._config['authUrl']);
+  var a = new ssd.ajax(url || this._config['authUrl']);
   a.addData(this._config['localAuthSourceId'], sourceId);
 
   // response from server
@@ -315,7 +316,7 @@ ss.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
  * @param {Object} response Response from server
  * @private
  */
-ss.user.Auth.prototype._serverAuthResponse = function(response)
+ssd.user.Auth.prototype._serverAuthResponse = function(response)
 {
   this.logger.info('Init _serverAuthResponse(). status:' + response.status);
 
@@ -333,11 +334,11 @@ ss.user.Auth.prototype._serverAuthResponse = function(response)
  * @param {boolean} isAuthed
  * @private
  */
-ss.user.Auth.prototype._doAuth = function (isAuthed)
+ssd.user.Auth.prototype._doAuth = function (isAuthed)
 {
   this.logger.info('Init _doAuth(). isAuthed:' + isAuthed);
   this._isAuthed = isAuthed;
-  this.dispatchEvent(ss.user.auth.EventType.AUTHCHANGE);
+  this.dispatchEvent(ssd.user.auth.EventType.AUTHCHANGE);
 };
 
 /**
@@ -345,7 +346,7 @@ ss.user.Auth.prototype._doAuth = function (isAuthed)
  *
  * @return {boolean}
  */
-ss.user.Auth.prototype.isAuthed = function()
+ssd.user.Auth.prototype.isAuthed = function()
 {
     return this._isAuthed;
 };
@@ -354,10 +355,10 @@ ss.user.Auth.prototype.isAuthed = function()
  * If current user is authenticated with specified external
  * auth source
  *
- * @param {ss.user.types.extSourceId} sourceId
+ * @param {ssd.user.types.extSourceId} sourceId
  * @return {boolean}
  */
-ss.user.Auth.prototype.isExtAuthed = function(sourceId)
+ssd.user.Auth.prototype.isExtAuthed = function(sourceId)
 {
     return this._extAuthedSources.get(sourceId) || false;
 };
@@ -367,9 +368,9 @@ ss.user.Auth.prototype.isExtAuthed = function(sourceId)
  *
  * @return {boolean}
  */
-ss.user.Auth.prototype.isVerified = function()
+ssd.user.Auth.prototype.isVerified = function()
 {
-    return this._isAuthed && this._user.get(ss.conf.user.typeMappings.ownuser.verified);
+    return this._isAuthed && this._user.get(ssd.conf.user.typeMappings.ownuser.verified);
 };
 
 /**
@@ -377,7 +378,7 @@ ss.user.Auth.prototype.isVerified = function()
  * and dispose everything
  * @return {void}
  */
-ss.user.Auth.prototype.logout = function()
+ssd.user.Auth.prototype.logout = function()
 {
   // clear our dynamic map data object
   this._user.clear();

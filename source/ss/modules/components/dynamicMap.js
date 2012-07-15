@@ -18,13 +18,13 @@
  */
 
  /**
-  * @fileoverview An extention of ss.Map class, along with goog.events
+  * @fileoverview An extention of ssd.Map class, along with goog.events
   *     Alerts us for every change in the data structure
   */
 
-goog.provide('ss.DynamicMap');
+goog.provide('ssd.DynamicMap');
 
-goog.require('ss.Map');
+goog.require('ssd.Map');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
 
@@ -34,10 +34,10 @@ goog.require('goog.object');
  * @param {...*} var_args If 2 or more arguments are present then they
  *     will be used as key-value pairs.
  * @constructor
- * @extends {ss.Map}
+ * @extends {ssd.Map}
  * We also inherit from goog.events.EventTarget
  */
-ss.DynamicMap = function(opt_map, var_args) {
+ssd.DynamicMap = function(opt_map, var_args) {
   /**
    * In cases of mass data insertions turn off event dispatching
    * @private
@@ -49,14 +49,14 @@ ss.DynamicMap = function(opt_map, var_args) {
   goog.events.EventTarget.call(this);
   this._canDispatch = true;
 };
-goog.inherits(ss.DynamicMap, goog.structs.Map);
-goog.object.extend(ss.DynamicMap.prototype, goog.events.EventTarget.prototype);
+goog.inherits(ssd.DynamicMap, goog.structs.Map);
+goog.object.extend(ssd.DynamicMap.prototype, goog.events.EventTarget.prototype);
 
 /**
  * Events triggered by the Dynamic Map
  * @enum {string}
  */
-ss.DynamicMap.EventType = {
+ssd.DynamicMap.EventType = {
   // When a plain change happens on a property
   CHANGE: 'change',
   // When a change happens on a property with a request to save
@@ -71,18 +71,18 @@ ss.DynamicMap.EventType = {
  * @param {*} value The value to add.
  * @param {boolean=} opt_save If we want the change to be saved
  */
-ss.DynamicMap.prototype.set = function(key, value, opt_save)
+ssd.DynamicMap.prototype.set = function(key, value, opt_save)
 {
-  ss.DynamicMap.superClass_.set.call(this, key, value);
+  ssd.DynamicMap.superClass_.set.call(this, key, value);
   // dispatch corresponding event
-  this._canDispatch && this.dispatchEvent(opt_save && ss.DynamicMap.EventType.CHANGESAVE || ss.DynamicMap.EventType.CHANGE);  
+  this._canDispatch && this.dispatchEvent(opt_save && ssd.DynamicMap.EventType.CHANGESAVE || ssd.DynamicMap.EventType.CHANGE);  
 };
 
 /** @inheritDoc */
-ss.DynamicMap.prototype.addAll = function(map)
+ssd.DynamicMap.prototype.addAll = function(map)
 {
   this._canDispatch = false;
-  ss.DynamicMap.superClass_.addAll.call(this, map);
+  ssd.DynamicMap.superClass_.addAll.call(this, map);
   this._canDispatch = true;
 };
 
@@ -90,4 +90,4 @@ ss.DynamicMap.prototype.addAll = function(map)
  * Implement the save logic for this data object.
  * Should submit the data object for saving to the server
  */
-ss.DynamicMap.prototype.save = goog.abstractMethod;
+ssd.DynamicMap.prototype.save = goog.abstractMethod;

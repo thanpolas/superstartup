@@ -22,37 +22,37 @@
   *     Every ext auth class must implement this interface
   */
 
-goog.provide('ss.user.auth.PluginInterface');
+goog.provide('ssd.user.auth.PluginInterface');
 
 /**
  * The interface for external authentication plugins
  * @interface
  */
-ss.user.auth.PluginInterface = function(){};
+ssd.user.auth.PluginInterface = function(){};
 
 /**
- * @const {ss.user.types.extSourceId} The plugin's name (e.g. Facebook)
+ * @const {ssd.user.types.extSourceId} The plugin's name (e.g. Facebook)
  */
-ss.user.auth.PluginInterface.prototype.SOURCEID;
+ssd.user.auth.PluginInterface.prototype.SOURCEID;
 
 /**
  * @const {boolean} If this plugin needs to follow up authentication
  *      with server
  */
-ss.user.auth.PluginInterface.prototype.LOCALAUTH;
+ssd.user.auth.PluginInterface.prototype.LOCALAUTH;
 
 /**
  * Used by our instance handlers to know if we have started
  * an auth crosscheck with local (server)
  * @type {boolean}
  */
-ss.user.auth.PluginModule.prototype.localAuthInit;
+ssd.user.auth.PluginModule.prototype.localAuthInit;
 
 /**
  * @protected
  * @type {boolean} Auth switch
  */
-ss.user.auth.PluginInterface.prototype._isAuthed;
+ssd.user.auth.PluginInterface.prototype._isAuthed;
 
 /**
 * Opens the login dialog or starts the authentication flow
@@ -62,27 +62,27 @@ ss.user.auth.PluginInterface.prototype._isAuthed;
 *      comma separate them
 * @return {void}
 */
-ss.user.auth.PluginInterface.prototype.login = function(opt_callback, opt_perms){};
+ssd.user.auth.PluginInterface.prototype.login = function(opt_callback, opt_perms){};
 
 /**
 * Perform a logout action
 *
 * @return {void}
 */
-ss.user.auth.PluginInterface.prototype.logout = function(){};
+ssd.user.auth.PluginInterface.prototype.logout = function(){};
 
 /**
  * Tells us if user is authenticated with service
  * @return {boolean}
  */
-ss.user.auth.PluginInterface.prototype.isAuthed = function(){};
+ssd.user.auth.PluginInterface.prototype.isAuthed = function(){};
 
 /**
- * If user is authed returns us a {@link ss.user.types.extSource}
+ * If user is authed returns us a {@link ssd.user.types.extSource}
  * data object
- * @return {ss.user.types.extSource|null} null if not authed
+ * @return {ssd.user.types.extSource|null} null if not authed
  */
-ss.user.auth.PluginInterface.prototype.getUser = function(){};
+ssd.user.auth.PluginInterface.prototype.getUser = function(){};
 
 /**
  * Starts off the plugin.
@@ -92,7 +92,7 @@ ss.user.auth.PluginInterface.prototype.getUser = function(){};
  * event
  * @return {void}
  */
-ss.user.auth.PluginInterface.prototype.init = function(){};
+ssd.user.auth.PluginInterface.prototype.init = function(){};
 
 /**
  * The local config of the ext auth plugin
@@ -100,12 +100,12 @@ ss.user.auth.PluginInterface.prototype.init = function(){};
  * @private
  * @type {Object}
  */
-ss.user.auth.PluginInterface.prototype._config;
+ssd.user.auth.PluginInterface.prototype._config;
 
 /**
  * A fancy setter / getter instance
  * Manages the local config (_config)
  *
- * @type {ss.fancyGetSet}
+ * @type {ssd.fancyGetSet}
  */
-ss.user.auth.PluginInterface.prototype.config;
+ssd.user.auth.PluginInterface.prototype.config;

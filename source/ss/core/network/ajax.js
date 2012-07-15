@@ -27,7 +27,7 @@
  * Provide the Ajax namespace
  *
  */
-goog.provide('ss.ajax');
+goog.provide('ssd.ajax');
 
 /**
  * We will implement jQuery's ajax object
@@ -40,7 +40,7 @@ goog.provide('ss.ajax');
  * @constructor
  * @return {this}
  */
-ss.ajax = function(url, opt_params)
+ssd.ajax = function(url, opt_params)
 {
   /**
    * @private
@@ -62,34 +62,34 @@ ss.ajax = function(url, opt_params)
  * @type {goog.debug.Logger}
  * @private
  */
-ss.ajax.prototype.logger = goog.debug.Logger.getLogger('ss.ajax');
+ssd.ajax.prototype.logger = goog.debug.Logger.getLogger('ssd.ajax');
 
 /**
  * @private
  * @type {Object} Store all data to pass
  */
-ss.ajax.prototype._dataPass = {};
+ssd.ajax.prototype._dataPass = {};
 
 /**
  * Overwrite to get a callback
  *
  * @protected
  */
-ss.ajax.prototype.callback = function(){};
+ssd.ajax.prototype.callback = function(){};
 
 /**
  * Overwrite to get a callback for request fail
  *
  * @protected
  */
-ss.ajax.prototype.errorCallback = function(){};
+ssd.ajax.prototype.errorCallback = function(){};
 
 /**
  * Get the error message
  *
  * @return {string}
  */
-ss.ajax.prototype.getError = function()
+ssd.ajax.prototype.getError = function()
 {
   return this._errorMsg;
 };
@@ -98,7 +98,7 @@ ss.ajax.prototype.getError = function()
  * @private
  * @type {string}
  */
-ss.ajax.prototype._errorMsg;
+ssd.ajax.prototype._errorMsg;
 
 /**
  *
@@ -106,7 +106,7 @@ ss.ajax.prototype._errorMsg;
  * @param {string} textStatus
  * @param {string} errorThrown
  */
-ss.ajax.prototype._handleError = function(jqXHR, textStatus, errorThrown)
+ssd.ajax.prototype._handleError = function(jqXHR, textStatus, errorThrown)
 {
   this._errorMsg = textStatus + ' ' + errorThrown;
   this.errorCallback(this._errorMsg);
@@ -120,7 +120,7 @@ ss.ajax.prototype._handleError = function(jqXHR, textStatus, errorThrown)
  * @param {jQuery.jqXHR} jqXHR
  * @return {void}
  */
-ss.ajax.prototype._handleSuccess = function(data, textStatus, jqXHR)
+ssd.ajax.prototype._handleSuccess = function(data, textStatus, jqXHR)
 {
   this.callback(data);
 };
@@ -132,7 +132,7 @@ ss.ajax.prototype._handleSuccess = function(data, textStatus, jqXHR)
  * @param {mixed} value The value we need to store
  * @return {void}
  */
-ss.ajax.prototype.addData = function(key, value)
+ssd.ajax.prototype.addData = function(key, value)
 {
   this._dataPass[key] = value;
 };
@@ -142,10 +142,10 @@ ss.ajax.prototype.addData = function(key, value)
  *
  * @return {void}
  */
-ss.ajax.prototype.send = function()
+ssd.ajax.prototype.send = function()
 {
   if (!jQuery) {
-    throw new Error('We require jQuery for ss.ajax class');
+    throw new Error('We require jQuery for ssd.ajax class');
   }
   this.logger.config('Sending. data:' + goog.debug.expose(this._dataPass));
   jQuery.ajax(this.url, {

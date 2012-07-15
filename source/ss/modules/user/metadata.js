@@ -29,7 +29,7 @@
 
 
 
-goog.provide('ss.metadata');
+goog.provide('ssd.metadata');
 
 
 /**
@@ -37,7 +37,7 @@ goog.provide('ss.metadata');
  * @type {object}
  * @private
  */
-ss.metadata.db = {
+ssd.metadata.db = {
   source: '',
   permId: 0,
   createDate: null,
@@ -70,25 +70,25 @@ ss.metadata.db = {
   ifFirstTime: boolean,
   metadata: object
   } */
-ss.metadata.metadataRoot;
+ssd.metadata.metadataRoot;
 
 /**
  * Receive and parse the metadataRoot Object from the server
  *
- * @param {ss.metadata.metadataRoot} metadataRoot
+ * @param {ssd.metadata.metadataRoot} metadataRoot
  * @return {void}
  */
-ss.metadata.init = function (metadataRoot)
+ssd.metadata.init = function (metadataRoot)
 {
   try {
     if (goog.DEBUG) {
-      var logger = goog.debug.Logger.getLogger('ss.metadata.init');
+      var logger = goog.debug.Logger.getLogger('ssd.metadata.init');
       logger.info('metadataRoot:' + goog.debug.deepExpose(metadataRoot));
     }
-    if (!ss.metadata.validate(metadataRoot))
+    if (!ssd.metadata.validate(metadataRoot))
       return;
     
-    var db = ss.metadata.db;
+    var db = ssd.metadata.db;
     // there are cases where we may call .init() twice
     // we want the isFirstTime to remain true if it was set to true
     db.isFirstTime = db.isFirstTime || metadataRoot['isFirstTime'];
@@ -107,20 +107,20 @@ ss.metadata.init = function (metadataRoot)
     if (db.isFirstTime)
       db.sessionStart = new Date().getTime();
 
-    goog.DEBUG && ss.canLog && logger.info('Parsed new metadataObject. source:' + db.source + ' permId:' + db.permId);
+    goog.DEBUG && ssd.canLog && logger.info('Parsed new metadataObject. source:' + db.source + ' permId:' + db.permId);
 
   } catch (e) {
-    ss.error(e);
+    ssd.error(e);
   }
 
 };
 
 /**
  * Validate if a metadata object is proper
- * @param {ss.metadata.metadataRoot}
+ * @param {ssd.metadata.metadataRoot}
  * @return {boolean}
  */
-ss.metadata.validate = function(metadataRoot)
+ssd.metadata.validate = function(metadataRoot)
 {
   if (!goog.isNumber(metadataRoot['permId']))
     return false;
@@ -141,21 +141,21 @@ ss.metadata.validate = function(metadataRoot)
  * @param {function(boolean)=} opt_callback listen on the async server reply
  * @return {void}
  */
-ss.metadata.save = function (opt_callback)
+ssd.metadata.save = function (opt_callback)
 {
   try {
 
-    var logger = goog.debug.Logger.getLogger('ss.metadata.save');
+    var logger = goog.debug.Logger.getLogger('ssd.metadata.save');
 
     logger.info('Saving metadata to server');
-    var db = ss.metadata.db,
+    var db = ssd.metadata.db,
     cb = opt_callback || function(){};
 
     // check if we have a null metadata object
     if (goog.isNull(db.metadata))
       db.metadata = {};
 
-    var aj = new ss.ajax('/md/save', {
+    var aj = new ssd.ajax('/md/save', {
       postMethod: 'POST'
     });
 
@@ -172,7 +172,7 @@ ss.metadata.save = function (opt_callback)
 
 
   } catch (e) {
-    ss.error(e);
+    ssd.error(e);
     cb(false);
   }
 
@@ -195,7 +195,7 @@ ss.metadata.save = function (opt_callback)
  *      value to the server
  * @return {boolean}
  */
-ss.metadata.set = function(key, value, opt_save) {
+ssd.metadata.set = function(key, value, opt_save) {
     try {
     // some plain validations
     if('string' != typeof key)
@@ -205,7 +205,7 @@ ss.metadata.set = function(key, value, opt_save) {
     // split the string using dots
     var parts = key.split('.');
 
-    if (!ss.metadata._resolvePath(parts, ss.metadata.db.metadata, {isSet:true}, value))
+    if (!ssd.metadata._resolvePath(parts, ssd.metadata.db.metadata, {isSet:true}, value))
         return false;
         
     return true;
@@ -222,24 +222,24 @@ ss.metadata.set = function(key, value, opt_save) {
  * @param {string} key
  * @return {*} boolean false if operation failed, null if value not found
  */
-ss.metadata.get = function(key) {
+ssd.metadata.get = function(key) {
   try {
     if('string' != typeof key)
         return false;
     // check if we have loaded data and are ready to serve
-    if (!ss.metadata.db.initialLoad)
+    if (!ssd.metadata.db.initialLoad)
         return false;
     // split the string using dots
     var parts = key.split('.');
 
-    var result = ss.metadata._resolvePath(parts, ss.metadata.db.metadata, {isGet:true});
+    var result = ssd.metadata._resolvePath(parts, ssd.metadata.db.metadata, {isGet:true});
     var type = goog.typeOf(result);
     if ('object' == type)
         return $.extend(true, {}, result);
     if ('array' == type)
         return $.extend(true, [], result);
     return result;
-  } catch(e){ss.error(e);}
+  } catch(e){ssd.error(e);}
 };
 
 /**
@@ -248,8 +248,8 @@ ss.metadata.get = function(key) {
  * @param {string} key
  * @return {void}
  */
-ss.metadata.remove = function(key) {
-    ss.metadata._resolvePath(key.split('.'), ss.metadata.db.metadata, {isDel:true});
+ssd.metadata.remove = function(key) {
+    ssd.metadata._resolvePath(key.split('.'), ssd.metadata.db.metadata, {isDel:true});
 };
 
 /**
@@ -273,7 +273,7 @@ ss.metadata.remove = function(key) {
  * @param {*=} opt_val If we want to set, include here the value
  * @return {*} The value we resolved
  */
-ss.metadata._resolvePath = function(parts, obj, op, opt_val) {
+ssd.metadata._resolvePath = function(parts, obj, op, opt_val) {
     var len = parts.length;
     var part = parts.shift();
     // check if we are in the last part of our path
@@ -302,7 +302,7 @@ ss.metadata._resolvePath = function(parts, obj, op, opt_val) {
         // previously set as this is the described functionality
         obj[part] = {};
     }
-    return ss.metadata._resolvePath(parts, obj[part], op, opt_val);
+    return ssd.metadata._resolvePath(parts, obj[part], op, opt_val);
 };
 
 /**
@@ -310,8 +310,8 @@ ss.metadata._resolvePath = function(parts, obj, op, opt_val) {
  *
  * @return {Number}
  */
-ss.metadata.pageviews = function(){
-    return ss.metadata.db.pageviews;
+ssd.metadata.pageviews = function(){
+    return ssd.metadata.db.pageviews;
 };
 
 /**
@@ -320,8 +320,8 @@ ss.metadata.pageviews = function(){
  *
  * @return {Number}
  */
-ss.metadata.totalvisits = function() {
-    return ss.metadata.db.visitCounter;
+ssd.metadata.totalvisits = function() {
+    return ssd.metadata.db.visitCounter;
 };
 
 

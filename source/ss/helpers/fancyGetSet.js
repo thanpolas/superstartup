@@ -21,7 +21,7 @@
   * @fileoverview A fancy get / set class
   */
 
-goog.provide('ss.FancyGetSet');
+goog.provide('ssd.FancyGetSet');
 
 /**
  * The fancy Get Set constructor.
@@ -31,7 +31,7 @@ goog.provide('ss.FancyGetSet');
  * @return {function(string=, *=)} returns the getSet method
  *                            along with all other methods.
  */
-ss.FancyGetSet = function(opt_object)
+ssd.FancyGetSet = function(opt_object)
 {
   /**
    * The object we are setting / getting
@@ -63,7 +63,7 @@ ss.FancyGetSet = function(opt_object)
  * @return {*}
  * @throws {TypeError} if parameters of not valid type
  */
-ss.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
+ssd.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
 {
   switch (goog.typeOf(opt_key)) {
     case 'object':
@@ -92,7 +92,7 @@ ss.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
  *
  * @return {!Object} The stored object.
  */
-ss.FancyGetSet.prototype.toObject = function()
+ssd.FancyGetSet.prototype.toObject = function()
 {
   return this._obj;
 };

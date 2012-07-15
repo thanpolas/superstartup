@@ -23,7 +23,7 @@
  *********
  */
 
-goog.provide('ss.metrics.ga');
+goog.provide('ssd.metrics.ga');
 
 /**
  * Constructs and sends the event tracking call to the Google
@@ -43,7 +43,7 @@ goog.provide('ss.metrics.ga');
  * @param {Number=} opt_value An integer that you can use to provide numerical data about the user event.
  * @return {void}
  */
-ss.metrics.ga.trackEvent = function (category, action, opt_label, opt_value)
+ssd.metrics.ga.trackEvent = function (category, action, opt_label, opt_value)
 {
     // send the event to GA
     window['_gaq'].push(['_trackEvent', category, action, opt_label, opt_value]);
@@ -78,7 +78,7 @@ ss.metrics.ga.trackEvent = function (category, action, opt_label, opt_value)
  *      to indicate the page URL.
  * @return {void}
  */
-ss.metrics.ga.trackPageview = function (opt_pageURL)
+ssd.metrics.ga.trackPageview = function (opt_pageURL)
 {
     // send the request
     window['_gaq'].push(['_trackPageview', opt_pageURL]);
@@ -113,18 +113,18 @@ ss.metrics.ga.trackPageview = function (opt_pageURL)
  * _trackPageview method.
  *
  */
-ss.metrics.ga.trackSocial = function (network, socialAction, opt_target, opt_pagePath)
+ssd.metrics.ga.trackSocial = function (network, socialAction, opt_target, opt_pagePath)
 {
   try {
     var w = goog.global;
 
-    if (!w.ss.WEBTRACK || !w.ss.metrics.db.GA_enable)
+    if (!w.ssd.WEBTRACK || !w.ssd.metrics.db.GA_enable)
         return;
 
     w._gaq.push(['_trackSocial', network, socialAction, opt_target, opt_pagePath]);
 
   } catch (e) {
-    ss.error(e);
+    ssd.error(e);
   }
 
 };
@@ -140,7 +140,7 @@ ss.metrics.ga.trackSocial = function (network, socialAction, opt_target, opt_pag
  *      or 3 (page-level))
  * @return {void}
  */
-ss.metrics.ga.customVar = function(slot, name, value, opt_scope) 
+ssd.metrics.ga.customVar = function(slot, name, value, opt_scope) 
 {
     window['_gaq'].push(['_setCustomVar', slot, name, value, opt_scope]);
 };

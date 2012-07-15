@@ -25,21 +25,21 @@
  * @fileoverview The main facebook auth functionality
  *
  */
-goog.provide('ss.user.auth.Twitter');
-goog.provide('ss.user.auth.Twitter.EventType');
+goog.provide('ssd.user.auth.Twitter');
+goog.provide('ssd.user.auth.Twitter.EventType');
 
-goog.require('ss.user.auth.PluginModule');
-goog.require('ss.user.Auth');
-goog.require('ss.user.auth.EventType');
+goog.require('ssd.user.auth.PluginModule');
+goog.require('ssd.user.Auth');
+goog.require('ssd.user.auth.EventType');
 
 /**
  * The Twitter auth constructor
  *
  * @constructor
- * @implements {ss.user.auth.PluginInterface}
- * @extends {ss.user.auth.PluginModule}
+ * @implements {ssd.user.auth.PluginInterface}
+ * @extends {ssd.user.auth.PluginModule}
  */
-ss.user.auth.Twitter = function()
+ssd.user.auth.Twitter = function()
 {
   goog.base(this);
 
@@ -54,31 +54,31 @@ ss.user.auth.Twitter = function()
   this.config('returnPathParam', 'url');
 
   // register our configuration
-  ss.Config.getInstance().register(ss.user.auth.Twitter.CONFIG_PATH, this.config.toObject());
+  ssd.Config.getInstance().register(ssd.user.auth.Twitter.CONFIG_PATH, this.config.toObject());
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
 };
-goog.inherits(ss.user.auth.Twitter, ss.user.auth.PluginModule);
-goog.addSingletonGetter(ss.user.auth.Twitter);
+goog.inherits(ssd.user.auth.Twitter, ssd.user.auth.PluginModule);
+goog.addSingletonGetter(ssd.user.auth.Twitter);
 
 /**
  * String path that we'll store the config
  * @const {string}
  */
-ss.user.auth.Twitter.CONFIG_PATH = 'user.auth.ext.twitter';
+ssd.user.auth.Twitter.CONFIG_PATH = 'user.auth.ext.twitter';
 
 /**
  * A logger to help debugging
  * @type {goog.debug.Logger}
  * @private
  */
-ss.user.auth.Twitter.prototype.logger =  goog.debug.Logger.getLogger('ss.user.auth.Twitter');
+ssd.user.auth.Twitter.prototype.logger =  goog.debug.Logger.getLogger('ssd.user.auth.Twitter');
 
 /**
- * @const {ss.user.types.extSourceId} The plugin's name (e.g. Twitter)
+ * @const {ssd.user.types.extSourceId} The plugin's name (e.g. Twitter)
  */
-ss.user.auth.Twitter.prototype.SOURCEID = 'Twitter';
+ssd.user.auth.Twitter.prototype.SOURCEID = 'Twitter';
 
 /**
  * Start initial authentication checks
@@ -87,13 +87,13 @@ ss.user.auth.Twitter.prototype.SOURCEID = 'Twitter';
  *
  * @return {void}
  */
-ss.user.auth.Twitter.prototype.init = function()
+ssd.user.auth.Twitter.prototype.init = function()
 {
   this.logger.info('Init init(). Dispatching dummy event');
   // get config parameters and apply them to our local config container
-  this._configApply(ss.Config.getInstance().get(ss.user.auth.Twitter.CONFIG_PATH));
+  this._configApply(ssd.Config.getInstance().get(ssd.user.auth.Twitter.CONFIG_PATH));
 
-  this.dispatchEvent(ss.user.auth.EventType.INITIALAUTHSTATUS);
+  this.dispatchEvent(ssd.user.auth.EventType.INITIALAUTHSTATUS);
 };
 
 /**
@@ -104,10 +104,10 @@ ss.user.auth.Twitter.prototype.init = function()
  *      comma separate them
  * @return {void}
  */
-ss.user.auth.Twitter.prototype.login = function(opt_callback, opt_perms)
+ssd.user.auth.Twitter.prototype.login = function(opt_callback, opt_perms)
 {
   // use the current path of the user for return
-  var returnPath = '?' + this.config('returnPathParam') + '=' + ss.encURI(window.location.pathname);
+  var returnPath = '?' + this.config('returnPathParam') + '=' + ssd.encURI(window.location.pathname);
 
   this.logger.info('Init login(). Return path:' + returnPath);
 
@@ -127,7 +127,7 @@ ss.user.auth.Twitter.prototype.login = function(opt_callback, opt_perms)
  * @param {Function(boolean)} callback
  * @return {void}
  */
-ss.user.auth.Twitter.prototype._loginListener = function (response, callback)
+ssd.user.auth.Twitter.prototype._loginListener = function (response, callback)
 {
   this.logger.info('Init _loginListener()');
 
@@ -139,19 +139,19 @@ ss.user.auth.Twitter.prototype._loginListener = function (response, callback)
 *
 * @return {void}
 */
-ss.user.auth.Twitter.prototype.logout = function()
+ssd.user.auth.Twitter.prototype.logout = function()
 {
   this.logger.info('Init logout()');
   this._isAuthed = false;
-  this.dispatchEvent(ss.user.auth.EventType.EXTAUTHCHANGE);
+  this.dispatchEvent(ssd.user.auth.EventType.EXTAUTHCHANGE);
 };
 
 /**
- * If user is authed returns us a {@link ss.user.types.extSource}
+ * If user is authed returns us a {@link ssd.user.types.extSource}
  * data object
- * @return {ss.user.types.extSource|null} null if not authed
+ * @return {ssd.user.types.extSource|null} null if not authed
  */
-ss.user.auth.Twitter.prototype.getUser = function()
+ssd.user.auth.Twitter.prototype.getUser = function()
 {
 
 };

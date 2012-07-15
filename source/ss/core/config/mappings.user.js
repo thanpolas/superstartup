@@ -27,7 +27,7 @@
  *
  * @enum {string}
  *
-ss.config.user.typeMappings.user = {
+ssd.config.user.typeMappings.user = {
   id: 'id',
   username: 'username',
   firstName: 'firstName',
@@ -42,7 +42,7 @@ ss.config.user.typeMappings.user = {
  * A mapping of the keys in the external auth source items DO
  * @enum {string}
  *
-ss.config.user.typeMappings.extSource = {
+ssd.config.user.typeMappings.extSource = {
   sourceId: 'sourceId',
   userId: 'userId',
   profileUrl: 'profileUrl',
@@ -51,12 +51,12 @@ ss.config.user.typeMappings.extSource = {
 };
 
 **
- * An extension to ss.user.types.user for the currently logged
+ * An extension to ssd.user.types.user for the currently logged
  * in user's data object. Contains keys that are only available to
  * the owner of this data object
  * @enum {string}
  *
-ss.config.user.typeMappings.ownuser = {
+ssd.config.user.typeMappings.ownuser = {
   email: 'email',
   verified: 'verified'
 };
