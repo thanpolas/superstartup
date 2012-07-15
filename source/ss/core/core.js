@@ -20,6 +20,7 @@
  /** @fileoverview The core API class */
 
 goog.provide('ssd.Core');
+goog.provide('ssd.core');
 
 goog.require('ssd.Module');
 goog.require('ssd.Config');
@@ -74,7 +75,7 @@ ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
  */
 ssd.Core.prototype.init = function ()
 {
-  this.logger.info('Kicking off init()');
+  this.logger.info('Core init(). Kicking off Super Startup');
   // start authentication process
   this.user.init();
 };
@@ -112,7 +113,8 @@ ssd.Core.prototype.synchInit = function()
 (function(){
 
   // wake up the monster
-  ssd.Core.getInstance().synchInit();
+  ssd.core = ssd.Core.getInstance();
+  ssd.core.synchInit();
 
   var newUserEvent = function() {
     // trigger new user event

@@ -22,37 +22,35 @@
  */
 
 goog.provide('ssd.exports');
+
 goog.require('ssd.metrics');
 goog.require('ssd.server2js');
 goog.require('ssd.Core');
+goog.require('ssd.core');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
 
 // core
-goog.exportSymbol('ssd', ssd.Core.getInstance);
-goog.exportSymbol('ssd.init', ssd.Core.prototype.init);
+goog.exportSymbol('ss', ssd.core);
+goog.exportSymbol('ss.init', ssd.Core.prototype.init);
 
 // user
-goog.exportSymbol('ssd.user', ssd.user.Auth);
-goog.exportSymbol('ssd.user.isAuthed', ssd.user.Auth.isAuthed);
-goog.exportSymbol('ssd.user.isExtAuthed', ssd.user.Auth.isExtAuthed);
-goog.exportSymbol('ssd.user.isVerified', ssd.user.Auth.isVerified);
-goog.exportSymbol('ssd.user.logout', ssd.user.Auth.logout);
+goog.exportSymbol('ss.user', ssd.core.user);
+goog.exportSymbol('ss.user.isAuthed', ssd.core.user.isAuthed);
+goog.exportSymbol('ss.isAuthed', ssd.core.user.isAuthed);
+goog.exportSymbol('ss.user.isExtAuthed', ssd.user.Auth.isExtAuthed);
+goog.exportSymbol('ss.user.isVerified', ssd.user.Auth.isVerified);
+goog.exportSymbol('ss.user.logout', ssd.user.Auth.logout);
 
 // external auth
-goog.exportSymbol('ssd.user.facebook.login', ssd.user.auth.Facebook.prototype.login);
-goog.exportSymbol('ssd.user.facebook.logout', ssd.user.auth.Facebook.prototype.logout);
+goog.exportSymbol('ss.user.facebook.login', ssd.user.auth.Facebook.prototype.login);
+goog.exportSymbol('ss.user.facebook.logout', ssd.user.auth.Facebook.prototype.logout);
 
-goog.exportSymbol('ssd.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
-goog.exportSymbol('ssd.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
+goog.exportSymbol('ss.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
+goog.exportSymbol('ss.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
 
 // modules
-goog.exportSymbol('ssd.metrics.trackEvent', ssd.metrics.trackEvent);
-goog.exportSymbol('ssd.metrics.trackMetrics', ssd.metrics.trackMetrics);
-goog.exportSymbol('ssd.metrics.trackPageview', ssd.metrics.trackPageview);
-
-
-if (!COMPILED) {
-  goog.exportSymbol('s', ssd.Core.getInstance);
-}
+goog.exportSymbol('ss.metrics.trackEvent', ssd.metrics.trackEvent);
+goog.exportSymbol('ss.metrics.trackMetrics', ssd.metrics.trackMetrics);
+goog.exportSymbol('ss.metrics.trackPageview', ssd.metrics.trackPageview);

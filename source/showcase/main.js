@@ -24,14 +24,13 @@
  */
 
 goog.provide('showcase');
-goog.require('ss');
+goog.require('ssd');
 
 goog.require('showcase.widget.showObject');
 
 var showcase = {};
 
 showcase.init = function() {
-  try {
   var logger = goog.debug.Logger.getLogger('showcase.init');
 
   logger.info('Starting...');
@@ -50,13 +49,12 @@ showcase.init = function() {
   // showcase.so.render();
 
   // Interface with ss
-  s.config.set('user.auth.performLocalAuth', true);
-  s.config.set('user.auth.ext.fb.app_id', '186392014808053');
-  s.config.set('user.auth.ext.fb.permissions', 'email,publish_stream');
+  ss.config.set('user.auth.performLocalAuth', true);
+  ss.config.set('user.auth.ext.fb.app_id', '186392014808053');
+  ss.config.set('user.auth.ext.fb.permissions', 'email,publish_stream');
 
-  s.init();
+  ss.init();
 
-  } catch(e) {ss.error(e);}
 };
 
 
