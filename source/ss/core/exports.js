@@ -25,13 +25,34 @@ goog.provide('ss.exports');
 goog.require('ss.metrics');
 goog.require('ss.server2js');
 goog.require('ss.Core');
+goog.require('ss.user.Auth');
+goog.require('ss.user.auth.Facebook');
+goog.require('ss.user.auth.Twitter');
 
-goog.exportSymbol('ss.server', ss.Server2js.getInstance());
+// core
+goog.exportSymbol('ss', ss.Core.getInstance);
+goog.exportSymbol('ss.init', ss.Core.prototype.init);
+
+// user
+goog.exportSymbol('ss.user', ss.user.Auth);
+goog.exportSymbol('ss.user.isAuthed', ss.user.Auth.isAuthed);
+goog.exportSymbol('ss.user.isExtAuthed', ss.user.Auth.isExtAuthed);
+goog.exportSymbol('ss.user.isVerified', ss.user.Auth.isVerified);
+goog.exportSymbol('ss.user.logout', ss.user.Auth.logout);
+
+// external auth
+goog.exportSymbol('ss.user.facebook.login', ss.user.auth.Facebook.prototype.login);
+goog.exportSymbol('ss.user.facebook.logout', ss.user.auth.Facebook.prototype.logout);
+
+goog.exportSymbol('ss.user.twitter.logout', ss.user.auth.Twitter.prototype.logout);
+goog.exportSymbol('ss.user.twitter.logout', ss.user.auth.Twitter.prototype.logout);
+
+// modules
 goog.exportSymbol('ss.metrics.trackEvent', ss.metrics.trackEvent);
 goog.exportSymbol('ss.metrics.trackMetrics', ss.metrics.trackMetrics);
 goog.exportSymbol('ss.metrics.trackPageview', ss.metrics.trackPageview);
 
 
 if (!COMPILED) {
-  goog.exportSymbol('s', ss.Core.getInstance());
+  goog.exportSymbol('s', ss.Core.getInstance);
 }

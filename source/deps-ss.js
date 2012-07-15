@@ -3,13 +3,13 @@
 goog.addDependency('../../../ss/core/config/config.Module.js', ['ss.Config'], ['ss.StringPath', 'ss.debug']);
 goog.addDependency('../../../ss/core/core.js', ['ss.Core'], ['ss.Config', 'ss.Module', 'ss.metadata', 'ss.metrics', 'ss.server2js', 'ss.user.Auth', 'ss.user.auth.Facebook', 'ss.user.auth.Twitter', 'ss.web.cookies']);
 goog.addDependency('../../../ss/core/error.js', ['ss.error'], []);
-goog.addDependency('../../../ss/core/exports.js', ['ss.exports'], ['ss.Core', 'ss.metrics', 'ss.server2js']);
+goog.addDependency('../../../ss/core/exports.js', ['ss.exports'], ['ss.Core', 'ss.metrics', 'ss.server2js', 'ss.user.Auth', 'ss.user.auth.Facebook', 'ss.user.auth.Twitter']);
 goog.addDependency('../../../ss/core/network/ajax.js', ['ss.ajax'], []);
 goog.addDependency('../../../ss/helpers/date.core.js', ['ss.date'], ['goog.date', 'goog.date.DateTime']);
-goog.addDependency('../../../ss/helpers/debug.js', ['ss.debug'], ['goog.debug', 'goog.debug.FancyWindow', 'goog.debug.LogManager', 'goog.debug.Logger']);
+goog.addDependency('../../../ss/helpers/debug.js', ['ss.debug'], []);
 goog.addDependency('../../../ss/helpers/fancyGetSet.js', ['ss.FancyGetSet'], []);
 goog.addDependency('../../../ss/helpers/helpers.js', ['ss.helpers'], ['goog.array', 'goog.object']);
-goog.addDependency('../../../ss/main.js', ['ss'], ['ss.Config', 'ss.Core', 'ss.ajax', 'ss.debug', 'ss.error', 'ss.exports', 'ss.helpers', 'ss.metadata', 'ss.metrics', 'ss.server2js', 'ss.user.auth.Facebook', 'ss.user.auth.Twitter', 'ss.web.cookies']);
+goog.addDependency('../../../ss/main.js', ['ss'], ['ss.Config', 'ss.Core', 'ss.Server2js', 'ss.ajax', 'ss.debug', 'ss.error', 'ss.exports', 'ss.helpers', 'ss.metadata', 'ss.metrics', 'ss.server', 'ss.user.auth.Facebook', 'ss.user.auth.Twitter', 'ss.web.cookies']);
 goog.addDependency('../../../ss/modules/components/cookies.js', ['ss.web.cookies'], []);
 goog.addDependency('../../../ss/modules/components/dynamicMap.js', ['ss.DynamicMap'], ['goog.events.EventTarget', 'goog.object', 'ss.Map']);
 goog.addDependency('../../../ss/modules/components/map.js', ['ss.Map'], ['goog.structs.Map']);

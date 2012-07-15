@@ -2,7 +2,9 @@ module.exports = function(grunt) {
 
   grunt.loadTasks('build/grunt-closure-tools/tasks');
 
-  var externsPath = 'build/bin/externs/';
+  var externsPath = 'build/externs/';
+  // don't put the extension here
+  var debugFile = 'source/ss/helpers/debug';
 
   // Project configuration.
   grunt.initConfig({
@@ -47,15 +49,18 @@ module.exports = function(grunt) {
     closureBuilder: {
       superstartup: {
         closureLibraryPath: 'source/closure-library',
-        inputs: ['source/init.js'],
-        root: 'source',
+        inputs: ['source/ss/main.js'],
+        root: ['source/ss', 'source/closure-library'],
         compile: true,
-        compiler: 'build/bin/Third-Party/closure_compiler/compiler.jar',
-        output_file: 'dist/compiled.js',
+        compiler: 'build/closure_compiler/sscompiler.jar',
+        output_file: 'dist/superstartup.min.js',
         compiler_options: {
           compilation_level: 'ADVANCED_OPTIMIZATIONS',
           externs: [externsPath + '*.js'],
-          define: ["'goog.DEBUG=false'"],
+          define: [
+            "'goog.DEBUG=false'",
+            "'ss.STANDALONE=false'"
+            ],
           warning_level: 'verbose',
           jscomp_off: ['checkTypes', 'fileoverviewTags'],
           summary_detail_level: 3,
@@ -78,16 +83,20 @@ module.exports = function(grunt) {
   // Default task.
   grunt.registerTask('default', 'closureDepsWriter');
 
-  // Create a new task.
-  grunt.registerTask('deps','closureDepsWriter');
+  grunt.registerTask('compile', 'debugOff closureBuilder:superstartup debugOn');
 
-  // Register a helper.
-  grunt.registerHelper('awesome', function() {
-    return 'awesome!!!';
+  // "Turn off" the debug file. Remove requirements to
+  // goog debug libraries
+  grunt.registerTask('debugOff', 'Replace debug file with an empty one', function(){
+    var content = 'goog.provide("ss.debug");';
+
+    // execute the task
+    grunt.file.write(debugFile + '.js', content);
   });
 
-  grunt.registerMultiTask('log', 'Log stuff.', function() {
-    grunt.log.writeln(this.target + ': ' + this.data);
+  // restore the debug file
+  grunt.registerTask('debugOn', 'Restore debug file', function(){
+    grunt.file.copy(debugFile + '.bak', debugFile + '.js');
   });
 
 };

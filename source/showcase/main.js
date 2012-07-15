@@ -96,7 +96,6 @@ showcase.authState = function(state, opt_sourceId, opt_userDataObject)
       $('#login').css('display', 'block');
       $('#logged_in').css('display', 'none');
     }
-
 };
 
 // subscribe to the auth state master event hook

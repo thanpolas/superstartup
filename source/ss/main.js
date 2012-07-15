@@ -34,7 +34,8 @@ goog.require('ss.user.auth.Facebook');
 goog.require('ss.user.auth.Twitter');
 goog.require('ss.helpers');
 goog.require('ss.web.cookies');
-goog.require('ss.server2js');
+goog.require('ss.Server2js');
+goog.require('ss.server');
 
 // ss.Core is special, is our core
 goog.require('ss.Core');
