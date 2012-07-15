@@ -21,38 +21,38 @@
  * @fileoverview Declare all the symbols we want to export
  */
 
-goog.provide('ss.exports');
-goog.require('ss.metrics');
-goog.require('ss.server2js');
-goog.require('ss.Core');
-goog.require('ss.user.Auth');
-goog.require('ss.user.auth.Facebook');
-goog.require('ss.user.auth.Twitter');
+goog.provide('ssd.exports');
+goog.require('ssd.metrics');
+goog.require('ssd.server2js');
+goog.require('ssd.Core');
+goog.require('ssd.user.Auth');
+goog.require('ssd.user.auth.Facebook');
+goog.require('ssd.user.auth.Twitter');
 
 // core
-goog.exportSymbol('ss', ss.Core.getInstance);
-goog.exportSymbol('ss.init', ss.Core.prototype.init);
+goog.exportSymbol('ssd', ssd.Core.getInstance);
+goog.exportSymbol('ssd.init', ssd.Core.prototype.init);
 
 // user
-goog.exportSymbol('ss.user', ss.user.Auth);
-goog.exportSymbol('ss.user.isAuthed', ss.user.Auth.isAuthed);
-goog.exportSymbol('ss.user.isExtAuthed', ss.user.Auth.isExtAuthed);
-goog.exportSymbol('ss.user.isVerified', ss.user.Auth.isVerified);
-goog.exportSymbol('ss.user.logout', ss.user.Auth.logout);
+goog.exportSymbol('ssd.user', ssd.user.Auth);
+goog.exportSymbol('ssd.user.isAuthed', ssd.user.Auth.isAuthed);
+goog.exportSymbol('ssd.user.isExtAuthed', ssd.user.Auth.isExtAuthed);
+goog.exportSymbol('ssd.user.isVerified', ssd.user.Auth.isVerified);
+goog.exportSymbol('ssd.user.logout', ssd.user.Auth.logout);
 
 // external auth
-goog.exportSymbol('ss.user.facebook.login', ss.user.auth.Facebook.prototype.login);
-goog.exportSymbol('ss.user.facebook.logout', ss.user.auth.Facebook.prototype.logout);
+goog.exportSymbol('ssd.user.facebook.login', ssd.user.auth.Facebook.prototype.login);
+goog.exportSymbol('ssd.user.facebook.logout', ssd.user.auth.Facebook.prototype.logout);
 
-goog.exportSymbol('ss.user.twitter.logout', ss.user.auth.Twitter.prototype.logout);
-goog.exportSymbol('ss.user.twitter.logout', ss.user.auth.Twitter.prototype.logout);
+goog.exportSymbol('ssd.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
+goog.exportSymbol('ssd.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
 
 // modules
-goog.exportSymbol('ss.metrics.trackEvent', ss.metrics.trackEvent);
-goog.exportSymbol('ss.metrics.trackMetrics', ss.metrics.trackMetrics);
-goog.exportSymbol('ss.metrics.trackPageview', ss.metrics.trackPageview);
+goog.exportSymbol('ssd.metrics.trackEvent', ssd.metrics.trackEvent);
+goog.exportSymbol('ssd.metrics.trackMetrics', ssd.metrics.trackMetrics);
+goog.exportSymbol('ssd.metrics.trackPageview', ssd.metrics.trackPageview);
 
 
 if (!COMPILED) {
-  goog.exportSymbol('s', ss.Core.getInstance);
+  goog.exportSymbol('s', ssd.Core.getInstance);
 }

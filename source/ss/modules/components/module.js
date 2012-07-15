@@ -21,7 +21,7 @@
   * @fileoverview The default Module class.
   */
 
-goog.provide('ss.Module');
+goog.provide('ssd.Module');
 
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
@@ -32,17 +32,17 @@ goog.require('goog.events.EventTarget');
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-ss.Module = function() {
+ssd.Module = function() {
   goog.base(this);
   /**
    * A fancy setter / getter instance
    * Manages the local config
    *
-   * @type {ss.fancyGetSet}
+   * @type {ssd.fancyGetSet}
    */
-  this.config = new ss.FancyGetSet();
+  this.config = new ssd.FancyGetSet();
 };
-goog.inherits(ss.Module, goog.events.EventTarget);
+goog.inherits(ssd.Module, goog.events.EventTarget);
 
 /**
  * After a module is initialized we want to get the altered config
@@ -61,7 +61,7 @@ goog.inherits(ss.Module, goog.events.EventTarget);
  * @param {!Object} config The config as passed from the config instance.
  * @private
  */
-ss.Module.prototype._configApply = function(config)
+ssd.Module.prototype._configApply = function(config)
 {
   var moduleConfig = this.config.toObject();
   for (var key in moduleConfig) {

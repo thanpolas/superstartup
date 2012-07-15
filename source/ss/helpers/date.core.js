@@ -18,13 +18,13 @@
  * createdate 05/Jul/2010
  *
  *********
- *  File:: utilities/date.ss.js
+ *  File:: utilities/date.ssd.js
  *  Generic date class. Used for formating
  *********
  */
 
 
-goog.provide('ss.date');
+goog.provide('ssd.date');
 
 goog.require('goog.date');
 goog.require('goog.date.DateTime');
@@ -43,9 +43,9 @@ goog.require('goog.date.DateTime');
  * @return {this}
  * @constructor
  */
-ss.date = function (opt_sDate)
+ssd.date = function (opt_sDate)
 {
-    var logger = goog.debug.Logger.getLogger('ss.date');
+    var logger = goog.debug.Logger.getLogger('ssd.date');
 
     logger.fine('Init - sDate:' + opt_sDate);
 
@@ -84,7 +84,7 @@ ss.date = function (opt_sDate)
     return this;
 }
 
-ss.date.dbstatic = {
+ssd.date.dbstatic = {
     day: {
         0: 'Sun',
         1: 'Mon',
@@ -122,7 +122,7 @@ ss.date.dbstatic = {
         'Nov' : 10,
         'Dec' : 11
     }
-}; // property ss.date.db
+}; // property ssd.date.db
 
 
 /**
@@ -132,9 +132,9 @@ ss.date.dbstatic = {
  * @param {boolean} opt_short If we need a shorter version define true
  * @return {string}
  */
-ss.date.prototype.getDiffStringAgo = function (opt_short)
+ssd.date.prototype.getDiffStringAgo = function (opt_short)
 {
-    var diff = ss.date.getDiffSecs(this.db.gdt);
+    var diff = ssd.date.getDiffSecs(this.db.gdt);
 
     // more than a day ago
     if (86400 < diff ) return this.smallDate();
@@ -147,7 +147,7 @@ ss.date.prototype.getDiffStringAgo = function (opt_short)
     if (86400 >= diff) return ( opt_short ? Math.floor(diff / 3600) + ' hours' : 'about ' + Math.floor(diff / 3600) + ' hours ago');
 
     return '';
-}; // method ss.date.getDiffStringAgo
+}; // method ssd.date.getDiffStringAgo
 
 /**
  * A static function that calculates
@@ -157,7 +157,7 @@ ss.date.prototype.getDiffStringAgo = function (opt_short)
  * @param {goog.date.DateTime} gDate
  * @return {Number} seconds
  */
-ss.date.getDiffSecs = function (gDate)
+ssd.date.getDiffSecs = function (gDate)
 {
   try {
     var g = goog;
@@ -170,7 +170,7 @@ ss.date.getDiffSecs = function (gDate)
     var epochnow = Math.floor(dtnow.getTime() / 1000);
 
     return Math.abs((epochnow - epoch));
-  } catch(e) {ss.error(e);}
+  } catch(e) {ssd.error(e);}
 };
 
 
@@ -182,12 +182,12 @@ ss.date.getDiffSecs = function (gDate)
  * e.g. 12:32 PM May 25
  * 09:23 AM Dec 23, 2009
  */
-ss.date.prototype.smallDatetime = function ()
+ssd.date.prototype.smallDatetime = function ()
 {
-    var c = ss;
+    var c = ssd;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var logger = g.debug.Logger.getLogger('ss.date.smallDatetime');
+    var logger = g.debug.Logger.getLogger('ssd.date.smallDatetime');
     var sdate = this.db.sDate;
     logger.fine('Init');
 
@@ -259,7 +259,7 @@ ss.date.prototype.smallDatetime = function ()
     logger.finer('Date Not same Orig:' + sdate + ' Formated:' + ret);
     return ret;
 
-}; // method ss.data.smallDatetime
+}; // method ssd.data.smallDatetime
 
 /**
  * Returns a formated date in the shortest type.
@@ -268,12 +268,12 @@ ss.date.prototype.smallDatetime = function ()
  *
  * @return {string|null} formated date or null if sdate does not validate
  */
-ss.date.prototype.smallDate = function ()
+ssd.date.prototype.smallDate = function ()
 {
-    var c = ss;
+    var c = ssd;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var logger = g.debug.Logger.getLogger('ss.date.smallDate');
+    var logger = g.debug.Logger.getLogger('ssd.date.smallDate');
     var sdate = this.db.sDate;
     logger.fine('Init:' + g.typeOf(this.db.gdt));
 
@@ -343,7 +343,7 @@ ss.date.prototype.smallDate = function ()
     return ret;
 
 
-}; // method ss.date.smallDate
+}; // method ssd.date.smallDate
 
 
 
@@ -353,11 +353,11 @@ ss.date.prototype.smallDate = function ()
  * @return {string} date RFC822 type: Wed, 26 May 2010 23:17:17 +0000
  * @constructor
  */
-ss.date.prototype.getRFC822 = function ()
+ssd.date.prototype.getRFC822 = function ()
 {
-    var c = ss;
+    var c = ssd;
     var g = goog;
-    var logger = g.debug.Logger.getLogger('ss.date.getRFC822');
+    var logger = g.debug.Logger.getLogger('ssd.date.getRFC822');
 
     // construct the string
     var ret = '';
@@ -380,7 +380,7 @@ ss.date.prototype.getRFC822 = function ()
 
     return ret;
 
-}; // method ss.date.getRFC822
+}; // method ssd.date.getRFC822
 
 /**
  * Returns a full date time in the format of:
@@ -388,12 +388,12 @@ ss.date.prototype.getRFC822 = function ()
  *
  * @return {string}
  */
-ss.date.prototype.getFullDateTime = function ()
+ssd.date.prototype.getFullDateTime = function ()
 {
-    var c = ss;
+    var c = ssd;
     var g = goog;
     var m = c.date.dbstatic.month;
-    var logger = g.debug.Logger.getLogger('ss.date.smallDatetime');
+    var logger = g.debug.Logger.getLogger('ssd.date.smallDatetime');
     var sdate = this.db.sDate;
     logger.fine('Init');
 
@@ -434,5 +434,5 @@ ss.date.prototype.getFullDateTime = function ()
     var ret = dd  + '/' + mmm + '/' + d.getYear() + ' ' + hh + ':' + MM + ' ' + a_p;
     return ret;
 
-}; // ss.date.getFullDateTime
+}; // ssd.date.getFullDateTime
 

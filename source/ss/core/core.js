@@ -19,17 +19,17 @@
 
  /** @fileoverview The core API class */
 
-goog.provide('ss.Core');
+goog.provide('ssd.Core');
 
-goog.require('ss.Module');
-goog.require('ss.Config');
-goog.require('ss.server2js');
-goog.require('ss.metrics');
-goog.require('ss.user.Auth');
-goog.require('ss.user.auth.Facebook');
-goog.require('ss.user.auth.Twitter');
-goog.require('ss.metadata');
-goog.require('ss.web.cookies');
+goog.require('ssd.Module');
+goog.require('ssd.Config');
+goog.require('ssd.server2js');
+goog.require('ssd.metrics');
+goog.require('ssd.user.Auth');
+goog.require('ssd.user.auth.Facebook');
+goog.require('ssd.user.auth.Twitter');
+goog.require('ssd.metadata');
+goog.require('ssd.web.cookies');
 
 /**
  * The base class
@@ -37,9 +37,9 @@ goog.require('ss.web.cookies');
  * This class will be exported as our main entry point
  *
  * @constructor
- * @extends {ss.Module}
+ * @extends {ssd.Module}
  */
-ss.Core = function()
+ssd.Core = function()
 {
   goog.base(this);
 
@@ -47,23 +47,23 @@ ss.Core = function()
    * We overwrite the module's fancySetGet instance
    * with the actual config singleton instance.
    *
-   * @type {ss.Config} Singleton config instance.
+   * @type {ssd.Config} Singleton config instance.
    */
-  this.config = ss.Config.getInstance();
+  this.config = ssd.Config.getInstance();
 
-  /** @type {ss.Config} Singleton config instance */
-  //ss.config = ss.Config.getInstance();
+  /** @type {ssd.Config} Singleton config instance */
+  //ssd.config = ssd.Config.getInstance();
 
   /**
    * The instance of the user auth class
-   * @type {ss.user.Auth}
+   * @type {ssd.user.Auth}
    */
-  this.user = ss.user.Auth.getInstance();
+  this.user = ssd.user.Auth.getInstance();
 };
-goog.inherits(ss.Core, ss.Module);
-goog.addSingletonGetter(ss.Core);
+goog.inherits(ssd.Core, ssd.Module);
+goog.addSingletonGetter(ssd.Core);
 
-ss.Core.prototype.logger = goog.debug.Logger.getLogger('ss.Core');
+ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
 /**
  * Kicks off the library.
@@ -72,7 +72,7 @@ ss.Core.prototype.logger = goog.debug.Logger.getLogger('ss.Core');
  *
  * @return {void}
  */
-ss.Core.prototype.init = function ()
+ssd.Core.prototype.init = function ()
 {
   this.logger.info('Kicking off init()');
   // start authentication process
@@ -88,11 +88,11 @@ ss.Core.prototype.init = function ()
  *
  * @return {void}
  */
-ss.Core.prototype.synchInit = function()
+ssd.Core.prototype.synchInit = function()
 {
 
   if (goog.DEBUG) {
-    ss.debug.openFancyWin();
+    ssd.debug.openFancyWin();
   }
   this.logger.info('synchInit() Starting...');
 
@@ -100,8 +100,8 @@ ss.Core.prototype.synchInit = function()
   this.user.setParentEventTarget(this);
 
   // initialize ext auth plugins
-  ss.user.auth.Facebook.getInstance();
-  ss.user.auth.Twitter.getInstance();
+  ssd.user.auth.Facebook.getInstance();
+  ssd.user.auth.Twitter.getInstance();
 
 };
 
@@ -112,28 +112,28 @@ ss.Core.prototype.synchInit = function()
 (function(){
 
   // wake up the monster
-  ss.Core.getInstance().synchInit();
+  ssd.Core.getInstance().synchInit();
 
   var newUserEvent = function() {
     // trigger new user event
-    ss.user.auth.events.runEvent('newUser');
+    ssd.user.auth.events.runEvent('newUser');
   };
 
-  var serv = ss.Server2js.getInstance();
+  var serv = ssd.Server2js.getInstance();
 
   // hook for authed user from server
-  //serv.hook('102', ss.user.auth.login, 50);
+  //serv.hook('102', ssd.user.auth.login, 50);
 
   // analytics
-  serv.hook('analytics', ss.metrics.init);
+  serv.hook('analytics', ssd.metrics.init);
 
   // new user event
   serv.hook('121', newUserEvent);
 
   // metadata init call
-  serv.hook('metadata', ss.metadata.init);
+  serv.hook('metadata', ssd.metadata.init);
 
   // Write permanent cookie request (first time ever visitor)
-  serv.hook('25', ss.web.cookies.writePermCook);
+  serv.hook('25', ssd.web.cookies.writePermCook);
 
 })();

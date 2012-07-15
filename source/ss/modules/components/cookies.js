@@ -25,12 +25,12 @@
  */
 
 
-goog.provide('ss.web.cookies');
+goog.provide('ssd.web.cookies');
 
 // Don't utilize goog's cookie class, we only want to test if cookies
 // are enabled.
 //goog.require('goog.net.Cookies');
-//ss.web.cookies.gcls = new goog.net.Cookies(document);
+//ssd.web.cookies.gcls = new goog.net.Cookies(document);
 
 /**
  * Determine if the browser is cookie enabled
@@ -39,7 +39,7 @@ goog.provide('ss.web.cookies');
  * http://www.javascriptkit.com/javatutors/cookiedetect.shtml
  * @return {boolean}
  */
-ss.web.cookies.isEnabled = function ()
+ssd.web.cookies.isEnabled = function ()
 {
   try {
     var cookieEnabled = (navigator.cookieEnabled) ? true : false
@@ -51,7 +51,7 @@ ss.web.cookies.isEnabled = function ()
     }
     return cookieEnabled;
   } catch (e) {
-    ss.error(e);
+    ssd.error(e);
   }
 
 };
@@ -64,17 +64,17 @@ ss.web.cookies.isEnabled = function ()
  *
  * @return {void}
  */
-ss.web.cookies.writePermCook = function()
+ssd.web.cookies.writePermCook = function()
 {
-  if (ss.web.cookies.isEnabled()) {
+  if (ssd.web.cookies.isEnabled()) {
     // cookies enabled, notify server
-    var aj = new ss.ajax('/users/pc', {
+    var aj = new ssd.ajax('/users/pc', {
           postMethod: 'POST'
         });
     aj.callback = function(res) {
       // check if we got a new metadataObject ...
       if (goog.isObject(res['metadataRoot'])) {
-        ss.metadata.init(res['metadataRoot']);
+        ssd.metadata.init(res['metadataRoot']);
       }
     };
     // send ajax request

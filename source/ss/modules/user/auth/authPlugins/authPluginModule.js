@@ -21,27 +21,27 @@
   * @fileoverview The auth plugin superclass.
   */
 
-goog.provide('ss.user.auth.PluginModule');
+goog.provide('ssd.user.auth.PluginModule');
 
-goog.require('ss.Module');
-goog.require('ss.FancyGetSet');
-goog.require('ss.user.Auth');
+goog.require('ssd.Module');
+goog.require('ssd.FancyGetSet');
+goog.require('ssd.user.Auth');
 
 /**
  * The basic auth plugin class
  *
  * @constructor
- * @extends {ss.Module}
+ * @extends {ssd.Module}
  */
-ss.user.auth.PluginModule = function()
+ssd.user.auth.PluginModule = function()
 {
   goog.base(this);
   /**
    * The user auth Class
    * @private
-   * @type {ss.user.Auth}
+   * @type {ssd.user.Auth}
    */
-  this._auth = ss.user.Auth.getInstance();
+  this._auth = ssd.user.Auth.getInstance();
 
   // set auth main as the parent event target
   this.setParentEventTarget(this._auth);
@@ -61,13 +61,13 @@ ss.user.auth.PluginModule = function()
 
 
 };
-goog.inherits(ss.user.auth.PluginModule, ss.Module);
+goog.inherits(ssd.user.auth.PluginModule, ssd.Module);
 
 /**
  * Current user is authenticated with (ext auth source) service
  * @return {boolean}
  */
-ss.user.auth.PluginModule.prototype.isAuthed = function()
+ssd.user.auth.PluginModule.prototype.isAuthed = function()
 {
   return this._isAuthed;
 };

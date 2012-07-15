@@ -21,7 +21,7 @@
   * @fileoverview An extention of goog.structs.Map class, adding the .forEach method
   */
 
-goog.provide('ss.Map');
+goog.provide('ssd.Map');
 
 goog.require('goog.structs.Map');
 
@@ -33,10 +33,10 @@ goog.require('goog.structs.Map');
  * @constructor
  * @extends {goog.structs.Map}
  */
-ss.Map = function(opt_map, var_args) {
+ssd.Map = function(opt_map, var_args) {
   goog.structs.Map.apply(this, arguments);
 };
-goog.inherits(ss.Map, goog.structs.Map);
+goog.inherits(ssd.Map, goog.structs.Map);
 
 /**
  * Safely iterate over the Map's key-value pairs
@@ -47,7 +47,7 @@ goog.inherits(ss.Map, goog.structs.Map);
  * @param {Object=} opt_selfObj optionally set the context to execute the func
  * @return {void}
  */
-ss.Map.prototype.forEach = function(fn, opt_selfObj)
+ssd.Map.prototype.forEach = function(fn, opt_selfObj)
 {
   var keys = this.getKeys();
   var map = this.map_;

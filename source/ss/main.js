@@ -22,24 +22,24 @@
 
  /** @fileoverview Superstartup library bootstrap file */
 
-goog.provide('ss');
+goog.provide('ssd');
 
-goog.require('ss.debug');
-goog.require('ss.metrics');
-goog.require('ss.error');
-goog.require('ss.metadata');
-goog.require('ss.ajax');
-goog.require('ss.Config');
-goog.require('ss.user.auth.Facebook');
-goog.require('ss.user.auth.Twitter');
-goog.require('ss.helpers');
-goog.require('ss.web.cookies');
-goog.require('ss.Server2js');
-goog.require('ss.server');
+goog.require('ssd.debug');
+goog.require('ssd.metrics');
+goog.require('ssd.error');
+goog.require('ssd.metadata');
+goog.require('ssd.ajax');
+goog.require('ssd.Config');
+goog.require('ssd.user.auth.Facebook');
+goog.require('ssd.user.auth.Twitter');
+goog.require('ssd.helpers');
+goog.require('ssd.web.cookies');
+goog.require('ssd.Server2js');
+goog.require('ssd.server');
 
-// ss.Core is special, is our core
-goog.require('ss.Core');
+// ssd.Core is special, is our core
+goog.require('ssd.Core');
 
 
-// ss.exports should be the last one to get required
-goog.require('ss.exports');
+// ssd.exports should be the last one to get required
+goog.require('ssd.exports');

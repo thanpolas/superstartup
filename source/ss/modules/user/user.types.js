@@ -23,21 +23,21 @@
  * @fileoverview definitions of user data structures
  */
 
-goog.provide('ss.user.types');
+goog.provide('ssd.user.types');
 
-goog.require('ss.Map');
+goog.require('ssd.Map');
 
 /**
  * @typedef {string} The plugin's name type, a single unique string
  *    for the external authentication service (e.g. Facebook).
  */
-ss.user.types.extSourceId;
+ssd.user.types.extSourceId;
 
 /**
  * An array of external sources
- * @typedef {Array.<ss.user.types.extSourceId>}
+ * @typedef {Array.<ssd.user.types.extSourceId>}
  */
-ss.user.types.extSources;
+ssd.user.types.extSources;
 
 /**
  * An external authentication user data object.
@@ -50,14 +50,14 @@ ss.user.types.extSources;
  * - profileImageUrl: Default profile photo of user from ext auth source
  *
  * @typedef {{
- *   sourceId: (ss.user.types.extSourceId),
+ *   sourceId: (ssd.user.types.extSourceId),
  *   userId: (number|string),
  *   profileUrl: (string),
  *   username: (string),
  *   profileImageUrl: (string)
  * }}
  */
-ss.user.types.extSource;
+ssd.user.types.extSource;
 
 
 
@@ -66,7 +66,7 @@ ss.user.types.extSource;
  *
  * @type {Object}
  */
-ss.user.types.user = {
+ssd.user.types.user = {
   /** @type {string} */
   id: '0',
   /** @type {string} */
@@ -81,17 +81,17 @@ ss.user.types.user = {
   createDate: 0,
   /** @type {boolean} If user has external authentication sources */
   hasExtSource: false,
-  /** @type {ss.Map.<ss.user.types.extSourceId>} */
-  extSource: new ss.Map()
+  /** @type {ssd.Map.<ssd.user.types.extSourceId>} */
+  extSource: new ssd.Map()
 };
 
 /**
- * An extension to ss.user.types.user for the currently logged
+ * An extension to ssd.user.types.user for the currently logged
  * in user's data object. Contains keys that are only available to
  * the owner of this data object
  * @type {Object}
  */
-ss.user.types.ownuser = {
+ssd.user.types.ownuser = {
   /** @type {string} */
   email: '',
   /** @type {boolean} */

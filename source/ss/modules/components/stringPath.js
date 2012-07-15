@@ -25,15 +25,15 @@
  /**
   * @fileoverview A plain storage facility with string to path resolving
   */
-goog.provide('ss.StringPath');
-goog.provide('ss.StringPath.Errors');
+goog.provide('ssd.StringPath');
+goog.provide('ssd.StringPath.Errors');
 
 /**
  * The constructor
- * @param {Object|ss.StringPath=} opt_obj Initial data to load
+ * @param {Object|ssd.StringPath=} opt_obj Initial data to load
  * @constructor
  */
-ss.StringPath = function(opt_obj)
+ssd.StringPath = function(opt_obj)
 {
   /**
    * @type {Object} Underlying JS object used to implement the map.
@@ -52,13 +52,13 @@ ss.StringPath = function(opt_obj)
 };
 
 /**
- * Add raw data, either an object hash or an instance of ss.StringPath
+ * Add raw data, either an object hash or an instance of ssd.StringPath
  * NOTE: Overwrites any existing data
- * @param {Object|ss.StringPath}
+ * @param {Object|ssd.StringPath}
  */
-ss.StringPath.prototype.addRaw = function(obj)
+ssd.StringPath.prototype.addRaw = function(obj)
 {
-  if (obj instanceof ss.StringPath) {
+  if (obj instanceof ssd.StringPath) {
     this._data = obj.toObject();
   } else if (goog.isObject(obj)){
     this._data = obj;
@@ -72,7 +72,7 @@ ss.StringPath.prototype.addRaw = function(obj)
  * (Native JS Object)
  * @return {Object}
  */
-ss.StringPath.prototype.toObject = function()
+ssd.StringPath.prototype.toObject = function()
 {
   return this._data;
 };
@@ -89,7 +89,7 @@ ss.StringPath.prototype.toObject = function()
  * @param {*} value the value we want to store. Can be anything
  * @return {void}
  */
-ss.StringPath.prototype.set = function(key, value) {
+ssd.StringPath.prototype.set = function(key, value) {
   // some plain validations
   if('string' != typeof key) {
       throw new TypeError();
@@ -109,7 +109,7 @@ ss.StringPath.prototype.set = function(key, value) {
  * @return {*} null if value not found
  * @throws {TypeError} if key not string
  */
-ss.StringPath.prototype.get = function(key, opt_throwError) 
+ssd.StringPath.prototype.get = function(key, opt_throwError) 
 {
   if('string' != typeof key) {
     throw new TypeError();
@@ -123,7 +123,7 @@ ss.StringPath.prototype.get = function(key, opt_throwError)
  * @param {string} key
  * @return {void}
  */
-ss.StringPath.prototype.remove = function(key) {
+ssd.StringPath.prototype.remove = function(key) {
     this._resolvePath(key.split(this._dot), this._data, {isDel:true});
 };
 
@@ -150,7 +150,7 @@ ss.StringPath.prototype.remove = function(key) {
  *      Only valid for isGet and isDel mode
  * @return {*} The value we resolved
  */
-ss.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError) 
+ssd.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError) 
 {
     var part = parts.shift();
     // check if we are in the last part of our path

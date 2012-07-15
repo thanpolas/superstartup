@@ -23,22 +23,22 @@
  *********
  */
 
-goog.provide('ss.metrics.mixpanel');
+goog.provide('ssd.metrics.mixpanel');
 
 /**
  * Implements mixpanel's identify function for uniquely identifying
  * visitors.
  *
  * For now we track our visitors using the permanent Cook ID
- * Called from: ss.metadata.newObject();
+ * Called from: ssd.metadata.newObject();
  *
  *
  * @param {Number} permId
  * @return {void}
  */
-ss.metrics.mixpanel.identify = function (permId)
+ssd.metrics.mixpanel.identify = function (permId)
 {
-    ss.WEBTRACK && window['mpq']['identify'](permId);
+    ssd.WEBTRACK && window['mpq']['identify'](permId);
 };
 
 /**
@@ -48,9 +48,9 @@ ss.metrics.mixpanel.identify = function (permId)
  * @param {object=} props custom properties
  * @return {void}
  */
-ss.metrics.mixpanel.track = function (name, props)
+ssd.metrics.mixpanel.track = function (name, props)
 {
-    if (!ss.WEBTRACK)
+    if (!ssd.WEBTRACK)
         return;
 
     props = props || {};
@@ -71,7 +71,7 @@ ss.metrics.mixpanel.track = function (name, props)
  * @param {string} name
  * @return {void}
  */
-ss.metrics.mixpanel.nameTag = function(name)
+ssd.metrics.mixpanel.nameTag = function(name)
 {
   window['mpq']['name_tag'](name);
 };
