@@ -101,7 +101,7 @@ ssd.user.auth.Error = {
   /**
    * External auth plugin has already registered
    */
-  ALREADY_REGISTERED: 'This ext auth plugin is already registered: '
+  ALREADY_REGISTERED: 'plugin already registered: '
 };
 
 
@@ -191,6 +191,9 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
   // add the new plugin to our map
   this._extSupportedSources.set(selfObj.SOURCEID, selfObj);
 
+  // register the plugin as a method in this instance
+  this[selfObj.SOURCEID] = selfObj;
+
   // event listeners
   selfObj.addEventListener(ssd.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
   selfObj.addEventListener(ssd.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
@@ -216,7 +219,9 @@ ssd.user.Auth.prototype._initAuthStatus = function(e)
   this._extAuthedSources.set(e.target.SOURCEID, true);
 
   // check if this auth plugin requires authentication with our server
-  e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.SOURCEID);
+  if (e.target.LOCALAUTH) {
+    this.verifyExtAuthWithLocal(e.target.SOURCEID);
+  }
 
   // check if we were in a not authed state and change that
   if (!this._isAuthed && !this._localAuth) {
@@ -247,7 +252,9 @@ ssd.user.Auth.prototype._authChange = function(e)
     this._extAuthedSources.set(e.target.SOURCEID, true);
 
     // check if this auth plugin requires authentication with our server
-    e.target.LOCALAUTH && this.verifyExtAuthWithLocal(e.target.SOURCEID);
+    if (e.target.LOCALAUTH) {
+      this.verifyExtAuthWithLocal(e.target.SOURCEID);
+    }
 
     // check if we were in a not authed state and change that
     if (!this._isAuthed && !this._localAuth) {
@@ -360,7 +367,7 @@ ssd.user.Auth.prototype.isAuthed = function()
  */
 ssd.user.Auth.prototype.isExtAuthed = function(sourceId)
 {
-    return this._extAuthedSources.get(sourceId) || false;
+  return this._extAuthedSources.get(sourceId) || false;
 };
 
 /**
@@ -370,7 +377,7 @@ ssd.user.Auth.prototype.isExtAuthed = function(sourceId)
  */
 ssd.user.Auth.prototype.isVerified = function()
 {
-    return this._isAuthed && this._user.get(ssd.conf.user.typeMappings.ownuser.verified);
+  return this._isAuthed && this._user.get(ssd.conf.user.typeMappings.ownuser.verified);
 };
 
 /**

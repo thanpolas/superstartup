@@ -116,11 +116,6 @@ ssd.Core.prototype.synchInit = function()
   ssd.core = ssd.Core.getInstance();
   ssd.core.synchInit();
 
-  var newUserEvent = function() {
-    // trigger new user event
-    ssd.user.auth.events.runEvent('newUser');
-  };
-
   var serv = ssd.Server2js.getInstance();
 
   // hook for authed user from server
@@ -130,7 +125,7 @@ ssd.Core.prototype.synchInit = function()
   serv.hook('analytics', ssd.metrics.init);
 
   // new user event
-  serv.hook('121', newUserEvent);
+  //serv.hook('121', newUserEvent);
 
   // metadata init call
   serv.hook('metadata', ssd.metadata.init);
