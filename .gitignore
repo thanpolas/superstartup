@@ -3,3 +3,4 @@ build/bin/compiler.out
 html/compil*
 build/bin/modules/compiler.out
 node_modules
+source/closure-library
