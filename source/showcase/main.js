@@ -35,9 +35,9 @@ showcase.init = function() {
 
   logger.info('Starting...');
 
-  var jCombo = $('#comboBox');
-  if (!jCombo.length)
-    return;
+  // var jCombo = $('#comboBox');
+  // if (!jCombo.length)
+  //   return;
   // showcase.so = new showcase.widget.showObject({
   //   comboBox: jCombo,
   //   displayBox: $('#showObjects')
