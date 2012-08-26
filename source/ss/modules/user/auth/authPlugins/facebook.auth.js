@@ -46,8 +46,8 @@ ssd.user.auth.Facebook = function()
   /** @const {boolean} */
   this.LOCALAUTH = true;
 
-  // set required confs
-  this.config('app_id', '');
+  // set required default configuration values
+  this.config('appId', '');
   this.config('permissions', '');
   // If this is set to false, we assume that the FB JS API was loaded
   // synchronously
@@ -74,7 +74,7 @@ goog.addSingletonGetter(ssd.user.auth.Facebook);
  * String path that we'll store the config
  * @const {string}
  */
-ssd.user.auth.Facebook.CONFIG_PATH = 'user.auth.ext.fb';
+ssd.user.auth.Facebook.CONFIG_PATH = 'user.auth.fb';
 
 
 /**
@@ -119,7 +119,7 @@ ssd.user.auth.Facebook.prototype._FBGotResponce = false;
 /**
  * @const {ssd.user.types.extSourceId} The plugin's name (e.g. Facebook)
  */
-ssd.user.auth.Facebook.prototype.SOURCEID = 'Facebook';
+ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
 
 /**
  * Start initial authentication checks
@@ -184,7 +184,7 @@ ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
  */
 ssd.user.auth.Facebook.prototype._getAppId = function ()
 {
-  return this._appId || (this._appId = this.config('app_id'));
+  return this._appId || (this._appId = this.config('appId'));
 };
 
 /**
@@ -408,5 +408,18 @@ ssd.user.auth.Facebook.prototype.getUser = function()
 {
 
 };
+
+/**
+ * @inheritDoc
+ */
+ssd.user.auth.PluginModule.prototype.getAccessToken = function()
+{
+  if (!this.isAuthed()) {
+    return '';
+  }
+
+  return FB.getAccessToken();
+};
+
 
 

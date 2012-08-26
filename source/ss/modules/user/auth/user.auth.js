@@ -40,6 +40,9 @@ goog.require('ssd.Config');
  */
 ssd.user.Auth = function()
 {
+
+  this.logger.info('Class instantiated');
+
   goog.base(this);
 
   /**
@@ -56,11 +59,17 @@ ssd.user.Auth = function()
   // The var name to use when (ajax) posting the SOURCEID to the server
   // depends on 'performLocalAuth'
   this.config('localAuthSourceId', 'sourceId');
+  // When performing a local authentication we pass the
+  // access token to the server so he can validate the
+  // authentication. This is the query parameter
+  // name
+  this.config('localAuthAccessToken', 'accessToken');
   // When an external auth source becomes authenticated
   // we use this URL to inform the server.
   // Depends on 'performLocalAuth'
-  // If ext auth plugin has own url set we use that instead
-  this.config('authUrl', '/users/extAuth');
+  //
+  // Auth plugins can overwrite this parameter
+  this.config('localAuthUrl', '/users/verifyAuth');
   // register our config
   ssd.Config.getInstance().register(ssd.user.auth.CONFIG_PATH, this.config.toObject());
 
@@ -160,8 +169,14 @@ ssd.user.Auth.prototype.init = function()
   // get config parameters and apply them to our local config container
   this._configApply(ssd.Config.getInstance().get(ssd.user.auth.CONFIG_PATH));
 
-  this._extSupportedSources.forEach(function(key, value){
-    value.init();
+  // shotcut assign the performLocalAuth config directive to our
+  // local var
+  this._localAuth = this.config('performLocalAuth');
+
+  this.logger.config('user.Auth.init: Set _localAuth to value:' + this._localAuth);
+
+  this._extSupportedSources.forEach(function(key, plugin){
+    plugin.init();
   });
 };
 
@@ -208,7 +223,7 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
  */
 ssd.user.Auth.prototype._initAuthStatus = function(e)
 {
-  this.logger.info('initial auth status dispatched From:' + e.target.SOURCEID + ' Source authed:' + e.target.isAuthed());
+  this.logger.info('initial auth status dispatched From:' + e.target.SOURCEID + ' Source authed:' + e.target.isAuthed() + ' plugin has LocalAuth:' + e.target.LOCALAUTH);
 
   // if not authed no need to go further
   if (!e.target.isAuthed()) {
@@ -289,6 +304,8 @@ ssd.user.Auth.prototype._authChange = function(e)
  */
 ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 {
+  this.logger.info('Init _verifyExtAuthWithLocal(). LocalAuth Switch:' + this._localAuth + ' sourceId :' + sourceId );
+
   if (!this._localAuth) {
     return;
   }
@@ -296,7 +313,7 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
   // get plugin instance
   var extInst = this._extSupportedSources.get(sourceId);
 
-  this.logger.info('Init. _verifyExtAuthWithLocal(). sourceId :' + sourceId + ' Local auth started:' + extInst.localAuthInit);
+  this.logger.info('Check if local auth has already started:' + extInst.localAuthInit);
 
   //check if we have already started auth with server
   if (extInst.localAuthInit) {
@@ -304,10 +321,15 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
   }
   extInst.localAuthInit = true;
   // get local auth url from ext plugin if it exists
-  var url = this._extSupportedSources.get(sourceId).config('authUrl');
+  var url = extInst.config('localAuthUrl');
+  // get the accessToken
+  var accessToken = extInst.getAccessToken();
   // create and start request
-  var a = new ssd.ajax(url || this._config['authUrl']);
-  a.addData(this._config['localAuthSourceId'], sourceId);
+  var a = new ssd.ajax(url || this.config('localAuthUrl'), {
+      postMethod: 'POST'
+    });
+  a.addData(this.config('localAuthSourceId'), sourceId);
+  a.addData(extInst.config('localAuthAccessToken') || this.config('localAuthAccessToken'), accessToken);
 
   // response from server
   a.callback = goog.bind(this._serverAuthResponse, this); //callback of AJAX

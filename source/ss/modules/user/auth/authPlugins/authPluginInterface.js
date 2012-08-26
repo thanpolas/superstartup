@@ -37,7 +37,8 @@ ssd.user.auth.PluginInterface.prototype.SOURCEID;
 
 /**
  * @const {boolean} If this plugin needs to follow up authentication
- *      with server
+ *         with the server. If set to true then  you also need
+ *         to define the 'getAccessToken' method
  */
 ssd.user.auth.PluginInterface.prototype.LOCALAUTH;
 
@@ -93,6 +94,18 @@ ssd.user.auth.PluginInterface.prototype.getUser = function(){};
  * @return {void}
  */
 ssd.user.auth.PluginInterface.prototype.init = function(){};
+
+/**
+ * Returns the oAuth access token.
+ *
+ * This method is required if LOCALAUTH is true.
+ *
+ * This method is mocked in the authPluginModule and returns
+ * an empty string.
+ *
+ * @return {string} The oAuth access token.
+ */
+ssd.user.auth.PluginInterface.prototype.getAccessToken = function(){};
 
 /**
  * The local config of the ext auth plugin

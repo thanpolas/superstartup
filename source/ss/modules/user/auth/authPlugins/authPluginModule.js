@@ -71,3 +71,16 @@ ssd.user.auth.PluginModule.prototype.isAuthed = function()
 {
   return this._isAuthed;
 };
+
+/**
+ * Mock the getAccessToken method. Overwrite if LOCALAUTH
+ * is true
+ *
+ * @protected
+ * @return {string} The oAuth access token
+ */
+ssd.user.auth.PluginModule.prototype.getAccessToken = function()
+{
+  return '';
+};
+

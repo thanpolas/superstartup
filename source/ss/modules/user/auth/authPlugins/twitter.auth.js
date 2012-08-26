@@ -46,7 +46,7 @@ ssd.user.auth.Twitter = function()
   /** @const {boolean} */
   this.LOCALAUTH = false;
 
-  this.config('loginUrl', '/users/twitter');
+  this.config('authUrl', '/users/twitter');
   // name of GET param to use when redirecting for twitter
   // oAuth login, which will contain the current url so
   // we know where to redirect the user once he/she comes
@@ -66,7 +66,7 @@ goog.addSingletonGetter(ssd.user.auth.Twitter);
  * String path that we'll store the config
  * @const {string}
  */
-ssd.user.auth.Twitter.CONFIG_PATH = 'user.auth.ext.twitter';
+ssd.user.auth.Twitter.CONFIG_PATH = 'user.auth.twitter';
 
 /**
  * A logger to help debugging
@@ -78,7 +78,7 @@ ssd.user.auth.Twitter.prototype.logger =  goog.debug.Logger.getLogger('ssd.user.
 /**
  * @const {ssd.user.types.extSourceId} The plugin's name (e.g. Twitter)
  */
-ssd.user.auth.Twitter.prototype.SOURCEID = 'Twitter';
+ssd.user.auth.Twitter.prototype.SOURCEID = 'twitter';
 
 /**
  * Start initial authentication checks

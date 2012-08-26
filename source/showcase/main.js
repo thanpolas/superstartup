@@ -50,8 +50,10 @@ showcase.init = function() {
 
   // Interface with ss
   ss.config.set('user.auth.performLocalAuth', true);
-  ss.config.set('user.auth.ext.fb.app_id', '186392014808053');
-  ss.config.set('user.auth.ext.fb.permissions', 'email,publish_stream');
+  ss.config.set('user.auth.fb.authUrl', '/auth/facebook');
+  ss.config.set('user.auth.fb.localAuthUrl', '/auth/facebook/verifyAuth');
+  ss.config.set('user.auth.fb.appId', '186392014808053');
+  ss.config.set('user.auth.fb.permissions', 'email,publish_stream');
 
   ss.init();
 
