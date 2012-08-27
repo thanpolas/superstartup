@@ -12,8 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * 
+ *
+ *
  * @author Athanasios Polychronakis <thanpolas@gmail.com>
  *
  *
@@ -21,7 +21,7 @@
  *********
  * created on Jun 10, 2012
  */
- 
+
  /**
   * @fileoverview A plain storage facility with string to path resolving
   */
@@ -40,16 +40,14 @@ ssd.StringPath = function(opt_obj)
    * @private
    */
   this._data = {};
-  /**
-   * @type {string} The .dot, save us few bytes...
-   * @private
-   */
-  this._dot = '.';
-  
+
   if (opt_obj) {
     this.addRaw(opt_obj);
   }
 };
+
+/** @type {string} The dot. */
+ssd.StringPath.DOT = '.';
 
 /**
  * Add raw data, either an object hash or an instance of ssd.StringPath
@@ -94,7 +92,7 @@ ssd.StringPath.prototype.set = function(key, value) {
   if('string' != typeof key) {
       throw new TypeError();
   }
-  this._resolvePath(key.split(this._dot), this._data, {isSet:true}, value);
+  this._resolvePath(key.split(ssd.StringPath.DOT), this._data, {isSet:true}, value);
 };
 
 /**
@@ -109,12 +107,12 @@ ssd.StringPath.prototype.set = function(key, value) {
  * @return {*} null if value not found
  * @throws {TypeError} if key not string
  */
-ssd.StringPath.prototype.get = function(key, opt_throwError) 
+ssd.StringPath.prototype.get = function(key, opt_throwError)
 {
   if('string' != typeof key) {
     throw new TypeError();
   }
-  return this._resolvePath(key.split(this._dot), this._data, {isGet:true}, null, opt_throwError);
+  return this._resolvePath(key.split(ssd.StringPath.DOT), this._data, {isGet:true}, null, opt_throwError);
 };
 
 /**
@@ -124,7 +122,22 @@ ssd.StringPath.prototype.get = function(key, opt_throwError)
  * @return {void}
  */
 ssd.StringPath.prototype.remove = function(key) {
-    this._resolvePath(key.split(this._dot), this._data, {isDel:true});
+    this._resolvePath(key.split(ssd.StringPath.DOT), this._data, {isDel:true});
+};
+
+/**
+ * Whether we contain the given key or not
+ * @param  {string} key The key we want to check if it exists.
+ * @return {boolean} If the key exists or not.
+ */
+ssd.StringPath.prototype.containsKey = function(key)
+{
+  try {
+    this.get(key, true);
+    return true;
+  } catch(e) {
+    return false;
+  }
 };
 
 /**
@@ -150,11 +163,11 @@ ssd.StringPath.prototype.remove = function(key) {
  *      Only valid for isGet and isDel mode
  * @return {*} The value we resolved
  */
-ssd.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError) 
+ssd.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError)
 {
     var part = parts.shift();
     // check if we are in the last part of our path
-    if (0 == parts.length) {
+    if (0 === parts.length) {
         if (op.isSet) {
             // force overwrite
             obj[part] = opt_val;
@@ -164,14 +177,14 @@ ssd.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_th
             delete obj[part];
         } else {
             if (!goog.isDef(obj[part]) && opt_throwError) {
-              throw new ReferenceError();              
+              throw new ReferenceError();
             } else {
               return obj[part];
             }
         }
     }
-    
-    if (obj[part] == null) {
+
+    if (obj[part] === null) {
         if (op.isSet) {
             obj[part] = {};
         } else {

@@ -56,20 +56,33 @@ ssd.user.Auth = function()
    */
   // if we'll check auth events of ext sources with our server
   this.config('performLocalAuth', false);
+
   // The var name to use when (ajax) posting the SOURCEID to the server
   // depends on 'performLocalAuth'
   this.config('localAuthSourceId', 'sourceId');
+
   // When performing a local authentication we pass the
   // access token to the server so he can validate the
   // authentication. This is the query parameter
   // name
   this.config('localAuthAccessToken', 'accessToken');
+
   // When an external auth source becomes authenticated
   // we use this URL to inform the server.
   // Depends on 'performLocalAuth'
   //
   // Auth plugins can overwrite this parameter
   this.config('localAuthUrl', '/users/verifyAuth');
+
+  // When we get an authentication response from the server
+  // Under which key / path do we expect the user data
+  // object to be found?
+  this.config('userKey', 'user');
+
+  // In the user object, what is the name of the user's ID?
+  this.config('userID', 'id');
+
+
   // register our config
   ssd.Config.getInstance().register(ssd.user.auth.CONFIG_PATH, this.config.toObject());
 
@@ -178,6 +191,7 @@ ssd.user.Auth.prototype.init = function()
   this._extSupportedSources.forEach(function(key, plugin){
     plugin.init();
   });
+
 };
 
 
@@ -295,8 +309,9 @@ ssd.user.Auth.prototype._authChange = function(e)
 /**
  * When an external auth source changes state and becomes authenticated
  * we use this method to inform the server.
- * If we are not authed, an authentication is performed localy and a native
- * auth session is created, propagating from server back to the client
+ *
+ * The server will then determine if we are eligible to get authenticated
+ * using that provider and if we are, an auth session is created.
  *
  * @protected
  * @param {ssd.user.types.extSourceId} sourceId
@@ -339,22 +354,57 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 };
 
 /**
- * Callback method for AJAX requests that will result in a
- * user authentication
+ * Callback method for AJAX requests that query the server for
+ * the authentication state.
+ *
+ * This is the main entry point for any type of authentication
+ * (native or from a provider)
+ *
+ * In this method we determine if:
+ *   1. The operation succeeded
+ *   2. We received a positive or negative response from the server
+ *
+ * We expect:
+ *   1. A boolean variable that informs us of the auth state
+ *   2. In case we are authenticated a user data object
+ *   3. In case we failed an optional error message
  *
  * @param {Object} response Response from server
  * @private
  */
 ssd.user.Auth.prototype._serverAuthResponse = function(response)
 {
-  this.logger.info('Init _serverAuthResponse(). status:' + response.status);
+  this.logger.info('Init _serverAuthResponse().');
 
-  // if not a positive response, stop
-  if (!response.status) {
-    return;
+
+  //TODO FUCKIN REFACTOR THIS MESS!
+
+  // get keys we'll use to examine the response
+  // start with the status property
+  var config = ssd.Core.getInstance().config;
+  var status = this.config(ssd.Core.CONFIG_STATUS) || config.get(ssd.Core.CONFIG_PATH)[ssd.Core.CONFIG_STATUS];
+  // evaluate status as boolean and see if we need to check the status
+  if (!!status){
+    // yes we do... fetch the true evaluator now, see if we have a local
+    // override
+    var valuator;
+    if (config.containsKey(ssd.user.auth.CONFIG_PATH + ssd.StringPath.DOT + ssd.Core.CONFIG_STATUSTRUE)) {
+      // we have an overide
+      valuator = config.get(ssd.user.auth.CONFIG_PATH + ssd.StringPath.DOT + ssd.Core.CONFIG_STATUSTRUE);
+    } else {
+      valuator = config.get(ssd.Core.CONFIG_PATH)[ssd.Core.CONFIG_STATUSTRUE];
+    }
+
+    if (valuator !== response[status]) {
+      // operation has failed...
+      this.logger.info('_serverAuthResponse operation got a false response');
+
+      return;
+    }
   }
 
-  //TODO Implement this
+  // we had a successful operation, attempt to fetch the user data object
+
 };
 
 /**

@@ -45,6 +45,36 @@ ssd.Core = function()
   goog.base(this);
 
   /**
+   * Setup the core config parameters
+   *
+   */
+  var config = new ssd.FancyGetSet();
+  // The default key we will use to determine
+  // success or failure of an AJAX request
+  //
+  // This key is expected to exist in all the responses
+  // from the server
+  //
+  // This key can be overwritten by any module
+  //
+  // If you set this key to null then it will not be used
+  // and we'll assume that once a response callback is
+  // triggered it is considered successful by default.
+  config(ssd.Core.CONFIG_STATUS, 'status');
+
+  // The true value of this key.
+  //
+  // Typically this is boolean true, however this
+  // may not be the case for everyone.
+  //
+  // This key can be overwritter by any module
+  config(ssd.Core.CONFIG_STATUSTRUE, true);
+
+  // register the config
+  ssd.Config.getInstance().register(ssd.Core.CONFIG_PATH, config.toObject());
+
+
+  /**
    * We overwrite the module's fancySetGet instance
    * with the actual config singleton instance.
    *
@@ -63,6 +93,16 @@ ssd.Core = function()
 };
 goog.inherits(ssd.Core, ssd.Module);
 goog.addSingletonGetter(ssd.Core);
+
+/**
+ * String path that we'll store the config
+ * @const {string}
+ */
+ssd.Core.CONFIG_PATH = 'core';
+/** @const {string} The key of the state config param */
+ssd.Core.CONFIG_STATUS = 'status';
+/** @const {string} The key of the status true config param */
+ssd.Core.CONFIG_STATUSTRUE = 'statusTrue';
 
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
@@ -91,7 +131,6 @@ ssd.Core.prototype.init = function ()
  */
 ssd.Core.prototype.synchInit = function()
 {
-
   if (goog.DEBUG) {
     ssd.debug.openFancyWin();
   }
