@@ -46,6 +46,7 @@ ssd.FancyGetSet = function(opt_object)
   // attached
   var capsule = goog.bind(this.getSet, this);
   capsule.toObject = goog.bind(this.toObject, this);
+  capsule.containsKey = goog.bind(this.containsKey, this);
 
   return capsule;
 };
@@ -85,6 +86,17 @@ ssd.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
       throw new TypeError('Expecting a string, object or undefined');
     break;
   }
+};
+
+/**
+ * Determines if the provided key exists in our
+ * object
+ * @param  {string} key The key we want to test
+ * @return {boolean} If the key exists in our object
+ */
+ssd.FancyGetSet.prototype.containsKey = function(key)
+{
+  return key in this._obj;
 };
 
 /**

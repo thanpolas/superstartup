@@ -376,29 +376,15 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
 {
   this.logger.info('Init _serverAuthResponse().');
 
+  // get the statusObject
+  var statusObject = ssd.helpers.getStatusObject(this.config);
 
-  //TODO FUCKIN REFACTOR THIS MESS!
-
-  // get keys we'll use to examine the response
-  // start with the status property
-  var config = ssd.Core.getInstance().config;
-  var status = this.config(ssd.Core.CONFIG_STATUS) || config.get(ssd.Core.CONFIG_PATH)[ssd.Core.CONFIG_STATUS];
-  // evaluate status as boolean and see if we need to check the status
-  if (!!status){
-    // yes we do... fetch the true evaluator now, see if we have a local
-    // override
-    var valuator;
-    if (config.containsKey(ssd.user.auth.CONFIG_PATH + ssd.StringPath.DOT + ssd.Core.CONFIG_STATUSTRUE)) {
-      // we have an overide
-      valuator = config.get(ssd.user.auth.CONFIG_PATH + ssd.StringPath.DOT + ssd.Core.CONFIG_STATUSTRUE);
-    } else {
-      valuator = config.get(ssd.Core.CONFIG_PATH)[ssd.Core.CONFIG_STATUSTRUE];
-    }
-
-    if (valuator !== response[status]) {
+  // check if we have status to check
+  if (statusObject.hasStatus) {
+    // yes we do... check the response
+    if (statusObject.valuator !== response[status]) {
       // operation has failed...
       this.logger.info('_serverAuthResponse operation got a false response');
-
       return;
     }
   }
