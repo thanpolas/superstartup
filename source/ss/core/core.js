@@ -90,6 +90,9 @@ ssd.Core = function()
    * @type {ssd.user.Auth}
    */
   this.user = ssd.user.Auth.getInstance();
+
+  // set out instance as the parent event target for auth
+  this.user.setParentEventTarget(this);
 };
 goog.inherits(ssd.Core, ssd.Module);
 goog.addSingletonGetter(ssd.Core);

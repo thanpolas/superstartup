@@ -83,7 +83,7 @@ ssd.Config.prototype.register = function(path, objConf)
     exists = false;
   }
   if (exists) {
-    throw new Error('Key / path already exists');
+    throw new Error('Key / path already exists:' + path);
   }
 
   // set to original config map

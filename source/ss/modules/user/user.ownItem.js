@@ -24,42 +24,25 @@
  * @fileoverview A single user data object
  */
 
-goog.provide('ssd.user.Item');
-goog.provide('ssd.user.Item.EventType');
-
-goog.require('ssd.DynamicMap');
-goog.require('ssd.user.types');
+goog.provide('ssd.user.OwnItem');
+goog.require('ssd.user.Item');
 
 /**
- * A single user data object item.
- *
- * This is intented for public user data objects. e.g. other users'
- * data objects. This class is extented by ssd.user.OwnItem which
- * represents the current logged in user's data object
+ * The currently logged in user's data object.
  *
  * @constructor
  * @param {ssd.user.types.user=} opt_user a user data object to init with
- * @extends {ssd.DynamicMap}
+ * @extends {ssd.user.Item}
  */
-ssd.user.Item = function(opt_user)
+ssd.user.OwnItem = function(opt_user)
 {
-  ssd.DynamicMap.call(this, opt_user || ssd.user.types.user);
+  goog.base(this);
 };
-goog.inherits(ssd.user.Item, ssd.DynamicMap);
-
-/**
- * Events triggered by this class
- * @enum {string}
- */
-ssd.user.Item.EventType = {
-  BEFORE_VALIDATE: 'beforeValidate',
-  AFTER_VALIDATE: 'afterValidate'
-};
-
+goog.inherits(ssd.user.OwnItem, ssd.user.Item);
 
 
 /**
- * The users data object validator.
+ * The authed users data object validator.
  *
  * Checks that the data object provided (by our server?) is proper and
  * we can use it.
@@ -67,20 +50,9 @@ ssd.user.Item.EventType = {
  * @param  {Object} dataObj The data object we want to validate.
  * @return {boolean} If the object validates.
  */
-ssd.user.Item.prototype.validate = function (dataObj)
+ssd.user.OwnItem.prototype.validate = function (dataObj)
 {
 
+  ssd.user.OwnItem.superClass_.validate.call(this, dataObj);
   return true;
-};
-
-
-/** @inheritDoc */
-ssd.user.Item.prototype.disposeInternal = function()
-{
-  // we used goog.mixin() to do multiple inheritance for
-  // events, thus we have to directly call event's disposeInternal
-  goog.events.EventTarget.prototype.disposeInternal.call(this);
-
-  // empty our data object
-  this.clear();
 };

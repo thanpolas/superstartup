@@ -23,9 +23,10 @@
   */
 
 goog.provide('ssd.DynamicMap');
+goog.provide('ssd.DynamicMap.EventType');
 
 goog.require('ssd.Map');
-goog.require('goog.events.EventTarget');
+goog.require('ssd.events.EventTarget');
 goog.require('goog.object');
 
 /**
@@ -34,8 +35,8 @@ goog.require('goog.object');
  * @param {...*} var_args If 2 or more arguments are present then they
  *     will be used as key-value pairs.
  * @constructor
- * @extends {ssd.Map}
- * We also inherit from goog.events.EventTarget
+ * @extends {ssd.Map, ssd.events.EventTarget}
+ * We also inherit from ssd.events.EventTarget
  */
 ssd.DynamicMap = function(opt_map, var_args) {
   /**
@@ -43,14 +44,14 @@ ssd.DynamicMap = function(opt_map, var_args) {
    * @private
    * @type {boolean}
    */
-  this._canDispatch = false;
-  
-  goog.structs.Map.apply(this, arguments);
-  goog.events.EventTarget.call(this);
   this._canDispatch = true;
+
+  ssd.events.EventTarget.call(this);
+  goog.structs.Map.apply(this, arguments);
+
 };
 goog.inherits(ssd.DynamicMap, goog.structs.Map);
-goog.object.extend(ssd.DynamicMap.prototype, goog.events.EventTarget.prototype);
+goog.object.extend(ssd.DynamicMap.prototype, ssd.events.EventTarget.prototype);
 
 /**
  * Events triggered by the Dynamic Map
@@ -58,9 +59,37 @@ goog.object.extend(ssd.DynamicMap.prototype, goog.events.EventTarget.prototype);
  */
 ssd.DynamicMap.EventType = {
   // When a plain change happens on a property
-  CHANGE: 'change',
-  // When a change happens on a property with a request to save
-  CHANGESAVE: 'changeSave'
+  BEFORE_SET: 'beforeSet',
+  AFTER_SET:  'afterSet',
+  BEFORE_ADDALL: 'beforeAddall',
+  AFTER_ADDALL: 'afterAddall'
+};
+
+/**
+ * Define the event path we'll prepend to all events
+ * that this class will emit.
+ *
+ * @param {string} path The event path we want to prepend
+ * @return {void}
+ */
+ssd.DynamicMap.prototype.setEventPath = function(path)
+{
+  this._eventPath = path;
+};
+
+/**
+ * Will return the exact event type that will be emitted
+ * based on the eventPath that was set and the eventType that
+ * was provided
+ *
+ * @param  {ssd.DynamicMap.EventType} eventType The eventType
+ *                                              we want to listen
+ *                                              or trigger.
+ * @return {string} The evenType  along with the full path.
+ */
+ssd.DynamicMap.prototype.getEventType = function(eventType)
+{
+  return this._eventPath + eventType;
 };
 
 
@@ -69,25 +98,52 @@ ssd.DynamicMap.EventType = {
  * or a change with persinstent save event
  * @param {*} key The key.
  * @param {*} value The value to add.
- * @param {boolean=} opt_save If we want the change to be saved
  */
-ssd.DynamicMap.prototype.set = function(key, value, opt_save)
+ssd.DynamicMap.prototype.set = function(key, value)
 {
+  var eventObj;
+  if (this._canDispatch) {
+    eventObj = {
+      'type': ssd.DynamicMap.EventType.BEFORE_SET,
+      'key': key,
+      'value': value
+    };
+    // Trigger and check if preventDefault was called
+    if (!this.dispatchEvent(eventObj)){
+      return;
+    }
+  }
+
+  // perform the set
   ssd.DynamicMap.superClass_.set.call(this, key, value);
+
   // dispatch corresponding event
-  this._canDispatch && this.dispatchEvent(opt_save && ssd.DynamicMap.EventType.CHANGESAVE || ssd.DynamicMap.EventType.CHANGE);  
+  if (this._canDispatch) {
+    eventObj['type'] = ssd.DynamicMap.EventType.AFTER_SET;
+    this.dispatchEvent(eventObj);
+  }
 };
 
 /** @inheritDoc */
 ssd.DynamicMap.prototype.addAll = function(map)
 {
+
+  var eventObj = {
+    'type': ssd.DynamicMap.EventType.BEFORE_ADDALL,
+    'map': map
+  };
+  // Trigger and check if preventDefault was called
+  if (!this.dispatchEvent(eventObj)){
+    return;
+  }
+
+  // payload
   this._canDispatch = false;
   ssd.DynamicMap.superClass_.addAll.call(this, map);
   this._canDispatch = true;
+
+  eventObj['type'] = ssd.DynamicMap.EventType.AFTER_ADDALL;
+  this.dispatchEvent(eventObj);
+
 };
 
-/**
- * Implement the save logic for this data object.
- * Should submit the data object for saving to the server
- */
-ssd.DynamicMap.prototype.save = goog.abstractMethod;

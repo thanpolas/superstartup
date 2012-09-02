@@ -14,30 +14,23 @@
  * limitations under the License.
  *
  *
- *
- *********
- *  File:: debug.js
- *
- *********
- *
+ * createdate 02 Sep 2012
  */
 
- /** @fileoverview Debug functions and helpers */
+ /** @fileoverview Constants, enums declarations */
 
-goog.provide('ss.debug');
-goog.require('goog.debug');
-goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger');
-goog.require('goog.debug.FancyWindow');
+goog.provide('ssd.types');
+
 
 /**
- * Will popup a debuging funcy window
- * @return {void}
+ * Declare JS types output by goog.typeOf so we can properly
+ * compare
+ * @enum {string}
  */
-ss.debug.openFancyWin = function () {
-  var debugWindow = new goog.debug.FancyWindow('main');
-  debugWindow.setEnabled(true);
-  debugWindow.init();
-}; // method web.openFancyWin
-
-
+ssd.types = {
+  STRING: 'string',
+  OBJECT: 'object',
+  ARRAY: 'array',
+  FUNCTION: 'function',
+  NULL: 'null'
+};

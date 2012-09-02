@@ -31,6 +31,7 @@ goog.require('ssd.Module');
 goog.require('ssd.DynamicMap');
 goog.require('ssd.user.types');
 goog.require('ssd.Config');
+goog.require('ssd.user.OwnItem');
 
 /**
  * User authentication class
@@ -82,7 +83,6 @@ ssd.user.Auth = function()
   // In the user object, what is the name of the user's ID?
   this.config('userID', 'id');
 
-
   // register our config
   ssd.Config.getInstance().register(ssd.user.auth.CONFIG_PATH, this.config.toObject());
 
@@ -95,12 +95,21 @@ ssd.user.Auth = function()
    */
   this._localAuth = false;
 
+  // set our eventPath
+  this.setEventPath('user');
+
   /**
    * The user data object
-   * @type {ssd.DynamicMap.<ssd.user.types.user>}
+   * @type {ssd.user.OwnItem}
    * @private
    */
-  this._user = new ssd.DynamicMap(ssd.user.types.user);
+  this._user = new ssd.user.OwnItem();
+  // Define the event path for all emitted events by this instance
+  this._user.setEventPath('user.data');
+  // set the parent target for userItem to this instance
+  this._user.setParentEventTarget(this);
+
+
   // extend our data object with the own user key/value pairs
   this._user.addAll(ssd.user.types.ownuser);
 
@@ -134,16 +143,16 @@ ssd.user.auth.Error = {
 ssd.user.auth.EventType = {
   // An external auth source has an auth change event
   // (from not authed to authed and vice verca)
-  EXTAUTHCHANGE: 'user.extAuthChange',
+  EXTAUTHCHANGE: 'extAuthChange',
   // We have a global auth change event
   // (from not authed to authed and vice verca)
   // use this eventype for authoritative changes
-  AUTHCHANGE: 'user.authChange',
+  AUTHCHANGE: 'authChange',
   // Trigger this event as soon as we can resolve
   // the auth status from an ext source
-  INITIALAUTHSTATUS: 'user.initialAuthStatus',
+  INITIALAUTHSTATUS: 'initialAuthStatus',
   // Triggers if authed user is new, first time signup
-  NEWUSER: 'user.newUser'
+  NEWUSER: 'newUser'
 };
 
 /**
@@ -224,8 +233,8 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
   this[selfObj.SOURCEID] = selfObj;
 
   // event listeners
-  selfObj.addEventListener(ssd.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
-  selfObj.addEventListener(ssd.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
+  selfObj.addEventListener(this.getEventType(ssd.user.auth.EventType.INITIALAUTHSTATUS), this._initAuthStatus, false, this);
+  selfObj.addEventListener(this.getEventType(ssd.user.auth.EventType.EXTAUTHCHANGE), this._authChange, false, this);
 };
 
 
@@ -403,7 +412,7 @@ ssd.user.Auth.prototype._doAuth = function (isAuthed)
 {
   this.logger.info('Init _doAuth(). isAuthed:' + isAuthed);
   this._isAuthed = isAuthed;
-  this.dispatchEvent(ssd.user.auth.EventType.AUTHCHANGE);
+  this.dispatchEvent(this.getEventType(ssd.user.auth.EventType.AUTHCHANGE));
 };
 
 /**
