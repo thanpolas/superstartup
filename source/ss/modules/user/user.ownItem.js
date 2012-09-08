@@ -52,6 +52,15 @@ goog.inherits(ssd.user.OwnItem, ssd.user.Item);
  */
 ssd.user.OwnItem.prototype.validate = function (dataObj)
 {
+  // prepare and emit BEFORE VALIDATE event, check if
+  // we got a preventDefault or similar...
+  var eventObj = {
+      type: ssd.user.auth.EventType.USERDATA_BEFORE_VALIDATE,
+      'data': dataObj
+  };
+  if (!this.dispatchEvent(eventObj)) {
+    return false;
+  }
 
   ssd.user.OwnItem.superClass_.validate.call(this, dataObj);
   return true;

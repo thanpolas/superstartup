@@ -58,6 +58,16 @@ ssd.ajax = function(url, opt_params)
 };
 
 /**
+ * Send methods
+ * @enum {string}
+ */
+ssd.ajax.sendMethods = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT'
+};
+
+/**
  * A logger to help debugging
  * @type {goog.debug.Logger}
  * @private

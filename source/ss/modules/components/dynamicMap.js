@@ -65,33 +65,6 @@ ssd.DynamicMap.EventType = {
   AFTER_ADDALL: 'afterAddall'
 };
 
-/**
- * Define the event path we'll prepend to all events
- * that this class will emit.
- *
- * @param {string} path The event path we want to prepend
- * @return {void}
- */
-ssd.DynamicMap.prototype.setEventPath = function(path)
-{
-  this._eventPath = path;
-};
-
-/**
- * Will return the exact event type that will be emitted
- * based on the eventPath that was set and the eventType that
- * was provided
- *
- * @param  {ssd.DynamicMap.EventType} eventType The eventType
- *                                              we want to listen
- *                                              or trigger.
- * @return {string} The evenType  along with the full path.
- */
-ssd.DynamicMap.prototype.getEventType = function(eventType)
-{
-  return this._eventPath + eventType;
-};
-
 
 /**
  * Adds a key-value pair to the map. Triggers a plain change event
@@ -104,7 +77,7 @@ ssd.DynamicMap.prototype.set = function(key, value)
   var eventObj;
   if (this._canDispatch) {
     eventObj = {
-      'type': ssd.DynamicMap.EventType.BEFORE_SET,
+      type: ssd.DynamicMap.EventType.BEFORE_SET,
       'key': key,
       'value': value
     };
@@ -119,7 +92,7 @@ ssd.DynamicMap.prototype.set = function(key, value)
 
   // dispatch corresponding event
   if (this._canDispatch) {
-    eventObj['type'] = ssd.DynamicMap.EventType.AFTER_SET;
+    eventObj.type = ssd.DynamicMap.EventType.AFTER_SET;
     this.dispatchEvent(eventObj);
   }
 };
@@ -129,7 +102,7 @@ ssd.DynamicMap.prototype.addAll = function(map)
 {
 
   var eventObj = {
-    'type': ssd.DynamicMap.EventType.BEFORE_ADDALL,
+    type: ssd.DynamicMap.EventType.BEFORE_ADDALL,
     'map': map
   };
   // Trigger and check if preventDefault was called
@@ -142,7 +115,7 @@ ssd.DynamicMap.prototype.addAll = function(map)
   ssd.DynamicMap.superClass_.addAll.call(this, map);
   this._canDispatch = true;
 
-  eventObj['type'] = ssd.DynamicMap.EventType.AFTER_ADDALL;
+  eventObj.type = ssd.DynamicMap.EventType.AFTER_ADDALL;
   this.dispatchEvent(eventObj);
 
 };

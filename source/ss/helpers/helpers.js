@@ -63,7 +63,7 @@ ssd.helpers.getStatusObject = function (config)
     status: '',
     valuator: true
   };
-  statusObject.status = this.config(ssd.Core.CONFIG_STATUS) || coreConfig.get(ssd.Core.CONFIG_PATH)[ssd.Core.CONFIG_STATUS];
+  statusObject.status = config(ssd.Core.CONFIG_STATUS) || coreConfig.get(ssd.Core.CONFIG_PATH)[ssd.Core.CONFIG_STATUS];
 
   // check if status is a string
   if ('string' !== goog.typeOf(statusObject.status)) {

@@ -95,20 +95,17 @@ ssd.user.Auth = function()
    */
   this._localAuth = false;
 
-  // set our eventPath
-  this.setEventPath('user');
-
   /**
    * The user data object
    * @type {ssd.user.OwnItem}
    * @private
    */
   this._user = new ssd.user.OwnItem();
-  // Define the event path for all emitted events by this instance
-  this._user.setEventPath('user.data');
-  // set the parent target for userItem to this instance
-  this._user.setParentEventTarget(this);
-
+  // pipe the user object events to this class
+  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_SET, this._dataEvent, false, this);
+  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_SET, this._dataEvent, false, this);
+  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_ADDALL, this._dataEvent, false, this);
+  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_ADDALL, this._dataEvent, false, this);
 
   // extend our data object with the own user key/value pairs
   this._user.addAll(ssd.user.types.ownuser);
@@ -143,16 +140,32 @@ ssd.user.auth.Error = {
 ssd.user.auth.EventType = {
   // An external auth source has an auth change event
   // (from not authed to authed and vice verca)
-  EXTAUTHCHANGE: 'extAuthChange',
+  EXTAUTHCHANGE: 'user.extAuthChange',
   // We have a global auth change event
   // (from not authed to authed and vice verca)
   // use this eventype for authoritative changes
-  AUTHCHANGE: 'authChange',
+  AUTHCHANGE: 'user.authChange',
   // Trigger this event as soon as we can resolve
   // the auth status from an ext source
-  INITIALAUTHSTATUS: 'initialAuthStatus',
+  INITIALAUTHSTATUS: 'user.initialAuthStatus',
   // Triggers if authed user is new, first time signup
-  NEWUSER: 'newUser'
+  NEWUSER: 'user.newUser',
+  // before local auth
+  BEFORE_LOCAL_AUTH: 'user.beforeLocalAuth',
+  // before we process the response object from the AJAX callback
+  // of an authentication operation with local server
+  BEFORE_AUTH_RESPONSE: 'user.beforeAuthResponse',
+  // After the auth response has been processed
+  AUTH_RESPONSE: 'user.authResponse',
+
+  // own user data object before validating it's ok
+  USERDATA_BEFORE_VALIDATE: 'user.data.beforeValidate',
+  // own user data object piped events (piped from DynamicMap)
+  BEFORE_SET:    'user.data.beforeSet',
+  AFTER_SET:     'user.data.afterSet',
+  BEFORE_ADDALL: 'user.data.beforeAddall',
+  AFTER_ADDALL:  'user.data.afterAddall'
+
 };
 
 /**
@@ -203,6 +216,39 @@ ssd.user.Auth.prototype.init = function()
 
 };
 
+/**
+ * Listener for data change events in the own user data object
+ *
+ * We re-emit the event using this classes event types
+ *
+ * @private
+ * @param {goog.events.Event} e
+ */
+ssd.user.Auth.prototype._dataEvent = function (e)
+{
+  this.logger.config('_dataEvent event triggered:' + e.type);
+  var eventObj = {
+    type: null,
+    'parentEvent': e
+  };
+
+  switch(e.type) {
+    case ssd.DynamicMap.EventType.BEFORE_SET:
+      eventObj.type = ssd.user.auth.EventType.BEFORE_SET;
+    break;
+    case ssd.DynamicMap.EventType.AFTER_SET:
+      eventObj.type = ssd.user.auth.EventType.AFTER_SET;
+    break;
+    case ssd.DynamicMap.EventType.BEFORE_ADDALL:
+      eventObj.type = ssd.user.auth.EventType.BEFORE_ADDALL;
+    break;
+    case ssd.DynamicMap.EventType.AFTER_ADDALL:
+      eventObj.type = ssd.user.auth.EventType.AFTER_ADDALL;
+    break;
+  }
+  return this.dispatchEvent(eventObj);
+};
+
 
 /**
  * Registers an external authentication plugin.
@@ -233,8 +279,8 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
   this[selfObj.SOURCEID] = selfObj;
 
   // event listeners
-  selfObj.addEventListener(this.getEventType(ssd.user.auth.EventType.INITIALAUTHSTATUS), this._initAuthStatus, false, this);
-  selfObj.addEventListener(this.getEventType(ssd.user.auth.EventType.EXTAUTHCHANGE), this._authChange, false, this);
+  selfObj.addEventListener(ssd.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
+  selfObj.addEventListener(ssd.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
 };
 
 
@@ -344,13 +390,24 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
     return;
   }
   extInst.localAuthInit = true;
+
+  // dispatch event and check for cancel...
+  var eventObj = {
+      type: ssd.user.auth.EventType.BEFORE_LOCAL_AUTH,
+      'sourceId': sourceId
+    };
+  if (!this.dispatchEvent(eventObj)) {
+    this.logger.info('verifyExtAuthWithLocal canceled due to event preventDefault');
+    return;
+  }
+
   // get local auth url from ext plugin if it exists
   var url = extInst.config('localAuthUrl');
   // get the accessToken
   var accessToken = extInst.getAccessToken();
   // create and start request
   var a = new ssd.ajax(url || this.config('localAuthUrl'), {
-      postMethod: 'POST'
+      postMethod: ssd.ajax.sendMethods.POST
     });
   a.addData(this.config('localAuthSourceId'), sourceId);
   a.addData(extInst.config('localAuthAccessToken') || this.config('localAuthAccessToken'), accessToken);
@@ -367,7 +424,7 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
  * the authentication state.
  *
  * This is the main entry point for any type of authentication
- * (native or from a provider)
+ * request to the local server (native or from a provider)
  *
  * In this method we determine if:
  *   1. The operation succeeded
@@ -385,6 +442,29 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
 {
   this.logger.info('Init _serverAuthResponse().');
 
+  var eventObj = {
+      type: ssd.user.auth.EventType.BEFORE_AUTH_RESPONSE,
+      'response': response,
+      'status'  : false,
+      'errorMessage': ''
+  };
+  if (!this.dispatchEvent(eventObj)) {
+    this.logger.info('_serverAuthResponse :: canceled due to event preventDefault');
+    return;
+  }
+
+  // from this point onwards we only emit one type of event:
+  eventObj.type = ssd.user.auth.EventType.AUTH_RESPONSE;
+
+  // check if response is an object
+  if (ssd.types.OBJECT != goog.typeOf(response)) {
+    // error error
+    this.logger.warning('_serverAuthResponse :: response is not an object');
+    eventObj.errorMessage = 'response not of type Object';
+    this.dispatchEvent(eventObj);
+    return;
+  }
+
   // get the statusObject
   var statusObject = ssd.helpers.getStatusObject(this.config);
 
@@ -393,12 +473,31 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
     // yes we do... check the response
     if (statusObject.valuator !== response[status]) {
       // operation has failed...
-      this.logger.info('_serverAuthResponse operation got a false response');
+      this.logger.info('_serverAuthResponse :: operation got a false response');
+      eventObj.errorMessage = 'server said no dice';
+      this.dispatchEvent(eventObj);
       return;
     }
   }
 
   // we had a successful operation, attempt to fetch the user data object
+  var user;
+  try {
+    user = response[this.config('userKey')];
+  } catch(e){}
+
+  // check the user data object is valid
+  if (!this._user.validate(user)) {
+    this.logger.info('_serverAuthResponse :: not a valid user data object');
+    eventObj.errorMessage = 'user data object not valid';
+    this.dispatchEvent(eventObj);
+    return;
+  }
+
+  // all look good
+  this._user.addAll(user);
+  eventObj.status = true;
+  this.dispatchEvent(eventObj);
 
 };
 
@@ -412,7 +511,7 @@ ssd.user.Auth.prototype._doAuth = function (isAuthed)
 {
   this.logger.info('Init _doAuth(). isAuthed:' + isAuthed);
   this._isAuthed = isAuthed;
-  this.dispatchEvent(this.getEventType(ssd.user.auth.EventType.AUTHCHANGE));
+  this.dispatchEvent(ssd.user.auth.EventType.AUTHCHANGE);
 };
 
 /**
