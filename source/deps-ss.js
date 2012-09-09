@@ -11,8 +11,9 @@ goog.addDependency('../../../ss/helpers/debug.js', ['ssd.debug'], ['goog.debug',
 goog.addDependency('../../../ss/helpers/fancyGetSet.js', ['ssd.FancyGetSet'], []);
 goog.addDependency('../../../ss/helpers/helpers.js', ['ssd.helpers'], ['goog.array', 'goog.object']);
 goog.addDependency('../../../ss/main.js', ['ssd'], ['ssd.Config', 'ssd.Core', 'ssd.Server2js', 'ssd.ajax', 'ssd.debug', 'ssd.error', 'ssd.exports', 'ssd.helpers', 'ssd.metadata', 'ssd.metrics', 'ssd.server', 'ssd.user.auth.Facebook', 'ssd.user.auth.Twitter', 'ssd.web.cookies']);
+goog.addDependency('../../../ss/modules/components/capsule.js', ['ssd.capsule'], []);
 goog.addDependency('../../../ss/modules/components/cookies.js', ['ssd.web.cookies'], []);
-goog.addDependency('../../../ss/modules/components/dynamicMap.js', ['ssd.DynamicMap', 'ssd.DynamicMap.EventType'], ['goog.events.EventTarget', 'goog.object', 'ssd.Map']);
+goog.addDependency('../../../ss/modules/components/dynamicMap.js', ['ssd.DynamicMap', 'ssd.DynamicMap.EventType'], ['goog.object', 'ssd.Map', 'ssd.events.EventTarget']);
 goog.addDependency('../../../ss/modules/components/eventTarget.js', ['ssd.events.EventTarget'], ['goog.events', 'goog.events.EventTarget', 'ssd.types']);
 goog.addDependency('../../../ss/modules/components/map.js', ['ssd.Map'], ['goog.structs.Map']);
 goog.addDependency('../../../ss/modules/components/module.js', ['ssd.Module'], ['ssd.events.EventTarget']);
@@ -24,9 +25,9 @@ goog.addDependency('../../../ss/modules/server2.js/source/server2.js', ['ssd.Ser
 goog.addDependency('../../../ss/modules/server2.js/source/server2js.export.js', ['ssd.server'], ['ssd.Server2js', 'ssd.server2js']);
 goog.addDependency('../../../ss/modules/user/auth/authPlugins/authPluginInterface.js', ['ssd.user.auth.PluginInterface'], []);
 goog.addDependency('../../../ss/modules/user/auth/authPlugins/authPluginModule.js', ['ssd.user.auth.PluginModule'], ['ssd.FancyGetSet', 'ssd.Module', 'ssd.user.Auth']);
-goog.addDependency('../../../ss/modules/user/auth/authPlugins/facebook.auth.js', ['ssd.user.auth.Facebook', 'ssd.user.auth.Facebook.EventType'], ['ssd.user.Auth', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule']);
-goog.addDependency('../../../ss/modules/user/auth/authPlugins/twitter.auth.js', ['ssd.user.auth.Twitter', 'ssd.user.auth.Twitter.EventType'], ['ssd.user.Auth', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule']);
-goog.addDependency('../../../ss/modules/user/auth/user.auth.js', ['ssd.user.Auth', 'ssd.user.auth', 'ssd.user.auth.Error', 'ssd.user.auth.EventType'], ['ssd.Config', 'ssd.DynamicMap', 'ssd.Module', 'ssd.user.OwnItem', 'ssd.user.types']);
+goog.addDependency('../../../ss/modules/user/auth/authPlugins/facebook.auth.js', ['ssd.user.auth.Facebook', 'ssd.user.auth.Facebook.EventType'], ['ssd.user.Auth', 'ssd.user.Auth.EventType', 'ssd.user.auth.PluginModule']);
+goog.addDependency('../../../ss/modules/user/auth/authPlugins/twitter.auth.js', ['ssd.user.auth.Twitter', 'ssd.user.auth.Twitter.EventType'], ['ssd.user.Auth', 'ssd.user.Auth.EventType', 'ssd.user.auth.PluginModule']);
+goog.addDependency('../../../ss/modules/user/auth/user.auth.js', ['ssd.user.Auth', 'ssd.user.Auth.Error', 'ssd.user.Auth.EventType'], ['ssd.Config', 'ssd.DynamicMap', 'ssd.Module', 'ssd.capsule', 'ssd.user.OwnItem', 'ssd.user.types']);
 goog.addDependency('../../../ss/modules/user/metadata.js', ['ssd.metadata'], []);
 goog.addDependency('../../../ss/modules/user/user.item.js', ['ssd.user.Item', 'ssd.user.Item.EventType'], ['ssd.DynamicMap', 'ssd.user.types']);
 goog.addDependency('../../../ss/modules/user/user.ownItem.js', ['ssd.user.OwnItem'], ['ssd.user.Item']);

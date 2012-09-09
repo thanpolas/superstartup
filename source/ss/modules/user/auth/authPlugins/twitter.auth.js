@@ -30,7 +30,7 @@ goog.provide('ssd.user.auth.Twitter.EventType');
 
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.Auth');
-goog.require('ssd.user.auth.EventType');
+goog.require('ssd.user.Auth.EventType');
 
 /**
  * The Twitter auth constructor
@@ -93,7 +93,7 @@ ssd.user.auth.Twitter.prototype.init = function()
   // get config parameters and apply them to our local config container
   this._configApply(ssd.Config.getInstance().get(ssd.user.auth.Twitter.CONFIG_PATH));
 
-  this.dispatchEvent(ssd.user.auth.EventType.INITIALAUTHSTATUS);
+  this.dispatchEvent(ssd.user.Auth.EventType.INITIALAUTHSTATUS);
 };
 
 /**
@@ -143,7 +143,7 @@ ssd.user.auth.Twitter.prototype.logout = function()
 {
   this.logger.info('Init logout()');
   this._isAuthed = false;
-  this.dispatchEvent(ssd.user.auth.EventType.EXTAUTHCHANGE);
+  this.dispatchEvent(ssd.user.Auth.EventType.EXTAUTHCHANGE);
 };
 
 /**

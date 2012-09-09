@@ -55,7 +55,7 @@ ssd.user.OwnItem.prototype.validate = function (dataObj)
   // prepare and emit BEFORE VALIDATE event, check if
   // we got a preventDefault or similar...
   var eventObj = {
-      type: ssd.user.auth.EventType.USERDATA_BEFORE_VALIDATE,
+      type: ssd.user.Auth.EventType.USERDATA_BEFORE_VALIDATE,
       'data': dataObj
   };
   if (!this.dispatchEvent(eventObj)) {

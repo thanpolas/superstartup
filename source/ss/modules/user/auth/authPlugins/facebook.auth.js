@@ -30,7 +30,7 @@ goog.provide('ssd.user.auth.Facebook.EventType');
 
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.Auth');
-goog.require('ssd.user.auth.EventType');
+goog.require('ssd.user.Auth.EventType');
 
 /**
  * The Facebook auth constructor
@@ -41,6 +41,7 @@ goog.require('ssd.user.auth.EventType');
  */
 ssd.user.auth.Facebook = function()
 {
+  this.logger.info('Construcor: Init');
   goog.base(this);
 
   /** @const {boolean} */
@@ -172,7 +173,7 @@ ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
 
   this._FBGotResponce = true;
 
-  this.dispatchEvent(ssd.user.auth.EventType.INITIALAUTHSTATUS);
+  this.dispatchEvent(ssd.user.Auth.EventType.INITIALAUTHSTATUS);
 };
 
 /**
@@ -373,7 +374,7 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response)
   if (isAuthed != this._isAuthed) {
     this._isAuthed = isAuthed;
     // only dispatch EXTAUTHCHANGE event AFTER we got initial auth response
-    this._FBGotResponce && this.dispatchEvent(ssd.user.auth.EventType.EXTAUTHCHANGE);
+    this._FBGotResponce && this.dispatchEvent(ssd.user.Auth.EventType.EXTAUTHCHANGE);
   }
 
   return isAuthed;
@@ -393,7 +394,7 @@ ssd.user.auth.Facebook.prototype.logout = function()
 {
   this.logger.info('Init logout()');
   this._isAuthed = false;
-  this.dispatchEvent(ssd.user.auth.EventType.EXTAUTHCHANGE);
+  this.dispatchEvent(ssd.user.Auth.EventType.EXTAUTHCHANGE);
   FB.logout(function(response) {
     this.logger.info('Logout callback. Deep expose of response:' + goog.debug.deepExpose(response, false, true));
   });

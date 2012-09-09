@@ -23,15 +23,15 @@
  * @fileoverview Handles user authentication
  */
 goog.provide('ssd.user.Auth');
-goog.provide('ssd.user.auth');
-goog.provide('ssd.user.auth.EventType');
-goog.provide('ssd.user.auth.Error');
+goog.provide('ssd.user.Auth.EventType');
+goog.provide('ssd.user.Auth.Error');
 
 goog.require('ssd.Module');
 goog.require('ssd.DynamicMap');
 goog.require('ssd.user.types');
 goog.require('ssd.Config');
 goog.require('ssd.user.OwnItem');
+goog.require('ssd.capsule');
 
 /**
  * User authentication class
@@ -84,7 +84,7 @@ ssd.user.Auth = function()
   this.config('userID', 'id');
 
   // register our config
-  ssd.Config.getInstance().register(ssd.user.auth.CONFIG_PATH, this.config.toObject());
+  ssd.Config.getInstance().register(ssd.user.Auth.CONFIG_PATH, this.config.toObject());
 
   /**
    * performLocalAuth config parameter is used multiple times
@@ -112,20 +112,19 @@ ssd.user.Auth = function()
 
 };
 goog.inherits(ssd.user.Auth, ssd.Module);
-goog.addSingletonGetter(ssd.user.Auth);
 
 
 /**
  * String path that we'll store the config
  * @const {string}
  */
-ssd.user.auth.CONFIG_PATH = 'user.auth';
+ssd.user.Auth.CONFIG_PATH = 'user.auth';
 
 /**
  * Errors thrown by main external auth class.
  * @enum {string}
  */
-ssd.user.auth.Error = {
+ssd.user.Auth.Error = {
   /**
    * External auth plugin has already registered
    */
@@ -137,7 +136,7 @@ ssd.user.auth.Error = {
  * Events supported for the user auth module
  * @enum {string}
  */
-ssd.user.auth.EventType = {
+ssd.user.Auth.EventType = {
   // An external auth source has an auth change event
   // (from not authed to authed and vice verca)
   EXTAUTHCHANGE: 'user.extAuthChange',
@@ -194,6 +193,33 @@ ssd.user.Auth.prototype._extAuthedSources = new ssd.Map();
 ssd.user.Auth.prototype._extSupportedSources = new ssd.Map();
 
 /**
+ * A custom getInstance method for the Auth class singleton.
+ *
+ * We want this custom method so as to return a proper
+ * encapsulated instance that is binded (when invoked will
+ * execute) the 'get' method.
+ *
+ *
+ * @return {Function} The encapsulated instance.
+ */
+ssd.user.Auth.getInstance = function()
+{
+  return ssd.user.Auth._instance || (ssd.user.Auth._instance = ssd.user.Auth.getCapsule());
+};
+
+
+ssd.user.Auth.getCapsule = function()
+{
+  return ssd.capsule(ssd.user.Auth, 'get');
+};
+
+ssd.user.Auth.prototype['get'] = function()
+{
+  console.log('Yeashhhhh');
+  console.log(this);
+};
+
+/**
  * Kicks off authentication flows for all ext auth sources
  *
  * @return {void}
@@ -202,7 +228,7 @@ ssd.user.Auth.prototype.init = function()
 {
   this.logger.info('user.Auth.init() starting...');
   // get config parameters and apply them to our local config container
-  this._configApply(ssd.Config.getInstance().get(ssd.user.auth.CONFIG_PATH));
+  this._configApply(ssd.Config.getInstance().get(ssd.user.Auth.CONFIG_PATH));
 
   // shotcut assign the performLocalAuth config directive to our
   // local var
@@ -211,8 +237,9 @@ ssd.user.Auth.prototype.init = function()
   this.logger.config('user.Auth.init: Set _localAuth to value:' + this._localAuth);
 
   this._extSupportedSources.forEach(function(key, plugin){
+    this.logger.config('user.Auth.init: Starting init for pluging:' + key);
     plugin.init();
-  });
+  }, this);
 
 };
 
@@ -234,16 +261,16 @@ ssd.user.Auth.prototype._dataEvent = function (e)
 
   switch(e.type) {
     case ssd.DynamicMap.EventType.BEFORE_SET:
-      eventObj.type = ssd.user.auth.EventType.BEFORE_SET;
+      eventObj.type = ssd.user.Auth.EventType.BEFORE_SET;
     break;
     case ssd.DynamicMap.EventType.AFTER_SET:
-      eventObj.type = ssd.user.auth.EventType.AFTER_SET;
+      eventObj.type = ssd.user.Auth.EventType.AFTER_SET;
     break;
     case ssd.DynamicMap.EventType.BEFORE_ADDALL:
-      eventObj.type = ssd.user.auth.EventType.BEFORE_ADDALL;
+      eventObj.type = ssd.user.Auth.EventType.BEFORE_ADDALL;
     break;
     case ssd.DynamicMap.EventType.AFTER_ADDALL:
-      eventObj.type = ssd.user.auth.EventType.AFTER_ADDALL;
+      eventObj.type = ssd.user.Auth.EventType.AFTER_ADDALL;
     break;
   }
   return this.dispatchEvent(eventObj);
@@ -269,7 +296,7 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
   }
   // check if plugin already registered
   if (this._extSupportedSources.get(selfObj.SOURCEID)) {
-    throw Error(ssd.user.auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
+    throw Error(ssd.user.Auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
   }
 
   // add the new plugin to our map
@@ -279,8 +306,8 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
   this[selfObj.SOURCEID] = selfObj;
 
   // event listeners
-  selfObj.addEventListener(ssd.user.auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
-  selfObj.addEventListener(ssd.user.auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
+  selfObj.addEventListener(ssd.user.Auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
+  selfObj.addEventListener(ssd.user.Auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
 };
 
 
@@ -393,7 +420,7 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 
   // dispatch event and check for cancel...
   var eventObj = {
-      type: ssd.user.auth.EventType.BEFORE_LOCAL_AUTH,
+      type: ssd.user.Auth.EventType.BEFORE_LOCAL_AUTH,
       'sourceId': sourceId
     };
   if (!this.dispatchEvent(eventObj)) {
@@ -443,7 +470,7 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
   this.logger.info('Init _serverAuthResponse().');
 
   var eventObj = {
-      type: ssd.user.auth.EventType.BEFORE_AUTH_RESPONSE,
+      type: ssd.user.Auth.EventType.BEFORE_AUTH_RESPONSE,
       'response': response,
       'status'  : false,
       'errorMessage': ''
@@ -454,7 +481,7 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
   }
 
   // from this point onwards we only emit one type of event:
-  eventObj.type = ssd.user.auth.EventType.AUTH_RESPONSE;
+  eventObj.type = ssd.user.Auth.EventType.AUTH_RESPONSE;
 
   // check if response is an object
   if (ssd.types.OBJECT != goog.typeOf(response)) {
@@ -511,7 +538,7 @@ ssd.user.Auth.prototype._doAuth = function (isAuthed)
 {
   this.logger.info('Init _doAuth(). isAuthed:' + isAuthed);
   this._isAuthed = isAuthed;
-  this.dispatchEvent(ssd.user.auth.EventType.AUTHCHANGE);
+  this.dispatchEvent(ssd.user.Auth.EventType.AUTHCHANGE);
 };
 
 /**

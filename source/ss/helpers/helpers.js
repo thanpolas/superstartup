@@ -309,8 +309,7 @@ ssd.helpers.getStatusObject = function (config)
   * @return {boolean}
   */
  ssd.isAuthed = function () {
-     //return true;
-     return ssd.user.auth.isAuthed();
+     return ssd.core.user.isAuthed();
  };
 
  /**
