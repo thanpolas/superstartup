@@ -31,7 +31,7 @@ goog.require('ssd.DynamicMap');
 goog.require('ssd.user.types');
 goog.require('ssd.Config');
 goog.require('ssd.user.OwnItem');
-goog.require('ssd.capsule');
+goog.require('ssd.invocator');
 
 /**
  * User authentication class
@@ -204,19 +204,16 @@ ssd.user.Auth.prototype._extSupportedSources = new ssd.Map();
  */
 ssd.user.Auth.getInstance = function()
 {
-  return ssd.user.Auth._instance || (ssd.user.Auth._instance = ssd.user.Auth.getCapsule());
+  return ssd.user.Auth._instance ||
+    (ssd.user.Auth._instance = ssd.invocator(ssd.user.Auth, 'get'));
 };
 
 
-ssd.user.Auth.getCapsule = function()
-{
-  return ssd.capsule(ssd.user.Auth, 'get');
-};
-
-ssd.user.Auth.prototype['get'] = function()
+ssd.user.Auth.prototype.get = function()
 {
   console.log('Yeashhhhh');
   console.log(this);
+  return this._user.toObject();
 };
 
 /**
@@ -226,7 +223,7 @@ ssd.user.Auth.prototype['get'] = function()
  */
 ssd.user.Auth.prototype.init = function()
 {
-  this.logger.info('user.Auth.init() starting...');
+  this.logger.info('init() :: starting...');
   // get config parameters and apply them to our local config container
   this._configApply(ssd.Config.getInstance().get(ssd.user.Auth.CONFIG_PATH));
 
@@ -253,7 +250,7 @@ ssd.user.Auth.prototype.init = function()
  */
 ssd.user.Auth.prototype._dataEvent = function (e)
 {
-  this.logger.config('_dataEvent event triggered:' + e.type);
+  this.logger.config('_dataEvent() :: event triggered:' + e.type);
   var eventObj = {
     type: null,
     'parentEvent': e
@@ -288,7 +285,7 @@ ssd.user.Auth.prototype._dataEvent = function (e)
  */
 ssd.user.Auth.prototype.addExtSource = function(selfObj)
 {
-  this.logger.info('Adding auth source:' + selfObj.SOURCEID);
+  this.logger.info('addExtSource() :: Adding auth source:' + selfObj.SOURCEID);
 
   // check if plugin is of right type
   if (!selfObj instanceof ssd.user.auth.PluginModule) {
@@ -319,7 +316,7 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
  */
 ssd.user.Auth.prototype._initAuthStatus = function(e)
 {
-  this.logger.info('initial auth status dispatched From:' + e.target.SOURCEID + ' Source authed:' + e.target.isAuthed() + ' plugin has LocalAuth:' + e.target.LOCALAUTH);
+  this.logger.info('_initAuthStatus() :: initial auth status dispatched From:' + e.target.SOURCEID + ' Source authed:' + e.target.isAuthed() + ' plugin has LocalAuth:' + e.target.LOCALAUTH);
 
   // if not authed no need to go further
   if (!e.target.isAuthed()) {
@@ -348,7 +345,7 @@ ssd.user.Auth.prototype._initAuthStatus = function(e)
  */
 ssd.user.Auth.prototype._authChange = function(e)
 {
-  this.logger.info('Auth CHANGE dispatched from:' + e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
+  this.logger.info('_authChange() :: Auth CHANGE dispatched from:' + e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
 
   // check if in our authed map
   var inAuthMap = this._extAuthedSources.get(e.target.SOURCEID);
@@ -356,7 +353,7 @@ ssd.user.Auth.prototype._authChange = function(e)
   if (e.target.isAuthed()) {
     // If authed and we already have it in map then it's a double trigger, ignore
     if (inAuthMap) {
-      this.logger.warning('_authChange() BOGUS situation. Received auth event but we already had a record of this source being authed. Double trigger');
+      this.logger.warning('_authChange() :: BOGUS situation. Received auth event but we already had a record of this source being authed. Double trigger');
       return;
     }
 
@@ -374,7 +371,7 @@ ssd.user.Auth.prototype._authChange = function(e)
   } else {
     // got logged out from ext source
     if (!inAuthMap) {
-      this.logger.warning('_authChange() BOGUS situation. Received de-auth event but had no record of being authed');
+      this.logger.warning('_authChange() :: BOGUS situation. Received de-auth event but had no record of being authed');
       return;
     }
 
@@ -401,7 +398,7 @@ ssd.user.Auth.prototype._authChange = function(e)
  */
 ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 {
-  this.logger.info('Init _verifyExtAuthWithLocal(). LocalAuth Switch:' + this._localAuth + ' sourceId :' + sourceId );
+  this.logger.info('_verifyExtAuthWithLocal() :: Init. LocalAuth Switch:' + this._localAuth + ' sourceId :' + sourceId );
 
   if (!this._localAuth) {
     return;
@@ -410,7 +407,7 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
   // get plugin instance
   var extInst = this._extSupportedSources.get(sourceId);
 
-  this.logger.info('Check if local auth has already started:' + extInst.localAuthInit);
+  this.logger.info('_verifyExtAuthWithLocal() :: Check if local auth has already started:' + extInst.localAuthInit);
 
   //check if we have already started auth with server
   if (extInst.localAuthInit) {
@@ -424,7 +421,7 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
       'sourceId': sourceId
     };
   if (!this.dispatchEvent(eventObj)) {
-    this.logger.info('verifyExtAuthWithLocal canceled due to event preventDefault');
+    this.logger.info('_verifyExtAuthWithLocal() :: canceled due to event preventDefault');
     return;
   }
 
@@ -467,7 +464,7 @@ ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
  */
 ssd.user.Auth.prototype._serverAuthResponse = function(response)
 {
-  this.logger.info('Init _serverAuthResponse().');
+  this.logger.info('_serverAuthResponse() :: Init');
 
   var eventObj = {
       type: ssd.user.Auth.EventType.BEFORE_AUTH_RESPONSE,
@@ -476,7 +473,7 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
       'errorMessage': ''
   };
   if (!this.dispatchEvent(eventObj)) {
-    this.logger.info('_serverAuthResponse :: canceled due to event preventDefault');
+    this.logger.info('_serverAuthResponse() :: canceled due to event preventDefault');
     return;
   }
 
@@ -486,7 +483,7 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
   // check if response is an object
   if (ssd.types.OBJECT != goog.typeOf(response)) {
     // error error
-    this.logger.warning('_serverAuthResponse :: response is not an object');
+    this.logger.warning('_serverAuthResponse() :: response is not an object');
     eventObj.errorMessage = 'response not of type Object';
     this.dispatchEvent(eventObj);
     return;
@@ -500,7 +497,7 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
     // yes we do... check the response
     if (statusObject.valuator !== response[status]) {
       // operation has failed...
-      this.logger.info('_serverAuthResponse :: operation got a false response');
+      this.logger.info('_serverAuthResponse() :: operation got a false response');
       eventObj.errorMessage = 'server said no dice';
       this.dispatchEvent(eventObj);
       return;
@@ -515,7 +512,7 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
 
   // check the user data object is valid
   if (!this._user.validate(user)) {
-    this.logger.info('_serverAuthResponse :: not a valid user data object');
+    this.logger.info('_serverAuthResponse() :: not a valid user data object');
     eventObj.errorMessage = 'user data object not valid';
     this.dispatchEvent(eventObj);
     return;
@@ -536,7 +533,7 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
  */
 ssd.user.Auth.prototype._doAuth = function (isAuthed)
 {
-  this.logger.info('Init _doAuth(). isAuthed:' + isAuthed);
+  this.logger.info('_doAuth() :: Init. isAuthed:' + isAuthed);
   this._isAuthed = isAuthed;
   this.dispatchEvent(ssd.user.Auth.EventType.AUTHCHANGE);
 };

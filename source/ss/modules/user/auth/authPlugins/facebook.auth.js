@@ -41,7 +41,7 @@ goog.require('ssd.user.Auth.EventType');
  */
 ssd.user.auth.Facebook = function()
 {
-  this.logger.info('Construcor: Init');
+  this.logger.info('Constructor: Init');
   goog.base(this);
 
   /** @const {boolean} */
@@ -132,7 +132,7 @@ ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
  */
 ssd.user.auth.Facebook.prototype.init = function(opt_e)
 {
-  this.logger.info('Init init(). FB JS API loaded:' + this._FBAPILoaded);
+  this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
 
   // get config parameters and apply them to our local config container
   this._configApply(ssd.Config.getInstance().get(ssd.user.auth.Facebook.CONFIG_PATH));
@@ -154,6 +154,7 @@ ssd.user.auth.Facebook.prototype.init = function(opt_e)
     return;
   }
 
+  this.logger.info('init() :: Asking for login status');
   // catch initial login status
   FB.getLoginStatus(goog.bind(this._gotInitialAuthStatus, this));
 };
@@ -167,7 +168,7 @@ ssd.user.auth.Facebook.prototype.init = function(opt_e)
  */
 ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
 {
-  this.logger.info('Init _gotInitialAuthStatus()');
+  this.logger.info('_gotInitialAuthStatus() :: init');
 
   this._isAuthedFromResponse(response);
 
@@ -197,7 +198,7 @@ ssd.user.auth.Facebook.prototype._getAppId = function ()
 ssd.user.auth.Facebook.prototype._loadExtAPI = function ()
 {
   try {
-    this.logger.info('Init _loadExtAPI(). FB API Loading:' + this._FBAPILoading + ' Loaded:' + this._FBAPILoaded);
+    this.logger.info('_loadExtAPI() :: Init. FB API Loading:' + this._FBAPILoading + ' Loaded:' + this._FBAPILoaded);
 
     if (this._FBAPILoaded || this._FBAPILoading) {
       return;
@@ -239,7 +240,7 @@ ssd.user.auth.Facebook.prototype._loadExtAPI = function ()
  */
 ssd.user.auth.Facebook.prototype._extAPIloaded = function ()
 {
-  this.logger.info('FB JS API Loaded');
+  this.logger.info('_extAPIloaded() :: FB JS API Loaded');
   this._FBAPILoaded = true;
 
   // attempt to initialize Facebook JS API
@@ -262,7 +263,7 @@ ssd.user.auth.Facebook.prototype._FBinit = function ()
 {
   // get app id
   var appId = this._getAppId();
-  this.logger.info('Init _FBinit(). FB appId:' + appId);
+  this.logger.info('_FBinit() :: Init. FB appId:' + appId);
   // check if we have appId set
   if ('' === appId) {
     this.logger.warning('_FBinit:: Facebook application id was not set!');
@@ -292,7 +293,7 @@ ssd.user.auth.Facebook.prototype._FBinit = function ()
  */
 ssd.user.auth.Facebook.prototype._sessionChange = function (response)
 {
-  this.logger.info('Init _sessionChange()');
+  this.logger.info('_sessionChange() :: Init');
   this._isAuthedFromResponse(response);
     /**
      * response expose:
@@ -324,7 +325,7 @@ ssd.user.auth.Facebook.prototype._sessionChange = function (response)
  */
 ssd.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms)
 {
-  this.logger.info('Init login()');
+  this.logger.info('login() :: init.');
 
   var callback = opt_callback || function (){};
 
@@ -346,7 +347,7 @@ ssd.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms)
  */
 ssd.user.auth.Facebook.prototype._loginListener = function (response, callback)
 {
-  this.logger.info('Init _loginListener()');
+  this.logger.info('_loginListener() :: Init');
 
   callback(this._isAuthedFromResponse(response));
 };
@@ -366,7 +367,7 @@ ssd.user.auth.Facebook.prototype._loginListener = function (response, callback)
 ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response)
 {
   try {
-  this.logger.info('Init _isAuthedFromResponse(). Deep expose of response:' + goog.debug.deepExpose(response, false, true)  );
+  this.logger.info('_isAuthedFromResponse() :: Init. Deep expose of response:' + goog.debug.deepExpose(response, false, true)  );
 
   var isAuthed = 'connected' == response['status'];
 
@@ -392,11 +393,11 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response)
 */
 ssd.user.auth.Facebook.prototype.logout = function()
 {
-  this.logger.info('Init logout()');
+  this.logger.info('logout() :: Init');
   this._isAuthed = false;
   this.dispatchEvent(ssd.user.Auth.EventType.EXTAUTHCHANGE);
   FB.logout(function(response) {
-    this.logger.info('Logout callback. Deep expose of response:' + goog.debug.deepExpose(response, false, true));
+    this.logger.info('logout() :: callback. Deep expose of response:' + goog.debug.deepExpose(response, false, true));
   });
 };
 

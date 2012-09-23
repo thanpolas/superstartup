@@ -112,7 +112,7 @@ ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 /**
  * Kicks off the library.
  *
- * This funcion is exposed and is invoked by our handlers
+ * This function is exposed and is invoked by our handlers
  *
  * @return {void}
  */
