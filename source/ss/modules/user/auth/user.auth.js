@@ -231,10 +231,10 @@ ssd.user.Auth.prototype.init = function()
   // local var
   this._localAuth = this.config('performLocalAuth');
 
-  this.logger.config('user.Auth.init: Set _localAuth to value:' + this._localAuth);
+  this.logger.config('init() :: user.Auth.init: Set _localAuth to value:' + this._localAuth);
 
   this._extSupportedSources.forEach(function(key, plugin){
-    this.logger.config('user.Auth.init: Starting init for pluging:' + key);
+    this.logger.config('init() :: Starting init for pluging:' + key);
     plugin.init();
   }, this);
 
@@ -518,7 +518,8 @@ ssd.user.Auth.prototype._serverAuthResponse = function(response)
     return;
   }
 
-  // all look good
+  // all looks good
+  this.logger.info('_serverAuthResponse() :: Adding user data object:' + goog.debug.deepExpose(user));
   this._user.addAll(user);
   eventObj.status = true;
   this.dispatchEvent(eventObj);
