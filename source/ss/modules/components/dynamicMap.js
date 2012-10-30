@@ -53,6 +53,12 @@ ssd.DynamicMap = function(opt_map, var_args) {
    */
   this._eventsMuted = false;
 
+  /**
+   * @type {string?} If a map id is specified for this dataset store it here.
+   * @private
+   */
+  this._mapId = null;
+
   goog.events.EventTarget.call(this);
   ssd.Map.apply(this, arguments);
 
@@ -90,7 +96,8 @@ ssd.DynamicMap.prototype.set = function(key, value)
     eventObj = {
       type: ssd.DynamicMap.EventType.BEFORE_SET,
       'key': key,
-      'value': value
+      'value': value,
+      'mapId': this._mapId
     };
     // Trigger and check if preventDefault was called
     if (!this.dispatchEvent(eventObj)){
@@ -117,7 +124,8 @@ ssd.DynamicMap.prototype.addAll = function(map)
   if (!this._eventsMuted) {
     eventObj = {
       type: ssd.DynamicMap.EventType.BEFORE_ADDALL,
-      'map': map
+      'map': map,
+      'mapId': this._mapId
     };
     // Trigger and check if preventDefault was called
     if (!this.dispatchEvent(eventObj)){
@@ -145,7 +153,8 @@ ssd.DynamicMap.prototype.remove = function(key)
   if (!this._eventsMuted) {
     eventObj = {
       type: ssd.DynamicMap.EventType.BEFORE_REMOVE,
-      'key': key
+      'key': key,
+      'mapId': this._mapId
     };
     // Trigger and check if preventDefault was called
     if (!this.dispatchEvent(eventObj)){
@@ -181,4 +190,29 @@ ssd.DynamicMap.prototype.startEventMute = function()
 ssd.DynamicMap.prototype.endEventMute = function()
 {
   this._eventsMuted = false;
+};
+
+/**
+ * Set a map id for this dataset. The name is a unique identifier
+ * for this dataset, it's optional and if set will get transmitted
+ * in every dispatched event.
+ *
+ * Use when having multiple dynamicMaps propagating events through
+ * the same parent class.
+ *
+ * @param {string} mapId A unique identifier for this dataset.
+ */
+ssd.DynamicMap.prototype.setMapId = function(mapId)
+{
+  this._mapId = mapId;
+};
+
+/**
+ * Get the name of this dataset
+ *
+ * @return {string|null} The name if set or null.
+ */
+ssd.DynamicMap.prototype.getMapId = function()
+{
+  return this._mapId;
 };
