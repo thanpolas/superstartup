@@ -35,13 +35,30 @@ goog.require('goog.structs.Map');
  */
 ssd.Map = function(opt_map, var_args) {
   goog.structs.Map.apply(this, arguments);
+
+  /**
+   * Indicates if this map contains values which were added with
+   * the {@see ssd.Map.storeWithId} method.
+   *
+   * @type {boolean}
+   * @private
+   */
+  this._hasIdValues = false;
+
+  /**
+   * If we have values stored with ID, this is the increment
+   * that holds the next id to be used.
+   * @type {number}
+   * @private
+   */
+  this._increment = 1;
 };
 goog.inherits(ssd.Map, goog.structs.Map);
 
 /**
  * Safely iterate over the Map's key-value pairs
  * DO NOT CHANGE THE MAP WHILE ITERATING
- * 
+ *
  * @param {Function(string, *): boolean} fn Callback fn with key, value parameters and
  *    boolean TRUE return value to stop iteration
  * @param {Object=} opt_selfObj optionally set the context to execute the func
@@ -56,5 +73,20 @@ ssd.Map.prototype.forEach = function(fn, opt_selfObj)
     if (true === fn.call(selfObj, keys[i], map[keys[i]])) {
       return;
     }
+  }
+};
+
+/**
+ * Store any data in the map with a unique id as key.
+ *
+ * Key will plainly be a numeric increment starting from 1.
+ *
+ * @param  {!Array} data Any set of data
+ * @return {void}
+ */
+ssd.Map.prototype.storeWithId = function(data) {
+  for(var i = 0, l = data.length; i < l; i++) {
+    this.set(this._increment, data[i]);
+    this._increment++;
   }
 };
