@@ -26,7 +26,7 @@ goog.provide('ssd.DynamicMap');
 goog.provide('ssd.DynamicMap.EventType');
 
 goog.require('ssd.Map');
-goog.require('ssd.events.EventTarget');
+goog.require('goog.events.EventTarget');
 goog.require('goog.object');
 
 /**
@@ -35,8 +35,8 @@ goog.require('goog.object');
  * @param {...*} var_args If 2 or more arguments are present then they
  *     will be used as key-value pairs.
  * @constructor
- * @extends {ssd.Map, ssd.events.EventTarget}
- * We also inherit from ssd.events.EventTarget
+ * @extends {ssd.Map, goog.events.EventTarget}
+ * We also inherit from goog.events.EventTarget
  */
 ssd.DynamicMap = function(opt_map, var_args) {
   /**
@@ -46,12 +46,19 @@ ssd.DynamicMap = function(opt_map, var_args) {
    */
   this._canDispatch = true;
 
-  ssd.events.EventTarget.call(this);
-  goog.structs.Map.apply(this, arguments);
+  /**
+   * Do not trigger any Events
+   * @type {boolean}
+   * @private
+   */
+  this._eventsMuted = false;
+
+  goog.events.EventTarget.call(this);
+  ssd.Map.apply(this, arguments);
 
 };
-goog.inherits(ssd.DynamicMap, goog.structs.Map);
-goog.object.extend(ssd.DynamicMap.prototype, ssd.events.EventTarget.prototype);
+goog.inherits(ssd.DynamicMap, ssd.Map);
+goog.object.extend(ssd.DynamicMap.prototype, goog.events.EventTarget.prototype);
 
 /**
  * Events triggered by the Dynamic Map
@@ -59,10 +66,12 @@ goog.object.extend(ssd.DynamicMap.prototype, ssd.events.EventTarget.prototype);
  */
 ssd.DynamicMap.EventType = {
   // When a plain change happens on a property
-  BEFORE_SET: 'beforeSet',
-  AFTER_SET:  'afterSet',
-  BEFORE_ADDALL: 'beforeAddall',
-  AFTER_ADDALL: 'afterAddall'
+  BEFORE_SET   : 'dynamicMap.beforeSet',
+  AFTER_SET    : 'dynamicMap.afterSet',
+  BEFORE_ADDALL: 'dynamicMap.beforeAddall',
+  AFTER_ADDALL : 'dynamicMap.afterAddall',
+  BEFORE_REMOVE: 'dynamicMap.beforeRemove',
+  AFTER_REMOVE : 'dynamicMap.afterRemove'
 };
 
 
@@ -71,11 +80,13 @@ ssd.DynamicMap.EventType = {
  * or a change with persinstent save event
  * @param {*} key The key.
  * @param {*} value The value to add.
+ * @override
  */
 ssd.DynamicMap.prototype.set = function(key, value)
 {
+  /** @type {Object?} */
   var eventObj;
-  if (this._canDispatch) {
+  if (this._canDispatch && !this._eventsMuted) {
     eventObj = {
       type: ssd.DynamicMap.EventType.BEFORE_SET,
       'key': key,
@@ -91,23 +102,27 @@ ssd.DynamicMap.prototype.set = function(key, value)
   ssd.DynamicMap.superClass_.set.call(this, key, value);
 
   // dispatch corresponding event
-  if (this._canDispatch) {
+  if (this._canDispatch && !this._eventsMuted) {
     eventObj.type = ssd.DynamicMap.EventType.AFTER_SET;
     this.dispatchEvent(eventObj);
   }
 };
 
-/** @inheritDoc */
+/** @override */
 ssd.DynamicMap.prototype.addAll = function(map)
 {
+  /** @type {Object?} */
+  var eventObj;
 
-  var eventObj = {
-    type: ssd.DynamicMap.EventType.BEFORE_ADDALL,
-    'map': map
-  };
-  // Trigger and check if preventDefault was called
-  if (!this.dispatchEvent(eventObj)){
-    return;
+  if (!this._eventsMuted) {
+    eventObj = {
+      type: ssd.DynamicMap.EventType.BEFORE_ADDALL,
+      'map': map
+    };
+    // Trigger and check if preventDefault was called
+    if (!this.dispatchEvent(eventObj)){
+      return;
+    }
   }
 
   // payload
@@ -115,8 +130,55 @@ ssd.DynamicMap.prototype.addAll = function(map)
   ssd.DynamicMap.superClass_.addAll.call(this, map);
   this._canDispatch = true;
 
-  eventObj.type = ssd.DynamicMap.EventType.AFTER_ADDALL;
-  this.dispatchEvent(eventObj);
-
+  if (!this._eventsMuted) {
+    eventObj.type = ssd.DynamicMap.EventType.AFTER_ADDALL;
+    this.dispatchEvent(eventObj);
+  }
 };
 
+/** @override */
+ssd.DynamicMap.prototype.remove = function(key)
+{
+  /** @type {Object?} */
+  var eventObj;
+
+  if (!this._eventsMuted) {
+    eventObj = {
+      type: ssd.DynamicMap.EventType.BEFORE_REMOVE,
+      'key': key
+    };
+    // Trigger and check if preventDefault was called
+    if (!this.dispatchEvent(eventObj)){
+      return false;
+    }
+  }
+
+  var response = ssd.DynamicMap.superClass_.remove.call(this, key);
+
+  if (!this._eventsMuted) {
+    eventObj.type = ssd.DynamicMap.EventType.AFTER_REMOVE;
+    eventObj['response'] = response;
+    this.dispatchEvent(eventObj);
+  }
+  return response;
+};
+
+/**
+ * Do not trigger any events for any operation.
+ *
+ * Use when doing bulk set / del operations
+ *
+ */
+ssd.DynamicMap.prototype.startEventMute = function()
+{
+  this._eventsMuted = true;
+};
+
+/**
+ * Ends the trigger mute, from now on events will be triggered.
+ *
+ */
+ssd.DynamicMap.prototype.endEventMute = function()
+{
+  this._eventsMuted = false;
+};
