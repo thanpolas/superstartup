@@ -1,12 +1,9 @@
 [submodule "source/tests/qunit"]
 	path = source/tests/qunit
 	url = https://github.com/jquery/qunit.git
-[submodule "backend/codeigniter"]
-	path = backend/codeigniter
-	url = git@github.com:thanpolas/CodeIgniter.git
 [submodule "build/grunt-closure-tools"]
 	path = build/grunt-closure-tools
 	url = https://github.com/thanpolas/grunt-closure-tools.git
-[submodule "source/ss/modules/server2.js"]
-	path = source/ss/modules/server2.js
-	url = https://github.com/thanpolas/server2js.git
+[submodule "source/ss/libs/server2.js"]
+	path = source/ss/libs/server2.js
+	url = git@github.com:thanpolas/server2js.git
