@@ -107,14 +107,49 @@ ssd.Map.prototype.forEach = function(fn, opt_selfObj)
  * Key will plainly be a numeric increment starting from 1.
  *
  * @param  {!Array} data Any set of data
+ * @param {number=} opt_length Optionally define the min length of the id
+ *                             in case you wish to properly sort the
+ *                             dataset later. E.g. a defined length of 3
+ *                             will result in the first id being: i001.
  * @return {void}
  */
-ssd.Map.prototype.storeWithId = function(data) {
+ssd.Map.prototype.storeWithId = function(data, opt_length) {
+  var key;
   for(var i = 0, l = data.length; i < l; i++) {
-    this.set(ssd.Map.INCREMENT_PREFIX + this._increment, data[i]);
+    key = ssd.Map.INCREMENT_PREFIX;
+
+    if (opt_length) {
+      key += this._minLengthId(opt_length, this._increment);
+    } else {
+      key += this._increment;
+    }
+
+    this.set(key, data[i]);
+
     this._increment++;
   }
 };
+
+/**
+ * Checks the provided id if is less than 'minLength' and if
+ * it is zero (0) chars are prepended to the id to meed the
+ * minLength requirement.
+ *
+ * @param  {number} minLength The minimum length we want the id to be.
+ * @param  {number|string} id the id we want to manipulate.
+ * @return {string} Proper id.
+ * @private
+ */
+ssd.Map.prototype._minLengthId = function(minLength, id) {
+  var newid = '';
+  var lid;
+  if (0 < (lid = minLength - (id + '').length)) {
+    newid += new Array(lid + 1).join('0');
+  }
+  return newid + id;
+};
+
+
 
 /**
  * Return an array with the values including their id.
