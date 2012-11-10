@@ -82,7 +82,7 @@ ssd.user.auth.Twitter.prototype.SOURCEID = 'twitter';
 
 /**
  * Start initial authentication checks
- * When a definitive result is produced, dispatch the INITIALAUTHSTATUS
+ * When a definitive result is produced, dispatch the INITIAL_AUTH_STATUS
  * event
  *
  * @return {void}
@@ -93,7 +93,7 @@ ssd.user.auth.Twitter.prototype.init = function()
   // get config parameters and apply them to our local config container
   this._configApply(ssd.Config.getInstance().get(ssd.user.auth.Twitter.CONFIG_PATH));
 
-  this.dispatchEvent(ssd.user.Auth.EventType.INITIALAUTHSTATUS);
+  this.dispatchEvent(ssd.user.Auth.EventType.INITIAL_AUTH_STATUS);
 };
 
 /**

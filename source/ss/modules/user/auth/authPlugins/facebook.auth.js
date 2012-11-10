@@ -41,7 +41,7 @@ goog.require('ssd.user.Auth.EventType');
  */
 ssd.user.auth.Facebook = function()
 {
-  this.logger.info('Constructor: Init');
+  this.logger.info('Constructor() :: Init.');
   goog.base(this);
 
   /** @const {boolean} */
@@ -64,6 +64,32 @@ ssd.user.auth.Facebook = function()
    * @private
    */
   this._appId;
+
+
+  /**
+   * @type {boolean} FB JS API is loading...
+   * @private
+   */
+  this._FBAPILoading = false;
+
+  /**
+   * @type {boolean} FB JS API is loaded
+   * @private
+   */
+  this._FBAPILoaded = false;
+
+  /**
+   * @type {boolean} FB JS API has initialized successfully
+   * @private
+   */
+  this._FBAPIInited = false;
+
+  /**
+   * @type {boolean} Got initial auth response from FB
+   * @private
+   */
+  this._FBGotResponce = false;
+
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -93,29 +119,7 @@ ssd.user.auth.Facebook.EventType = {
  */
 ssd.user.auth.Facebook.prototype.logger =  goog.debug.Logger.getLogger('ssd.user.auth.Facebook');
 
-/**
- * @type {boolean} FB JS API is loading...
- * @private
- */
-ssd.user.auth.Facebook.prototype._FBAPILoading = false;
 
-/**
- * @type {boolean} FB JS API is loaded
- * @private
- */
-ssd.user.auth.Facebook.prototype._FBAPILoaded = false;
-
-/**
- * @type {boolean} FB JS API has initialized successfully
- * @private
- */
-ssd.user.auth.Facebook.prototype._FBAPIInited = false;
-
-/**
- * @type {boolean} Got initial auth response from FB
- * @private
- */
-ssd.user.auth.Facebook.prototype._FBGotResponce = false;
 
 /**
  * @const {ssd.user.types.extSourceId} The plugin's name (e.g. Facebook)
@@ -124,7 +128,7 @@ ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
 
 /**
  * Start initial authentication checks
- * When a definitive result is produced, dispatch the INITIALAUTHSTATUS
+ * When a definitive result is produced, dispatch the INITIAL_AUTH_STATUS
  * event
  * @param {goog.events.Event=} opt_e Optionally, if FBAPI is not loaded, we
  *      listen for the relevant event
@@ -174,7 +178,7 @@ ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
 
   this._FBGotResponce = true;
 
-  this.dispatchEvent(ssd.user.Auth.EventType.INITIALAUTHSTATUS);
+  this.dispatchEvent(ssd.user.Auth.EventType.INITIAL_AUTH_STATUS);
 };
 
 /**

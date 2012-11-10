@@ -89,7 +89,7 @@ ssd.user.auth.PluginInterface.prototype.getUser = function(){};
  * Starts off the plugin.
  * (lazy) Loads any required JS API.
  * And performs initial authentication checks
- * When a definitive result is produced, dispatches the INITIALAUTHSTATUS
+ * When a definitive result is produced, dispatches the INITIAL_AUTH_STATUS
  * event
  * @return {void}
  */

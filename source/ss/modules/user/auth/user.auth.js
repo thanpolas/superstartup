@@ -146,7 +146,7 @@ ssd.user.Auth.EventType = {
   AUTHCHANGE: 'user.authChange',
   // Trigger this event as soon as we can resolve
   // the auth status from an ext source
-  INITIALAUTHSTATUS: 'user.initialAuthStatus',
+  INITIAL_AUTH_STATUS: 'user.initialAuthStatus',
   // Triggers if authed user is new, first time signup
   NEWUSER: 'user.newUser',
   // before local auth
@@ -303,7 +303,7 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
   this[selfObj.SOURCEID] = selfObj;
 
   // event listeners
-  selfObj.addEventListener(ssd.user.Auth.EventType.INITIALAUTHSTATUS, this._initAuthStatus, false, this);
+  selfObj.addEventListener(ssd.user.Auth.EventType.INITIAL_AUTH_STATUS, this._initAuthStatus, false, this);
   selfObj.addEventListener(ssd.user.Auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
 };
 
