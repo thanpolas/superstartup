@@ -1,0 +1,37 @@
+{
+  "name": "superstartup",
+  "description": "Front-end User system, metrics, sharing widgets and star dust!",
+  "version": "0.1.0",
+  "homepage": "https://github.com/thanpolas/superstartup",
+  "author": {
+    "name": "Thanasis Polychronakis",
+    "email": "thanpolas@gmail.com",
+    "url": "http://thanpol.as"
+  },
+  "github": "https://github.com/thanpolas/superstartup",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thanpolas/superstartup.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thanpolas/superstartup/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://en.wikipedia.org/wiki/MIT_License"
+    }
+  ],
+  "main": "",
+  "engines": {
+    "node": "~0.8.0"
+  },
+  "dependencies": {
+    },
+  "devDependencies": {
+    "grunt": "~0.3.0",
+    "grunt-closure-tools": "~0.6.12"
+  },
+  "keywords": [
+  ]
+}

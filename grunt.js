@@ -1,56 +1,27 @@
 module.exports = function(grunt) {
 
-  grunt.loadTasks('build/grunt-closure-tools/tasks');
+  grunt.loadNpmTasks('grunt-closure-tools');
 
   var externsPath = 'build/externs/';
   // don't put the extension here
-  var debugFile = 'source/ss/helpers/debug';
+  var debugFile = 'lib/helpers/debug';
 
   // Project configuration.
   grunt.initConfig({
-    lint: {
-      all: ['html/js/init.js', 'html/js/ss/main.js']
-    },
-    jshint: {
-      options: {
-            curly: true,
-            eqeqeq: false,
-            immed: true,
-            latedef: true,
-            newcap: true,
-            noarg: true,
-            sub: true,
-            undef: true,
-            eqnull: true,
-            browser: true
-          }
-    },
-    log: {
-      foo: [1, 2, 3],
-      bar: 'hello world',
-      baz: false
-    },
     closureDepsWriter: {
       ss: {
-        closureLibraryPath: 'source/closure-library/',
-        output_file: 'source/deps-ss.js',
+        closureLibraryPath: 'closure-library/',
+        output_file: 'lib/superdeps.js',
         options: {
-          root_with_prefix: ['"source/ss ../../../ss"']
-        }
-      },
-      showcase: {
-        closureLibraryPath: 'source/closure-library/',
-        output_file: 'source/deps-showcase.js',
-        options: {
-          root_with_prefix: ['"source/showcase ../../../showcase"']
+          root_with_prefix: ['"lib ../../lib"']
         }
       }
     },
     closureBuilder: {
       superstartup: {
-        closureLibraryPath: 'source/closure-library',
-        inputs: ['source/ss/main.js'],
-        root: ['source/ss', 'source/closure-library'],
+        closureLibraryPath: 'closure-library',
+        inputs: ['lib/main.js'],
+        root: ['lib', 'closure-library'],
         compile: true,
         compiler: 'build/closure_compiler/sscompiler.jar',
         output_file: 'dist/superstartup.min.js',
@@ -74,7 +45,7 @@ module.exports = function(grunt) {
     closureCompiler: {
       target: {
         closureCompiler: 'build/bin/Third-Party/closure_compiler/compiler.jar',
-        js: 'source/init.js',
+        js: 'lib/main.js',
         output_file: 'compiled.js'
       }
     }
