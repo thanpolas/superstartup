@@ -11,9 +11,9 @@ module.exports = function(grunt) {
     closureDepsWriter: {
       ss: {
         closureLibraryPath: 'closure-library/',
-        output_file: 'lib/superdeps.js',
+        output_file: 'lib/deps-superstartup.js',
         options: {
-          root_with_prefix: ['"lib ../../lib"']
+          root_with_prefix: ['"lib ../../../lib"']
         }
       }
     },
