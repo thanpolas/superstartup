@@ -1,21 +1,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="test/mocha/mocha.css" />
+    <link rel="stylesheet" href="mocha/mocha.css" />
   </head>
   <body>
     <div id="mocha"></div>
-    <script src="test/mocha/mocha.js"></script>
-    <script src="test/mocha/chai.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
     <script>
       mocha.ui('bdd');
+      //mocha.setup('bdd')
       mocha.reporter('html');
       expect = chai.expect;
     </script>
-    <script type="text/javascript" src="closure-library/closure/goog/base.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/lib/deps.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/closure-library/closure/goog/base.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/lib/deps-superstartup.js" charset="utf-8"></script>
     <script type="text/javascript" src="/lib/main.js" charset="utf-8"></script>
-    <script src="test/test.js"></script>
+    <script src="test.js"></script>
     <script>
       if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
       else { mocha.run(); }
