@@ -67,11 +67,9 @@ ssd.Core = function()
   // Typically this is boolean true, however this
   // may not be the case for everyone.
   //
-  // This key can be overwritter by any module
-  config(ssd.Core.CONFIG_STATUSTRUE, true);
+  // This key can be overwritten by any module
+  config(ssd.Core.CONFIG_STATUS_TRUE, true);
 
-  // register the config
-  ssd.Config.getInstance().register(ssd.Core.CONFIG_PATH, config.toObject());
 
 
   /**
@@ -81,6 +79,10 @@ ssd.Core = function()
    * @type {ssd.Config} Singleton config instance.
    */
   this.config = ssd.Config.getInstance();
+
+  // register the config
+  ssd.Config.getInstance().register(ssd.Core.CONFIG_PATH, config.toObject());
+
 
   /** @type {ssd.Config} Singleton config instance */
   //ssd.config = ssd.Config.getInstance();
@@ -105,7 +107,7 @@ ssd.Core.CONFIG_PATH = 'core';
 /** @const {string} The key of the state config param */
 ssd.Core.CONFIG_STATUS = 'status';
 /** @const {string} The key of the status true config param */
-ssd.Core.CONFIG_STATUSTRUE = 'statusTrue';
+ssd.Core.CONFIG_STATUS_TRUE = 'statusTrue';
 
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
@@ -124,6 +126,16 @@ ssd.Core.prototype.init = function ()
 };
 
 /**
+ * Declare our identity
+ * @return {string}
+ */
+ssd.Core.prototype.toString = function() {
+  return 'ssd.Core';
+};
+
+
+
+/**
  * The synchronous init
  * This init is called synchronously as soon as the lib is loaded
  * You can find the call at the end of this file
@@ -137,7 +149,7 @@ ssd.Core.prototype.synchInit = function()
   if (goog.DEBUG) {
     ssd.debug.openFancyWin();
   }
-  this.logger.info('synchInit() Starting...');
+  this.logger.info('synchInit() :: Starting...');
 
   // bubble user auth events to this class
   this.user.setParentEventTarget(this);
@@ -146,6 +158,18 @@ ssd.Core.prototype.synchInit = function()
   ssd.user.auth.Facebook.getInstance();
   ssd.user.auth.Twitter.getInstance();
 
+};
+
+/**
+ * Generic listener method for all events emitted by ss
+ *
+ * @param  {string} eventType The event type.
+ * @param  {Function} cb The callback function.
+ * @param {Object=} opt_self optionally define a context to invoke the callback on.
+ */
+ssd.Core.prototype.listen = function(event, cb, opt_self)
+{
+  goog.events.listen(this, event, cb, false, opt_self || goog.global);
 };
 
 

@@ -378,8 +378,8 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response)
   // check if the response received differs from our stored state
   if (isAuthed != this._isAuthed) {
     this._isAuthed = isAuthed;
-    // only dispatch EXTAUTHCHANGE event AFTER we got initial auth response
-    this._FBGotResponce && this.dispatchEvent(ssd.user.Auth.EventType.EXTAUTHCHANGE);
+    // only dispatch EXT_AUTH_CHANGE event AFTER we got initial auth response
+    this._FBGotResponce && this.dispatchEvent(ssd.user.Auth.EventType.EXT_AUTH_CHANGE);
   }
 
   return isAuthed;
@@ -399,7 +399,7 @@ ssd.user.auth.Facebook.prototype.logout = function()
 {
   this.logger.info('logout() :: Init');
   this._isAuthed = false;
-  this.dispatchEvent(ssd.user.Auth.EventType.EXTAUTHCHANGE);
+  this.dispatchEvent(ssd.user.Auth.EventType.EXT_AUTH_CHANGE);
   FB.logout(function(response) {
     this.logger.info('logout() :: callback. Deep expose of response:' + goog.debug.deepExpose(response, false, true));
   });

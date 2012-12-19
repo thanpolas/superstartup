@@ -74,12 +74,12 @@ ssd.helpers.getStatusObject = function (config)
   // ok status is string
   statusObject.hasStatus = true;
   // fetch the evaluator now, see if we have a local override
-  if (config.containsKey(ssd.Core.CONFIG_STATUSTRUE)) {
-    statusObject.valuator = config(ssd.Core.CONFIG_STATUSTRUE);
+  if (config.containsKey(ssd.Core.CONFIG_STATUS_TRUE)) {
+    statusObject.valuator = config(ssd.Core.CONFIG_STATUS_TRUE);
     return statusObject;
   }
 
-  statusObject.valuator = coreConfig.get(ssd.Core.CONFIG_STATUSTRUE);
+  statusObject.valuator = coreConfig.get(ssd.Core.CONFIG_STATUS_TRUE);
   return statusObject;
 };
 

@@ -11,7 +11,7 @@ goog.provide('ssd.invocator');
  *
  * Invocator only works for pseudo-classical type of classes (prototypical).
  *
- * Requires 'bind' and 'isFunction', currently use underscore's equivalents.
+ * Requires 'bind' and 'isFunction', currently use closure's equivalents.
  *
  * A special property '_instance' is exposed in the returned function which references
  * the new instance of the object (class) - so you can use it for 'instanceOf' comparisons

@@ -143,7 +143,7 @@ ssd.user.auth.Twitter.prototype.logout = function()
 {
   this.logger.info('Init logout()');
   this._isAuthed = false;
-  this.dispatchEvent(ssd.user.Auth.EventType.EXTAUTHCHANGE);
+  this.dispatchEvent(ssd.user.Auth.EventType.EXT_AUTH_CHANGE);
 };
 
 /**

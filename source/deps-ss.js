@@ -14,6 +14,8 @@ goog.addDependency('../../../ss/libs/cookies.js', ['ssd.web.cookies'], []);
 goog.addDependency('../../../ss/libs/eventTarget.js', ['ssd.events.EventTarget'], ['goog.events', 'goog.events.EventTarget', 'ssd.types']);
 goog.addDependency('../../../ss/libs/invocator.js', ['ssd.invocator'], []);
 goog.addDependency('../../../ss/libs/module.js', ['ssd.Module'], ['ssd.events.EventTarget']);
+goog.addDependency('../../../ss/libs/server2.js/source/server2.js', ['ssd.Server2js', 'ssd.server2js'], []);
+goog.addDependency('../../../ss/libs/server2.js/source/server2js.export.js', ['ssd.server'], ['ssd.Server2js', 'ssd.server2js']);
 goog.addDependency('../../../ss/main.js', ['ssd'], ['ssd.Config', 'ssd.Core', 'ssd.Server2js', 'ssd.ajax', 'ssd.debug', 'ssd.error', 'ssd.exports', 'ssd.helpers', 'ssd.metadata', 'ssd.metrics', 'ssd.server', 'ssd.user.auth.Facebook', 'ssd.user.auth.Twitter', 'ssd.web.cookies']);
 goog.addDependency('../../../ss/modules/metrics/googleAnalytics.js', ['ssd.metrics.ga'], []);
 goog.addDependency('../../../ss/modules/metrics/metrics.js', ['ssd.metrics'], ['ssd.metrics.ga', 'ssd.metrics.mixpanel']);

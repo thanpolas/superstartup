@@ -55,6 +55,11 @@ showcase.init = function() {
   ss.config.set('user.auth.fb.appId', '186392014808053');
   ss.config.set('user.auth.fb.permissions', 'email,publish_stream');
 
+
+  // subscribe to the auth state master event hook
+  ss.listen('user.authChange', showcase.authState);
+
+
   ss.init();
 
 };
@@ -65,23 +70,18 @@ showcase.init = function() {
 /**
  * Triggers when the master auth event hook changes state
  *
- * @param {boolean} state If we are authed or not
- * @param {ss.STATIC.SOURCES=} if authed, which auth source was used
- * @param {object=} opt_userDataObject if authed, the user data object is passed here
  * @return {void}
  */
-showcase.authState = function(state, opt_sourceId, opt_userDataObject)
+showcase.authState = function()
 {
 
-    var c = ss, w = c.web, j = jQuery, g = goog;
-
     var log = goog.debug.Logger.getLogger('showcase.authState');
+    var isAuthed = ss.isAuthed();
+    log.info('Auth event is ready. State:' + isAuthed);
 
-    log.info('Auth event is ready. State:' + state);
-
-    if (state) {
+    if (isAuthed) {
       // user is authed, get his data object...
-      var u = opt_userDataObject;
+      var u = ss.user();
       // now update our page...
       $('#auth_state h3').text('User Authed');
       $('#auth_state_content h4').text('The user data object');
@@ -98,8 +98,6 @@ showcase.authState = function(state, opt_sourceId, opt_userDataObject)
     }
 };
 
-// subscribe to the auth state master event hook
-//ss.user.auth.events.addEventListener('authState', showcase.authState);
 
 // Kick off!
 showcase.init();

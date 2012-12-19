@@ -139,11 +139,11 @@ ssd.user.Auth.Error = {
 ssd.user.Auth.EventType = {
   // An external auth source has an auth change event
   // (from not authed to authed and vice verca)
-  EXTAUTHCHANGE: 'user.extAuthChange',
+  EXT_AUTH_CHANGE: 'user.extAuthChange',
   // We have a global auth change event
   // (from not authed to authed and vice verca)
   // use this eventype for authoritative changes
-  AUTHCHANGE: 'user.authChange',
+  AUTH_CHANGE: 'user.authChange',
   // Trigger this event as soon as we can resolve
   // the auth status from an ext source
   INITIAL_AUTH_STATUS: 'user.initialAuthStatus',
@@ -304,7 +304,7 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
 
   // event listeners
   selfObj.addEventListener(ssd.user.Auth.EventType.INITIAL_AUTH_STATUS, this._initAuthStatus, false, this);
-  selfObj.addEventListener(ssd.user.Auth.EventType.EXTAUTHCHANGE, this._authChange, false, this);
+  selfObj.addEventListener(ssd.user.Auth.EventType.EXT_AUTH_CHANGE, this._authChange, false, this);
 };
 
 
@@ -536,7 +536,7 @@ ssd.user.Auth.prototype._doAuth = function (isAuthed)
 {
   this.logger.info('_doAuth() :: Init. isAuthed:' + isAuthed);
   this._isAuthed = isAuthed;
-  this.dispatchEvent(ssd.user.Auth.EventType.AUTHCHANGE);
+  this.dispatchEvent(ssd.user.Auth.EventType.AUTH_CHANGE);
 };
 
 /**
