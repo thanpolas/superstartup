@@ -1,3 +1,0 @@
-[submodule "lib/ss/libs/server2.js"]
-	path = lib/ss/libs/server2.js
-	url = git@github.com:thanpolas/server2js.git
