@@ -1,6 +1,13 @@
+/**
+ * [exports description]
+ * @param  {[type]} grunt [description]
+ * @return {[type]}       [description]
+ */
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-closure-tools');
+  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   var externsPath = 'build/externs/';
   // don't put the extension here
@@ -14,6 +21,13 @@ module.exports = function(grunt) {
         output_file: 'lib/deps-superstartup.js',
         options: {
           root_with_prefix: ['"lib ../../../lib"']
+        }
+      },
+      test: {
+        closureLibraryPath: 'closure-library/',
+        output_file: 'test/deps-test.js',
+        options: {
+          root_with_prefix: ['"test ../../../test"']
         }
       }
     },
@@ -48,11 +62,34 @@ module.exports = function(grunt) {
         js: 'lib/main.js',
         output_file: 'compiled.js'
       }
+    },
+
+    /**
+     *
+     * TESTING
+     *
+     */
+    mochaPhantom: 'node_modules/mocha-phantomjs/bin/mocha-phantomjs test/mocha.html',
+
+    shell: {
+      mochaPhantom: {
+          command: '<%= mochaPhantom %> -R min',
+          stdout: true
+      },
+      mochaPhantomSpec: {
+          command: '<%= mochaPhantom %> -R spec',
+          stdout: true
+      }
     }
   });
 
+  grunt.registerTask('test', 'Test using mocha-phantom on a webpage environment', 'shell:mochaPhantom');
+  grunt.registerTask('test:spec', 'Test using mocha-phantom on a webpage environment full Spec Reporter', 'shell:mochaPhantomSpec');
+
   // Default task.
   grunt.registerTask('default', 'closureDepsWriter');
+
+
 
   grunt.registerTask('compile', 'debugOff closureBuilder:superstartup debugOn');
 

@@ -2,13 +2,10 @@
 
 ## Core functions
 ```javascript
-// the main class, does ???
-ss();
-
-// Give the go ahead to boot up
-//    - check auth status of ext auth plugins
-//    - lazy load required libs
-ss.init();
+// ss() initializes the application
+// Can have a callback as parameter for when ss
+// has finished initializing
+ss(opt_fn)
 
 // check auth status
 ss.isAuthed();
