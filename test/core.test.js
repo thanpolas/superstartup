@@ -1,8 +1,8 @@
 
 goog.provide('ssd.test.core');
 
-describe('Core', function(){
-  describe('#ss(opt_fn)', function(){
+describe('Core API', function(){
+  describe('ss(opt_fn)', function(){
     it('should boot up the application', function(done){
       function ssCallback() {
         expect(ss.isReady()).to.be.True;
