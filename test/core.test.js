@@ -18,4 +18,11 @@ describe('Core API', function(){
       ss();
     });
   });
+
+  describe('ss.new()', function () {
+    it('should create a new instance', function () {
+      var ssNew = ss.new();
+      expect(ss.isReady()).to.be.False;
+    });
+  });
 });

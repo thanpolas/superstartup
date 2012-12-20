@@ -21,8 +21,8 @@ describe('Events API', function(){
     function cb () {
       expect(this.a).to.be.equal(1);
     }
-    ss.listen('custom.event', cb, obj);
-    ss.trigger('custom.event');
+    ss.listen('custom.eventTwo', cb, obj);
+    ss.trigger('custom.eventTwo');
   });
 
   it('should pass parameters from trigger', function(done){
@@ -30,9 +30,35 @@ describe('Events API', function(){
       expect(arg1).to.be.equal(1);
       expect(arg2).to.be.equal(2);
     }
-    ss.listen('custom.event', cb);
-    ss.trigger('custom.event', 1, 2);
+    ss.listen('custom.eventThree', cb);
+    ss.trigger('custom.eventThree', 1, 2);
   });
 
+  it('should remove listeners', function(){
+    var cid = ss.listen('custom.eventFour', function(){
+      // should never be here
+      expect(false).to.be.True;
+    });
+
+    ss.removeListener(cid);
+    ss.trigger('custom.eventFour');
+    expect(true).to.be.True;
+  });
+
+  it('should remove all listeners', function(){
+    function cb () {
+      // should never be here
+      expect(false).to.be.True;
+    }
+
+    ss.listen('custom.eventFive', cb);
+    ss.listen('custom.eventFive', cb);
+    ss.listen('custom.eventFive', cb);
+    ss.listen('custom.eventFive', cb);
+
+    ss.removeAllListeners('custom.eventFive');
+    ss.trigger('custom.eventFive');
+    expect(true).to.be.True;
+  });
 
 });
