@@ -45,8 +45,8 @@ describe('User Module API', function () {
     it('should trigger the auth event synchronously', function(){
       var triggered = false;
       // the test is synchronous on purpose
-      function cb (eventObj, status) {
-        expect(status).to.be.True;
+      function cb (eventObj, authStatus) {
+        expect(authStatus).to.be.True;
         triggered = true;
       }
 
@@ -58,6 +58,27 @@ describe('User Module API', function () {
       expect(triggered).to.be.True;
 
       ss.removeListener(cid);
+    });
+
+    it('should trigger an initial auth status event after core init', function(){
+      var triggered = false;
+      // the test is synchronous on purpose
+      function cb (eventObj, authStatus) {
+        expect(authStatus).to.be.a('boolean');
+        triggered = true;
+      }
+
+      var ssNew = new ss();
+      var cid = ssNew.listen(ssd.test.event.all.INITIAL_AUTH_STATUS, cb);
+
+      // boot up the app
+      ssNew();
+
+      expect(ss.isAuthed()).to.be.False;
+      expect(triggered).to.be.True;
+
+      ss.removeListener(cid);
+
     });
   });
 
