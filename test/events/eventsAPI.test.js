@@ -20,6 +20,7 @@ describe('Events API', function(){
     };
     function cb () {
       expect(this.a).to.be.equal(1);
+      done();
     }
     ss.listen('custom.eventTwo', cb, obj);
     ss.trigger('custom.eventTwo');

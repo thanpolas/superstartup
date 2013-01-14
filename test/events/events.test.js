@@ -5,10 +5,16 @@
 goog.provide('ssd.test.event.all');
 
 /**
- * @enum {string} all events emitted by superstartup.
+ * @enum {string} Core events emitted.
  */
-ssd.test.event.all = {
-  INIT: 'ss.init',
+ssd.test.event.core = {
+  INIT: 'ss.init'
+};
+
+/**
+ * @enum {string} events emitted by the user module.
+ */
+ssd.test.event.user = {
 
   /**
    * ********************************************

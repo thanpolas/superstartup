@@ -3,6 +3,10 @@ goog.provide('ssd.test.user.api');
 
 goog.require('ssd.test.mock.userOne');
 
+/**
+ * Helper for authenticating with a mock
+ * User Data Object (UDO)
+ */
 function auth () {
   ss.user.auth(ssd.test.mock.userOne);
 }
@@ -22,11 +26,11 @@ describe('User Module API', function () {
       expect(ss.isAuthed()).to.be.True;
     });
 
-    it('should logout', function(){
+    it('should deauthenticate', function(){
       auth();
       expect(ss.isAuthed()).to.be.True;
 
-      ss.user.logout();
+      ss.user.deAuth();
 
       expect(ss.isAuthed()).to.not.be.True;
     });
@@ -35,10 +39,10 @@ describe('User Module API', function () {
 
   describe('Events', function () {
     before(function () {
-      ss.user.logout();
+      ss.user.deAuth();
     });
 
-    it('should trigger the auth events', function(){
+    it('should trigger the auth event synchronously', function(){
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj, status) {
