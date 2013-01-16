@@ -1,11 +1,10 @@
-
-goog.provide('ssd.test.config');
+goog.provide('ssd.unitTest.config');
 
 (function(){
+  suite('ssd.Config');
 
-  // will contain an instance of ss.Config
+  // will contain an instance of ssd.Config
   var config;
-  console.log('ssd', ssd.Module);
 
   // create a dummy class
   var ClassOne = function(){
@@ -20,8 +19,7 @@ goog.provide('ssd.test.config');
       config.register('the.path.to.classOne', this._config);
     }
   };
-  goog.inherits(ClassOne, ssd.Module);
-
+  goog.inherits(ClassOne, ss.Module);
 
   // create a config getter
   ClassOne.prototype.get = function(what)
@@ -41,102 +39,73 @@ goog.provide('ssd.test.config');
   };
 
 
-  describe('Config Class', function(){
-    describe('Register conf from inside a class', function() {
-      var classOne;
-      before(function(){
-        config = new ssd.Config();
-        classOne = new ClassOne();
-      });
 
-      it('Default conf values are the same on init', function(){
-        expect(  classOne.get('polek')  ).to.be.equal('one');
-      });
+  test('Register conf from inside a class', function() {
+    config = new ssd.Config();
+    var classOne = new ClassOne();
+    equal(classOne.get('polek'), 'one', 'Default conf values are the same on init');
 
-      it('The change we did in the Config instance is reflected in the ClassOne instance', function(){
-        // make a configuration change
-        config.set('the.path.to.classOne.polek', 'three');
-        expect(  classOne.get('polek')  ).to.be.equal('three');
-      });
-    });
-
-
-
-    describe('Register conf using a plain object', function() {
-      var plainObject;
-      before(function(){
-        config = new ssd.Config();
-        plainObject = new PlainObject();
-      });
-
-      config.register('the.path.for.plainObject', plainObject);
-
-      it('Default conf values are the same on init', function(){
-        expect(  plainObject.foo  ).to.be.equal('one');
-      });
-
-      // make a configuration change
-      it('The change we did in the Config instance is reflected in the plain object', function(){
-        config.set('the.path.for.plainObject.foo', 'three');
-        expect(  plainObject.foo  ).to.be.equal('three');
-      });
-
-      it('A two level path returns correct value', function(){
-        // register two levels
-        config.register('twolevels', {a: 1, b: 2});
-        // and register one level
-        config.register('onelevel', 2);
-        expect(  config.get('twolevels.a')  ).to.be.equal(1);
-      });
-
-      it('A one level path returns correct value', function(){
-        expect(  config.get('onelevel')  ).to.be.equal(2);
-      });
-    });
-
-
-
-    describe('Error throwing functionality', function(){
-      config = new ssd.Config();
-      var plainObject = new PlainObject();
-      config.register('the.path.for.plainObject', plainObject);
-
-      it('We cannot set an object as a value to a specific parameter', function() {
-        expect(  function(){
-          config.set('the.path.for.plainObject.foo', {});
-        }  ).to.Throw(Error);
-      });
-      it('We cannot overwrite a path with an object', function() {
-        expect(  function(){
-          config.set('the.path.for', {});
-        }  ).to.Throw(Error);
-      });
-      it('We cannot overwrite a path with a number', function() {
-        expect(  function(){
-          config.set('the.path.for', 1);
-        }  ).to.Throw(Error);
-      });
-      it('We cannot set a conf key of a different type than the one we registered - string key check', function() {
-        expect(  function(){
-          config.set('the.path.for.plainObject.foo', 3);
-        }  ).to.Throw(TypeError);
-      });
-      it('We cannot set a conf key of a different type than the one we registered - number key check', function() {
-        expect(  function(){
-          config.set('the.path.for.plainObject.num', 'four');
-        }  ).to.Throw(TypeError);
-      });
-      it('We cannot set a conf key of a different type than the one we registered - array key check', function() {
-        expect(  function(){
-          config.set('the.path.for.plainObject.ar', {});
-        }  ).to.Throw(TypeError);
-      });
-      it('We cannot overwrite a pre-existing key when registering configs', function() {
-        expect(  function(){
-          config.register('the.path', 'an overriding value');
-        }  ).to.Throw(Error);
-      });
-    });
+    // make a configuration change
+    config.set('the.path.to.classOne.polek', 'three');
+    equal(classOne.get('polek'), 'three', 'The change we did in the Config instance is reflected in the ClassOne instance');
   });
-})();
 
+
+
+  test('Register conf using a plain object', function() {
+    config = new ssd.Config();
+    var plainObject = new PlainObject();
+    config.register('the.path.for.plainObject', plainObject);
+    equal(plainObject.foo, 'one', 'Default conf values are the same on init');
+
+    // make a configuration change
+    config.set('the.path.for.plainObject.foo', 'three');
+    equal(plainObject.foo, 'three', 'The change we did in the Config instance is reflected in the plain object');
+
+    // register two levels
+    config.register('twolevels', {a: 1, b: 2});
+    // and register one level
+    config.register('onelevel', 2);
+
+    strictEqual(config.get('twolevels.a'), 1, 'A two level path returns correct value');
+    strictEqual(config.get('onelevel'), 2, 'A one level path returns correct value');
+  });
+
+
+
+  test('Error throwing functionality', function(){
+    config = new ssd.Config();
+    var plainObject = new PlainObject();
+    config.register('the.path.for.plainObject', plainObject);
+
+    raises(function(){
+      config.set('the.path.for.plainObject.foo', {});
+      }, Error, 'We cannot set an object as a value to a specific parameter');
+
+    raises(function(){
+      config.set('the.path.for', {});
+      }, Error, 'We cannot overwrite a path with an object');
+
+    raises(function(){
+      config.set('the.path.for', 1);
+      }, Error, 'We cannot overwrite a path with a number');
+
+    raises(function(){
+      config.set('the.path.for.plainObject.foo', 3);
+      }, TypeError, 'We cannot set a conf key of a different type than the one we registered - string key check');
+
+    raises(function(){
+      config.set('the.path.for.plainObject.num', 'four');
+      }, TypeError, 'We cannot set a conf key of a different type than the one we registered - number key check');
+
+    raises(function(){
+      config.set('the.path.for.plainObject.ar', {});
+      }, TypeError, 'We cannot set a conf key of a different type than the one we registered - array key check');
+
+    raises(function(){
+      config.register('the.path', 'an overriding value');
+      }, Error, 'We cannot overwrite a pre-existing key when registering configs');
+
+  });
+
+})();
