@@ -3,41 +3,52 @@ goog.provide('ssd.test.user.api');
 
 goog.require('ssd.test.mock.userOne');
 
-/**
- * Helper for authenticating with a mock
- * User Data Object (UDO)
- */
-function auth () {
-  ss.user.auth(ssd.test.mock.userOne);
-}
-
-describe('User Module API', function () {
-  describe('Core functionality', function () {
+describe('User Auth Module :: Core functionality', function () {
+  describe('Auth / Deauth', function () {
     it('should not be authed', function () {
       expect(ss.isAuthed()).to.not.be.True;
       expect(ss.user.isAuthed()).to.not.be.True;
     });
 
-    it('should authenticate us with a provided UDO', function(){
+    it('should authenticate with a provided UDO', function(){
       expect(ss.isAuthed()).to.not.be.True;
 
-      auth();
+      ss.user.auth(ssd.test.mock.userOne);
 
       expect(ss.isAuthed()).to.be.True;
     });
 
     it('should deauthenticate', function(){
-      auth();
+      ss.user.auth(ssd.test.mock.userOne);
       expect(ss.isAuthed()).to.be.True;
 
       ss.user.deAuth();
 
       expect(ss.isAuthed()).to.not.be.True;
     });
-
   });
 
-  describe('Events', function () {
+  describe('Read user data object', function () {
+    it('should return the values of the provided UDO', function(){
+      var userMock = ssd.test.mock.userOne;
+      expect(ss.isAuthed()).to.not.be.True;
+      ss.user.auth(userMock);
+      expect(ss.isAuthed()).to.be.True;
+
+      // start read tests, first the fancy read
+      expect(ss.user('id')).to.equal(userMock.id);
+      expect(ss.user('firstName')).to.equal(userMock.firstName);
+      expect(ss.user('bio')).to.equal(userMock.bio);
+
+      // now read using the 'get' method
+      expect(ss.user.get('id')).to.equal(userMock.id);
+      expect(ss.user.get('firstName')).to.equal(userMock.firstName);
+      expect(ss.user.get('bio')).to.equal(userMock.bio);
+
+    });
+
+
+  describe('Core Auth Events', function () {
     before(function () {
       ss.user.deAuth();
     });
@@ -52,7 +63,7 @@ describe('User Module API', function () {
 
       var cid = ss.listen(ssd.test.event.all.AUTH_CHANGE, cb);
 
-      auth();
+      ss.user.auth(ssd.test.mock.userOne);
 
       expect(ss.isAuthed()).to.be.True;
       expect(triggered).to.be.True;
@@ -81,5 +92,4 @@ describe('User Module API', function () {
 
     });
   });
-
 });

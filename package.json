@@ -31,6 +31,8 @@
   "devDependencies": {
     "mocha": ">= 1.4.x",
     "mocha-phantomjs", "1.1.1",
+    "chai": "~1.4.0",
+    "sinon": "~1.5.2",
     "grunt": "~0.3.0",
     "grunt-closure-tools": "~0.6.12",
     "grunt-shell": "~0.1.4",
