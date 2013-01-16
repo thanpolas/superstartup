@@ -5,3 +5,4 @@ build/bin/modules/compiler.out
 node_modules
 source/closure-library
 ext/
+test/sandbox

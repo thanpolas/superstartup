@@ -26,11 +26,11 @@ describe('User Auth Module :: Login Logout', function () {
     password: 'password'
   };
 
-  it('should perform a login with the server', function(){
+  it('should perform a login with the server using a JS Object Literal', function(){
     expect(ssNew.isAuthed()).to.not.be.True;
 
     // execute the net.sync cb with the mock UDO
-    stub.yields(ssd.test.mock.userOne);
+    stub.yields(userMock);
 
     ssNew.user.login(userLogin);
 
@@ -51,6 +51,19 @@ describe('User Auth Module :: Login Logout', function () {
       expect(user.id).to.equal(userMock.id);
       done();
     });
+  });
+
+  it('should perform a login from a jQuery Object', function(){
+    stub.yields(userMock);
+
+    ssNew.user.login($('#login'));
+
+    expect(ssNew.net.sync.calledOnce).to.be.True;
+    expect(ssNew.net.sync.alwaysCalledWithMatch(userLogin)).to.be.True;
+
+    expect(ssNew.isAuthed()).to.be.True;
+    expect(ssNew.user('id')).to.equal(userMock.id);
+
   });
 
   it('should perform a logout', function(){

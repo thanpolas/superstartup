@@ -4,6 +4,29 @@
     <link rel="stylesheet" href="../../node_modules/mocha/mocha.css" />
   </head>
   <body>
+    <div id="tests-container">
+      <form method="post" id="login" action="/user/auth">
+        <p>
+          <label for="nickname">Nickname or email&nbsp;</label>
+          <input tabindex="1" name="nickname" type="text" id="nickname" class="textfield login_text_fields">
+          <span id="login_nick_error" class="text_error"></span>
+        </p>
+        <p>
+          <label for="password">Password</label>
+          <input tabindex="2" name="password" type="password" id="password" class="textfield login_text_fields">
+          <span id="login_pass_error" class="text_error"></span>
+        </p>
+        <p style="padding:10px 0px;">
+          <input tabindex="4" id="signin_submit" value="Sign in" type="submit" class="btn">
+          <input tabindex="3" id="remember" name="perm_login" value="1" type="checkbox">
+          <label for="remember">Remember me</label>
+        </p>
+        <p class="forgot">
+          <span class="link" id="resend_password_link">Forgot your password?</span>
+        </p>
+      </form>
+    </div>
+
     <div id="mocha"></div>
     <script src="../../node_modules/mocha/mocha.js"></script>
     <script src="../../node_modules/sinon/lib/sinon.js"></script>
