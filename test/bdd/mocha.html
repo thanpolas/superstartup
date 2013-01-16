@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../node_modules/mocha/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script src="../../node_modules/sinon/lib/sinon.js"></script>
+    <script src="../../node_modules/chai/chai.js"></script>
+    <script>
+      mocha.ui('bdd');
+      mocha.reporter('html');
+      //mocha.reporter('min');
+      expect = chai.expect;
+    </script>
+    <script src="../../closure-library/closure/goog/base.js" charset="utf-8"></script>
+    <script src="../../lib/deps-superstartup.js" charset="utf-8"></script>
+    <script src="deps-test-bdd.js"></script>
+    <script src="../../lib/main.js" charset="utf-8"></script>
+    <script src="bootstrap.js"></script>
+    <script>
+      if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
+        else { mocha.run(); }
+    </script>
+  </body>
+</html>

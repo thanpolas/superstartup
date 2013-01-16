@@ -25,9 +25,9 @@ module.exports = function(grunt) {
       },
       test: {
         closureLibraryPath: 'closure-library/',
-        output_file: 'test/deps-test.js',
+        output_file: 'test/bdd/deps-test.js',
         options: {
-          root_with_prefix: ['"test ../../../test"']
+          root_with_prefix: ['"test ../../../../test"']
         }
       }
     },

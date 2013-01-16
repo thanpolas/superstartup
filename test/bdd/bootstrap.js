@@ -10,8 +10,6 @@ expect = (typeof chai !== "undefined" && chai !== null ? chai.expect : void 0) |
 
 // sequence matters
 goog.require('ssd.test.core');
-goog.require('ssd.test.helpers');
 goog.require('ssd.test.event.api');
-goog.require('ssd.test.config');
 goog.require('ssd.test.user.api');
 goog.require('ssd.test.event.all');
