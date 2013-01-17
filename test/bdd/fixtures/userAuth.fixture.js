@@ -1,7 +1,7 @@
 
-goog.provide('ssd.test.mock.userOne');
+goog.provide('ssd.test.fixture.userOne');
 
-ssd.test.mock.userOne =  {
+ssd.test.fixture.userOne =  {
   id: '123123asdasdd32',
   handle: 'thanpolas',
   firstName: 'Thanasis',

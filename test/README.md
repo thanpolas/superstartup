@@ -7,7 +7,7 @@ There are two kind of tests we perform for the superstartup library, behavioral 
 Behavioral tests examine the exposed API of the library and must be run both while developing the library but most importantly **after the library has been packaged and compiled** to ensure all public API calls behave as expected and the library's integrity is intact.
 
 ### Unit Tests
-Unit tests will examine the innards of the library. Internally used components, helpers and tools are tested down to the most detailed unit.
+Unit tests will examine the innards of the library. Internally used components, helpers and tools are tested down to the smallest unit.
 
 ## How to run
 

@@ -2,19 +2,19 @@
 /**
  * @fileOverview All the events emitted by the superstartup library.
  */
-goog.provide('ssd.test.event.all');
+goog.provide('ssd.test.fixture.event');
 
 /**
  * @enum {string} Core events emitted.
  */
-ssd.test.event.core = {
+ssd.test.fixture.event.core = {
   INIT: 'ss.init'
 };
 
 /**
  * @enum {string} events emitted by the user module.
  */
-ssd.test.event.user = {
+ssd.test.fixture.event.user = {
 
   /**
    * ********************************************
@@ -40,9 +40,7 @@ ssd.test.event.user = {
   BEFORE_AUTH_RESPONSE: 'user.beforeAuthResponse',
   // After the auth response has been processed
   AUTH_RESPONSE: 'user.authResponse',
-  // own user data object before validating it's ok
-  USERDATA_BEFORE_VALIDATE: 'user.data.beforeValidate',
-  // own user data object piped events (piped from DynamicMap)
+  // Current authed UDO events (piped from DynamicMap)
   BEFORE_SET:    'user.data.beforeSet',
   AFTER_SET:     'user.data.afterSet',
   BEFORE_ADDALL: 'user.data.beforeAddall',

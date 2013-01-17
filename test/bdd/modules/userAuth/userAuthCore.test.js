@@ -1,77 +1,90 @@
+goog.provide('ssd.test.userAuth.core');
 
-goog.provide('ssd.test.user.api');
-
-goog.require('ssd.test.mock.userOne');
+goog.require('ssd.test.fixture.userOne');
+goog.require('ssd.test.fixture.event');
 
 describe('User Auth Module :: Core functionality', function () {
+  var ssNew;
+  var stub;
+  var userFix = ssd.test.fixture.userOne;
+  var event = ssd.test.fixture.event;
+
+  beforeEach(function() {
+    ssNew = new ss();
+    ssNew();
+    stub = sinon.stub(ssNew.net, 'sync');
+  });
+  afterEach(function() {
+    stub.restore();
+  });
+
+
   describe('Auth / Deauth', function () {
     it('should not be authed', function () {
-      expect(ss.isAuthed()).to.not.be.True;
-      expect(ss.user.isAuthed()).to.not.be.True;
+      expect(ssNew.isAuthed()).to.not.be.true;
+      expect(ssNew.user.isAuthed()).to.not.be.true;
     });
-
     it('should authenticate with a provided UDO', function(){
-      expect(ss.isAuthed()).to.not.be.True;
+      expect(ssNew.isAuthed()).to.not.be.true;
 
-      ss.user.auth(ssd.test.mock.userOne);
+      ssNew.user.auth(ssd.test.fixture.userOne);
 
-      expect(ss.isAuthed()).to.be.True;
+      expect(ssNew.isAuthed()).to.be.true;
     });
-
     it('should deauthenticate', function(){
-      ss.user.auth(ssd.test.mock.userOne);
-      expect(ss.isAuthed()).to.be.True;
+      ssNew.user.auth(ssd.test.fixture.userOne);
+      expect(ssNew.isAuthed()).to.be.true;
 
-      ss.user.deAuth();
+      ssNew.user.deAuth();
 
-      expect(ss.isAuthed()).to.not.be.True;
+      expect(ssNew.isAuthed()).to.not.be.true;
     });
   });
 
   describe('Read user data object', function () {
     it('should return the values of the provided UDO', function(){
-      var userMock = ssd.test.mock.userOne;
-      expect(ss.isAuthed()).to.not.be.True;
-      ss.user.auth(userMock);
-      expect(ss.isAuthed()).to.be.True;
+      var userMock = ssd.test.fixture.userOne;
+      expect(ssNew.isAuthed()).to.not.be.true;
+      ssNew.user.auth(userMock);
+      expect(ssNew.isAuthed()).to.be.true;
 
       // start read tests, first the fancy read
-      expect(ss.user('id')).to.equal(userMock.id);
-      expect(ss.user('firstName')).to.equal(userMock.firstName);
-      expect(ss.user('bio')).to.equal(userMock.bio);
+      expect(ssNew.user('id')).to.equal(userMock.id);
+      expect(ssNew.user('firstName')).to.equal(userMock.firstName);
+      expect(ssNew.user('bio')).to.equal(userMock.bio);
 
       // now read using the 'get' method
-      expect(ss.user.get('id')).to.equal(userMock.id);
-      expect(ss.user.get('firstName')).to.equal(userMock.firstName);
-      expect(ss.user.get('bio')).to.equal(userMock.bio);
-
+      expect(ssNew.user.get('id')).to.equal(userMock.id);
+      expect(ssNew.user.get('firstName')).to.equal(userMock.firstName);
+      expect(ssNew.user.get('bio')).to.equal(userMock.bio);
     });
+  });
 
 
   describe('Core Auth Events', function () {
     before(function () {
-      ss.user.deAuth();
+      ssNew.user.deAuth();
     });
 
     it('should trigger the auth event synchronously', function(){
       var triggered = false;
       // the test is synchronous on purpose
-      function cb (eventObj, authStatus) {
-        expect(authStatus).to.be.True;
+      function cb (eventObj) {
+        expect(eventObj.authStatus).to.be.true;
         triggered = true;
       }
 
-      var cid = ss.listen(ssd.test.event.all.AUTH_CHANGE, cb);
+      var cid = ssNew.listen(event.user.AUTH_CHANGE, cb);
 
-      ss.user.auth(ssd.test.mock.userOne);
+      ssNew.user.auth(ssd.test.fixture.userOne);
 
-      expect(ss.isAuthed()).to.be.True;
-      expect(triggered).to.be.True;
+      expect(ssNew.isAuthed()).to.be.true;
+      expect(triggered).to.be.true;
 
-      ss.removeListener(cid);
+      ssNew.removeListener(cid);
     });
 
-    it('should trigger an initial auth status event after core init', function(){
+    it('should trigger an initial auth status event after core init', function(done){
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj, authStatus) {
@@ -79,16 +92,18 @@ describe('User Auth Module :: Core functionality', function () {
         triggered = true;
       }
 
-      var ssNew = new ss();
-      var cid = ssNew.listen(ssd.test.event.all.INITIAL_AUTH_STATUS, cb);
+      ssAltNew = new ss();
+
+      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATUS, cb);
 
       // boot up the app
-      ssNew();
+      ssAltNew();
 
-      expect(ss.isAuthed()).to.be.False;
-      expect(triggered).to.be.True;
+      expect(ssAltNew.isAuthed()).to.be.false;
+      expect(triggered).to.be.true;
 
-      ss.removeListener(cid);
+      ssAltNew.removeListener(cid);
+      done();
 
     });
   });
