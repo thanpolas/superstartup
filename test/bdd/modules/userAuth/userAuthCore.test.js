@@ -87,9 +87,12 @@ describe('User Auth Module :: Core functionality', function () {
     it('should trigger an initial auth status event after core init', function(done){
       var triggered = false;
       // the test is synchronous on purpose
-      function cb (eventObj, authStatus) {
-        expect(authStatus).to.be.a('boolean');
+      function cb (eventObj) {
+        expect(eventObj.authStatus).to.be.a('boolean');
+        expect(eventObj.authStatus).to.be.false;
         triggered = true;
+        expect(ssAltNew.isAuthed()).to.be.false;
+        done();
       }
 
       ssAltNew = new ss();
@@ -99,11 +102,6 @@ describe('User Auth Module :: Core functionality', function () {
       // boot up the app
       ssAltNew();
 
-      expect(ssAltNew.isAuthed()).to.be.false;
-      expect(triggered).to.be.true;
-
-      ssAltNew.removeListener(cid);
-      done();
 
     });
   });

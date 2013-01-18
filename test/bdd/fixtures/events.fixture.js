@@ -46,3 +46,8 @@ ssd.test.fixture.event.user = {
   BEFORE_ADDALL: 'user.data.beforeAddall',
   AFTER_ADDALL:  'user.data.afterAddall'
 };
+
+// facebook specific events
+ssd.test.fixture.event.user.facebook = {
+  JSAPILOADED: 'user.facebook.jsAPIloaded'
+};
