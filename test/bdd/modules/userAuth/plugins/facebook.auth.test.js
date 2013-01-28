@@ -1,6 +1,11 @@
 goog.provide('ssd.test.userAuth.facebook');
 
+goog.require('ssd.test.userAuth.genIface');
+
 goog.require('ssd.test.fixture.event');
+goog.require('ssd.test.fixture.auth.fb');
+goog.require('ssd.test.fixture.userOne');
+
 
 describe('User Auth Module Plugins :: Facebook', function () {
   var ssNew;
@@ -8,100 +13,37 @@ describe('User Auth Module Plugins :: Facebook', function () {
   var userFix = ssd.test.fixture.userOne;
   var event = ssd.test.fixture.event;
   var eventFB = event.user.facebook;
-  window.FB = {
-    init: function(params){},
-    Event: {
-      subscribe: function(event, cb){}
-    },
-    getLoginStatus: function(cb){}
+  var fixtures = ssd.test.fixture;
+
+  // run basic tests
+  var genTest = new ssd.test.userAuth.genIface('fb', 'facebook');
+  genTest.basicTests();
+
+
+  var loginBeforeEach = function() {
+    window.fbAsyncInit();
+    var stubFBLogin = sinon.stub(FB, 'login');
+    stubFBLogin.yields(fixtures.auth.fb.authedObj);
+  };
+  var loginAfterEach = function() {
+    stubFBLogin.restore();
   };
 
 
-  beforeEach(function() {
-    ssNew = new ss();
-  });
-
-  afterEach(function() {
-  });
-
-
-  describe('Startup functions', function(){
-    it('should append to DOM a new script element to load FB API', function(done){
-      var docStub = sinon.stub(document, 'getElementById');
-      docStub.yields({appendChild: function(el){
-        done();
-        docStub.restore();
-      }});
-
-      ssNew();
-    });
+  // prepare login callback tests
+  var loginTests = new ssd.test.userAuth.genIface('fb', 'facebook');
+  loginTests.setBeforeEach(loginBeforeEach);
+  loginTests.setAfterEach(loginAfterEach);
+  // and run the login callback tests
+  loginTests.loginCallback(fixtures.auth.fb.authedObj, fixtures.auth.fb.udo);
 
 
-    it('should initialize the FB API on ss init', function(){
-      var docStub = sinon.stub(document, 'getElementById');
-      docStub.yields({appendChild: function(el){
-        docStub.restore();
-      }});
-
-      var mockFBinit = sinon.mock(FB);
-      mockFBinit.expects('init').once();
-
-      ssNew();
-
-      window.fbAsyncInit();
-
-      mockFBinit.verify();
-      mockFBinit.restore();
-    });
-
-    it('should listen for the sessionChange FB event on ss init', function(){
-      var docStub = sinon.stub(document, 'getElementById');
-      docStub.yields({appendChild: function(el){
-        docStub.restore();
-      }});
-
-      var stubFBEvent = sinon.stub(FB.Event, 'subscribe');
-
-      ssNew();
-      window.fbAsyncInit();
-
-      expect(stubFBEvent.calledOnce).to.be.true;
-      expect(stubFBEvent.getCall(0).args[0]).to.equal('auth.sessionChange');
-
-      stubFBEvent.restore();
-    });
-
-
-    it('should trigger FB API LOADED event', function(){
-      var docStub = sinon.stub(document, 'getElementById');
-      docStub.yields({appendChild: function(el){
-        docStub.restore();
-      }});
-
-      var mockCB = sinon.expectation.create('eventCallback');
-      mockCB.once();
-
-      ssNew.listen(eventFB.JSAPILOADED, mockCB);
-      ssNew();
-
-      window.fbAsyncInit();
-      mockCB.verify();
-    });
-
-    it('should check for initial auth status', function(done){
-      var docStub = sinon.stub(document, 'getElementById');
-      docStub.yields({appendChild: function(el){
-        docStub.restore();
-      }});
-
-      var mockGetLogin = sinon.mock(FB);
-      mockGetLogin.expects('getLoginStatus').once();
-
-      ssNew();
-      window.fbAsyncInit();
-      mockGetLogin.restore();
-    });
-  });
+  // prepare login event tests
+  var loginEventTests = new ssd.test.userAuth.genIface('fb', 'facebook');
+  loginEventTests.setBeforeEach(loginBeforeEach);
+  loginEventTests.setAfterEach(loginAfterEach);
+  // and run the login event tests
+  loginEventTests.loginEvents(fixtures.auth.fb.authedObj, fixtures.auth.fb.udo, eventFB.JSAPILOADED);
 
 
 });
