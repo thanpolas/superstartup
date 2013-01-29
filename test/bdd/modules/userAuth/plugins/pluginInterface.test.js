@@ -9,20 +9,34 @@ goog.require('ssd.test.fixture.event');
 goog.require('ssd.test.fixture.userOne');
 
 /**
- * @param  {string} pluginSpace The namespace in the JS
- *                                 object chain where the plugin
- *                                 exists. e.g. 'fb' for:
- *                                 ss.user.fb.
- * @param  {string} pluginName The canonical name of the plugin as
- *                         used inside the ss library.
+ * @param  {Object} params Parameters to run the tests. Keys
+ *                         contain:
+ *  pluginName  {string}  The canonical name of the plugin as
+ *                         used inside the ss library
+ *  pluginSpace {string}  The namespace in the JS
+ *     object chain where the plugin exists. e.g. 'fb' for:
+ *     ss.user.fb.
+ *  hasJSAPI    {boolean} If the plugin has a JS API
+ *  pluginResponse {Object} the plugin's response data object on
+ *                                successful auth operations.
+ *  pluginUDO {Object} The plugin's User Data Object
+ *                            as provided by the plugin.
+ *  eventJSLoaded {string}  The event triggered when the plugin's
+ *                                JS API has been loaded.
  * @constructor
  */
-ssd.test.userAuth.genIface = function(pluginNamespace, pluginName) {
-  this.pluginName = pluginName;
-  this.pluginSpace = pluginSpace;
+ssd.test.userAuth.genIface = function(params) {
+  this.pluginName     = params.pluginName;
+  this.pluginSpace    = params.pluginSpace;
+  this.hasJSAPI       = params.hasJSAPI;
+  this.pluginResponse = params.pluginResponse;
+  this.pluginUDO      = params.pluginUDO;
+  this.eventJSLoaded  = params.eventJSLoaded;
 
   this.beforeEach = function(){};
   this.afterEach = function(){};
+
+  return this;
 };
 
 /**
@@ -31,6 +45,7 @@ ssd.test.userAuth.genIface = function(pluginNamespace, pluginName) {
  */
 ssd.test.userAuth.genIface.prototype.setBeforeEach = function(fn){
   this.beforeEach = fn;
+  return this;
 };
 /**
  * [setAfterEach description]
@@ -38,6 +53,7 @@ ssd.test.userAuth.genIface.prototype.setBeforeEach = function(fn){
  */
 ssd.test.userAuth.genIface.prototype.setAfterEach = function(fn){
   this.afterEach = fn;
+  return this;
 };
 
 
@@ -50,20 +66,20 @@ ssd.test.userAuth.genIface.prototype.setAfterEach = function(fn){
  */
 ssd.test.userAuth.genIface.prototype.basicTests = function() {
 
-  var self = this;
+  var _this = this;
   var ssNew;
   var plugin;
 
-  describe('Proper Interface implementation for ' + self.pluginName, function(){
+  describe('Proper Interface implementation for ' + _this.pluginName, function(){
 
     beforeEach(function() {
       ssNew = new ss();
-      plugin = ssNew.user[self.pluginPathname];
-      self.beforeEach();
+      plugin = ssNew.user[_this.pluginPathname];
+      _this.beforeEach();
     });
 
     afterEach(function() {
-      self.afterEach();
+      _this.afterEach();
     });
 
     it('should have a getSourceId() method', function(){
@@ -100,51 +116,60 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
     it('should have a logout method', function(){
       expect(plugin.logout).to.be.a('function');
     });
-
   });
 };
 
 /**
- * Login callback test.
+ * Basic events and initialization tests
  *
- * Run these tests on third-party auth plugins that support a
- * callback on the login method (they offer a JS API)
+ */
+ssd.test.userAuth.getIface.prototype.basicEventsInitTests = function() {
+  var _this = this;
+
+  describe('Basic events emitted for plugin:' + _this.pluginName, function() {
+    it('should emit the initial auth status event', function(done){});
+
+    if (_this.hasJSAPI) {
+      it('should emit the JS API loaded event', function(done){});
+    }
+  });
+
+};
+
+/**
+ * Plugin Login tests.
  *
  * Execute these tests after you have properly stubbed or mocked
  * the payload of the plugin's login method. For every test run it
  * should authenticate us with the UDO provided as param in this method.
  *
  *
- * @param {Object} pluginResponse the plugin's response data object on
- *                                successful auth operations.
- * @param {Object} pluginUDO The plugin's User Data Object
- *                            as provided by the plugin.
  */
-ssd.test.userAuth.genIface.prototype.loginCallback = function(pluginResponse, pluginUDO) {
-  var self = this;
+ssd.test.userAuth.genIface.prototype.loginTests = function() {
+  var _this = this;
   var ssNew;
   var plugin;
   var stubNet;
 
-  describe('Plugins that support a callback on login. Plugin: ' + self.pluginName, function(){
+  describe('Login tests for plugin: ' + _this.pluginName, function(){
 
     beforeEach(function() {
       ssNew = new ss();
       ssNew();
-      plugin = ssNew.user[self.pluginPathname];
+      plugin = ssNew.user[_this.pluginPathname];
       stubNet = sinon.stub(ssNew.net, 'sync');
       stubNet.yields(fixtures.userOne);
 
-      self.beforeEach();
+      _this.beforeEach();
     });
 
     afterEach(function() {
       stubNet.restore();
-      self.afterEach();
+      _this.afterEach();
     });
 
-    it('should return true when asked if hasJSAPI()', function(){
-      expect(plugin.hasJSAPI()).to.be.true;
+    it('should return ' + _this.hasJSAPI + ' when asked if hasJSAPI()', function(){
+      expect(plugin.hasJSAPI()).to.equal(_this.hasJSAPI);
     });
 
     it('should have a working callback', function(){
@@ -165,7 +190,7 @@ ssd.test.userAuth.genIface.prototype.loginCallback = function(pluginResponse, pl
       expect(mockCB.getCall(0).args[0]).to.be.true;
       // response object returned by the plugin
       expect(mockCB.getCall(0).args[1]).to.be.an('object');
-      expect(mockCB.getCall(0).args[1]).to.deep.equal(pluginResponse);
+      expect(mockCB.getCall(0).args[1]).to.deep.equal(_this.pluginResponse);
       mockCB.verify();
     });
 
@@ -181,12 +206,12 @@ ssd.test.userAuth.genIface.prototype.loginCallback = function(pluginResponse, pl
 
     it('should exist in the authedSources() returning array', function(){
       plugin.login();
-      expect(ssNew.user.authedSources()).to.include(self.pluginName);
+      expect(ssNew.user.authedSources()).to.include(_this.pluginName);
     });
 
     it('should return the UDO as provided by the plugin', function(){
       plugin.login();
-      expect(plugin.getUser()).to.deep.equal(pluginUDO);
+      expect(plugin.getUser()).to.deep.equal(_this.pluginUDO);
     });
 
   });
@@ -194,48 +219,38 @@ ssd.test.userAuth.genIface.prototype.loginCallback = function(pluginResponse, pl
 
 
 /**
- * Login callback test.
- *
- * Run these tests on third-party auth plugins that support a
- * callback on the login method (they offer a JS API)
+ * plugin events emitted during login test.
  *
  * Execute these tests after you have properly stubbed or mocked
  * the payload of the plugin's login method. For every test run it
  * should authenticate us with the UDO provided as param in this method.
  *
  *
- * @param {Object} pluginResponse the plugin's response data object on
- *                                successful auth operations.
- * @param {Object} pluginUDO The plugin's User Data Object
- *                            as provided by the plugin.
- * @param {string} eventJSLoaded  The event triggered when the plugin's
- *                                JS API has been loaded.
  */
-ssd.test.userAuth.genIface.prototype.loginEvents = function(pluginResponse,
-    pluginUDO, eventJSLoaded) {
-  var self = this;
+ssd.test.userAuth.genIface.prototype.loginEvents = function() {
+  var _this = this;
   var ssNew;
   var plugin;
   var stubNet;
 
-  describe('Events emitted during the login operation. Plugin: ' + self.pluginName, function(){
+  describe('Events emitted during the login operation. Plugin: ' + _this.pluginName, function(){
 
     beforeEach(function() {
       ssNew = new ss();
-      plugin = ssNew.user[self.pluginPathname];
+      plugin = ssNew.user[_this.pluginPathname];
       stubNet = sinon.stub(ssNew.net, 'sync');
       stubNet.yields(fixtures.userOne);
 
-      self.beforeEach();
+      _this.beforeEach();
     });
 
     afterEach(function() {
       stubNet.restore();
-      self.afterEach();
+      _this.afterEach();
     });
 
     it('should emit the JS API Loaded event', function(done){
-      ssNew.listen(eventJSLoaded, function(eventObj){
+      ssNew.listen(_this.eventJSLoaded, function(eventObj){
         done();
       });
       ssNew();
