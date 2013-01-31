@@ -32,6 +32,7 @@ ssd.test.userAuth.genIface = function(params) {
   this.pluginResponse = params.pluginResponse;
   this.pluginUDO      = params.pluginUDO;
   this.eventJSLoaded  = params.eventJSLoaded;
+  this.eventInitialAuthStatus = params.eventInitialAuthStatus;
 
   this.beforeEach = function(){};
   this.afterEach = function(){};
@@ -127,11 +128,23 @@ ssd.test.userAuth.getIface.prototype.basicEventsInitTests = function() {
   var _this = this;
 
   describe('Basic events emitted for plugin:' + _this.pluginName, function() {
-    it('should emit the initial auth status event', function(done){});
+    it('should emit the initial auth status event', function(done){
+      ssNew.listen(_this.eventInitialAuthStatus, function(eventObj){
+        expect(eventObj).to.be.a('boolean');
+        done();
+      });
+      ssNew();
+    });
 
     if (_this.hasJSAPI) {
-      it('should emit the JS API loaded event', function(done){});
+      it('should emit the JS API Loaded event', function(done){
+        ssNew.listen(_this.eventJSLoaded, function(eventObj){
+          done();
+        });
+        ssNew();
+      });
     }
+
   });
 
 };
@@ -147,20 +160,20 @@ ssd.test.userAuth.getIface.prototype.basicEventsInitTests = function() {
  */
 ssd.test.userAuth.genIface.prototype.loginTests = function() {
   var _this = this;
-  var ssNew;
-  var plugin;
-  var stubNet;
+      ssNew,
+      plugin,
+      stubNet;
 
   describe('Login tests for plugin: ' + _this.pluginName, function(){
 
-    beforeEach(function() {
+    beforeEach(function(done) {
       ssNew = new ss();
-      ssNew();
       plugin = ssNew.user[_this.pluginPathname];
       stubNet = sinon.stub(ssNew.net, 'sync');
       stubNet.yields(fixtures.userOne);
 
       _this.beforeEach();
+      ssNew(done);
     });
 
     afterEach(function() {
@@ -219,7 +232,7 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
 
 
 /**
- * plugin events emitted during login test.
+ * plugin events emitted during login.
  *
  * Execute these tests after you have properly stubbed or mocked
  * the payload of the plugin's login method. For every test run it
@@ -229,19 +242,20 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
  */
 ssd.test.userAuth.genIface.prototype.loginEvents = function() {
   var _this = this;
-  var ssNew;
-  var plugin;
-  var stubNet;
+      ssNew,
+      plugin,
+      stubNet,
+      ev = ssd.test.fixtures.event.user;
 
   describe('Events emitted during the login operation. Plugin: ' + _this.pluginName, function(){
 
-    beforeEach(function() {
+    beforeEach(function(done) {
       ssNew = new ss();
       plugin = ssNew.user[_this.pluginPathname];
       stubNet = sinon.stub(ssNew.net, 'sync');
       stubNet.yields(fixtures.userOne);
-
       _this.beforeEach();
+      ssNew(done);
     });
 
     afterEach(function() {
@@ -249,14 +263,15 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
       _this.afterEach();
     });
 
-    it('should emit the JS API Loaded event', function(done){
-      ssNew.listen(_this.eventJSLoaded, function(eventObj){
+
+    it('should emit the extAuthChange event', function(done){
+      ssNew.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
+        expect(eventObj.source).to.be.equal(_this.pluginName);
+        expect(eventObj.authStatus).to.be.equal(true);
         done();
       });
-      ssNew();
+      plugin.login();
     });
-
-    it('should emit the extAuthChange event', function(done){});
     it('should stop authentication if false is returned on extAuthChange', function(done){});
     it('should emit extAuthChange before any other auth event', function(done){});
 
@@ -266,10 +281,6 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
     it('should emit an authResponse event', function(done){});
 
     // use all existing on-auth events that from login tests.
-
-    it('should have a proper solution for initialAuthStatus events', function(){
-      expect(false).to.be.true;
-    });
 
   });
 

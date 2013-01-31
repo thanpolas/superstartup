@@ -57,6 +57,12 @@ describe('User Auth Module :: Core functionality', function () {
       expect(ssNew.user.get('id')).to.equal(userMock.id);
       expect(ssNew.user.get('firstName')).to.equal(userMock.firstName);
       expect(ssNew.user.get('bio')).to.equal(userMock.bio);
+
+      // And finally by the raw output
+      expect(ssNew.user().id).to.equal(userMock.id);
+      expect(ssNew.user().firstName).to.equal(userMock.firstName);
+      expect(ssNew.user().bio).to.equal(userMock.bio);
+
     });
   });
 
@@ -70,7 +76,7 @@ describe('User Auth Module :: Core functionality', function () {
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj) {
-        expect(eventObj.authStatus).to.be.true;
+        expect(eventObj.authState).to.be.true;
         triggered = true;
       }
 
@@ -84,12 +90,13 @@ describe('User Auth Module :: Core functionality', function () {
       ssNew.removeListener(cid);
     });
 
-    it('should trigger an initial auth status event after core init', function(done){
+    it('should trigger an initial auth status event after core init',
+      function(done){
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj) {
-        expect(eventObj.authStatus).to.be.a('boolean');
-        expect(eventObj.authStatus).to.be.false;
+        expect(eventObj.authState).to.be.a('boolean');
+        expect(eventObj.authState).to.be.false;
         triggered = true;
         expect(ssAltNew.isAuthed()).to.be.false;
         done();
@@ -101,8 +108,6 @@ describe('User Auth Module :: Core functionality', function () {
 
       // boot up the app
       ssAltNew();
-
-
     });
   });
 });

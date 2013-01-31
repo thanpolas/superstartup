@@ -21,7 +21,8 @@ describe('User Auth Module Plugins :: Facebook', function () {
     hasJSAPI:        true,
     pluginResponse:  fixtures.auth.fb.authedObj,
     pluginUDO:       fixtures.auth.fb.udo,
-    eventJSLoaded:   eventFB.JSAPILOADED
+    eventJSLoaded:   eventFB.JSAPILOADED,
+    eventInitialAuthStatus: eventFB.INITIAL_AUTH_STATUS
   };
 
   // run basic tests

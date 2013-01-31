@@ -49,5 +49,6 @@ ssd.test.fixture.event.user = {
 
 // facebook specific events
 ssd.test.fixture.event.user.facebook = {
-  JSAPILOADED: 'user.facebook.jsAPIloaded'
+  JSAPILOADED: 'user.fb.jsAPIloaded',
+  INITIAL_AUTH_STATUS: 'user.fb.initialAuthStatus'
 };

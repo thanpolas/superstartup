@@ -57,30 +57,31 @@ describe('User Auth Module :: Login', function () {
       expect(ssNew.user).to.deep.equal(userFix);
     });
 
-    it('should have a callback with status', function(done){
-      ssNew.user.login($element, function(status, user, result){
-        expect(status).to.be.true;
+    it('should have a callback with authState', function(done){
+      ssNew.user.login($element, function(err, authState, user, response){
+        expect(err).to.be.undefined;
+        expect(authState).to.be.true;
         done();
       });
     });
 
     it('should have a callback with the UDO', function(done){
-      ssNew.user.login($element, function(status, user, result){
+      ssNew.user.login($element, function(err, authState, user, response){
         expect(user).to.deep.equal(userFix);
         done();
       });
     });
 
-    it('should have a callback with the complete result data object', function(done){
-      ssNew.user.login($element, function(status, user, result){
-        expect(result).to.deep.equal(userFix);
+    it('should have a callback with the complete response from the server', function(done){
+      ssNew.user.login($element, function(err, authState, user, response){
+        expect(response).to.deep.equal(userFix);
         done();
       });
     });
 
     it('should trigger the AUTH_CHANGE event', function(done){
       ssNew.listen(userEvent.AUTH_CHANGE, function(eventObj){
-        expect(eventObj.authStatus).to.be.true;
+        expect(eventObj.authState).to.be.true;
         expect(ssNew.isAuthed()).to.be.true;
         done();
       });
@@ -103,12 +104,13 @@ describe('User Auth Module :: Login', function () {
       ssNew.listen(userEvent.BEFORE_LOCAL_AUTH, function(eventObj){
         return false;
       });
-      ssNew.user.login($element, function(status, errorCode, errorMessage){
+      ssNew.user.login($element, function(err, authState, user, response){
         expect(stub.called).to.be.false;
         expect(ssNew.isAuthed()).to.be.false;
-        expect(status).to.be.false;
-        expect(errorCode).to.equal(errorCodes.gen.CANCEL_BY_EVENT);
-        expect(errorMessage).to.be.a('string');
+        expect(authState).to.be.false;
+
+        // error checks
+        expect(err.code).to.equal(errorCodes.gen.CANCEL_BY_EVENT);
         done();
       });
     });
@@ -116,12 +118,12 @@ describe('User Auth Module :: Login', function () {
       ssNew.listen(userEvent.BEFORE_LOCAL_AUTH, function(eventObj){
         eventObj.preventDefault();
       });
-      ssNew.user.login($element, function(status, errorCode, errorMessage){
+      ssNew.user.login($element, function(err, authState, user, response){
         expect(stub.called).to.be.false;
         expect(ssNew.isAuthed()).to.be.false;
-        expect(status).to.be.false;
-        expect(errorCode).to.equal(errorCodes.gen.CANCEL_BY_EVENT);
-        expect(errorMessage).to.be.a('string');
+        expect(authState).to.be.false;
+
+        expect(err.code).to.equal(errorCodes.gen.CANCEL_BY_EVENT);
         done();
       });
     });
@@ -129,8 +131,6 @@ describe('User Auth Module :: Login', function () {
     it('should trigger the BEFORE_AUTH_RESPONSE event', function(done){
       ssNew.listen(userEvent.BEFORE_AUTH_RESPONSE, function(eventObj){
         expect(stub.calledOnce).to.be.true;
-        expect(eventObj.status).to.be.true;
-        expect(eventObj.response).to.deep.equal(userFix);
         expect(ssNew.isAuthed()).to.be.false;
         done();
       });
@@ -141,12 +141,12 @@ describe('User Auth Module :: Login', function () {
       ssNew.listen(userEvent.BEFORE_AUTH_RESPONSE, function(eventObj){
         return false;
       });
-      ssNew.user.login($element, function(status, errorCode, errorMessage){
+      ssNew.user.login($element, function(err, authState, user, response){
         expect(stub.calledOnce).to.be.true;
         expect(ssNew.isAuthed()).to.be.false;
         expect(status).to.be.false;
-        expect(errorCode).to.equal(errorCodes.gen.CANCEL_BY_EVENT);
-        expect(errorMessage).to.be.a('string');
+
+        expect(err.code).to.equal(errorCodes.gen.CANCEL_BY_EVENT);
         done();
       });
     });
@@ -157,7 +157,7 @@ describe('User Auth Module :: Login', function () {
         // network operation
         expect(eventObj.status).to.be.true;
         // user authed
-        expect(eventObj.authStatus).to.be.true;
+        expect(eventObj.authState).to.be.true;
         // UDO
         expect(eventObj.user).to.deep.equal(userFix);
         // response object
