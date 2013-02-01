@@ -10,7 +10,7 @@ Build to be framework and server API agnostic, superstartup will integrate seaml
 
 ## Status
 
-Still under heavy development, designing the API, deep wiring and grinding. A great time to pop in and [help steer the project](https://github.com/thanpolas/superstartup/blob/master/backend/Docs/ssAPI.md).
+Developing the API by writing behavioral tests. Check out the action in the `test/bdd` directory.
 
 In the meantime please check the libraries that sprang out and are the foundations of Superstartup:
 
