@@ -43,11 +43,7 @@ ssd.Core = function()
 {
   goog.base(this);
 
-  /**
-   * Setup the core config parameters
-   *
-   */
-  var config = new ssd.FancyGetSet();
+
   // The default key we will use to determine
   // success or failure of an AJAX request
   //
@@ -59,7 +55,7 @@ ssd.Core = function()
   // If you set this key to null then it will not be used
   // and we'll assume that once a response callback is
   // triggered it is considered successful by default.
-  config(ssd.Core.CONFIG_STATUS, 'status');
+  this.config(ssd.Core.CONFIG_STATUS, 'status');
 
   // The true value of this key.
   //
@@ -67,33 +63,8 @@ ssd.Core = function()
   // may not be the case for everyone.
   //
   // This key can be overwritten by any module
-  config(ssd.Core.CONFIG_STATUS_TRUE, true);
+  this.config(ssd.Core.CONFIG_STATUS_TRUE, true);
 
-
-
-  /**
-   * We overwrite the module's fancySetGet instance
-   * with the actual config singleton instance.
-   *
-   * @type {ssd.Config} Singleton config instance.
-   */
-  this.config = ssd.Config.getInstance();
-
-  // register the config
-  ssd.Config.getInstance().register(ssd.Core.CONFIG_PATH, config.toObject());
-
-
-  /** @type {ssd.Config} Singleton config instance */
-  //ssd.config = ssd.Config.getInstance();
-
-  /**
-   * The instance of the user auth class
-   * @type {ssd.user.Auth}
-   */
-  this.user = ssd.user.Auth.getInstance();
-
-  // set out instance as the parent event target for auth
-  this.user.setParentEventTarget(this);
 };
 goog.inherits(ssd.Core, ssd.Module);
 goog.addSingletonGetter(ssd.Core);
@@ -109,6 +80,41 @@ ssd.Core.CONFIG_STATUS = 'status';
 ssd.Core.CONFIG_STATUS_TRUE = 'statusTrue';
 
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
+
+/**
+ * The synchronous init
+ * This init is called synchronously as soon as the lib is loaded
+ * You can find the call at the end of this file
+ *
+ * Will initialize all classes and prepare library to get started
+ *
+ * @return {void}
+ */
+ssd.Core.prototype.synchInit = function()
+{
+  if (goog.DEBUG) {
+    ssd.debug.openFancyWin();
+  }
+  this.logger.info('synchInit() :: Starting...');
+
+  /**
+   * The instance of the user auth class
+   * @type {ssd.user.Auth}
+   */
+  this.user = ssd.user.Auth.getInstance();
+
+  // set out instance as the parent event target for auth
+  this.user.setParentEventTarget(this);
+
+
+  // bubble user auth events to this class
+  this.user.setParentEventTarget(this);
+
+  // initialize ext auth plugins
+  ssd.user.auth.Facebook.getInstance();
+  ssd.user.auth.Twitter.getInstance();
+
+};
 
 /**
  * Kicks off the library.
@@ -133,33 +139,6 @@ ssd.Core.prototype.toString = function() {
   return 'ssd.Core';
 };
 
-
-
-/**
- * The synchronous init
- * This init is called synchronously as soon as the lib is loaded
- * You can find the call at the end of this file
- *
- * Will initialize all classes and prepare library to get started
- *
- * @return {void}
- */
-ssd.Core.prototype.synchInit = function()
-{
-  if (goog.DEBUG) {
-    ssd.debug.openFancyWin();
-  }
-  this.logger.info('synchInit() :: Starting...');
-
-  // bubble user auth events to this class
-  this.user.setParentEventTarget(this);
-
-  // initialize ext auth plugins
-  ssd.user.auth.Facebook.getInstance();
-  ssd.user.auth.Twitter.getInstance();
-
-};
-
 /**
  * Generic listener method for all events emitted by ss
  *
@@ -178,7 +157,6 @@ ssd.Core.prototype.listen = function(event, cb, opt_self)
 (function(){
 
   // wake up the monster
-  ssd.core = ssd.Core.getInstance();
-  ssd.core.synchInit();
+  ssd.core = ssd.invocator( ssd.Core, 'init' );
 
 })();

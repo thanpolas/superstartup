@@ -90,8 +90,6 @@ ssd.user.auth.Twitter.prototype.SOURCEID = 'twitter';
 ssd.user.auth.Twitter.prototype.init = function()
 {
   this.logger.info('Init init(). Dispatching dummy event');
-  // get config parameters and apply them to our local config container
-  this._configApply(ssd.Config.getInstance().get(ssd.user.auth.Twitter.CONFIG_PATH));
 
   this.dispatchEvent(ssd.user.Auth.EventType.INITIAL_AUTH_STATUS);
 };

@@ -136,9 +136,6 @@ ssd.user.auth.Facebook.prototype.init = function(opt_e)
 {
   this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
 
-  // get config parameters and apply them to our local config container
-  this._configApply(ssd.Config.getInstance().get(ssd.user.auth.Facebook.CONFIG_PATH));
-
   if (!this._FBAPILoaded) {
     // API not loaded yet
     // listen for load event

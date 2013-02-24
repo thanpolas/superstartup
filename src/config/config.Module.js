@@ -30,22 +30,41 @@
 
 goog.provide('ssd.Config');
 goog.require('ssd.debug');
+goog.require('ssd.FancyGetSet');
 goog.require('ssd.StringPath');
 
 /**
  * A generic config setter / getter
  *
  * @constructor
- * @extends {ssd.StringPath}
+ * @extends {ssd.FancyGetSet}
  */
 ssd.Config = function()
 {
   goog.base(this);
 
-  this._origConf = new ssd.StringPath();
+  /**
+   * override the internal storage object.
+   * @type {ssd.StringPath}
+   * @private
+   */
+  this._obj = new ssd.StringPath();
+
+  /**
+   * override get/toObject methods with the ones
+   * from StringPath class
+   */
+  this.get = goog.bind( this._obj.get, this._obj );
+  this.toObject = goog.bind( this._obj.toObject, this._obj );
+
+  /**
+   * And now expose methods from StringPath class to
+   * our instance
+   */
+  this.containsKey = goog.bind( this._obj.containsKey, this._obj );
 
 };
-goog.inherits(ssd.Config, ssd.StringPath);
+goog.inherits(ssd.Config, ssd.FancyGetSet);
 goog.addSingletonGetter(ssd.Config);
 
 /** @enum {string} Error strings this class throws */
@@ -76,32 +95,30 @@ ssd.Config.prototype.logger =  goog.debug.Logger.getLogger('ssd.Config');
 ssd.Config.prototype.register = function(path, objConf)
 {
   this.logger.config('Registering: ' + path);
-  var exists = true;
+
+  /* @preserveTry */
   try {
-    this._origConf.get(path, true);
-  } catch(e) {
-    exists = false;
-  }
-  if (exists) {
+    this.get(path, true);
     throw new Error('Key / path already exists:' + path);
+  } catch(e) {
+    // good, doesn't exist, move on
   }
 
-  // set to original config map
-  this._origConf.set(path, objConf);
   // set to own map
-  ssd.Config.superClass_.set.call(this, path, objConf);
+  this.set(path, objConf);
 };
 
 /**
- * Override the StringPath method and do validations:
+ * Set and do validations:
  * Current validations include:
  * - Type checking. If the set value is of same type as the one set
  *      via this method.
  * - Overwrite checking. We cannot overwrite keys / path
  * - No objects allowed. Objects are not allowed as value
  *
- * @override
- * @throws Errors depending on validation checks
+ * @param {string} key The key.
+ * @param {*} value we accept any type and validate it.
+ * @throws Errors depending on validation checks.
  */
 ssd.Config.prototype.set = function(key, value)
 {
@@ -109,48 +126,26 @@ ssd.Config.prototype.set = function(key, value)
 
   // check if value is object
   if (goog.isObject(value)) {
-    throw new TypeError('value cannot be object type');
+    throw new TypeError('value for "' + key + '" cannot be object type');
   }
 
   // get the value from original config with the throw ReferenceError
-  // parameter set to true
-  // if the key doesn't exist do not do a type check
+  // parameter set to true.
   var val;
   var exists = true;
+
+  /* @preserveTry */
   try {
-    val = this._origConf.get(key, true);
+    val = this._obj.get(key, true);
   } catch(e) {
     exists = false;
   }
 
-  if (exists && goog.typeOf(value) != goog.typeOf(val)) {
+  // if the key exists do a type check
+  if (exists && goog.typeOf(value) !== goog.typeOf(val)) {
     throw new TypeError('Expected:' + goog.typeOf(val) + ' got:' + goog.typeOf(value) + ' for:' + key);
   }
-  // call our parent set method
-  goog.base(this, 'set', key, value);
+
+  // call the original set method
+  this._obj.set.call(this._obj, key, value);
 };
-
-/**
- * Don't support remove
- * @override
- * @throws Error always
- */
-ssd.Config.prototype.remove = function()
-{
-  throw new Error(ssd.Config.Error.methodRemoved);
-};
-
-/**
- * Don't support addRaw
- * @override
- * @throws Error always
- */
-ssd.Config.prototype.addRaw = function()
-{
-  throw new Error(ssd.Config.Error.methodRemoved);
-};
-
-
-
-
-

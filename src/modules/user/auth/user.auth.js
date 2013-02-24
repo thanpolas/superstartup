@@ -207,8 +207,6 @@ ssd.user.Auth.prototype.get = function()
 ssd.user.Auth.prototype.init = function()
 {
   this.logger.info('init() :: starting...');
-  // get config parameters and apply them to our local config container
-  this._configApply(ssd.Config.getInstance().get(ssd.user.Auth.CONFIG_PATH));
 
   // shotcut assign the performLocalAuth config directive to our
   // local var

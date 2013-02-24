@@ -66,26 +66,53 @@ ssd.FancyGetSet = function(opt_object)
  */
 ssd.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
 {
-  switch (goog.typeOf(opt_key)) {
+  switch ( goog.typeOf( opt_key ) ) {
     case 'object':
       for(var k in opt_key) {
-        this._obj[k] = opt_key[k];
+        this.set( k, opt_key[k] );
       }
     break;
     case 'string':
       if (1 < arguments.length) {
-        this._obj[opt_key] = opt_value;
+        this.set( opt_key, opt_value );
       } else {
-        return this._obj[opt_key];
+        return this.get( opt_key );
       }
     break;
     case 'undefined':
-      return this._obj;
+      return this.toObject();
     break;
     default:
       throw new TypeError('Expecting a string, object or undefined');
     break;
   }
+};
+
+/**
+ * Set a value.
+ * @param {string} key The key.
+ * @param {*} value the value.
+ */
+ssd.FancyGetSet.prototype.set = function( key, value ) {
+  this._obj[key] = value;
+};
+
+
+/**
+ * Get a value.
+ * @param {string} key The key.
+ * @return {*} value the value.
+ */
+ssd.FancyGetSet.prototype.get = function( key ) {
+  return this._obj[key];
+};
+
+/**
+ * Return the raw object literal.
+ * @return {Object} The raw object literal.
+ */
+ssd.FancyGetSet.prototype.toObject = function() {
+  return this._obj;
 };
 
 /**
