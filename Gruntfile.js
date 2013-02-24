@@ -26,11 +26,11 @@ module.exports = function(grunt) {
         },
         dest: 'lib/deps-superstartup.js'
       },
-      test: {
+      bddTest: {
         options: {
-          root_with_prefix: ['"test ../../../../test"']
+          root_with_prefix: ['"test/bdd ../../../../../test/bdd"']
         },
-        dest: 'test/bdd/deps-test.js'
+        dest: 'test/bdd/deps-test-bdd.js'
       }
     },
     closureBuilder: {
@@ -88,11 +88,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', 'Test using mocha-phantom', 'shell:mochaPhantom');
   grunt.registerTask('test:min', 'Test using mocha-phantom min Reporter', 'shell:mochaPhantomMin');
+  grunt.registerTask('deps', 'closureDepsWriter');
 
   // Default task.
   grunt.registerTask('default', 'closureDepsWriter');
-
-
 
   grunt.registerTask('compile', 'debugOff closureBuilder:superstartup debugOn');
 
