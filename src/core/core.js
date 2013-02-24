@@ -24,7 +24,6 @@ goog.provide('ssd.core');
 
 goog.require('ssd.Module');
 goog.require('ssd.Config');
-goog.require('ssd.server2js');
 goog.require('ssd.metrics');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.Facebook');
@@ -174,29 +173,11 @@ ssd.Core.prototype.listen = function(event, cb, opt_self)
 
 
 // synchronous execution
-// hooks for server2js
 // start of synchronous (silent) initialization of the library
 (function(){
 
   // wake up the monster
   ssd.core = ssd.Core.getInstance();
   ssd.core.synchInit();
-
-  var serv = ssd.Server2js.getInstance();
-
-  // hook for authed user from server
-  //serv.hook('102', ssd.user.auth.login, 50);
-
-  // analytics
-  serv.hook('analytics', ssd.metrics.init);
-
-  // new user event
-  //serv.hook('121', newUserEvent);
-
-  // metadata init call
-  serv.hook('metadata', ssd.metadata.init);
-
-  // Write permanent cookie request (first time ever visitor)
-  serv.hook('25', ssd.web.cookies.writePermCook);
 
 })();

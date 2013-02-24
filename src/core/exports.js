@@ -24,7 +24,6 @@
 goog.provide('ssd.exports');
 
 goog.require('ssd.metrics');
-goog.require('ssd.server2js');
 goog.require('ssd.Core');
 goog.require('ssd.core');
 goog.require('ssd.user.Auth');

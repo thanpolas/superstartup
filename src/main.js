@@ -34,8 +34,6 @@ goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
 goog.require('ssd.helpers');
 goog.require('ssd.web.cookies');
-goog.require('ssd.Server2js');
-goog.require('ssd.server');
 
 // ssd.Core is special, is our core
 goog.require('ssd.Core');
