@@ -1,27 +1,4 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS-IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *
- * @author Athanasios Polychronakis <thanpolas@gmail.com>
- * createdate 25/Oct/2010
- *
- *********
- */
-
-
-/**
  * @fileoverview The main facebook auth functionality
  *
  */
@@ -31,6 +8,7 @@ goog.provide('ssd.user.auth.Facebook.EventType');
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.Auth.EventType');
+goog.require('ssd.register');
 
 /**
  * The Facebook auth constructor
@@ -132,8 +110,7 @@ ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
  *      listen for the relevant event
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype.init = function(opt_e)
-{
+ssd.user.auth.Facebook.prototype.init = function(opt_e) {
   this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
 
   if (!this._FBAPILoaded) {
@@ -159,8 +136,7 @@ ssd.user.auth.Facebook.prototype.init = function(opt_e)
  * @param {Object} response
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
-{
+ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response) {
   this.logger.info('_gotInitialAuthStatus() :: init');
 
   this._isAuthedFromResponse(response);
@@ -177,8 +153,7 @@ ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response)
  * @private
  * @return {string}
  */
-ssd.user.auth.Facebook.prototype._getAppId = function ()
-{
+ssd.user.auth.Facebook.prototype._getAppId = function () {
   return this._appId || (this._appId = this.config('appId'));
 };
 
@@ -188,8 +163,7 @@ ssd.user.auth.Facebook.prototype._getAppId = function ()
  * @private
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype._loadExtAPI = function ()
-{
+ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
   try {
     this.logger.info('_loadExtAPI() :: Init. FB API Loading:' + this._FBAPILoading + ' Loaded:' + this._FBAPILoaded);
 
@@ -238,8 +212,7 @@ ssd.user.auth.Facebook.prototype._loadExtAPI = function ()
  *
  * @private
  */
-ssd.user.auth.Facebook.prototype._extAPIloaded = function ()
-{
+ssd.user.auth.Facebook.prototype._extAPIloaded = function () {
   this.logger.info('_extAPIloaded() :: FB JS API Loaded');
   this._FBAPILoaded = true;
 
@@ -259,8 +232,7 @@ ssd.user.auth.Facebook.prototype._extAPIloaded = function ()
  * @private
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype._FBinit = function ()
-{
+ssd.user.auth.Facebook.prototype._FBinit = function () {
   // get app id
   var appId = this._getAppId();
   this.logger.info('_FBinit() :: Init. FB appId:' + appId);
@@ -291,8 +263,7 @@ ssd.user.auth.Facebook.prototype._FBinit = function ()
  * @param {Object} response Served from FB SDK
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype._sessionChange = function (response)
-{
+ssd.user.auth.Facebook.prototype._sessionChange = function (response) {
   this.logger.info('_sessionChange() :: Init');
   console.log(response);
   this._isAuthedFromResponse(response);
@@ -319,8 +290,7 @@ ssd.user.auth.Facebook.prototype._sessionChange = function (response)
  *      comma separate them
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms)
-{
+ssd.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms) {
   this.logger.info('login() :: init.');
 
   var callback = opt_callback || function (){};
@@ -341,8 +311,7 @@ ssd.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms)
  * @param {Function(boolean)} callback
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype._loginListener = function (response, callback)
-{
+ssd.user.auth.Facebook.prototype._loginListener = function (response, callback) {
 /*  ---response expose---
 
     response == {
@@ -372,8 +341,7 @@ ssd.user.auth.Facebook.prototype._loginListener = function (response, callback)
  * @param {object} response the FB response object
  * @return {boolean} if we are authed or not
  */
-ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response)
-{
+ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   try {
   this.logger.info('_isAuthedFromResponse() :: Init.');
 
@@ -401,8 +369,7 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response)
 *
 * @return {void}
 */
-ssd.user.auth.Facebook.prototype.logout = function()
-{
+ssd.user.auth.Facebook.prototype.logout = function() {
   this.logger.info('logout() :: Init');
   this._isAuthed = false;
   this.dispatchEvent(ssd.user.Auth.EventType.EXT_AUTH_CHANGE);
@@ -416,16 +383,14 @@ ssd.user.auth.Facebook.prototype.logout = function()
  * data object
  * @return {ssd.user.types.extSource|null} null if not authed
  */
-ssd.user.auth.Facebook.prototype.getUser = function()
-{
+ssd.user.auth.Facebook.prototype.getUser = function() {
 
 };
 
 /**
  * @inheritDoc
  */
-ssd.user.auth.PluginModule.prototype.getAccessToken = function()
-{
+ssd.user.auth.Facebook.prototype.getAccessToken = function() {
   if (!this.isAuthed()) {
     return '';
   }
@@ -433,5 +398,14 @@ ssd.user.auth.PluginModule.prototype.getAccessToken = function()
   return FB.getAccessToken();
 };
 
-
+/**
+ * Register to auth module.
+ *
+ */
+ssd.user.auth.Facebook.onPluginRun = function( ) {
+  // initialize facebook auth plugin
+  ssd.user.auth.Facebook.getInstance();
+};
+ssd.register.plugin( ssd.user.Auth.MODULE_NAME,
+  ssd.user.auth.Facebook.onPluginRun );
 

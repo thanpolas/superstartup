@@ -293,7 +293,7 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj) {
  *
  * @param {ssd.Core} coreSelf The instance of Core.
  */
-ssd.user.Auth.onRegister = function( coreSelf ) {
+ssd.user.Auth.onRegisterRun = function( coreSelf ) {
   /**
    * The instance of the user auth class
    * @type {ssd.user.Auth}
@@ -310,5 +310,5 @@ ssd.user.Auth.onRegister = function( coreSelf ) {
   ssd.register.init( coreSelf.user.init );
 
 };
-ssd.register.module( ssd.user.Auth.onRegister );
+ssd.register.module( ssd.user.Auth.onRegisterRun );
 

@@ -75,6 +75,7 @@
   "predef": [
       "goog",
       "ss",
-      "ssd"
+      "ssd",
+      "FB"
   ]
 }
