@@ -111,7 +111,6 @@ ssd.user.Auth = function()
    */
   this._extSupportedSources = new ssd.Map();
 
-
 };
 goog.inherits(ssd.user.Auth, ssd.user.AuthModel);
 
@@ -189,15 +188,13 @@ ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
  *
  * @return {Function} The encapsulated instance.
  */
-ssd.user.Auth.getInstance = function()
-{
+ssd.user.Auth.getInstance = function() {
   return ssd.user.Auth._instance ||
     (ssd.user.Auth._instance = ssd.invocator(ssd.user.Auth, 'get'));
 };
 
 
-ssd.user.Auth.prototype.get = function()
-{
+ssd.user.Auth.prototype.get = function() {
   console.log('Yeashhhhh');
   console.log(this);
   return this._user.toObject();
@@ -208,8 +205,7 @@ ssd.user.Auth.prototype.get = function()
  *
  * @return {void}
  */
-ssd.user.Auth.prototype.init = function()
-{
+ssd.user.Auth.prototype.init = function() {
   this.logger.info('init() :: starting...');
 
   // shortcut assign the performLocalAuth config directive to our
@@ -234,8 +230,7 @@ ssd.user.Auth.prototype.init = function()
  * @private
  * @param {goog.events.Event} e
  */
-ssd.user.Auth.prototype._dataEvent = function (e)
-{
+ssd.user.Auth.prototype._dataEvent = function (e) {
   this.logger.config('_dataEvent() :: event triggered:' + e.type);
   var eventObj = {
     type: null,
@@ -269,8 +264,7 @@ ssd.user.Auth.prototype._dataEvent = function (e)
  * @param {!Object} selfObj the instance of the ext auth plugin
  * @return {void}
  */
-ssd.user.Auth.prototype.addExtSource = function(selfObj)
-{
+ssd.user.Auth.prototype.addExtSource = function(selfObj) {
   this.logger.info('addExtSource() :: Adding auth source:' + selfObj.SOURCEID);
 
   // check if plugin is of right type

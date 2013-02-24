@@ -13,7 +13,6 @@ goog.provide('ssd.user.AuthModel');
  * @extends {ssd.Module}
  */
 ssd.user.AuthModel = function() {
-
   this.logger.info('Class instantiated');
 
   goog.base(this);
@@ -32,8 +31,7 @@ ssd.user.AuthModel.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth
  * @private
  * @param {goog.events.Event} e
  */
-ssd.user.AuthModel.prototype._initAuthStatus = function(e)
-{
+ssd.user.AuthModel.prototype._initAuthStatus = function(e) {
   this.logger.info('_initAuthStatus() :: initial auth status dispatched From:' + e.target.SOURCEID + ' Source authed:' + e.target.isAuthed() + ' plugin has LocalAuth:' + e.target.LOCALAUTH);
 
   // if not authed no need to go further
@@ -61,8 +59,7 @@ ssd.user.AuthModel.prototype._initAuthStatus = function(e)
  * @private
  * @param {goog.events.Event} e
  */
-ssd.user.AuthModel.prototype._authChange = function(e)
-{
+ssd.user.AuthModel.prototype._authChange = function(e) {
   this.logger.info('_authChange() :: Auth CHANGE dispatched from:' + e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
 
   // check if in our authed map
@@ -114,8 +111,7 @@ ssd.user.AuthModel.prototype._authChange = function(e)
  * @param {ssd.user.types.extSourceId} sourceId
  * @return {void}
  */
-ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function (sourceId)
-{
+ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function (sourceId) {
   this.logger.info('_verifyExtAuthWithLocal() :: Init. LocalAuth Switch:' + this._hasLocalAuth + ' sourceId :' + sourceId );
 
   if (!this._hasLocalAuth) {
@@ -271,8 +267,7 @@ ssd.user.AuthModel.prototype.isAuthed = function() {
  * @param {ssd.user.types.extSourceId} sourceId
  * @return {boolean}
  */
-ssd.user.AuthModel.prototype.isExtAuthed = function(sourceId)
-{
+ssd.user.AuthModel.prototype.isExtAuthed = function(sourceId) {
   return this._extAuthedSources.get(sourceId) || false;
 };
 
@@ -281,8 +276,7 @@ ssd.user.AuthModel.prototype.isExtAuthed = function(sourceId)
  *
  * @return {boolean}
  */
-ssd.user.AuthModel.prototype.isVerified = function()
-{
+ssd.user.AuthModel.prototype.isVerified = function() {
   return this._isAuthed && this._user.get(ssd.conf.user.typeMappings.ownuser.verified);
 };
 
@@ -291,8 +285,7 @@ ssd.user.AuthModel.prototype.isVerified = function()
  * and dispose everything
  * @return {void}
  */
-ssd.user.AuthModel.prototype.logout = function()
-{
+ssd.user.AuthModel.prototype.logout = function() {
   // clear our dynamic map data object
   this._user.clear();
 
