@@ -25,15 +25,15 @@
  /**
   * @fileoverview A plain storage facility with string to path resolving
   */
-goog.provide('ssd.StringPath');
-goog.provide('ssd.StringPath.Errors');
+goog.provide('ssd.structs.StringPath');
+goog.provide('ssd.structs.StringPath.Errors');
 
 /**
  * The constructor
- * @param {Object|ssd.StringPath=} opt_obj Initial data to load
+ * @param {Object|ssd.structs.StringPath=} opt_obj Initial data to load
  * @constructor
  */
-ssd.StringPath = function(opt_obj)
+ssd.structs.StringPath = function(opt_obj)
 {
   /**
    * @type {Object} Underlying JS object used to implement the map.
@@ -47,16 +47,16 @@ ssd.StringPath = function(opt_obj)
 };
 
 /** @type {string} The dot. */
-ssd.StringPath.DOT = '.';
+ssd.structs.StringPath.DOT = '.';
 
 /**
- * Add raw data, either an object hash or an instance of ssd.StringPath
+ * Add raw data, either an object hash or an instance of ssd.structs.StringPath
  * NOTE: Overwrites any existing data
- * @param {Object|ssd.StringPath}
+ * @param {Object|ssd.structs.StringPath}
  */
-ssd.StringPath.prototype.addRaw = function(obj)
+ssd.structs.StringPath.prototype.addRaw = function(obj)
 {
-  if (obj instanceof ssd.StringPath) {
+  if (obj instanceof ssd.structs.StringPath) {
     this._data = obj.toObject();
   } else if (goog.isObject(obj)){
     this._data = obj;
@@ -70,7 +70,7 @@ ssd.StringPath.prototype.addRaw = function(obj)
  * (Native JS Object)
  * @return {Object}
  */
-ssd.StringPath.prototype.toObject = function()
+ssd.structs.StringPath.prototype.toObject = function()
 {
   return this._data;
 };
@@ -87,12 +87,12 @@ ssd.StringPath.prototype.toObject = function()
  * @param {*} value the value we want to store. Can be anything
  * @return {void}
  */
-ssd.StringPath.prototype.set = function(key, value) {
+ssd.structs.StringPath.prototype.set = function(key, value) {
   // some plain validations
   if('string' != typeof key) {
       throw new TypeError();
   }
-  this._resolvePath(key.split(ssd.StringPath.DOT), this._data, {isSet:true}, value);
+  this._resolvePath(key.split(ssd.structs.StringPath.DOT), this._data, {isSet:true}, value);
 };
 
 /**
@@ -107,12 +107,12 @@ ssd.StringPath.prototype.set = function(key, value) {
  * @return {*} null if value not found
  * @throws {TypeError} if key not string
  */
-ssd.StringPath.prototype.get = function(key, opt_throwError)
+ssd.structs.StringPath.prototype.get = function(key, opt_throwError)
 {
   if('string' != typeof key) {
     throw new TypeError();
   }
-  return this._resolvePath(key.split(ssd.StringPath.DOT), this._data, {isGet:true}, null, opt_throwError);
+  return this._resolvePath(key.split(ssd.structs.StringPath.DOT), this._data, {isGet:true}, null, opt_throwError);
 };
 
 /**
@@ -121,8 +121,8 @@ ssd.StringPath.prototype.get = function(key, opt_throwError)
  * @param {string} key
  * @return {void}
  */
-ssd.StringPath.prototype.remove = function(key) {
-    this._resolvePath(key.split(ssd.StringPath.DOT), this._data, {isDel:true});
+ssd.structs.StringPath.prototype.remove = function(key) {
+    this._resolvePath(key.split(ssd.structs.StringPath.DOT), this._data, {isDel:true});
 };
 
 /**
@@ -130,7 +130,7 @@ ssd.StringPath.prototype.remove = function(key) {
  * @param  {string} key The key we want to check if it exists.
  * @return {boolean} If the key exists or not.
  */
-ssd.StringPath.prototype.containsKey = function(key)
+ssd.structs.StringPath.prototype.containsKey = function(key)
 {
   try {
     this.get(key, true);
@@ -153,7 +153,7 @@ ssd.StringPath.prototype.containsKey = function(key)
  * @private
  * @param {array} parts Our path split into an array ['a','b','c'] --> a.b.c
  * @param {Object} obj The object we will dive into
- * @param {Object.<boolean>} An object containing a boolean true value for one of
+ * @param {Object.<boolean>} op An object containing a boolean true value for one of
  *          they following keys / operations:
  *          isSet if we want to SET a variable
  *          isGet if we want to GET a variable
@@ -163,7 +163,7 @@ ssd.StringPath.prototype.containsKey = function(key)
  *      Only valid for isGet and isDel mode
  * @return {*} The value we resolved
  */
-ssd.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError)
+ssd.structs.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError)
 {
     var part = parts.shift();
     // check if we are in the last part of our path
@@ -184,7 +184,7 @@ ssd.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_th
         }
     }
 
-    if (obj[part] === null) {
+    if (!goog.isDef(obj[part])) {
         if (op.isSet) {
             obj[part] = {};
         } else {

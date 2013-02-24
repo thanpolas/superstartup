@@ -21,9 +21,12 @@
   * @fileoverview An extention of goog.structs.Map class, adding the .forEach method
   */
 
-goog.provide('ssd.Map');
+goog.provide('ssd.structs.Map');
 
 goog.require('goog.structs.Map');
+goog.require('ssd.structs.IdGenerator');
+goog.require('goog.object');
+goog.require('goog.Disposable');
 
 /**
  * Class for Hash Map datastructure.
@@ -31,54 +34,19 @@ goog.require('goog.structs.Map');
  * @param {...*} var_args If 2 or more arguments are present then they
  *     will be used as key-value pairs.
  * @constructor
- * @extends {goog.structs.Map}
+ * @extends {goog.structs.Map, ssd.structs.IdGenerator, goog.Disposable}
  */
-ssd.Map = function(opt_map, var_args) {
+ssd.structs.Map = function(opt_map, var_args) {
+
   goog.structs.Map.apply(this, arguments);
+  ssd.structs.IdGenerator.call(this);
+  goog.Disposable.call(this);
 
-  /**
-   * Indicates if this map contains values which were added with
-   * the {@see ssd.Map.storeWithId} method.
-   *
-   * @type {boolean}
-   * @private
-   */
-  this._hasIdValues = false;
 
-  /**
-   * If we have values stored with ID, this is the increment
-   * that holds the next id to be used.
-   * @type {number}
-   * @private
-   */
-  this._increment = 1;
 };
-goog.inherits(ssd.Map, goog.structs.Map);
-
-/**
- * When storing values with unique id we prefix the
- * increment with this value so all ids are stored
- * as string.
- * @const {string}
- */
-ssd.Map.INCREMENT_PREFIX = 'i';
-
-/**
- * Use this name for the id key when we get values
- * including the id {@see ssd.Map.getValuesWithId}.
- * @const {string}
- */
-ssd.Map.ID_NAME = '__id__';
-
-/**
- * When giving values including the id and the values
- * are not of type Object, then we store than value
- * in a newly created object under the key name defined
- * in this const {@see ssd.Map.getValuesWithId}.
- *
- * @const {string}
- */
-ssd.Map.VALUE_NAME = 'value';
+goog.inherits(ssd.structs.Map, goog.structs.Map);
+goog.object.extend(ssd.structs.Map.prototype, ssd.structs.IdGenerator.prototype);
+goog.object.extend(ssd.structs.Map.prototype, goog.Disposable);
 
 /**
  * Safely iterate over the Map's key-value pairs
@@ -89,7 +57,7 @@ ssd.Map.VALUE_NAME = 'value';
  * @param {Object=} opt_selfObj optionally set the context to execute the func
  * @return {void}
  */
-ssd.Map.prototype.forEach = function(fn, opt_selfObj)
+ssd.structs.Map.prototype.forEach = function(fn, opt_selfObj)
 {
   var keys = this.getKeys();
   var map = this.map_;
@@ -101,85 +69,8 @@ ssd.Map.prototype.forEach = function(fn, opt_selfObj)
   }
 };
 
-/**
- * Store any data in the map with a unique id as key.
- *
- * Key will plainly be a numeric increment starting from 1.
- *
- * @param  {!Array} data Any set of data
- * @param {number=} opt_length Optionally define the min length of the id
- *                             in case you wish to properly sort the
- *                             dataset later. E.g. a defined length of 3
- *                             will result in the first id being: i001.
- * @return {void}
- */
-ssd.Map.prototype.storeWithId = function(data, opt_length) {
-  var key;
-  for(var i = 0, l = data.length; i < l; i++) {
-    key = ssd.Map.INCREMENT_PREFIX;
+/** @inheritDoc */
+ssd.structs.Map.prototype.disposeInternal = function() {
+  this.clear();
 
-    if (opt_length) {
-      key += this._minLengthId(opt_length, this._increment);
-    } else {
-      key += this._increment;
-    }
-
-    this.set(key, data[i]);
-
-    this._increment++;
-  }
-};
-
-/**
- * Checks the provided id if is less than 'minLength' and if
- * it is zero (0) chars are prepended to the id to meed the
- * minLength requirement.
- *
- * @param  {number} minLength The minimum length we want the id to be.
- * @param  {number|string} id the id we want to manipulate.
- * @return {string} Proper id.
- * @private
- */
-ssd.Map.prototype._minLengthId = function(minLength, id) {
-  var newid = '';
-  var lid;
-  if (0 < (lid = minLength - (id + '').length)) {
-    newid += new Array(lid + 1).join('0');
-  }
-  return newid + id;
-};
-
-
-
-/**
- * Return an array with the values including their id.
- *
- * The values are cast into Object type so they can include
- * the new id key, if they are already an object then the
- * id key is just added.
- *
- * If the values are not of type Object then they are stored
- * in the newly created object under the key 'value'
- * {@see ssd.Map.VALUE_NAME}
- *
- * The id key's name is stored in the const {@see ssd.Map.ID_NAME}
- *
- * @return {Array.<Object>} The values cast in Object to contain the id.
- */
-ssd.Map.prototype.getValuesWithId = function() {
-  var values = [];
-  var newObj = {};
-  this.forEach(function(key, value){
-    if(goog.isObject(value)) {
-      value[ssd.Map.ID_NAME] = key;
-      values.push(value);
-    } else {
-      newObj = {};
-      newObj[ssd.Map.ID_NAME] = key;
-      newObj[ssd.Map.VALUE_NAME] = value;
-      values.push(newObj);
-    }
-  }, this);
-
-  return values;
 };

@@ -18,14 +18,15 @@
  */
 
  /**
-  * @fileoverview An extention of ssd.Map class, along with goog.events
+  * @fileoverview An extention of ssd.structs.Map class, along with goog.events
   *     Alerts us for every change in the data structure
   */
 
-goog.provide('ssd.DynamicMap');
-goog.provide('ssd.DynamicMap.EventType');
+goog.provide('ssd.structs.DynamicMap');
+goog.provide('ssd.structs.DynamicMap.EventType');
+goog.provide('ssd.structs.DynamicMap.Operation');
 
-goog.require('ssd.Map');
+goog.require('ssd.structs.Map');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
 
@@ -35,10 +36,9 @@ goog.require('goog.object');
  * @param {...*} var_args If 2 or more arguments are present then they
  *     will be used as key-value pairs.
  * @constructor
- * @extends {ssd.Map, goog.events.EventTarget}
- * We also inherit from goog.events.EventTarget
+ * @extends {ssd.structs.Map, goog.events.EventTarget}
  */
-ssd.DynamicMap = function(opt_map, var_args) {
+ssd.structs.DynamicMap = function(opt_map, var_args) {
   /**
    * In cases of mass data insertions turn off event dispatching
    * @private
@@ -49,7 +49,7 @@ ssd.DynamicMap = function(opt_map, var_args) {
   /**
    * Do not trigger any Events
    * @type {boolean}
-   * @private
+   * @protected
    */
   this._eventsMuted = false;
 
@@ -60,41 +60,70 @@ ssd.DynamicMap = function(opt_map, var_args) {
   this._mapId = null;
 
   goog.events.EventTarget.call(this);
-  ssd.Map.apply(this, arguments);
+  ssd.structs.Map.apply(this, arguments);
 
 };
-goog.inherits(ssd.DynamicMap, ssd.Map);
-goog.object.extend(ssd.DynamicMap.prototype, goog.events.EventTarget.prototype);
+goog.inherits(ssd.structs.DynamicMap, ssd.structs.Map);
+goog.object.extend(ssd.structs.DynamicMap.prototype, goog.events.EventTarget.prototype);
 
 /**
  * Events triggered by the Dynamic Map
  * @enum {string}
  */
-ssd.DynamicMap.EventType = {
+ssd.structs.DynamicMap.EventType = {
   // When a plain change happens on a property
   BEFORE_SET   : 'dynamicMap.beforeSet',
   AFTER_SET    : 'dynamicMap.afterSet',
   BEFORE_ADDALL: 'dynamicMap.beforeAddall',
   AFTER_ADDALL : 'dynamicMap.afterAddall',
   BEFORE_REMOVE: 'dynamicMap.beforeRemove',
-  AFTER_REMOVE : 'dynamicMap.afterRemove'
+  AFTER_REMOVE : 'dynamicMap.afterRemove',
+
+  // fires on every data change event, after the "AFTER_*" events
+  DATA_CHANGED : 'dynamicMap.dataChanged'
 };
+
+/**
+ * All the possible data mangling operations.
+ * @enum {string}
+ */
+ssd.structs.DynamicMap.Operation = {
+  SET     : 'dynamicMap.set',
+  ADDALL  : 'dynamicMap.addAll',
+  REMOVE  : 'dynamicMap.remove'
+};
+
+/**
+ * trigger the data changed event.
+ *
+ * @param  {Object} eventObj The custom event object.
+ * @param  {ssd.structs.DynamicMap.Operation} oper the operation type.
+ * @private
+ */
+ssd.structs.DynamicMap.prototype._dispatchDataChanged = function(eventObj, oper) {
+  var newEventObj = goog.object.clone(eventObj);
+  newEventObj.operation = oper;
+  newEventObj.type = ssd.structs.DynamicMap.EventType.DATA_CHANGED;
+  this.dispatchEvent(newEventObj);
+};
+
 
 
 /**
  * Adds a key-value pair to the map. Triggers a plain change event
- * or a change with persinstent save event
+ * or a change with persinstent save event.
+ *
  * @param {*} key The key.
  * @param {*} value The value to add.
  * @override
  */
-ssd.DynamicMap.prototype.set = function(key, value)
+ssd.structs.DynamicMap.prototype.set = function(key, value)
 {
   /** @type {Object?} */
   var eventObj;
   if (this._canDispatch && !this._eventsMuted) {
     eventObj = {
-      type: ssd.DynamicMap.EventType.BEFORE_SET,
+      type: ssd.structs.DynamicMap.EventType.BEFORE_SET,
       'key': key,
       'value': value,
       'mapId': this._mapId
@@ -106,24 +135,27 @@ ssd.DynamicMap.prototype.set = function(key, value)
   }
 
   // perform the set
-  ssd.DynamicMap.superClass_.set.call(this, key, value);
+  ssd.structs.DynamicMap.superClass_.set.call(this, key, value);
 
   // dispatch corresponding event
   if (this._canDispatch && !this._eventsMuted) {
-    eventObj.type = ssd.DynamicMap.EventType.AFTER_SET;
+    eventObj.type = ssd.structs.DynamicMap.EventType.AFTER_SET;
     this.dispatchEvent(eventObj);
+
+    // trigger the data changed event
+    this._dispatchDataChanged(eventObj, ssd.structs.DynamicMap.Operation.SET);
   }
 };
 
 /** @override */
-ssd.DynamicMap.prototype.addAll = function(map)
+ssd.structs.DynamicMap.prototype.addAll = function(map)
 {
   /** @type {Object?} */
   var eventObj;
 
   if (!this._eventsMuted) {
     eventObj = {
-      type: ssd.DynamicMap.EventType.BEFORE_ADDALL,
+      type: ssd.structs.DynamicMap.EventType.BEFORE_ADDALL,
       'map': map,
       'mapId': this._mapId
     };
@@ -135,24 +167,27 @@ ssd.DynamicMap.prototype.addAll = function(map)
 
   // payload
   this._canDispatch = false;
-  ssd.DynamicMap.superClass_.addAll.call(this, map);
+  ssd.structs.DynamicMap.superClass_.addAll.call(this, map);
   this._canDispatch = true;
 
   if (!this._eventsMuted) {
-    eventObj.type = ssd.DynamicMap.EventType.AFTER_ADDALL;
+    eventObj.type = ssd.structs.DynamicMap.EventType.AFTER_ADDALL;
     this.dispatchEvent(eventObj);
+
+    // trigger the data changed event
+    this._dispatchDataChanged(eventObj, ssd.structs.DynamicMap.Operation.ADDALL);
   }
 };
 
 /** @override */
-ssd.DynamicMap.prototype.remove = function(key)
+ssd.structs.DynamicMap.prototype.remove = function(key)
 {
   /** @type {Object?} */
   var eventObj;
 
   if (!this._eventsMuted) {
     eventObj = {
-      type: ssd.DynamicMap.EventType.BEFORE_REMOVE,
+      type: ssd.structs.DynamicMap.EventType.BEFORE_REMOVE,
       'key': key,
       'mapId': this._mapId
     };
@@ -162,12 +197,14 @@ ssd.DynamicMap.prototype.remove = function(key)
     }
   }
 
-  var response = ssd.DynamicMap.superClass_.remove.call(this, key);
+  var response = ssd.structs.DynamicMap.superClass_.remove.call(this, key);
 
   if (!this._eventsMuted) {
-    eventObj.type = ssd.DynamicMap.EventType.AFTER_REMOVE;
+    eventObj.type = ssd.structs.DynamicMap.EventType.AFTER_REMOVE;
     eventObj['response'] = response;
     this.dispatchEvent(eventObj);
+    // trigger the data changed event
+    this._dispatchDataChanged(eventObj, ssd.structs.DynamicMap.Operation.REMOVE);
   }
   return response;
 };
@@ -178,16 +215,16 @@ ssd.DynamicMap.prototype.remove = function(key)
  * Use when doing bulk set / del operations
  *
  */
-ssd.DynamicMap.prototype.startEventMute = function()
+ssd.structs.DynamicMap.prototype.stopEvents = function()
 {
   this._eventsMuted = true;
 };
 
 /**
- * Ends the trigger mute, from now on events will be triggered.
+ * start emitting events again, invoke after a .stopEvents()
  *
  */
-ssd.DynamicMap.prototype.endEventMute = function()
+ssd.structs.DynamicMap.prototype.startEvents = function()
 {
   this._eventsMuted = false;
 };
@@ -202,7 +239,7 @@ ssd.DynamicMap.prototype.endEventMute = function()
  *
  * @param {string} mapId A unique identifier for this dataset.
  */
-ssd.DynamicMap.prototype.setMapId = function(mapId)
+ssd.structs.DynamicMap.prototype.setMapId = function(mapId)
 {
   this._mapId = mapId;
 };
@@ -212,7 +249,15 @@ ssd.DynamicMap.prototype.setMapId = function(mapId)
  *
  * @return {string|null} The name if set or null.
  */
-ssd.DynamicMap.prototype.getMapId = function()
+ssd.structs.DynamicMap.prototype.getMapId = function()
 {
   return this._mapId;
+};
+
+
+/** @inheritDoc */
+ssd.structs.DynamicMap.prototype.disposeInternal = function() {
+  // (1) Call the superclass's disposeInternal() method.
+  ssd.structs.map.disposeInternal.call(this);
+  goog.events.EventTarget.disposeInternal.call(this);
 };
