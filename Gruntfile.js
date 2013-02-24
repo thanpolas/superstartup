@@ -11,7 +11,7 @@ module.exports = function(grunt) {
 
   var externsPath = 'build/externs/';
   // don't put the extension here
-  var debugFile = 'lib/helpers/debug';
+  var debugFile = 'src/helpers/debug';
 
   // Project configuration.
   grunt.initConfig({
@@ -22,9 +22,9 @@ module.exports = function(grunt) {
       },
       ss: {
         options: {
-          root_with_prefix: ['"lib ../../../lib"']
+          root_with_prefix: ['"src ../../../src"']
         },
-        dest: 'lib/deps-superstartup.js'
+        dest: 'src/deps-superstartup.js'
       },
       bddTest: {
         options: {
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     closureBuilder: {
       options: {
         closureLibraryPath: 'closure-library',
-        inputs: ['lib/main.js'],
+        inputs: ['src/main.js'],
         compile: true,
         compilerFile: 'build/closure_compiler/sscompiler.jar'
 
@@ -59,7 +59,7 @@ module.exports = function(grunt) {
             output_wrapper: '(function(){%output%}).call(this);'
           }
         },
-        src: ['lib', 'closure-library'],
+        src: ['src', 'closure-library'],
         dest: 'dist/superstartup.min.js'
 
 
