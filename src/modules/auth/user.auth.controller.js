@@ -7,6 +7,8 @@ goog.provide('ssd.user.Auth.EventType');
 goog.provide('ssd.user.Auth.Error');
 
 
+goog.require('goog.async.Deferred');
+
 goog.require('ssd.user.AuthModel');
 goog.require('ssd.DynamicMap');
 goog.require('ssd.user.types');
@@ -203,23 +205,27 @@ ssd.user.Auth.prototype.get = function() {
 /**
  * Kicks off authentication flows for all ext auth sources
  *
- * @return {void}
+ * @return {goog.async.Deferred}
  */
 ssd.user.Auth.prototype.init = function() {
   this.logger.info('init() :: starting...');
+
+  var def = new goog.async.Deferred();
+  def.callback();
 
   // shortcut assign the performLocalAuth config directive to our
   // local var
   this._hasLocalAuth = this.config('performLocalAuth');
 
-  this.logger.config('init() :: user.Auth.init: Set _hasLocalAuth to value:' +
+  this.logger.config('init() :: Set "_hasLocalAuth" to value:' +
     this._hasLocalAuth);
 
-  this._extSupportedSources.forEach(function(key, plugin){
+  this._extSupportedSources.forEach( function( key, plugin ) {
     this.logger.config('init() :: Starting init for pluging:' + key);
-    plugin.init();
+    def.awaitDeferred( plugin.init() );
   }, this);
 
+  return def;
 };
 
 /**

@@ -32,6 +32,7 @@ goog.require('ssd.metadata');
 goog.require('ssd.web.cookies');
 goog.require('ssd.register');
 
+
 /**
  * The base class
  *
@@ -44,7 +45,14 @@ ssd.Core = function()
 {
   goog.base(this);
 
-  this._loadModules();
+  if (goog.DEBUG) {
+    ssd.debug.openFancyWin();
+  }
+
+  this.logger.info('ctor() :: Registering modules...');
+
+  ssd.register.runModules();
+
 };
 goog.inherits(ssd.Core, ssd.Module);
 goog.addSingletonGetter(ssd.Core);
@@ -52,34 +60,20 @@ goog.addSingletonGetter(ssd.Core);
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
 /**
- * Will check what modules are available and synchronously init them.
- *
- * @return {void}
- * @private
- */
-ssd.Core.prototype._loadModules = function()
-{
-  if (goog.DEBUG) {
-    ssd.debug.openFancyWin();
-  }
-  this.logger.info('_loadModules() :: Starting...');
-
-
-};
-
-/**
  * Kicks off the library.
  *
  * This function is exposed and is invoked by our handlers
  *
  * @param  {Function=} optCallback A callback for when ready ops finish.
- * @return {void}
+ * @return {goog.async.Deferred}
  */
-ssd.Core.prototype.init = function (optCallback)
-{
+ssd.Core.prototype.init = function (optCallback) {
   this.logger.info('Core init(). Kicking off Super Startup');
-  // start authentication process
-  this.user.init(optCallback);
+
+  var fn = optCallback || ssd.noop;
+
+  // start modules initialization and wait till finished
+  return ssd.register.runModuleInits().addBoth(fn);
 };
 
 /**
@@ -95,12 +89,16 @@ ssd.Core.prototype.toString = function() {
  *
  * @param  {string} eventType The event type.
  * @param  {Function} cb The callback function.
- * @param {Object=} opt_self optionally define a context to invoke the callback on.
+ * @param {Object=} optSelf optionally define a context to invoke the callback on.
  */
-ssd.Core.prototype.listen = function(event, cb, opt_self)
-{
-  goog.events.listen(this, event, cb, false, opt_self || goog.global);
+ssd.Core.prototype.listen = function(event, cb, optSelf) {
+  goog.events.listen(this, event, cb, false, optSelf || goog.global);
 };
+
+/**
+ * No operation function
+ */
+ssd.noop = function(){};
 
 
 // synchronous execution

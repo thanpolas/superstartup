@@ -3,7 +3,9 @@
 /**
  * @fileoverview The bootstrap file of all the tests.
  */
- goog.provide('ssd.test.bootstrap');
+goog.provide('ssd.test.bootstrap');
+
+goog.DEBUG = false;
 
 var expect;
 expect = (typeof chai !== "undefined" && chai !== null ?

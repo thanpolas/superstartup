@@ -5,6 +5,8 @@
 goog.provide('ssd.user.auth.Facebook');
 goog.provide('ssd.user.auth.Facebook.EventType');
 
+goog.require('goog.async.Deferred');
+
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.Auth.EventType');
@@ -17,8 +19,7 @@ goog.require('ssd.register');
  * @implements {ssd.user.auth.PluginInterface}
  * @extends {ssd.user.auth.PluginModule}
  */
-ssd.user.auth.Facebook = function()
-{
+ssd.user.auth.Facebook = function() {
   this.logger.info('Constructor() :: Init.');
   goog.base(this);
 
@@ -108,25 +109,31 @@ ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
  * event
  * @param {goog.events.Event=} opt_e Optionally, if FBAPI is not loaded, we
  *      listen for the relevant event
- * @return {void}
+ * @return {goog.async.Deferred}
  */
-ssd.user.auth.Facebook.prototype.init = function(opt_e) {
+ssd.user.auth.Facebook.prototype.init = function( opt_e ) {
   this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
+
+  var def = new goog.async.Deferred();
+  def.callback();
 
   if (!this._FBAPILoaded) {
     // API not loaded yet
     // listen for load event
     // and start async loading of FB JS API
-    this.addEventListener(ssd.user.auth.Facebook.EventType.JSAPILOADED, this.init, false, this);
+    this.addEventListener(ssd.user.auth.Facebook.EventType.JSAPILOADED,
+      this.init, false, this);
 
     this._loadExtAPI();
 
-    return;
+    return def;
   }
 
   this.logger.info('init() :: Asking for login status');
   // catch initial login status
   FB.getLoginStatus(goog.bind(this._gotInitialAuthStatus, this));
+
+  return def;
 };
 
 /**

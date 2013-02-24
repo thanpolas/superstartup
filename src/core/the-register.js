@@ -6,6 +6,7 @@ goog.provide('ssd.Register');
 goog.provide('ssd.register');
 
 goog.require('goog.array');
+goog.require('goog.async.Deferred');
 
 /**
  * The register class.
@@ -94,19 +95,35 @@ ssd.Register.prototype.runModules = function( ) {
 /**
  * Invoke the init methods of all the modules.
  *
+ * @return {goog.async.Deferred} A deferred.
  */
 ssd.Register.prototype.runModuleInits = function( ) {
-  this._invoke( this._init );
+  return this._invoke( this._init, true );
 };
 
 /**
  * Invoke all the functions in an array.
- * @param  {Array.<Function>} ar An array of functions.
+ * @param {Array.<Function>} ar An array of functions.
+ * @param {boolean=} optDeferred if funcs return a deferred, honor it.
+ * @return {goog.async.Deferred|undefined} nothing or a deferred if opt defined.
  */
-ssd.Register.prototype._invoke = function( ar ) {
+ssd.Register.prototype._invoke = function( ar, optDeferred ) {
+  var def;
+
+  if ( true === optDeferred ) {
+    def = new goog.async.Deferred();
+    def.callback();
+  }
+
+  var ret;
   goog.array.forEach( ar, function( fn ) {
-    fn();
+    ret = fn();
+    if ( !!def ) {
+      def.awaitDeferred( ret );
+    }
   }, this);
+
+  return def;
 };
 
 /**
