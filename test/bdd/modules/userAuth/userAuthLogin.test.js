@@ -114,6 +114,7 @@ describe( 'User Auth Module :: Login', function () {
   describe( 'Basic login operation with Object Literal', function(){
     loginTests( userLoginData );
     ssd.test.userAuth.login.events( 'login', userLoginData );
+  });
 
   describe( 'Login from a DOM Form using jQuery', function(){
     loginTests( $( '#login' ));
@@ -125,7 +126,6 @@ describe( 'User Auth Module :: Login', function () {
     ssd.test.userAuth.login.events( 'login', goog.dom.getElement( 'login' ));
   });
 });
-
 
 /**
  * [events description]
