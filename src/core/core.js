@@ -115,13 +115,14 @@ ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
  *
  * This function is exposed and is invoked by our handlers
  *
+ * @param  {Function=} optCallback A callback for when ready ops finish.
  * @return {void}
  */
-ssd.Core.prototype.init = function ()
+ssd.Core.prototype.init = function (optCallback)
 {
   this.logger.info('Core init(). Kicking off Super Startup');
   // start authentication process
-  this.user.init();
+  this.user.init(optCallback);
 };
 
 /**
