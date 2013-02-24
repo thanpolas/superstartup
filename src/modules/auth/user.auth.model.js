@@ -15,6 +15,7 @@ goog.require('ssd.user.types');
 goog.require('ssd.Config');
 goog.require('ssd.user.OwnItem');
 goog.require('ssd.invocator');
+goog.require('ssd.register');
 
 /**
  * User authentication class
@@ -76,7 +77,7 @@ ssd.user.Auth = function()
    * @private
    * @type {boolean}
    */
-  this._localAuth = false;
+  this._hasLocalAuth = false;
 
   /**
    * The user data object
@@ -93,6 +94,26 @@ ssd.user.Auth = function()
   // extend our data object with the own user key/value pairs
   this._user.addAll(ssd.user.types.ownuser);
 
+
+  /**
+   * This var contains an array of extSource ID
+   * values, indicating that we are authed on these
+   * external sources
+   * @private
+   * @type {ssd.Map.<ssd.user.types.extSourceId, boolean>} bool is always true
+   */
+  this._extAuthedSources = new ssd.Map();
+
+  /**
+   * This var contains a map of external sources.
+   * The external Sources IDs will be used as keys and the
+   * instanciations of the ext auth plugins as values
+   * @private
+   * @type {ssd.Map.<ssd.user.types.extSourceId, Object>}
+   */
+  this._extSupportedSources = new ssd.Map();
+
+
 };
 goog.inherits(ssd.user.Auth, ssd.Module);
 
@@ -102,6 +123,9 @@ goog.inherits(ssd.user.Auth, ssd.Module);
  * @const {string}
  */
 ssd.user.Auth.CONFIG_PATH = 'user.auth';
+
+/** @const {string} Identifies the module for the register */
+ssd.user.Auth.MODULE_NAME = 'user.auth';
 
 /**
  * Errors thrown by main external auth class.
@@ -158,24 +182,6 @@ ssd.user.Auth.EventType = {
 ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
 
 /**
- * This var contains an array of extSource ID
- * values, indicating that we are authed on these
- * external sources
- * @private
- * @type {ssd.Map.<ssd.user.types.extSourceId, boolean>} bool is always true
- */
-ssd.user.Auth.prototype._extAuthedSources = new ssd.Map();
-
-/**
- * This var contains a map of external sources.
- * The external Sources IDs will be used as keys and the
- * instanciations of the ext auth plugins as values
- * @private
- * @type {ssd.Map.<ssd.user.types.extSourceId, Object>}
- */
-ssd.user.Auth.prototype._extSupportedSources = new ssd.Map();
-
-/**
  * A custom getInstance method for the Auth class singleton.
  *
  * We want this custom method so as to return a proper
@@ -208,11 +214,12 @@ ssd.user.Auth.prototype.init = function()
 {
   this.logger.info('init() :: starting...');
 
-  // shotcut assign the performLocalAuth config directive to our
+  // shortcut assign the performLocalAuth config directive to our
   // local var
-  this._localAuth = this.config('performLocalAuth');
+  this._hasLocalAuth = this.config('performLocalAuth');
 
-  this.logger.config('init() :: user.Auth.init: Set _localAuth to value:' + this._localAuth);
+  this.logger.config('init() :: user.Auth.init: Set _hasLocalAuth to value:' +
+    this._hasLocalAuth);
 
   this._extSupportedSources.forEach(function(key, plugin){
     this.logger.config('init() :: Starting init for pluging:' + key);
@@ -270,11 +277,11 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj)
 
   // check if plugin is of right type
   if (!selfObj instanceof ssd.user.auth.PluginModule) {
-    throw TypeError();
+    throw new TypeError();
   }
   // check if plugin already registered
   if (this._extSupportedSources.get(selfObj.SOURCEID)) {
-    throw Error(ssd.user.Auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
+    throw new Error(ssd.user.Auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
   }
 
   // add the new plugin to our map
@@ -313,7 +320,7 @@ ssd.user.Auth.prototype._initAuthStatus = function(e)
   }
 
   // check if we were in a not authed state and change that
-  if (!this._isAuthed && !this._localAuth) {
+  if (!this._isAuthed && !this._hasLocalAuth) {
     this._doAuth(true);
   }
 };
@@ -346,7 +353,7 @@ ssd.user.Auth.prototype._authChange = function(e)
     }
 
     // check if we were in a not authed state and change that
-    if (!this._isAuthed && !this._localAuth) {
+    if (!this._isAuthed && !this._hasLocalAuth) {
       this._doAuth(true);
     }
   } else {
@@ -379,9 +386,9 @@ ssd.user.Auth.prototype._authChange = function(e)
  */
 ssd.user.Auth.prototype.verifyExtAuthWithLocal = function (sourceId)
 {
-  this.logger.info('_verifyExtAuthWithLocal() :: Init. LocalAuth Switch:' + this._localAuth + ' sourceId :' + sourceId );
+  this.logger.info('_verifyExtAuthWithLocal() :: Init. LocalAuth Switch:' + this._hasLocalAuth + ' sourceId :' + sourceId );
 
-  if (!this._localAuth) {
+  if (!this._hasLocalAuth) {
     return;
   }
 
@@ -570,3 +577,26 @@ ssd.user.Auth.prototype.logout = function()
 };
 
 
+/**
+ * Registration to Core
+ *
+ * @param {ssd.Core} coreSelf The instance of Core.
+ */
+ssd.user.Auth.onRegister = function( coreSelf ) {
+  /**
+   * The instance of the user auth class
+   * @type {ssd.user.Auth}
+   */
+  coreSelf.user = ssd.user.Auth.getInstance();
+
+  // bubble user auth events to this class
+  coreSelf.user.setParentEventTarget(coreSelf);
+
+  // initialize ext auth plugins
+  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME );
+
+  // register the init method
+  ssd.register.init( coreSelf.user.init );
+
+};
+ssd.register.module( ssd.user.Auth.onRegister );

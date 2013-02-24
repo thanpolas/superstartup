@@ -30,6 +30,7 @@ goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
 goog.require('ssd.metadata');
 goog.require('ssd.web.cookies');
+goog.require('ssd.register');
 
 /**
  * The base class
@@ -43,76 +44,26 @@ ssd.Core = function()
 {
   goog.base(this);
 
-
-  // The default key we will use to determine
-  // success or failure of an AJAX request
-  //
-  // This key is expected to exist in all the responses
-  // from the server
-  //
-  // This key can be overwritten by any module
-  //
-  // If you set this key to null then it will not be used
-  // and we'll assume that once a response callback is
-  // triggered it is considered successful by default.
-  this.config(ssd.Core.CONFIG_STATUS, 'status');
-
-  // The true value of this key.
-  //
-  // Typically this is boolean true, however this
-  // may not be the case for everyone.
-  //
-  // This key can be overwritten by any module
-  this.config(ssd.Core.CONFIG_STATUS_TRUE, true);
-
+  this._loadModules();
 };
 goog.inherits(ssd.Core, ssd.Module);
 goog.addSingletonGetter(ssd.Core);
 
-/**
- * String path that we'll store the config
- * @const {string}
- */
-ssd.Core.CONFIG_PATH = 'core';
-/** @const {string} The key of the state config param */
-ssd.Core.CONFIG_STATUS = 'status';
-/** @const {string} The key of the status true config param */
-ssd.Core.CONFIG_STATUS_TRUE = 'statusTrue';
-
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
 /**
- * The synchronous init
- * This init is called synchronously as soon as the lib is loaded
- * You can find the call at the end of this file
- *
- * Will initialize all classes and prepare library to get started
+ * Will check what modules are available and synchronously init them.
  *
  * @return {void}
+ * @private
  */
-ssd.Core.prototype.synchInit = function()
+ssd.Core.prototype._loadModules = function()
 {
   if (goog.DEBUG) {
     ssd.debug.openFancyWin();
   }
-  this.logger.info('synchInit() :: Starting...');
+  this.logger.info('_loadModules() :: Starting...');
 
-  /**
-   * The instance of the user auth class
-   * @type {ssd.user.Auth}
-   */
-  this.user = ssd.user.Auth.getInstance();
-
-  // set out instance as the parent event target for auth
-  this.user.setParentEventTarget(this);
-
-
-  // bubble user auth events to this class
-  this.user.setParentEventTarget(this);
-
-  // initialize ext auth plugins
-  ssd.user.auth.Facebook.getInstance();
-  ssd.user.auth.Twitter.getInstance();
 
 };
 

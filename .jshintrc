@@ -64,17 +64,8 @@
   "es5": false,
 
   // suppress object dot notation warnings, we know what we're doing
-  "sub": true
+  "sub": true,
 
-
-  /**
-   * TEMPORARY OPTIONS
-   * =================
-   *
-   * These are provisional options and should be removed in the
-   * long term when the codebase is ready
-   *
-   */
 
   /**
    * PROJECT GLOBALS
