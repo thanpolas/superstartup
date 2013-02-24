@@ -6,6 +6,8 @@
 
 goog.provide('ssd.user.AuthModel');
 
+goog.require('ssd.Module');
+
 /**
  * User authentication class
  *
@@ -17,6 +19,7 @@ ssd.user.AuthModel = function() {
 
   goog.base(this);
 };
+goog.inherits( ssd.user.AuthModel, ssd.Module);
 
 /**
  * A logger to help debugging

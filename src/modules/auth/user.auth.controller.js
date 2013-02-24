@@ -36,6 +36,9 @@ ssd.user.Auth = function()
    */
   this._isAuthed = false;
 
+  /** @type {ssd.Config} */
+  this.config = this._config.prependPath( ssd.user.Auth.CONFIG_PATH );
+
   /**
    * Config parameters
    */
@@ -67,9 +70,6 @@ ssd.user.Auth = function()
   // In the user object, what is the name of the user's ID?
   this.config('userID', 'id');
 
-  // register our config
-  ssd.Config.getInstance().register(ssd.user.Auth.CONFIG_PATH, this.config.toObject());
-
   /**
    * performLocalAuth config parameter is used multiple times
    * we'll use this private symbol to assign it so it can get
@@ -86,10 +86,14 @@ ssd.user.Auth = function()
    */
   this._user = new ssd.user.OwnItem();
   // pipe the user object events to this class
-  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_SET, this._dataEvent, false, this);
-  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_SET, this._dataEvent, false, this);
-  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_ADDALL, this._dataEvent, false, this);
-  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_ADDALL, this._dataEvent, false, this);
+  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_SET,
+    this._dataEvent, false, this);
+  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_SET,
+    this._dataEvent, false, this);
+  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_ADDALL,
+    this._dataEvent, false, this);
+  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_ADDALL,
+    this._dataEvent, false, this);
 
   // extend our data object with the own user key/value pairs
   this._user.addAll(ssd.user.types.ownuser);

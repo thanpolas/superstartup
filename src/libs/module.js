@@ -14,12 +14,10 @@ ssd.Module = function() {
   goog.base(this);
 
   /**
-   * A fancy setter / getter instance
-   * Manages the local config
-   *
-   * @type {ssd.fancyGetSet}
+   * @type {ssd.Config} The configuration singleton instance.
+   * @private
    */
-  this.config = new ssd.FancyGetSet();
+  this._config = ssd.Config.getInstance();
 };
 goog.inherits(ssd.Module, ssd.events.EventTarget);
 
