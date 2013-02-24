@@ -10,9 +10,9 @@ goog.provide('ssd.user.Auth.Error');
 goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.AuthModel');
-goog.require('ssd.DynamicMap');
+goog.require('ssd.structs.DynamicMap');
+goog.require('ssd.structs.Map');
 goog.require('ssd.user.types');
-goog.require('ssd.Config');
 goog.require('ssd.user.OwnItem');
 goog.require('ssd.invocator');
 goog.require('ssd.register');
@@ -23,12 +23,14 @@ goog.require('ssd.register');
  * @constructor
  * @extends {ssd.user.AuthModel}
  */
-ssd.user.Auth = function()
-{
+ssd.user.Auth = function() {
 
-  this.logger.info('Class instantiated');
+  this.logger.info('ctor() :: Class instantiated');
 
   goog.base(this);
+
+  // bubble user auth events to core.
+  this.setParentEventTarget( ssd.core );
 
   /**
    * @type {boolean}
@@ -81,18 +83,19 @@ ssd.user.Auth = function()
 
   /**
    * The user data object
+   *
    * @type {ssd.user.OwnItem}
    * @private
    */
   this._user = new ssd.user.OwnItem();
   // pipe the user object events to this class
-  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_SET,
+  this._user.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_SET,
     this._dataEvent, false, this);
-  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_SET,
+  this._user.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_SET,
     this._dataEvent, false, this);
-  this._user.addEventListener(ssd.DynamicMap.EventType.BEFORE_ADDALL,
+  this._user.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_ADDALL,
     this._dataEvent, false, this);
-  this._user.addEventListener(ssd.DynamicMap.EventType.AFTER_ADDALL,
+  this._user.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_ADDALL,
     this._dataEvent, false, this);
 
   // extend our data object with the own user key/value pairs
@@ -104,18 +107,18 @@ ssd.user.Auth = function()
    * values, indicating that we are authed on these
    * external sources
    * @private
-   * @type {ssd.Map.<ssd.user.types.extSourceId, boolean>} bool is always true
+   * @type {ssd.structs.Map.<ssd.user.types.extSourceId, boolean>} bool is always true
    */
-  this._extAuthedSources = new ssd.Map();
+  this._extAuthedSources = new ssd.structs.Map();
 
   /**
    * This var contains a map of external sources.
    * The external Sources IDs will be used as keys and the
    * instanciations of the ext auth plugins as values
    * @private
-   * @type {ssd.Map.<ssd.user.types.extSourceId, Object>}
+   * @type {ssd.structs.Map.<ssd.user.types.extSourceId, Object>}
    */
-  this._extSupportedSources = new ssd.Map();
+  this._extSupportedSources = new ssd.structs.Map();
 
 };
 goog.inherits(ssd.user.Auth, ssd.user.AuthModel);
@@ -169,13 +172,14 @@ ssd.user.Auth.EventType = {
 
   // own user data object before validating it's ok
   USERDATA_BEFORE_VALIDATE: 'user.data.beforeValidate',
-  // own user data object piped events (piped from DynamicMap)
+  // own user data object piped events (piped from structs.DynamicMap)
   BEFORE_SET:    'user.data.beforeSet',
   AFTER_SET:     'user.data.afterSet',
   BEFORE_ADDALL: 'user.data.beforeAddall',
   AFTER_ADDALL:  'user.data.afterAddall'
 
 };
+goog.addSingletonGetter(ssd.user.Auth);
 
 /**
  * A logger to help debugging
@@ -192,12 +196,12 @@ ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
  * execute) the 'get' method.
  *
  *
- * @return {Function} The encapsulated instance.
+ * !return {Function} The encapsulated instance.
  */
-ssd.user.Auth.getInstance = function() {
-  return ssd.user.Auth._instance ||
-    (ssd.user.Auth._instance = ssd.invocator(ssd.user.Auth, 'get'));
-};
+// ssd.user.Auth.getInstance = function() {
+//   return ssd.user.Auth._instance ||
+//     (ssd.user.Auth._instance = ssd.invocator(ssd.user.Auth, 'get'));
+// };
 
 
 ssd.user.Auth.prototype.get = function() {
@@ -248,16 +252,16 @@ ssd.user.Auth.prototype._dataEvent = function (e) {
   };
 
   switch(e.type) {
-    case ssd.DynamicMap.EventType.BEFORE_SET:
+    case ssd.structs.DynamicMap.EventType.BEFORE_SET:
       eventObj.type = ssd.user.Auth.EventType.BEFORE_SET;
     break;
-    case ssd.DynamicMap.EventType.AFTER_SET:
+    case ssd.structs.DynamicMap.EventType.AFTER_SET:
       eventObj.type = ssd.user.Auth.EventType.AFTER_SET;
     break;
-    case ssd.DynamicMap.EventType.BEFORE_ADDALL:
+    case ssd.structs.DynamicMap.EventType.BEFORE_ADDALL:
       eventObj.type = ssd.user.Auth.EventType.BEFORE_ADDALL;
     break;
-    case ssd.DynamicMap.EventType.AFTER_ADDALL:
+    case ssd.structs.DynamicMap.EventType.AFTER_ADDALL:
       eventObj.type = ssd.user.Auth.EventType.AFTER_ADDALL;
     break;
   }
@@ -301,23 +305,22 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj) {
 /**
  * Registration to Core
  *
- * @param {ssd.Core} coreSelf The instance of Core.
+ * @param {ssd.Core} ssdInst
  */
-ssd.user.Auth.onRegisterRun = function( coreSelf ) {
+ssd.user.Auth.onRegisterRun = function( ssdInst ) {
   /**
    * The instance of the user auth class
    * @type {ssd.user.Auth}
    */
-  coreSelf.user = ssd.user.Auth.getInstance();
+  ssdInst.user = new ssd.user.Auth();
 
-  // bubble user auth events to this class
-  coreSelf.user.setParentEventTarget(coreSelf);
+  ssdInst.user.logger.info('onRegisterRun() :: Module Auth registers...');
 
   // initialize ext auth plugins
   ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME );
 
   // register the init method
-  ssd.register.init( coreSelf.user.init );
+  ssd.register.init( ssdInst.user.init, ssdInst.user );
 
 };
 ssd.register.module( ssd.user.Auth.onRegisterRun );

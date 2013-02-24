@@ -87,9 +87,11 @@ ssd.Register.prototype.runPlugins = function( moduleName ) {
 /**
  * Invoke the callbacks of all the modules.
  *
+ * @param {Object} selfObj The instance.
  */
-ssd.Register.prototype.runModules = function( ) {
-  this._invoke( this._modules );
+ssd.Register.prototype.runModules = function( selfObj ) {
+
+  this._invoke( this._modules, {params: selfObj} );
 };
 
 /**
@@ -98,26 +100,28 @@ ssd.Register.prototype.runModules = function( ) {
  * @return {goog.async.Deferred} A deferred.
  */
 ssd.Register.prototype.runModuleInits = function( ) {
-  return this._invoke( this._init, true );
+  return this._invoke( this._init, {deferred: true} );
 };
 
 /**
  * Invoke all the functions in an array.
  * @param {Array.<Function>} ar An array of functions.
- * @param {boolean=} optDeferred if funcs return a deferred, honor it.
+ * @param {Object=} optParams Parameters to run the invoke.
  * @return {goog.async.Deferred|undefined} nothing or a deferred if opt defined.
  */
-ssd.Register.prototype._invoke = function( ar, optDeferred ) {
+ssd.Register.prototype._invoke = function( ar, optParams ) {
   var def;
+  var params = optParams || {};
 
-  if ( true === optDeferred ) {
+  if ( true === params.deferred ) {
     def = new goog.async.Deferred();
     def.callback();
   }
 
-  var ret;
+  var ret, args;
   goog.array.forEach( ar, function( fn ) {
-    ret = fn();
+    args = params.params;
+    ret = fn( args );
     if ( !!def ) {
       def.awaitDeferred( ret );
     }

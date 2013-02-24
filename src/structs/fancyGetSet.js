@@ -1,54 +1,28 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS-IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *
- * createdate 16/Jun/2012
- */
+* @fileoverview A fancy get / set class
+*/
+goog.provide('ssd.structs.FancyGetSet');
 
- /**
-  * @fileoverview A fancy get / set class
-  */
-
-goog.provide('ssd.FancyGetSet');
+goog.require('ssd.invocator');
 
 /**
  * The fancy Get Set constructor.
  * Returns the .getSet method which does the fancy Get/Set
  * @constructor
- * @param {Object=} opt_object Give an object or use a new one.
+ * @param {Object=} optObject Give an object or use a new one.
  * @return {function(string=, *=)} returns the getSet method
  *                            along with all other methods.
  */
-ssd.FancyGetSet = function(opt_object)
-{
+ssd.structs.FancyGetSet = function(optObject) {
   /**
    * The object we are setting / getting
    * @private
    * @type {!Object}
    */
-  this._obj = opt_object || {};
+  this._obj = optObject || {};
 
-  // HACK HACK
-  // encapsulation hack so returned object with the 'new' keyword
-  // is actually the getSet method which has all other methods
-  // attached
-  var capsule = goog.bind(this.getSet, this);
-  capsule.toObject = goog.bind(this.toObject, this);
-  capsule.containsKey = goog.bind(this.containsKey, this);
+  return ssd.invocator.encapsulate( this, this.getSet );
 
-  return capsule;
 };
 
 /**
@@ -59,24 +33,23 @@ ssd.FancyGetSet = function(opt_object)
  * First parameter an object, we parse and SET key / value pairs
  * First parameter a string, second a mixed, we SET as key / value
  *
- * @param {string|Object=} opt_key
- * @param {*=} opt_value
+ * @param {string|Object=} optKey
+ * @param {*=} optValue
  * @return {*}
  * @throws {TypeError} if parameters of not valid type
  */
-ssd.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
-{
-  switch ( goog.typeOf( opt_key ) ) {
+ssd.structs.FancyGetSet.prototype.getSet = function(optKey, optValue) {
+  switch ( goog.typeOf( optKey ) ) {
     case 'object':
-      for(var k in opt_key) {
-        this.set( k, opt_key[k] );
+      for(var k in optKey) {
+        this.set( k, optKey[k] );
       }
     break;
     case 'string':
       if (1 < arguments.length) {
-        this.set( opt_key, opt_value );
+        this.set( optKey, optValue );
       } else {
-        return this.get( opt_key );
+        return this.get( optKey );
       }
     break;
     case 'undefined':
@@ -93,7 +66,7 @@ ssd.FancyGetSet.prototype.getSet = function(opt_key, opt_value)
  * @param {string} key The key.
  * @param {*} value the value.
  */
-ssd.FancyGetSet.prototype.set = function( key, value ) {
+ssd.structs.FancyGetSet.prototype.set = function( key, value ) {
   this._obj[key] = value;
 };
 
@@ -103,7 +76,7 @@ ssd.FancyGetSet.prototype.set = function( key, value ) {
  * @param {string} key The key.
  * @return {*} value the value.
  */
-ssd.FancyGetSet.prototype.get = function( key ) {
+ssd.structs.FancyGetSet.prototype.get = function( key ) {
   return this._obj[key];
 };
 
@@ -111,7 +84,7 @@ ssd.FancyGetSet.prototype.get = function( key ) {
  * Return the raw object literal.
  * @return {Object} The raw object literal.
  */
-ssd.FancyGetSet.prototype.toObject = function() {
+ssd.structs.FancyGetSet.prototype.toObject = function() {
   return this._obj;
 };
 
@@ -121,7 +94,7 @@ ssd.FancyGetSet.prototype.toObject = function() {
  * @param  {string} key The key we want to test
  * @return {boolean} If the key exists in our object
  */
-ssd.FancyGetSet.prototype.containsKey = function(key)
+ssd.structs.FancyGetSet.prototype.containsKey = function(key)
 {
   return key in this._obj;
 };
@@ -131,7 +104,7 @@ ssd.FancyGetSet.prototype.containsKey = function(key)
  *
  * @return {!Object} The stored object.
  */
-ssd.FancyGetSet.prototype.toObject = function()
+ssd.structs.FancyGetSet.prototype.toObject = function()
 {
   return this._obj;
 };

@@ -4,7 +4,6 @@
 goog.provide('ssd.user.auth.PluginModule');
 
 goog.require('ssd.Module');
-goog.require('ssd.FancyGetSet');
 goog.require('ssd.user.Auth');
 
 /**
@@ -24,7 +23,7 @@ ssd.user.auth.PluginModule = function()
   this._auth = ssd.user.Auth.getInstance();
 
   // set auth main as the parent event target
-  this.setParentEventTarget(this._auth);
+  this.setParentEventTarget( this._auth );
 
   /**
    * @private

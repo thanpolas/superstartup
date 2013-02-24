@@ -4,15 +4,18 @@
   *       configuration
   */
 goog.provide('ssd.Config');
+
 goog.require('ssd.debug');
-goog.require('ssd.FancyGetSet');
-goog.require('ssd.StringPath');
+goog.require('ssd.structs.FancyGetSet');
+goog.require('ssd.structs.StringPath');
+
+goog.require('ssd.invocator');
 
 /**
  * A generic config setter / getter
  *
  * @constructor
- * @extends {ssd.FancyGetSet}
+ * @extends {ssd.structs.FancyGetSet}
  */
 ssd.Config = function()
 {
@@ -20,10 +23,10 @@ ssd.Config = function()
 
   /**
    * override the internal storage object.
-   * @type {ssd.StringPath}
+   * @type {ssd.structs.StringPath}
    * @private
    */
-  this._obj = new ssd.StringPath();
+  this._obj = new ssd.structs.StringPath();
 
   /**
    * override get/toObject methods with the ones
@@ -38,8 +41,10 @@ ssd.Config = function()
    */
   this.containsKey = goog.bind( this._obj.containsKey, this._obj );
 
+  return ssd.invocator.encapsulate(this, this.getSet);
+
 };
-goog.inherits(ssd.Config, ssd.FancyGetSet);
+goog.inherits(ssd.Config, ssd.structs.FancyGetSet);
 goog.addSingletonGetter(ssd.Config);
 
 /** @enum {string} Error strings this class throws */
@@ -132,7 +137,7 @@ ssd.Config.prototype.set = function(key, value)
  * @return {ssd.Config} a rigged Config singleton instance.
  */
 ssd.Config.prototype.prependPath = function( path ) {
-  this.logger.info('prependPath() :: Init.');
+  this.logger.info('prependPath() :: Init. path: ' + path);
 
   var configInst = new ssd.Config();
 

@@ -1,9 +1,11 @@
-
-
 /**
  * @fileoverview The bootstrap file of all the tests.
  */
 goog.provide('ssd.test.bootstrap');
+
+mocha.setup({
+  globals: ['fbAsyncInit']
+});
 
 goog.DEBUG = false;
 
@@ -28,4 +30,4 @@ window.FB = {
 
 // sequence matters
 goog.require('ssd.test.core');
-goog.require('ssd.test.event.api');
+// goog.require('ssd.test.event.api');

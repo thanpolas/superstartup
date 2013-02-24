@@ -32,6 +32,12 @@ goog.require('ssd.metadata');
 goog.require('ssd.web.cookies');
 goog.require('ssd.register');
 
+/**
+ * An instance counter.
+ * @type {number}
+ * @private
+ */
+ssd._instanceCount = 0;
 
 /**
  * The base class
@@ -45,13 +51,29 @@ ssd.Core = function()
 {
   goog.base(this);
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this._isReady = false;
+
+  /**
+   * @type {number} The current instance count.
+   * @private
+   */
+  this._instanceCount = ssd._instanceCount++;
+
   if (goog.DEBUG) {
     ssd.debug.openFancyWin();
   }
 
+  this.logger.info('ctor() :: Initializing. Count: ' + ssd._instanceCount);
   this.logger.info('ctor() :: Registering modules...');
 
-  ssd.register.runModules();
+
+  ssd.register.runModules( this );
+
+  return ssd.invocator.encapsulate( this, this.init );
 
 };
 goog.inherits(ssd.Core, ssd.Module);
@@ -65,15 +87,30 @@ ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
  * This function is exposed and is invoked by our handlers
  *
  * @param  {Function=} optCallback A callback for when ready ops finish.
- * @return {goog.async.Deferred}
+ * @return {goog.async.Deferred|ssd.Core} a deferred for init operation or
+ *   a new instance if called with the 'new' keyword.
  */
 ssd.Core.prototype.init = function (optCallback) {
-  this.logger.info('Core init(). Kicking off Super Startup');
+  // As init is the method exposed as 'ss' we need to support
+  // getting called as a constructor with the 'new' keyword
+  // and supply a new instance of superstartup.
+  // http://stackoverflow.com/questions/367768/how-to-detect-if-a-function-is-called-as-constructor
+  //
+  if ( !(this instanceof ssd.Core) && !this.__seenBefore) {
+    this.__seenBefore = true;
+    return new ssd.Core();
+  }
+
+  this.logger.info('init() :: Kicking off Super Startup. Instance count:' +
+    this._instanceCount);
+
 
   var fn = optCallback || ssd.noop;
 
   // start modules initialization and wait till finished
-  return ssd.register.runModuleInits().addBoth(fn);
+  return ssd.register.runModuleInits( this )
+    .addBoth(fn)
+    .addBoth( function() {this._isReady = true;}, this);
 };
 
 /**
@@ -82,6 +119,13 @@ ssd.Core.prototype.init = function (optCallback) {
  */
 ssd.Core.prototype.toString = function() {
   return 'ssd.Core';
+};
+
+/**
+ * @return {boolean} If ss is ready.
+ */
+ssd.Core.prototype.isReady = function() {
+  return this._isReady;
 };
 
 /**
@@ -101,11 +145,8 @@ ssd.Core.prototype.listen = function(event, cb, optSelf) {
 ssd.noop = function(){};
 
 
-// synchronous execution
 // start of synchronous (silent) initialization of the library
-(function(){
+// wake up the monster
+//ssd.core = ssd.invocator( ssd.Core, 'init' );
+ssd.core = ssd.Core.getInstance();
 
-  // wake up the monster
-  ssd.core = ssd.invocator( ssd.Core, 'init' );
-
-})();

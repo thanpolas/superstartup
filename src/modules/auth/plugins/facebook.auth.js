@@ -26,15 +26,14 @@ ssd.user.auth.Facebook = function() {
   /** @const {boolean} */
   this.LOCALAUTH = true;
 
+  /** @type {ssd.Config} */
+  this.config = this._config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
   // set required default configuration values
   this.config('appId', '');
   this.config('permissions', '');
   // If this is set to false, we assume that the FB JS API was loaded
   // synchronously
   this.config('loadFBjsAPI', true);
-
-  // register our configuration
-  ssd.Config.getInstance().register(ssd.user.auth.Facebook.CONFIG_PATH, this.config());
 
   /**
    * @type {string}

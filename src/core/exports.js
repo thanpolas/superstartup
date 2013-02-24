@@ -31,16 +31,18 @@ goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
 
 // core
-goog.exportSymbol('ss', ssd.core);
-goog.exportSymbol('ss.init', ssd.Core.prototype.init);
+goog.exportSymbol('ss', goog.bind(ssd.core.init, ssd.core));
+goog.exportSymbol('ss.init', goog.bind(ssd.core.init, ssd.core));
+
+goog.exportSymbol('ss.isReady', goog.bind(ssd.core.isReady, ssd.core));
 
 // user
 goog.exportSymbol('ss.user', ssd.core.user);
-goog.exportSymbol('ss.user.isAuthed', ssd.core.user.isAuthed);
-goog.exportSymbol('ss.isAuthed', ssd.core.user.isAuthed);
-goog.exportSymbol('ss.user.isExtAuthed', ssd.user.Auth.isExtAuthed);
-goog.exportSymbol('ss.user.isVerified', ssd.user.Auth.isVerified);
-goog.exportSymbol('ss.user.logout', ssd.user.Auth.logout);
+goog.exportSymbol('ss.user.isAuthed', ssd.user.Auth.prototype.isAuthed);
+goog.exportSymbol('ss.isAuthed', ssd.user.Auth.prototype.isAuthed);
+goog.exportSymbol('ss.user.isExtAuthed', ssd.user.Auth.prototype.isExtAuthed);
+goog.exportSymbol('ss.user.isVerified', ssd.user.Auth.prototype.isVerified);
+goog.exportSymbol('ss.user.logout', ssd.user.Auth.prototype.logout);
 
 // external auth
 goog.exportSymbol('ss.user.facebook.login', ssd.user.auth.Facebook.prototype.login);

@@ -1,31 +1,10 @@
 /**
- * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
+ * @fileoverview definitions of user data structures.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS-IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *
- * createdate 06/Jun/2012
- *
- *********
  */
-
-/**
- * @fileoverview definitions of user data structures
- */
-
 goog.provide('ssd.user.types');
 
-goog.require('ssd.Map');
+goog.require('ssd.structs.Map');
 
 /**
  * @typedef {string} The plugin's name type, a single unique string
@@ -81,8 +60,8 @@ ssd.user.types.user = {
   createDate: 0,
   /** @type {boolean} If user has external authentication sources */
   hasExtSource: false,
-  /** @type {ssd.Map.<ssd.user.types.extSourceId>} */
-  extSource: new ssd.Map()
+  /** @type {ssd.structs.Map.<ssd.user.types.extSourceId>} */
+  extSource: new ssd.structs.Map()
 };
 
 /**

@@ -27,7 +27,7 @@
 goog.provide('ssd.user.Item');
 goog.provide('ssd.user.Item.EventType');
 
-goog.require('ssd.DynamicMap');
+goog.require('ssd.structs.DynamicMap');
 goog.require('ssd.user.types');
 
 /**
@@ -38,14 +38,14 @@ goog.require('ssd.user.types');
  * represents the current logged in user's data object
  *
  * @constructor
- * @param {ssd.user.types.user=} opt_user a user data object to init with
- * @extends {ssd.DynamicMap}
+ * @param {ssd.user.types.user=} optUser a user data object to init with
+ * @extends {ssd.structs.DynamicMap}
  */
-ssd.user.Item = function(opt_user)
+ssd.user.Item = function(optUser)
 {
-  ssd.DynamicMap.call(this, opt_user || ssd.user.types.user);
+  ssd.structs.DynamicMap.call(this, optUser || ssd.user.types.user);
 };
-goog.inherits(ssd.user.Item, ssd.DynamicMap);
+goog.inherits(ssd.user.Item, ssd.structs.DynamicMap);
 
 /**
  * Events triggered by this class

@@ -26,15 +26,14 @@ ssd.user.auth.Twitter = function()
   /** @const {boolean} */
   this.LOCALAUTH = false;
 
+  /** @type {ssd.Config} */
+  this.config = this._config.prependPath( ssd.user.auth.Twitter.CONFIG_PATH );
   this.config('authUrl', '/users/twitter');
   // name of GET param to use when redirecting for twitter
   // oAuth login, which will contain the current url so
   // we know where to redirect the user once he/she comes
   // back from Twitter
   this.config('returnPathParam', 'url');
-
-  // register our configuration
-  ssd.Config.getInstance().register(ssd.user.auth.Twitter.CONFIG_PATH, this.config.toObject());
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -72,8 +71,7 @@ ssd.user.auth.Twitter.prototype.init = function() {
 
   this.logger.info('Init init(). Dispatching dummy event');
 
-  this.dispatchEvent(ssd.user.Auth.EventType.INITIAL_AUTH_STATUS);
-
+  this.dispatchEvent( ssd.user.Auth.EventType.INITIAL_AUTH_STATUS );
   // resolve the deferred and pass current auth status.
   def.callback( false );
 

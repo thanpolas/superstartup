@@ -25,15 +25,12 @@
 goog.provide('ssd');
 
 goog.require('ssd.debug');
-goog.require('ssd.metrics');
 goog.require('ssd.error');
-goog.require('ssd.metadata');
 goog.require('ssd.ajax');
 goog.require('ssd.Config');
 goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
 goog.require('ssd.helpers');
-goog.require('ssd.web.cookies');
 
 // ssd.Core is special, is our core
 goog.require('ssd.Core');
