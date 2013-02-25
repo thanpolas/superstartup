@@ -17,7 +17,7 @@ describe('The generic XHR abstraction', function(){
 
   describe('Core functionality', function(){
     it('By default it should perform a POST with JSON encoding', function(done){
-      ss.net.ajax(mirrorUrl, function(status, data){
+      ss.ajax(mirrorUrl, function(status, data){
         expect(status).to.be.True;
         expect(data.dataType).to.equal('JSON');
         expect(data.sendMethod).to.equal('POST');
@@ -37,7 +37,7 @@ describe('The generic XHR abstraction', function(){
         expect(data.four.fourOne).to.equal(4.1);
         done();
       }
-      ss.net.ajax(mirrorUrl, cb, 'POST', mockData);
+      ss.ajax(mirrorUrl, cb, 'POST', mockData);
     });
 
     it('should return an error when it fails', function(done){
@@ -47,7 +47,7 @@ describe('The generic XHR abstraction', function(){
         expect(errorThrown).to.be.a('string');
         done();
       }
-      ss.net.ajax('/a/bogus/url', cb);
+      ss.ajax('/a/bogus/url', cb);
     });
 
     it('should perform a GET operation', function(done){
@@ -57,7 +57,7 @@ describe('The generic XHR abstraction', function(){
         done();
       }
 
-      ss.net.ajax(mirrorUrl, cb, 'GET');
+      ss.ajax(mirrorUrl, cb, 'GET');
     });
 
     it('should perform a PUT operation', function(done){
@@ -66,7 +66,7 @@ describe('The generic XHR abstraction', function(){
         expect(data.sendMethod).to.equal('PUT');
         done();
       }
-      ss.net.ajax(mirrorUrl, cb, 'PUT');
+      ss.ajax(mirrorUrl, cb, 'PUT');
     });
   });
 });

@@ -18,12 +18,12 @@ describe('The generic data sync abstraction', function(){
           fourOne: 4.1
         }
       };
-  // closure's xhrio signature
+  // closure's xhrio send func signature
   //url, opt_callback, opt_method, opt_content, opt_headers, opt_timeoutInterval, opt_withCredentials
 
   describe('Core functionality', function(){
     it('By default it should perform a POST with JSON encoding', function(done){
-      ss.net.sync(mirrorUrl, function(status, data){
+      ss.sync(mirrorUrl, function(status, data){
         expect(status).to.be.True;
         expect(data.dataType).to.equal('JSON');
         expect(data.sendMethod).to.equal('POST');
@@ -43,7 +43,7 @@ describe('The generic data sync abstraction', function(){
         expect(data.four.fourOne).to.equal(4.1);
         done();
       }
-      ss.net.sync(mirrorUrl, cb, 'POST', mockData);
+      ss.sync(mirrorUrl, cb, 'POST', mockData);
     });
 
     it('should return an error when it fails', function(done){
@@ -53,7 +53,7 @@ describe('The generic data sync abstraction', function(){
         expect(errorThrown).to.be.a('string');
         done();
       }
-      ss.net.sync('/a/bogus/url', cb);
+      ss.sync('/a/bogus/url', cb);
     });
 
     it('should perform a GET operation', function(done){
@@ -63,7 +63,7 @@ describe('The generic data sync abstraction', function(){
         done();
       }
 
-      ss.net.sync(mirrorUrl, cb, 'GET');
+      ss.sync(mirrorUrl, cb, 'GET');
     });
 
     it('should perform a PUT operation', function(done){
@@ -72,7 +72,7 @@ describe('The generic data sync abstraction', function(){
         expect(data.sendMethod).to.equal('PUT');
         done();
       }
-      ss.net.sync(mirrorUrl, cb, 'PUT');
+      ss.sync(mirrorUrl, cb, 'PUT');
     });
   });
 });

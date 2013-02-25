@@ -36,6 +36,10 @@ goog.exportSymbol('ss.init', ssd.Core.prototype.init);
 
 goog.exportSymbol('ss.isReady', ssd.Core.getInstance().isReady);
 
+// net
+goog.exportSymbol('ss.ajax', ssd.ajax);
+goog.exportSymbol('ss.sync', ssd.sync);
+
 // events
 goog.exportSymbol('ss.trigger', ssd.Core.getInstance().dispatchEvent);
 

@@ -31,6 +31,7 @@ goog.require('ssd.user.auth.Twitter');
 goog.require('ssd.metadata');
 goog.require('ssd.web.cookies');
 goog.require('ssd.register');
+goog.require('ssd.sync');
 
 /**
  * An instance counter.
@@ -149,7 +150,7 @@ ssd.Core.prototype.isReady = function() {
  * @return {goog.events.ListenableKey} a unique event key.
  */
 ssd.Core.prototype.listen = function(event, cb, optSelf) {
-  return goog.events.listen(this, event, cb, false, optSelf || goog.global);
+  return goog.events.listen( this, event, cb, false, optSelf || goog.global);
 };
 
 /**
@@ -170,7 +171,7 @@ ssd.Core.prototype.trigger = function( event ) {
  * @return {boolean} indicating whether the listener was there to remove.
  */
 ssd.Core.prototype.unlisten = function( key ) {
-  return goog.events.unlistenByKey( this, key );
+  return goog.events.unlistenByKey( key );
 };
 
 

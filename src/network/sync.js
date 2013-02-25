@@ -2,12 +2,12 @@
  * Provide the Ajax namespace
  *
  */
-goog.provide('ssd.ajax');
+goog.provide('ssd.sync');
 
-goog.require('goog.net.XhrIo');
+goog.require('ssd.ajax');
 
 /**
  * Plainly use google's xhrIo lib for now.
  *
  */
-ssd.ajax = goog.net.XhrIo.send;
+ssd.sync = ssd.ajax;
