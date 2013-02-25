@@ -1,3 +1,4 @@
+/*jshint camelcase:false */
 /**
  * [exports description]
  * @param  {[type]} grunt [description]
@@ -8,6 +9,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-closure-tools');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   var externsPath = 'build/externs/';
   // don't put the extension here
@@ -71,7 +73,18 @@ module.exports = function(grunt) {
      * TESTING
      *
      */
-    mochaPhantom: 'node_modules/mocha-phantomjs/bin/mocha-phantomjs test/bdd/mocha.html',
+    connect: {
+      test: {
+        options: {
+          port: 4242,
+          base: './',
+          keepalive: false
+        }
+      }
+    },
+
+    mochaPhantom: 'node_modules/mocha-phantomjs/bin/mocha-phantomjs ' +
+      'http://localhost:4242/test/bdd/index.html',
 
     shell: {
       options: {
@@ -86,7 +99,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('test', 'Test using mocha-phantom', 'shell:mochaPhantom');
+  grunt.registerTask('test', ['connect:test', 'shell:mochaPhantom']);
   grunt.registerTask('test:min', 'Test using mocha-phantom min Reporter', 'shell:mochaPhantomMin');
   grunt.registerTask('deps', 'closureDepsWriter');
 

@@ -16,31 +16,47 @@ describe('Core API', function(){
   describe('new instances of ss()', function () {
     it('should create a new instance', function () {
       var ssNew = new ss();
-      expect(ssNew.isReady()).to.be.false;
+      expect( ssNew.isReady() ).to.be.false;
       // original ss should still remain ready
       expect(ss.isReady()).to.be.true;
     });
   });
 
   describe('core methods and events ::', function() {
+    var ssNew;
+    beforeEach( function() {
+      ssNew = new ss();
+    });
+    afterEach( function() {
+    });
+
     it('new instance should be a function', function(){
-      var ssNew = new ss();
       expect( ssNew ).to.be.a('function');
     });
 
     it('should accept a callback on init', function(done) {
-      function ssCallback() {
-        expect( ss.isReady() ).to.be.true;
+      var ssCallback = function() {
+        expect( true ).to.be.true;
         done();
-      }
+      };
 
-      var ssNew = new ss();
       ssNew(ssCallback);
     });
 
+    it('should report false on isReady prior to init', function() {
+      expect( ssNew.isReady() ).to.be.false;
+    });
+
+    it('should report true in callback', function( done ) {
+      var ssCallback = function() {
+        expect( ssNew.isReady() ).to.be.true;
+        done();
+      };
+
+      ssNew( ssCallback );
+    });
 
     it('should emit an init event', function(done){
-      var ssNew = new ss();
       ssNew.listen(ssd.test.fixture.event.core.INIT, function(){
         expect( true ).to.be.true;
         done();

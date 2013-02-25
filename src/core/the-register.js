@@ -80,8 +80,8 @@ ssd.Register.prototype.runPlugins = function( moduleName ) {
   if ( !this._plugins[moduleName].length ) {
     return;
   }
-
   this._invoke( this._plugins[moduleName] );
+  this._plugins = {};
 };
 
 /**
@@ -90,8 +90,8 @@ ssd.Register.prototype.runPlugins = function( moduleName ) {
  * @param {Object} selfObj The instance.
  */
 ssd.Register.prototype.runModules = function( selfObj ) {
-
   this._invoke( this._modules, {params: selfObj} );
+  this._modules = [];
 };
 
 /**
@@ -100,7 +100,9 @@ ssd.Register.prototype.runModules = function( selfObj ) {
  * @return {goog.async.Deferred} A deferred.
  */
 ssd.Register.prototype.runModuleInits = function( ) {
-  return this._invoke( this._init, {deferred: true} );
+  var def = this._invoke( this._init, {deferred: true} );
+  this._init = [];
+  return def;
 };
 
 /**

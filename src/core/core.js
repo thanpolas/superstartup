@@ -82,6 +82,15 @@ goog.addSingletonGetter(ssd.Core);
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
 /**
+ * Events triggered by core
+ * @enum {string}
+ */
+ssd.Core.EventType = {
+  INIT: 'ss.init'
+};
+
+
+/**
  * Kicks off the library.
  *
  * This function is exposed and is invoked by our handlers
@@ -109,8 +118,12 @@ ssd.Core.prototype.init = function (optCallback) {
 
   // start modules initialization and wait till finished
   return ssd.register.runModuleInits( this )
-    .addBoth(fn)
-    .addBoth( function() {this._isReady = true;}, this);
+    .addBoth( function() {
+      this._isReady = true;
+      this.dispatchEvent( ssd.Core.EventType.INIT );
+    }, this)
+    .addBoth( fn );
+
 };
 
 /**
