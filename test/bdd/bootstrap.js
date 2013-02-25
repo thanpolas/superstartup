@@ -30,4 +30,4 @@ window.FB = {
 
 // sequence matters
 goog.require('ssd.test.core');
-// goog.require('ssd.test.event.api');
+goog.require('ssd.test.event.api');

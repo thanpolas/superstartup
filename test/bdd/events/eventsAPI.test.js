@@ -12,7 +12,6 @@ describe('Events API', function(){
     ssNew();
   });
   afterEach(function() {
-    stub.restore();
   });
 
   it('should listen and trigger arbitrary events', function(done){
@@ -57,6 +56,7 @@ describe('Events API', function(){
     function cb (eventObj) {
       expect(eventObj.arg1).to.be.equal(1);
       expect(eventObj.arg2).to.be.equal(2);
+      done();
     }
     ssNew.listen('custom.eventThree', cb);
     var eventObj = {
@@ -73,7 +73,7 @@ describe('Events API', function(){
       expect(false).to.be.true;
     });
 
-    ssNew.removeListener(cid);
+    ssNew.unlisten(cid);
     ssNew.trigger('custom.eventFour');
     expect(true).to.be.true;
   });
@@ -86,10 +86,10 @@ describe('Events API', function(){
 
     ssNew.listen('custom.eventFive', cb);
     ssNew.listen('custom.eventFive', cb);
-    ssNew.listen('custom.eventFive', cb);
-    ssNew.listen('custom.eventFive', cb);
+    ssNew.listen('custom.eventSix', cb);
+    ssNew.listen('custom.eventSeven', cb);
 
-    ssNew.removeAllListeners('custom.eventFive');
+    var n = ssNew.removeAllListeners();
     ssNew.trigger('custom.eventFive');
     expect(true).to.be.true;
   });

@@ -70,7 +70,6 @@ ssd.Core = function()
   this.logger.info('ctor() :: Initializing. Count: ' + ssd._instanceCount);
   this.logger.info('ctor() :: Registering modules...');
 
-
   ssd.register.runModules( this );
 
   return ssd.invocator.encapsulate( this, this.init );
@@ -144,13 +143,46 @@ ssd.Core.prototype.isReady = function() {
 /**
  * Generic listener method for all events emitted by ss
  *
- * @param  {string} eventType The event type.
- * @param  {Function} cb The callback function.
+ * @param {Object | goog.events.Event | null | string} event object
+ * @param {Function} cb The callback function.
  * @param {Object=} optSelf optionally define a context to invoke the callback on.
+ * @return {goog.events.ListenableKey} a unique event key.
  */
 ssd.Core.prototype.listen = function(event, cb, optSelf) {
-  goog.events.listen(this, event, cb, false, optSelf || goog.global);
+  return goog.events.listen(this, event, cb, false, optSelf || goog.global);
 };
+
+/**
+ * [trigger description]
+ * @param  {Object | goog.events.Event | null | string} event object
+ * @return {boolean} If anyone called preventDefault on the event object
+ *   (or if any of the handlers returns false) this will also return false.
+ *   If there are no handlers, or if all handlers return true,
+ *   this returns true.
+ */
+ssd.Core.prototype.trigger = function( event ) {
+  return goog.events.dispatchEvent( this, event );
+};
+
+/**
+ * [trigger description]
+ * @param  {goog.events.ListenableKey } key The key from listen().
+ * @return {boolean} indicating whether the listener was there to remove.
+ */
+ssd.Core.prototype.unlisten = function( key ) {
+  return goog.events.unlistenByKey( this, key );
+};
+
+
+/**
+ * [trigger description]
+ * @param  {string=} optType Optionally narrow down to specific type.
+ * @return {number} Number of listeners removed.
+ */
+ssd.Core.prototype.removeAllListeners = function( optType ) {
+  return goog.events.removeAll( this, optType);
+};
+
 
 /**
  * No operation function

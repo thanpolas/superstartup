@@ -31,10 +31,13 @@ goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
 
 // core
-goog.exportSymbol('ss', goog.bind(ssd.core.init, ssd.core));
-goog.exportSymbol('ss.init', goog.bind(ssd.core.init, ssd.core));
+goog.exportSymbol('ss', ssd.core);
+goog.exportSymbol('ss.init', ssd.Core.prototype.init);
 
-goog.exportSymbol('ss.isReady', goog.bind(ssd.core.isReady, ssd.core));
+goog.exportSymbol('ss.isReady', ssd.Core.getInstance().isReady);
+
+// events
+goog.exportSymbol('ss.trigger', ssd.Core.getInstance().dispatchEvent);
 
 // user
 goog.exportSymbol('ss.user', ssd.core.user);
