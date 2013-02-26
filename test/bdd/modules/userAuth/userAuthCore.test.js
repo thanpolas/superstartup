@@ -12,7 +12,7 @@ describe('User Auth Module :: Core functionality', function () {
   beforeEach(function() {
     ssNew = new ss();
     ssNew();
-    stub = sinon.stub(ssNew.net, 'sync');
+    stub = sinon.stub(ssNew, 'sync');
   });
   afterEach(function() {
     stub.restore();

@@ -3,6 +3,8 @@
  */
 goog.provide('ssd.test.bootstrap');
 
+mocha.ui('bdd');
+mocha.reporter('html');
 mocha.setup({
   globals: ['fbAsyncInit']
 });
@@ -27,7 +29,7 @@ window.FB = {
   login: function(cb, params){}
 };
 
-
 // sequence matters
 goog.require('ssd.test.core');
 goog.require('ssd.test.event.api');
+goog.require('ssd.test.userAuth.core');

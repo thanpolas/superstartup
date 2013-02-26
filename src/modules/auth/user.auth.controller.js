@@ -314,6 +314,9 @@ ssd.user.Auth.onRegisterRun = function( ssdInst ) {
    */
   ssdInst.user = new ssd.user.Auth();
 
+  // assign isAuthed method
+  ssdInst.isAuthed = goog.bind(ssdInst.user.isAuthed, ssdInst.user);
+
   ssdInst.user.logger.info('onRegisterRun() :: Module Auth registers...');
 
   // initialize ext auth plugins

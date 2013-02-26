@@ -69,8 +69,11 @@ ssd.Core = function()
   }
 
   this.logger.info('ctor() :: Initializing. Count: ' + ssd._instanceCount);
-  this.logger.info('ctor() :: Registering modules...');
 
+  this.sync = ssd.sync;
+  this.ajax = ssd.ajax;
+
+  this.logger.info('ctor() :: Registering modules...');
   ssd.register.runModules( this );
 
   return ssd.invocator.encapsulate( this, this.init );
