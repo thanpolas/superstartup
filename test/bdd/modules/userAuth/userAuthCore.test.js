@@ -1,17 +1,21 @@
 goog.provide('ssd.test.userAuth.core');
 
+goog.require('goog.object');
+
 goog.require('ssd.test.fixture.userOne');
 goog.require('ssd.test.fixture.event');
+
 
 describe('User Auth Module :: Core functionality', function () {
   var ssNew;
   var stub;
-  var userFix = ssd.test.fixture.userOne;
+  var userFix;
   var event = ssd.test.fixture.event;
 
   beforeEach(function() {
     ssNew = new ss();
     ssNew();
+    userFix = goog.object.unsafeClone(ssd.test.fixture.userOne);
     stub = sinon.stub(ssNew.ajax, 'send');
   });
   afterEach(function() {
@@ -20,10 +24,13 @@ describe('User Auth Module :: Core functionality', function () {
 
 
   describe('Auth / Deauth', function () {
-    it('should not be authed', function () {
+    it('should not be authed (root alias)', function () {
       expect(ssNew.isAuthed()).to.be.false;
+    });
+    it('should not be authed (user method)', function () {
       expect(ssNew.user.isAuthed()).to.be.false;
     });
+
     it('should authenticate with a provided UDO', function(){
       expect(ssNew.isAuthed()).to.not.be.true;
 
@@ -42,27 +49,34 @@ describe('User Auth Module :: Core functionality', function () {
   });
 
   describe('Read user data object', function () {
-    it('should return the values of the provided UDO', function(){
-      var userMock = ssd.test.fixture.userOne;
+    it('should authenticate us if we provide a UDO', function(){
       expect(ssNew.isAuthed()).to.not.be.true;
-      ssNew.user.auth(userMock);
+      ssNew.user.auth(userFix);
       expect(ssNew.isAuthed()).to.be.true;
-
+    });
+    it('should provide the UDO with fancy GetSet', function(){
+      ssNew.user.auth(userFix);
+      console.log(userFix);
       // start read tests, first the fancy read
-      expect(ssNew.user('id')).to.equal(userMock.id);
-      expect(ssNew.user('firstName')).to.equal(userMock.firstName);
-      expect(ssNew.user('bio')).to.equal(userMock.bio);
+      expect(ssNew.user('id')).to.equal(userFix.id);
+      expect(ssNew.user('firstName')).to.equal(userFix.firstName);
+      expect(ssNew.user('bio')).to.equal(userFix.bio);
+    });
+    it('should provide the UDO with get method', function(){
+      ssNew.user.auth(userFix);
 
       // now read using the 'get' method
-      expect(ssNew.user.get('id')).to.equal(userMock.id);
-      expect(ssNew.user.get('firstName')).to.equal(userMock.firstName);
-      expect(ssNew.user.get('bio')).to.equal(userMock.bio);
+      expect(ssNew.user.get('id')).to.equal(userFix.id);
+      expect(ssNew.user.get('firstName')).to.equal(userFix.firstName);
+      expect(ssNew.user.get('bio')).to.equal(userFix.bio);
+    });
+    it('should provide the complete UDO with no args on fancy GetSet', function(){
+      ssNew.user.auth(userFix);
 
       // And finally by the raw output
-      expect(ssNew.user().id).to.equal(userMock.id);
-      expect(ssNew.user().firstName).to.equal(userMock.firstName);
-      expect(ssNew.user().bio).to.equal(userMock.bio);
-
+      expect(ssNew.user().id).to.equal(userFix.id);
+      expect(ssNew.user().firstName).to.equal(userFix.firstName);
+      expect(ssNew.user().bio).to.equal(userFix.bio);
     });
   });
 

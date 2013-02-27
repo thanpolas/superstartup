@@ -74,9 +74,17 @@ ssd.Core = function()
   this.ajax = ssd.ajax;
 
   this.logger.info('ctor() :: Registering modules...');
-  ssd.register.runModules( this );
 
-  return ssd.invocator.encapsulate( this, this.init );
+  //
+  // hack
+  // run encapsulator before we run modules so we won't need to
+  // do deep copy of the selfObj
+  //
+  var selfObj = ssd.invocator.encapsulate( this, this.init );
+
+  ssd.register.runModules( selfObj );
+
+  return selfObj;
 
 };
 goog.inherits(ssd.Core, ssd.Module);
@@ -103,6 +111,7 @@ ssd.Core.EventType = {
  *   a new instance if called with the 'new' keyword.
  */
 ssd.Core.prototype.init = function (optCallback) {
+
   // As init is the method exposed as 'ss' we need to support
   // getting called as a constructor with the 'new' keyword
   // and supply a new instance of superstartup.
@@ -134,7 +143,7 @@ ssd.Core.prototype.init = function (optCallback) {
  * @return {string}
  */
 ssd.Core.prototype.toString = function() {
-  return 'ssd.Core';
+  return 'superstartup';
 };
 
 /**

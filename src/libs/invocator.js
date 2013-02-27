@@ -1,5 +1,7 @@
 goog.provide('ssd.invocator');
 
+goog.require('goog.object');
+
 /**
  * The invocator function creates a new instance of the provided constructor
  * which is also linked to a method that it contains.

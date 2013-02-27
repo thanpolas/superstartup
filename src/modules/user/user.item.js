@@ -29,11 +29,13 @@ goog.provide('ssd.user.Item.EventType');
 
 goog.require('ssd.structs.DynamicMap');
 goog.require('ssd.user.types');
+goog.require('ssd.invocator');
+goog.require('ssd.structs.FancyGetSet');
 
 /**
  * A single user data object item.
  *
- * This is intented for public user data objects. e.g. other users'
+ * This is intended for public user data objects. e.g. other users'
  * data objects. This class is extented by ssd.user.OwnItem which
  * represents the current logged in user's data object
  *
@@ -43,6 +45,13 @@ goog.require('ssd.user.types');
  */
 ssd.user.Item = function(optUser) {
   ssd.structs.DynamicMap.call(this, optUser || ssd.user.types.user);
+
+  this.fancyGetSet = new ssd.structs.FancyGetSet();
+  this.fancyGetSet.get = goog.bind( this.get, this);
+  this.fancyGetSet.set = goog.bind( this.set, this);
+  this.getSet = this.fancyGetSet.getSet;
+
+  return ssd.invocator.encapsulate(this, this.fancyGetSet.getSet);
 };
 goog.inherits(ssd.user.Item, ssd.structs.DynamicMap);
 

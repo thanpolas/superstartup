@@ -16,21 +16,23 @@ goog.require('ssd.user.types');
 goog.require('ssd.user.OwnItem');
 goog.require('ssd.invocator');
 goog.require('ssd.register');
+goog.require('ssd.invocator');
 
 /**
  * User authentication class
  *
+ * @param {ssd.Core} ssdInst
  * @constructor
  * @extends {ssd.user.AuthModel}
  */
-ssd.user.Auth = function() {
+ssd.user.Auth = function( ssdInst ) {
 
   this.logger.info('ctor() :: Class instantiated');
 
   goog.base(this);
 
   // bubble user auth events to core.
-  this.setParentEventTarget( ssd.core );
+  this.setParentEventTarget( ssdInst );
 
   /**
    * @type {boolean}
@@ -67,10 +69,11 @@ ssd.user.Auth = function() {
   // When we get an authentication response from the server
   // Under which key / path do we expect the user data
   // object to be found?
-  this.config('userKey', 'user');
+  // Set to null when response root is the udo.
+  this.config(ssd.user.Auth.ConfigKeys.RESPONSE_KEY_UDO, null);
 
   // In the user object, what is the name of the user's ID?
-  this.config('userID', 'id');
+  this.config('userId', 'id');
 
   /**
    * performLocalAuth config parameter is used multiple times
@@ -119,6 +122,9 @@ ssd.user.Auth = function() {
    * @type {ssd.structs.Map.<ssd.user.types.extSourceId, Object>}
    */
   this._extSupportedSources = new ssd.structs.Map();
+
+
+  return ssd.invocator.encapsulate(this, this._dynmapUdo.getSet);
 
 };
 goog.inherits(ssd.user.Auth, ssd.user.AuthModel);
@@ -332,7 +338,7 @@ ssd.user.Auth.onRegisterRun = function( ssdInst ) {
    * The instance of the user auth class
    * @type {ssd.user.Auth}
    */
-  ssdInst.user = new ssd.user.Auth();
+  ssdInst.user = new ssd.user.Auth( ssdInst );
 
   // assign isAuthed method
   ssdInst.isAuthed = goog.bind(ssdInst.user.isAuthed, ssdInst.user);

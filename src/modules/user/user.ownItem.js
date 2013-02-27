@@ -10,11 +10,11 @@ goog.require('ssd.user.Item');
  * The currently logged in user's data object.
  *
  * @constructor
- * @param {ssd.user.types.user=} opt_user a user data object to init with
+ * @param {ssd.user.types.user=} optUdo a user data object to init with
  * @extends {ssd.user.Item}
  */
-ssd.user.OwnItem = function(opt_user) {
-  goog.base(this, opt_user);
+ssd.user.OwnItem = function(optUdo) {
+  return goog.base(this, optUdo);
 };
 goog.inherits(ssd.user.OwnItem, ssd.user.Item);
 
