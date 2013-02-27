@@ -17,13 +17,6 @@ ssd.user.auth.PluginInterface = function(){};
 ssd.user.auth.PluginInterface.prototype.SOURCEID;
 
 /**
- * @const {boolean} If this plugin needs to follow up authentication
- *         with the server. If set to true then  you also need
- *         to define the 'getAccessToken' method
- */
-ssd.user.auth.PluginInterface.prototype.LOCALAUTH;
-
-/**
  * Used by the instance handlers to know if we have started
  * an auth crosscheck with local (server)
  * @type {boolean}

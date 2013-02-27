@@ -39,7 +39,7 @@ ssd.user.Auth = function() {
   this._isAuthed = false;
 
   /** @type {ssd.Config} */
-  this.config = this._config.prependPath( ssd.user.Auth.CONFIG_PATH );
+  this.config = this._config.prependPath( ssd.user.Auth.ConfigKeys.CONFIG_PATH );
 
   /**
    * Config parameters
@@ -49,7 +49,7 @@ ssd.user.Auth = function() {
 
   // The var name to use when (ajax) posting the SOURCEID to the server
   // depends on 'performLocalAuth'
-  this.config('localAuthSourceId', 'sourceId');
+  this.config(ssd.user.Auth.ConfigKeys.PARAM_SOURCE_ID, 'sourceId');
 
   // When performing a local authentication we pass the
   // access token to the server so he can validate the
@@ -87,19 +87,19 @@ ssd.user.Auth = function() {
    * @type {ssd.user.OwnItem}
    * @private
    */
-  this._user = new ssd.user.OwnItem();
+  this._dynmapUdo = new ssd.user.OwnItem();
   // pipe the user object events to this class
-  this._user.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_SET,
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_SET,
     this._dataEvent, false, this);
-  this._user.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_SET,
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_SET,
     this._dataEvent, false, this);
-  this._user.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_ADDALL,
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_ADDALL,
     this._dataEvent, false, this);
-  this._user.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_ADDALL,
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_ADDALL,
     this._dataEvent, false, this);
 
   // extend our data object with the own user key/value pairs
-  this._user.addAll(ssd.user.types.ownuser);
+  this._dynmapUdo.addAll(ssd.user.types.ownuser);
 
 
   /**
@@ -123,15 +123,33 @@ ssd.user.Auth = function() {
 };
 goog.inherits(ssd.user.Auth, ssd.user.AuthModel);
 
-
 /**
- * String path that we'll store the config
- * @const {string}
+ * auth module configuration libs
+ * @enum {string}
  */
-ssd.user.Auth.CONFIG_PATH = 'user.auth';
+ssd.user.Auth.ConfigKeys = {
+  /**
+   * String path that we'll store the config
+   */
+  CONFIG_PATH: 'user.auth',
+
+  /** The config key that declares if a plugin needs local auth */
+  HAS_LOCAL_AUTH: 'user.auth',
+
+  LOCAL_AUTH_URL: 'localAuthUrl',
+
+  // The var name to use when (ajax) posting the SOURCEID to the server
+  // depends on 'performLocalAuth'
+  PARAM_SOURCE_ID: 'localAuthSourceId',
+  PARAM_ACCESS_TOKEN: 'localAuthAccessToken',
+
+  // the udo response keys
+  RESPONSE_KEY_UDO: 'udoKey'
+};
 
 /** @const {string} Identifies the module for the register */
 ssd.user.Auth.MODULE_NAME = 'user.auth';
+
 
 /**
  * Errors thrown by main external auth class.
@@ -162,13 +180,15 @@ ssd.user.Auth.EventType = {
   INITIAL_AUTH_STATUS: 'user.initialAuthStatus',
   // Triggers if authed user is new, first time signup
   NEWUSER: 'user.newUser',
-  // before local auth
+  // before ext source local auth
+  BEFORE_EXT_LOCAL_AUTH: 'user.beforeExtLocalAuth',
+  // Befora local Auth
   BEFORE_LOCAL_AUTH: 'user.beforeLocalAuth',
   // before we process the response object from the AJAX callback
   // of an authentication operation with local server
-  BEFORE_AUTH_RESPONSE: 'user.beforeAuthResponse',
-  // After the auth response has been processed
-  AUTH_RESPONSE: 'user.authResponse',
+  ON_AUTH_RESPONSE: 'user.onAuthResponse',
+
+  AFTER_AUTH_RESPONSE: 'user.afterAuthResponse',
 
   // own user data object before validating it's ok
   USERDATA_BEFORE_VALIDATE: 'user.data.beforeValidate',
@@ -207,7 +227,7 @@ ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
 ssd.user.Auth.prototype.get = function() {
   console.log('Yeashhhhh');
   console.log(this);
-  return this._user.toObject();
+  return this._dynmapUdo.toObject();
 };
 
 /**

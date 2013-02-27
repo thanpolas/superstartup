@@ -23,11 +23,13 @@ ssd.user.auth.Facebook = function() {
   this.logger.info('Constructor() :: Init.');
   goog.base(this);
 
-  /** @const {boolean} */
-  this.LOCALAUTH = true;
-
   /** @type {ssd.Config} */
   this.config = this._config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
+
+  // set if a local auth with the server should be performed when this
+  // plugin authenticates.
+  this.config(ssd.user.Auth.HAS_LOCAL_AUTH, true);
+
   // set required default configuration values
   this.config('appId', '');
   this.config('permissions', '');

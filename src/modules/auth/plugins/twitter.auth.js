@@ -23,12 +23,15 @@ ssd.user.auth.Twitter = function()
 {
   goog.base(this);
 
-  /** @const {boolean} */
-  this.LOCALAUTH = false;
-
   /** @type {ssd.Config} */
   this.config = this._config.prependPath( ssd.user.auth.Twitter.CONFIG_PATH );
+
+  // set if a local auth with the server should be performed when this
+  // plugin authenticates.
+  this.config(ssd.user.Auth.ConfigKeys.HAS_LOCAL_AUTH, false);
+
   this.config('authUrl', '/users/twitter');
+
   // name of GET param to use when redirecting for twitter
   // oAuth login, which will contain the current url so
   // we know where to redirect the user once he/she comes
@@ -81,15 +84,15 @@ ssd.user.auth.Twitter.prototype.init = function() {
 /**
  * Opens the login dialog or starts the authentication flow
  *
- * @param  {Function(boolean)=} opt_callback optional callback
- * @param {string=} opt_perms set permissions if we need to...
+ * @param  {Function(boolean)=} optCallback optional callback
+ * @param {string=} optPerms set permissions if we need to...
  *      comma separate them
  * @return {void}
  */
-ssd.user.auth.Twitter.prototype.login = function(opt_callback, opt_perms)
-{
+ssd.user.auth.Twitter.prototype.login = function(optCallback, optPerms) {
   // use the current path of the user for return
-  var returnPath = '?' + this.config('returnPathParam') + '=' + ssd.encURI(window.location.pathname);
+  var returnPath = '?' + this.config('returnPathParam') + '=' +
+    ssd.encURI(window.location.pathname);
 
   this.logger.info('Init login(). Return path:' + returnPath);
 

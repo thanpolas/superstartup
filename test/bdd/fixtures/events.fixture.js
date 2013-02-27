@@ -33,11 +33,14 @@ ssd.test.fixture.event.user = {
   INITIAL_AUTH_STATUS: 'user.initialAuthStatus',
   // Triggers if authed user is new, first time signup
   NEWUSER: 'user.newUser',
+  // before ext source local auth
+  BEFORE_EXT_LOCAL_AUTH: 'user.beforeExtLocalAuth',
   // before local auth
   BEFORE_LOCAL_AUTH: 'user.beforeLocalAuth',
   // before we process the response object from the AJAX callback
   // of an authentication operation with local server
-  BEFORE_AUTH_RESPONSE: 'user.beforeAuthResponse',
+  ON_AUTH_RESPONSE: 'user.onAuthResponse',
+  AFTER_AUTH_RESPONSE: 'user.afterAuthResponse',
   // After the auth response has been processed
   AUTH_RESPONSE: 'user.authResponse',
   // Current authed UDO events (piped from DynamicMap)

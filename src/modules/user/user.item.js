@@ -41,8 +41,7 @@ goog.require('ssd.user.types');
  * @param {ssd.user.types.user=} optUser a user data object to init with
  * @extends {ssd.structs.DynamicMap}
  */
-ssd.user.Item = function(optUser)
-{
+ssd.user.Item = function(optUser) {
   ssd.structs.DynamicMap.call(this, optUser || ssd.user.types.user);
 };
 goog.inherits(ssd.user.Item, ssd.structs.DynamicMap);
@@ -61,14 +60,12 @@ ssd.user.Item.EventType = {
 /**
  * The users data object validator.
  *
- * Checks that the data object provided (by our server?) is proper and
- * we can use it.
+ * Checks that the data object provided is proper
  *
- * @param  {Object} dataObj The data object we want to validate.
+ * @param  {Object} udo The data object we want to validate.
  * @return {boolean} If the object validates.
  */
-ssd.user.Item.prototype.validate = function (dataObj)
-{
+ssd.user.Item.prototype.validate = function (udo) {
 
   return true;
 };

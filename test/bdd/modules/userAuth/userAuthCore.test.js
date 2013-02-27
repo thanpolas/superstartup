@@ -12,7 +12,7 @@ describe('User Auth Module :: Core functionality', function () {
   beforeEach(function() {
     ssNew = new ss();
     ssNew();
-    stub = sinon.stub(ssNew, 'sync');
+    stub = sinon.stub(ssNew.ajax, 'send');
   });
   afterEach(function() {
     stub.restore();
@@ -21,8 +21,8 @@ describe('User Auth Module :: Core functionality', function () {
 
   describe('Auth / Deauth', function () {
     it('should not be authed', function () {
-      expect(ssNew.isAuthed()).to.not.be.true;
-      expect(ssNew.user.isAuthed()).to.not.be.true;
+      expect(ssNew.isAuthed()).to.be.false;
+      expect(ssNew.user.isAuthed()).to.be.false;
     });
     it('should authenticate with a provided UDO', function(){
       expect(ssNew.isAuthed()).to.not.be.true;

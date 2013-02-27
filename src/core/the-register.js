@@ -91,7 +91,6 @@ ssd.Register.prototype.runPlugins = function( moduleName ) {
  */
 ssd.Register.prototype.runModules = function( selfObj ) {
   this._invoke( this._modules, {params: selfObj} );
-  this._modules = [];
 };
 
 /**
@@ -101,7 +100,6 @@ ssd.Register.prototype.runModules = function( selfObj ) {
  */
 ssd.Register.prototype.runModuleInits = function( ) {
   var def = this._invoke( this._init, {deferred: true} );
-  this._init = [];
   return def;
 };
 
