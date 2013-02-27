@@ -336,13 +336,18 @@ ssd.user.AuthModel.prototype.deAuth = function() {
  */
 ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
   this.logger.info('_doAuth() :: Init. isAuthed:' + isAuthed);
+
   this._isAuthed = isAuthed;
 
   if ( !isAuthed ) {
     // clear the dynamic map data object
     this._dynmapUdo.clear();
   }
-  this.dispatchEvent(ssd.user.Auth.EventType.AUTH_CHANGE);
+  var eventObj  = {
+    'authState': this._isAuthed,
+    type: ssd.user.Auth.EventType.AUTH_CHANGE
+  };
+  this.dispatchEvent(eventObj);
 };
 
 /**

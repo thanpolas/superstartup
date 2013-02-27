@@ -56,7 +56,6 @@ describe('User Auth Module :: Core functionality', function () {
     });
     it('should provide the UDO with fancy GetSet', function(){
       ssNew.user.auth(userFix);
-      console.log(userFix);
       // start read tests, first the fancy read
       expect(ssNew.user('id')).to.equal(userFix.id);
       expect(ssNew.user('firstName')).to.equal(userFix.firstName);
@@ -90,38 +89,72 @@ describe('User Auth Module :: Core functionality', function () {
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj) {
-        expect(eventObj.authState).to.be.true;
         triggered = true;
       }
-
       var cid = ssNew.listen(event.user.AUTH_CHANGE, cb);
 
       ssNew.user.auth(ssd.test.fixture.userOne);
 
-      expect(ssNew.isAuthed()).to.be.true;
       expect(triggered).to.be.true;
-
-      ssNew.removeListener(cid);
+      ssNew.unlisten(cid);
     });
+
+    it('should have authState when AUTH_CHANGE triggers', function(done){
+      // the test is synchronous on purpose
+      function cb (eventObj) {
+        expect(eventObj.authState).to.be.true;
+        done();
+      }
+      var cid = ssNew.listen(event.user.AUTH_CHANGE, cb);
+      ssNew.user.auth(ssd.test.fixture.userOne);
+      ssNew.unlisten(cid);
+    });
+
 
     it('should trigger an initial auth status event after core init',
       function(done){
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj) {
+        expect(true).to.be.false;
+        done();
+      }
+      var ssAltNew = new ss();
+      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATUS, cb);
+      // boot up the app
+      ssAltNew();
+    });
+
+    it('should have an authState key when "initial auth status" triggers',
+      function(done){
+      var triggered = false;
+      // the test is synchronous on purpose
+      function cb (eventObj) {
         expect(eventObj.authState).to.be.a('boolean');
         expect(eventObj.authState).to.be.false;
-        triggered = true;
+        done();
+      }
+
+      var ssAltNew = new ss();
+      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATUS, cb);
+      // boot up the app
+      ssAltNew();
+    });
+    it('should not be authed after "initial auth status" triggers',
+      function(done){
+      var triggered = false;
+      // the test is synchronous on purpose
+      function cb (eventObj) {
         expect(ssAltNew.isAuthed()).to.be.false;
         done();
       }
 
-      ssAltNew = new ss();
-
+      var ssAltNew = new ss();
       var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATUS, cb);
-
       // boot up the app
       ssAltNew();
     });
+
+
   });
 });

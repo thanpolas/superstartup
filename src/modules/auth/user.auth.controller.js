@@ -21,18 +21,14 @@ goog.require('ssd.invocator');
 /**
  * User authentication class
  *
- * @param {ssd.Core} ssdInst
  * @constructor
  * @extends {ssd.user.AuthModel}
  */
-ssd.user.Auth = function( ssdInst ) {
+ssd.user.Auth = function( ) {
 
   this.logger.info('ctor() :: Class instantiated');
 
   goog.base(this);
-
-  // bubble user auth events to core.
-  this.setParentEventTarget( ssdInst );
 
   /**
    * @type {boolean}
@@ -180,9 +176,11 @@ ssd.user.Auth.EventType = {
   // (from not authed to authed and vice verca)
   // use this eventype for authoritative changes
   AUTH_CHANGE: 'user.authChange',
-  // Trigger this event as soon as we can resolve
+  // When all initial auth states from all sources have reported in
+  // trigget this one event.
+  INITIAL_AUTH_STATE: 'user.initialAuthState',
   // the auth status from an ext source
-  INITIAL_AUTH_STATUS: 'user.initialAuthStatus',
+  INITIAL_EXT_AUTH_STATE: 'user.initialExtAuthState',
   // Triggers if authed user is new, first time signup
   NEWUSER: 'user.newUser',
   // before ext source local auth
@@ -320,8 +318,10 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj) {
   this[selfObj.SOURCEID] = selfObj;
 
   // event listeners
-  selfObj.addEventListener(ssd.user.Auth.EventType.INITIAL_AUTH_STATUS, this._initAuthStatus, false, this);
-  selfObj.addEventListener(ssd.user.Auth.EventType.EXT_AUTH_CHANGE, this._authChange, false, this);
+  selfObj.addEventListener(ssd.user.Auth.EventType.INITIAL_EXT_AUTH_STATE,
+    this._initAuthStatus, false, this);
+  selfObj.addEventListener(ssd.user.Auth.EventType.EXT_AUTH_CHANGE,
+    this._authChange, false, this);
 };
 
 
@@ -336,6 +336,9 @@ ssd.user.Auth.onRegisterRun = function( ssdInst ) {
    * @type {ssd.user.Auth}
    */
   ssdInst.user = new ssd.user.Auth( ssdInst );
+
+  // bubble user auth events to core.
+  ssdInst.user.setParentEventTarget( ssdInst._instance );
 
   // assign isAuthed method
   ssdInst.isAuthed = goog.bind(ssdInst.user.isAuthed, ssdInst.user);
