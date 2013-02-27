@@ -47,8 +47,9 @@ ssd.user.Item = function(optUser) {
   ssd.structs.DynamicMap.call(this, optUser || ssd.user.types.user);
 
   this.fancyGetSet = new ssd.structs.FancyGetSet();
-  this.fancyGetSet.get = goog.bind( this.get, this);
-  this.fancyGetSet.set = goog.bind( this.set, this);
+  this.fancyGetSet._instance.get = goog.bind( this.get, this);
+  this.fancyGetSet._instance.set = goog.bind( this.set, this);
+  this.fancyGetSet._instance.toObject = goog.bind( this.toObject, this);
   this.getSet = this.fancyGetSet.getSet;
 
   return ssd.invocator.encapsulate(this, this.fancyGetSet.getSet);

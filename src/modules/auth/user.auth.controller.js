@@ -101,9 +101,8 @@ ssd.user.Auth = function( ssdInst ) {
   this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_ADDALL,
     this._dataEvent, false, this);
 
-  // extend our data object with the own user key/value pairs
-  this._dynmapUdo.addAll(ssd.user.types.ownuser);
-
+  this.get = this._dynmapUdo.get;
+  this.set = this._dynmapUdo.set;
 
   /**
    * This var contains an array of extSource ID
@@ -231,8 +230,6 @@ ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
 
 
 ssd.user.Auth.prototype.get = function() {
-  console.log('Yeashhhhh');
-  console.log(this);
   return this._dynmapUdo.toObject();
 };
 
