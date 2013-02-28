@@ -9,7 +9,7 @@ goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.Auth');
-goog.require('ssd.user.Auth.EventType');
+goog.require('ssd.user.auth.EventType');
 goog.require('ssd.register');
 
 /**
@@ -74,7 +74,7 @@ ssd.user.auth.Twitter.prototype.init = function() {
 
   this.logger.info('Init init(). Dispatching dummy event');
 
-  this.dispatchEvent( ssd.user.Auth.EventType.INITIAL_AUTH_STATUS );
+  this.dispatchEvent( ssd.user.auth.EventType.INITIAL_AUTH_STATUS );
   // resolve the deferred and pass current auth status.
   def.callback( false );
 
@@ -128,7 +128,7 @@ ssd.user.auth.Twitter.prototype.logout = function()
 {
   this.logger.info('Init logout()');
   this._isAuthed = false;
-  this.dispatchEvent(ssd.user.Auth.EventType.EXT_AUTH_CHANGE);
+  this.dispatchEvent(ssd.user.auth.EventType.EXT_AUTH_CHANGE);
 };
 
 /**

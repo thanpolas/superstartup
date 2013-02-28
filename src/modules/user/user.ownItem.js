@@ -4,7 +4,9 @@
  *
  */
 goog.provide('ssd.user.OwnItem');
+
 goog.require('ssd.user.Item');
+goog.require('ssd.user.auth.EventType');
 
 /**
  * The currently logged in user's data object.
@@ -32,7 +34,7 @@ ssd.user.OwnItem.prototype.validate = function (udo)
   // prepare and emit BEFORE VALIDATE event, check if
   // we got a preventDefault or similar...
   var eventObj = {
-      type: ssd.user.Auth.EventType.USERDATA_BEFORE_VALIDATE,
+      type: ssd.user.auth.EventType.USERDATA_BEFORE_VALIDATE,
       'udo': udo
   };
   if ( false === this.dispatchEvent(eventObj) ) {

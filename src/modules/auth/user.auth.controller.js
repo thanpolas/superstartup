@@ -3,9 +3,7 @@
  *
  */
 goog.provide('ssd.user.Auth');
-goog.provide('ssd.user.Auth.EventType');
 goog.provide('ssd.user.Auth.Error');
-
 
 goog.require('goog.async.Deferred');
 
@@ -17,6 +15,7 @@ goog.require('ssd.user.OwnItem');
 goog.require('ssd.invocator');
 goog.require('ssd.register');
 goog.require('ssd.invocator');
+goog.require('ssd.user.auth.EventType');
 
 /**
  * User authentication class
@@ -123,6 +122,7 @@ ssd.user.Auth = function( ) {
 
 };
 goog.inherits(ssd.user.Auth, ssd.user.AuthModel);
+goog.addSingletonGetter(ssd.user.Auth);
 
 /**
  * auth module configuration libs
@@ -163,46 +163,6 @@ ssd.user.Auth.Error = {
   ALREADY_REGISTERED: 'plugin already registered: '
 };
 
-
-/**
- * Events supported for the user auth module
- * @enum {string}
- */
-ssd.user.Auth.EventType = {
-  // An external auth source has an auth change event
-  // (from not authed to authed and vice verca)
-  EXT_AUTH_CHANGE: 'user.extAuthChange',
-  // We have a global auth change event
-  // (from not authed to authed and vice verca)
-  // use this eventype for authoritative changes
-  AUTH_CHANGE: 'user.authChange',
-  // When all initial auth states from all sources have reported in
-  // trigget this one event.
-  INITIAL_AUTH_STATE: 'user.initialAuthState',
-  // the auth status from an ext source
-  INITIAL_EXT_AUTH_STATE: 'user.initialExtAuthState',
-  // Triggers if authed user is new, first time signup
-  NEWUSER: 'user.newUser',
-  // before ext source local auth
-  BEFORE_EXT_LOCAL_AUTH: 'user.beforeExtLocalAuth',
-  // Befora local Auth
-  BEFORE_LOCAL_AUTH: 'user.beforeLocalAuth',
-  // before we process the response object from the AJAX callback
-  // of an authentication operation with local server
-  ON_AUTH_RESPONSE: 'user.onAuthResponse',
-
-  AFTER_AUTH_RESPONSE: 'user.afterAuthResponse',
-
-  // own user data object before validating it's ok
-  USERDATA_BEFORE_VALIDATE: 'user.data.beforeValidate',
-  // own user data object piped events (piped from structs.DynamicMap)
-  BEFORE_SET:    'user.data.beforeSet',
-  AFTER_SET:     'user.data.afterSet',
-  BEFORE_ADDALL: 'user.data.beforeAddall',
-  AFTER_ADDALL:  'user.data.afterAddall'
-
-};
-goog.addSingletonGetter(ssd.user.Auth);
 
 /**
  * A logger to help debugging
@@ -274,16 +234,16 @@ ssd.user.Auth.prototype._dataEvent = function (e) {
 
   switch(e.type) {
     case ssd.structs.DynamicMap.EventType.BEFORE_SET:
-      eventObj.type = ssd.user.Auth.EventType.BEFORE_SET;
+      eventObj.type = ssd.user.auth.EventType.BEFORE_SET;
     break;
     case ssd.structs.DynamicMap.EventType.AFTER_SET:
-      eventObj.type = ssd.user.Auth.EventType.AFTER_SET;
+      eventObj.type = ssd.user.auth.EventType.AFTER_SET;
     break;
     case ssd.structs.DynamicMap.EventType.BEFORE_ADDALL:
-      eventObj.type = ssd.user.Auth.EventType.BEFORE_ADDALL;
+      eventObj.type = ssd.user.auth.EventType.BEFORE_ADDALL;
     break;
     case ssd.structs.DynamicMap.EventType.AFTER_ADDALL:
-      eventObj.type = ssd.user.Auth.EventType.AFTER_ADDALL;
+      eventObj.type = ssd.user.auth.EventType.AFTER_ADDALL;
     break;
   }
   return this.dispatchEvent(eventObj);
@@ -318,9 +278,9 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj) {
   this[selfObj.SOURCEID] = selfObj;
 
   // event listeners
-  selfObj.addEventListener(ssd.user.Auth.EventType.INITIAL_EXT_AUTH_STATE,
+  selfObj.addEventListener(ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE,
     this._initAuthStatus, false, this);
-  selfObj.addEventListener(ssd.user.Auth.EventType.EXT_AUTH_CHANGE,
+  selfObj.addEventListener(ssd.user.auth.EventType.EXT_AUTH_CHANGE,
     this._authChange, false, this);
 };
 

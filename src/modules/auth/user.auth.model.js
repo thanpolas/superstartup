@@ -8,6 +8,7 @@ goog.provide('ssd.user.AuthModel');
 
 goog.require('goog.async.Deferred');
 
+goog.require('ssd.user.auth.EventType');
 goog.require('ssd.Module');
 goog.require('ssd.ajax');
 goog.require('ssd.ajax.Method');
@@ -149,7 +150,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
 
   // dispatch event and check for cancel...
   var eventObj = {
-      type: ssd.user.Auth.EventType.BEFORE_EXT_LOCAL_AUTH,
+      type: ssd.user.auth.EventType.BEFORE_EXT_LOCAL_AUTH,
       'sourceId': sourceId
     };
 
@@ -219,7 +220,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   }
 
   var eventObj = {
-    type: ssd.user.Auth.EventType.ON_AUTH_RESPONSE,
+    type: ssd.user.auth.EventType.ON_AUTH_RESPONSE,
     'responseRaw': responseRaw,
     'httpStatus': httpStatus,
     'success': success,
@@ -236,7 +237,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   }
 
   // switch event type
-  eventObj.type = ssd.user.Auth.EventType.AFTER_AUTH_RESPONSE;
+  eventObj.type = ssd.user.auth.EventType.AFTER_AUTH_RESPONSE;
 
   // Check if ajax op was successful
   if ( !success ) {
@@ -345,7 +346,7 @@ ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
   }
   var eventObj  = {
     'authState': this._isAuthed,
-    type: ssd.user.Auth.EventType.AUTH_CHANGE
+    type: ssd.user.auth.EventType.AUTH_CHANGE
   };
   this.dispatchEvent(eventObj);
 };
