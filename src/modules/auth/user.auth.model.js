@@ -12,8 +12,6 @@ goog.require('ssd.user.auth.EventType');
 goog.require('ssd.user.auth.ConfigKeys');
 goog.require('ssd.Module');
 goog.require('ssd.ajax');
-goog.require('ssd.ajax.Method');
-goog.require('ssd.ajax');
 
 /**
  * User authentication class
@@ -23,6 +21,54 @@ goog.require('ssd.ajax');
  */
 ssd.user.AuthModel = function() {
   goog.base(this);
+
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this._isAuthed = false;
+
+  /**
+   * performLocalAuth config parameter is used multiple times
+   * we'll use this private symbol to assign it so it can get
+   * compressed better by the compiler
+   * @private
+   * @type {boolean}
+   */
+  this._hasLocalAuth = false;
+
+  /**
+   * The user data object
+   *
+   * @type {ssd.user.OwnItem}
+   * @private
+   */
+  this._dynmapUdo = new ssd.user.OwnItem();
+  // pipe the user object events to this class
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_SET,
+    this._dataEvent, false, this);
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_SET,
+    this._dataEvent, false, this);
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_ADDALL,
+    this._dataEvent, false, this);
+  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_ADDALL,
+    this._dataEvent, false, this);
+
+  this.get = this._dynmapUdo.get;
+  this.set = this._dynmapUdo.set;
+
+  /**
+   * A map of third party auth source plugins.
+   *
+   * The source id will be used as key and the
+   * instantiation of the plugin will be the value
+   *
+   * @private
+   * @type {ssd.structs.Map.<ssd.user.types.extSourceId,
+   *   ssd.user.Auth.SourceItem>}
+   */
+  this._mapSources = new ssd.structs.Map();
 };
 goog.inherits( ssd.user.AuthModel, ssd.Module);
 
@@ -315,7 +361,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
     udo = responseJson[this.config(ssd.user.auth.ConfigKeys.RESPONSE_KEY_UDO)];
   } catch(e){}
 
-
+  // auth method will also validate.
   if ( !this.auth(udo) ) {
     eventObj['errorMessage'] = 'user data object not valid';
     this.dispatchEvent(eventObj);

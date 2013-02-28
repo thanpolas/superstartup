@@ -8,6 +8,8 @@ goog.provide('ssd.user.Auth.Error');
 goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.AuthModel');
+goog.require('ssd.user.AuthLogin');
+
 goog.require('ssd.structs.DynamicMap');
 goog.require('ssd.structs.Map');
 goog.require('ssd.user.types');
@@ -22,7 +24,7 @@ goog.require('ssd.user.auth.EventType');
  *
  * @param {ssd.Core} ssdInst [description]
  * @constructor
- * @extends {ssd.user.AuthModel}
+ * @extends {ssd.user.AuthLogin}
  */
 ssd.user.Auth = function( ssdInst ) {
 
@@ -34,12 +36,6 @@ ssd.user.Auth = function( ssdInst ) {
    * @type {ssd.Core}
    */
   this._ssdInst = ssdInst;
-
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this._isAuthed = false;
 
   /** @type {ssd.Config} */
   this.config = this._config.prependPath( ssd.user.auth.ConfigKeys.CONFIG_PATH );
@@ -76,52 +72,10 @@ ssd.user.Auth = function( ssdInst ) {
   // In the user object, what is the name of the user's ID?
   this.config('userId', 'id');
 
-  /**
-   * performLocalAuth config parameter is used multiple times
-   * we'll use this private symbol to assign it so it can get
-   * compressed better by the compiler
-   * @private
-   * @type {boolean}
-   */
-  this._hasLocalAuth = false;
-
-  /**
-   * The user data object
-   *
-   * @type {ssd.user.OwnItem}
-   * @private
-   */
-  this._dynmapUdo = new ssd.user.OwnItem();
-  // pipe the user object events to this class
-  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_SET,
-    this._dataEvent, false, this);
-  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_SET,
-    this._dataEvent, false, this);
-  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.BEFORE_ADDALL,
-    this._dataEvent, false, this);
-  this._dynmapUdo.addEventListener(ssd.structs.DynamicMap.EventType.AFTER_ADDALL,
-    this._dataEvent, false, this);
-
-  this.get = this._dynmapUdo.get;
-  this.set = this._dynmapUdo.set;
-
-  /**
-   * A map of third party auth source plugins.
-   *
-   * The source id will be used as key and the
-   * instantiation of the plugin will be the value
-   *
-   * @private
-   * @type {ssd.structs.Map.<ssd.user.types.extSourceId,
-   *   ssd.user.Auth.SourceItem>}
-   */
-  this._mapSources = new ssd.structs.Map();
-
-
   return ssd.invocator.encapsulate(this, this._dynmapUdo.getSet);
 
 };
-goog.inherits(ssd.user.Auth, ssd.user.AuthModel);
+goog.inherits(ssd.user.Auth, ssd.user.AuthLogin);
 goog.addSingletonGetter(ssd.user.Auth);
 
 /**
@@ -165,9 +119,6 @@ ssd.user.Auth.SourceItem;
 ssd.user.Auth.prototype.init = function() {
   this.logger.info('init() :: starting...');
 
-  var def = new goog.async.Deferred();
-  def.callback();
-
   // shortcut assign the performLocalAuth config directive to our
   // local var
   this._hasLocalAuth = !!this.config(ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH);
@@ -176,13 +127,13 @@ ssd.user.Auth.prototype.init = function() {
     this._hasLocalAuth + ' auth sources registered: ' +
     this._mapSources.getCount());
 
-
+  var deferreds = [];
   this._mapSources.forEach( function( key, sourceItem ) {
-    this.logger.config('init() :: Initializing plugin:' + key);
-    def.awaitDeferred( sourceItem.inst.init() );
+    this.logger.fine('init() :: Initializing plugin:' + key);
+    deferreds.push( sourceItem.inst.init() );
   }, this);
 
-  return def;
+  return new goog.async.DeferredList(deferreds);
 };
 
 /**

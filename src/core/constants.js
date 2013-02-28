@@ -19,7 +19,7 @@
 
  /** @fileoverview Constants, enums declarations */
 
-goog.provide('ssd.types');
+goog.provide('ssd.Types');
 
 
 /**
@@ -27,7 +27,7 @@ goog.provide('ssd.types');
  * compare
  * @enum {string}
  */
-ssd.types = {
+ssd.Types = {
   STRING: 'string',
   OBJECT: 'object',
   ARRAY: 'array',

@@ -26,7 +26,7 @@ describe( 'User Auth Module :: Login', function () {
   beforeEach( function() {
     ssNew = new ss();
     ssNew();
-    stub = sinon.stub( ssNew.net, 'sync' );
+    stub = sinon.stub( ssNew.ajax, 'send' );
     stub.yields( userFix );
   });
   afterEach( function() {
@@ -143,7 +143,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
     beforeEach( function() {
       ssNew = new ss();
       ssNew();
-      stubNet = sinon.stub( ssNew.net, 'sync' );
+      stubNet = sinon.stub( ssNew.ajax, 'send' );
       stubNet.yields( userFix );
       if ( opt_params ) {
         loginTrigger = goog.partial( ssNew.user[loginTriggerNS], opt_params );

@@ -28,16 +28,11 @@ goog.provide('ssd.helpers');
 goog.require('goog.array');
 goog.require('goog.object');
 
+
 /**
- * This object is used to check incoming responses from
- * the server.
- * @typedef {{
- *          hasStatus: boolean,
- *          status: string,
- *          valuator: boolean
- * }}
+ * The noop function
  */
-ssd.helpers.statusObject;
+ssd.noop = function(){};
 
 
 /**
@@ -163,17 +158,18 @@ ssd.helpers.getStatusObject = function (config)
   * @param {*} ar The object we want to examine
   * @return boolean
   */
- ssd.isjQ = function (ar)
- {
-   try {
-     if (goog.isFunction(ar))
-       return ar == jQuery;
-     return ar instanceof jQuery;
-   } catch(e) {
-     ssd.error(e);
-     return false;
-   }
- }; // method ssd.isjQ
+ ssd.isjQ = function (ar) {
+  /** @preserveTry */
+  try {
+    if (goog.isFunction(ar)) {
+      return ar === jQuery;
+    }
+    return ar instanceof jQuery;
+  } catch(e) {
+    ssd.error(e);
+    return false;
+  }
+}; // method ssd.isjQ
 
  /**
   * Decode a URI string
@@ -290,27 +286,6 @@ ssd.helpers.getStatusObject = function (config)
 
      return vars;
  }; // method ssd.getUrlVars
-
- /**
-  * Checks if an object is empty
-  * From: http://code.google.com/p/jslibs/wiki/JavascriptTips
-  *
-  * @param {obj}
-  * @return {boolean}
-  */
- ssd.isNotEmpty = function (obj) {
-     for (var i in obj)
-         return true;
-     return false;
- };
-
- /**
-  * Return true/false if user is authenticated
-  * @return {boolean}
-  */
- ssd.isAuthed = function () {
-     return ssd.core.user.isAuthed();
- };
 
  /**
   * Checks if a value (needle) is within the provided other parameters

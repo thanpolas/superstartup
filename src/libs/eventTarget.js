@@ -26,7 +26,6 @@
 
 goog.provide('ssd.events.EventTarget');
 
-goog.require('ssd.types');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 
