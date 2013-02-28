@@ -9,6 +9,7 @@ goog.provide('ssd.user.AuthModel');
 goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.auth.EventType');
+goog.require('ssd.user.auth.ConfigKeys');
 goog.require('ssd.Module');
 goog.require('ssd.ajax');
 goog.require('ssd.ajax.Method');
@@ -21,8 +22,6 @@ goog.require('ssd.ajax');
  * @extends {ssd.Module}
  */
 ssd.user.AuthModel = function() {
-  this.logger.info('Class instantiated');
-
   goog.base(this);
 };
 goog.inherits( ssd.user.AuthModel, ssd.Module);
@@ -45,21 +44,56 @@ ssd.user.AuthModel.prototype._initAuthStatus = function(e) {
   this.logger.info('_initAuthStatus() :: initial auth status dispatched From:' +
     e.target.SOURCEID + ' Source authed:' + e.target.isAuthed());
 
+  var sourceItem = this._mapSources.get(e.target.SOURCEID);
+  sourceItem.initAuthStatus = true;
+
   // if not authed no need to go further
   if (!e.target.isAuthed()) {
+    this._mapSources.set(e.target.SOURCEID, sourceItem);
+    this._checkInitAuthComplete();
     return;
   }
 
   // User is authed with that source. Save it to the map.
-  this._extAuthedSources.set(e.target.SOURCEID, true);
+  sourceItem.isAuthed = true;
+  this._mapSources.set(e.target.SOURCEID, sourceItem);
 
   // check if this auth plugin requires authentication with the server
-  if ( e.target.config( ssd.user.Auth.ConfigKeys.HAS_LOCAL_AUTH )) {
-    this.verifyExtAuthWithLocal( e.target.SOURCEID );
+  if ( e.target.config( ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH )) {
+    this.verifyExtAuthWithLocal( e.target.SOURCEID )
+      .addBoth(function(){
+        this._checkInitAuthComplete();
+      }, this);
   } else {
     this._doAuth( true );
+    this._checkInitAuthComplete();
   }
+};
 
+/**
+ * Will check if all auth plugins have reported in initial auth state.
+ *
+ * @private
+ */
+ssd.user.AuthModel.prototype._checkInitAuthComplete = function() {
+  this.logger.info('_checkInitAuthComplete() :: Init.');
+  var isComplete = true;
+  this._mapSources.forEach(function( sourceId, sourceItem){
+    if (!sourceItem.initAuthStatus) {
+      isComplete = false;
+    }
+  }, this);
+
+  if (isComplete) {
+    this.logger.shout('_checkInitAuthComplete() :: All initial auth ' +
+      'checks complete. Instance:' + this._ssdInst._instanceCount);
+
+      var eventObj  = {
+        authState: this.isAuthed(),
+        type: ssd.user.auth.EventType.INITIAL_AUTH_STATE
+      };
+      this.dispatchEvent(eventObj);
+  }
 };
 
 /**
@@ -73,7 +107,7 @@ ssd.user.AuthModel.prototype._authChange = function(e) {
     e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
 
   // check if in our authed map
-  var inAuthMap = this._extAuthedSources.get(e.target.SOURCEID);
+  var inAuthMap = this._mapSources.get(e.target.SOURCEID);
 
   if (e.target.isAuthed()) {
     // If authed and we already have it in map then it's a double trigger, ignore
@@ -84,10 +118,10 @@ ssd.user.AuthModel.prototype._authChange = function(e) {
       return;
     }
 
-    this._extAuthedSources.set(e.target.SOURCEID, true);
+    this._mapSources.set(e.target.SOURCEID, true);
 
     // check if this auth plugin requires authentication with the server
-    if ( e.target.config( ssd.user.Auth.ConfigKeys.HAS_LOCAL_AUTH ) ) {
+    if ( e.target.config( ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH ) ) {
       this.verifyExtAuthWithLocal(e.target.SOURCEID);
     }
 
@@ -104,10 +138,10 @@ ssd.user.AuthModel.prototype._authChange = function(e) {
     }
 
     // remove from map
-    this._extAuthedSources.remove(e.target.SOURCEID);
+    this._mapSources.remove(e.target.SOURCEID);
 
     // check if was last auth source left and we were authed
-    if (0 === this._extAuthedSources.getCount() && this._isAuthed) {
+    if (0 === this._mapSources.getCount() && this._isAuthed) {
       this._doAuth(false);
     }
   }
@@ -165,12 +199,12 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   // Prepare the ajax call
   //
   // get local auth url from ext plugin or use default one.
-  var url = extInst.config(ssd.user.Auth.ConfigKeys.LOCAL_AUTH_URL) ||
-    this.config(ssd.user.Auth.ConfigKeys.LOCAL_AUTH_URL);
+  var url = extInst.config(ssd.user.auth.ConfigKeys.LOCAL_AUTH_URL) ||
+    this.config(ssd.user.auth.ConfigKeys.LOCAL_AUTH_URL);
 
   var data = {},
-      paramSource = this.config(ssd.user.Auth.ConfigKeys.PARAM_SOURCE_ID),
-      paramAccessToken = this.config(ssd.user.Auth.ConfigKeys.PARAM_ACCESS_TOKEN);
+      paramSource = this.config(ssd.user.auth.ConfigKeys.PARAM_SOURCE_ID),
+      paramAccessToken = this.config(ssd.user.auth.ConfigKeys.PARAM_ACCESS_TOKEN);
 
   data[paramSource] = sourceId;
   data[paramAccessToken] = extInst.getAccessToken();
@@ -278,7 +312,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   var udo;
   /** @preserveTry */
   try {
-    udo = responseJson[this.config(ssd.user.Auth.ConfigKeys.RESPONSE_KEY_UDO)];
+    udo = responseJson[this.config(ssd.user.auth.ConfigKeys.RESPONSE_KEY_UDO)];
   } catch(e){}
 
 
@@ -368,7 +402,7 @@ ssd.user.AuthModel.prototype.isAuthed = function() {
  * @return {boolean}
  */
 ssd.user.AuthModel.prototype.isExtAuthed = function(sourceId) {
-  return this._extAuthedSources.get(sourceId) || false;
+  return this._mapSources.get(sourceId) || false;
 };
 
 /**

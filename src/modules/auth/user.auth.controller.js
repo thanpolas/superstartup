@@ -20,14 +20,20 @@ goog.require('ssd.user.auth.EventType');
 /**
  * User authentication class
  *
+ * @param {ssd.Core} ssdInst [description]
  * @constructor
  * @extends {ssd.user.AuthModel}
  */
-ssd.user.Auth = function( ) {
+ssd.user.Auth = function( ssdInst ) {
 
-  this.logger.info('ctor() :: Class instantiated');
+  this.logger.info('ctor() :: Instantiating Auth module...');
 
   goog.base(this);
+
+  /**
+   * @type {ssd.Core}
+   */
+  this._ssdInst = ssdInst;
 
   /**
    * @type {boolean}
@@ -36,7 +42,7 @@ ssd.user.Auth = function( ) {
   this._isAuthed = false;
 
   /** @type {ssd.Config} */
-  this.config = this._config.prependPath( ssd.user.Auth.ConfigKeys.CONFIG_PATH );
+  this.config = this._config.prependPath( ssd.user.auth.ConfigKeys.CONFIG_PATH );
 
   /**
    * Config parameters
@@ -46,7 +52,7 @@ ssd.user.Auth = function( ) {
 
   // The var name to use when (ajax) posting the SOURCEID to the server
   // depends on 'performLocalAuth'
-  this.config(ssd.user.Auth.ConfigKeys.PARAM_SOURCE_ID, 'sourceId');
+  this.config(ssd.user.auth.ConfigKeys.PARAM_SOURCE_ID, 'sourceId');
 
   // When performing a local authentication we pass the
   // access token to the server so he can validate the
@@ -65,7 +71,7 @@ ssd.user.Auth = function( ) {
   // Under which key / path do we expect the user data
   // object to be found?
   // Set to null when response root is the udo.
-  this.config(ssd.user.Auth.ConfigKeys.RESPONSE_KEY_UDO, null);
+  this.config(ssd.user.auth.ConfigKeys.RESPONSE_KEY_UDO, null);
 
   // In the user object, what is the name of the user's ID?
   this.config('userId', 'id');
@@ -100,22 +106,16 @@ ssd.user.Auth = function( ) {
   this.set = this._dynmapUdo.set;
 
   /**
-   * This var contains an array of extSource ID
-   * values, indicating that we are authed on these
-   * external sources
+   * A map of third party auth source plugins.
+   *
+   * The source id will be used as key and the
+   * instantiation of the plugin will be the value
+   *
    * @private
-   * @type {ssd.structs.Map.<ssd.user.types.extSourceId, boolean>} bool is always true
+   * @type {ssd.structs.Map.<ssd.user.types.extSourceId,
+   *   ssd.user.Auth.SourceItem>}
    */
-  this._extAuthedSources = new ssd.structs.Map();
-
-  /**
-   * This var contains a map of external sources.
-   * The external Sources IDs will be used as keys and the
-   * instanciations of the ext auth plugins as values
-   * @private
-   * @type {ssd.structs.Map.<ssd.user.types.extSourceId, Object>}
-   */
-  this._extSupportedSources = new ssd.structs.Map();
+  this._mapSources = new ssd.structs.Map();
 
 
   return ssd.invocator.encapsulate(this, this._dynmapUdo.getSet);
@@ -125,32 +125,14 @@ goog.inherits(ssd.user.Auth, ssd.user.AuthModel);
 goog.addSingletonGetter(ssd.user.Auth);
 
 /**
- * auth module configuration libs
- * @enum {string}
+ * A logger to help debugging
+ * @type {goog.debug.Logger}
+ * @private
  */
-ssd.user.Auth.ConfigKeys = {
-  /**
-   * String path that we'll store the config
-   */
-  CONFIG_PATH: 'user.auth',
-
-  /** The config key that declares if a plugin needs local auth */
-  HAS_LOCAL_AUTH: 'user.auth',
-
-  LOCAL_AUTH_URL: 'localAuthUrl',
-
-  // The var name to use when (ajax) posting the SOURCEID to the server
-  // depends on 'performLocalAuth'
-  PARAM_SOURCE_ID: 'localAuthSourceId',
-  PARAM_ACCESS_TOKEN: 'localAuthAccessToken',
-
-  // the udo response keys
-  RESPONSE_KEY_UDO: 'udoKey'
-};
+ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
 
 /** @const {string} Identifies the module for the register */
 ssd.user.Auth.MODULE_NAME = 'user.auth';
-
 
 /**
  * Errors thrown by main external auth class.
@@ -163,33 +145,17 @@ ssd.user.Auth.Error = {
   ALREADY_REGISTERED: 'plugin already registered: '
 };
 
-
 /**
- * A logger to help debugging
- * @type {goog.debug.Logger}
- * @private
+ * Defines the storage structure for registered auth plugins.
+ *
+ * @typedef {{
+ *   sourceId        : string,
+ *   inst            : Object,
+ *   initAuthStatus  : boolean,
+ *   isAuthed        : boolean
+ *   }}
  */
-ssd.user.Auth.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth');
-
-/**
- * A custom getInstance method for the Auth class singleton.
- *
- * We want this custom method so as to return a proper
- * encapsulated instance that is binded (when invoked will
- * execute) the 'get' method.
- *
- *
- * !return {Function} The encapsulated instance.
- */
-// ssd.user.Auth.getInstance = function() {
-//   return ssd.user.Auth._instance ||
-//     (ssd.user.Auth._instance = ssd.invocator(ssd.user.Auth, 'get'));
-// };
-
-
-ssd.user.Auth.prototype.get = function() {
-  return this._dynmapUdo.toObject();
-};
+ssd.user.Auth.SourceItem;
 
 /**
  * Kicks off authentication flows for all ext auth sources
@@ -204,14 +170,16 @@ ssd.user.Auth.prototype.init = function() {
 
   // shortcut assign the performLocalAuth config directive to our
   // local var
-  this._hasLocalAuth = this.config('performLocalAuth');
+  this._hasLocalAuth = !!this.config(ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH);
 
-  this.logger.config('init() :: Set "_hasLocalAuth" to value:' +
-    this._hasLocalAuth);
+  this.logger.config('init() :: Local auth enabled: ' +
+    this._hasLocalAuth + ' auth sources registered: ' +
+    this._mapSources.getCount());
 
-  this._extSupportedSources.forEach( function( key, plugin ) {
-    this.logger.config('init() :: Starting init for pluging:' + key);
-    def.awaitDeferred( plugin.init() );
+
+  this._mapSources.forEach( function( key, sourceItem ) {
+    this.logger.config('init() :: Initializing plugin:' + key);
+    def.awaitDeferred( sourceItem.inst.init() );
   }, this);
 
   return def;
@@ -257,7 +225,8 @@ ssd.user.Auth.prototype._dataEvent = function (e) {
  * for this source
  *
  * @param {!Object} selfObj the instance of the ext auth plugin
- * @return {void}
+ * @throws {Error} If selfObj not instance of ssd.user.auth.PluginModule
+ *   or has already registered.
  */
 ssd.user.Auth.prototype.addExtSource = function(selfObj) {
   this.logger.info('addExtSource() :: Adding auth source:' + selfObj.SOURCEID);
@@ -267,12 +236,22 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj) {
     throw new TypeError();
   }
   // check if plugin already registered
-  if (this._extSupportedSources.get(selfObj.SOURCEID)) {
+  if (this._mapSources.get(selfObj.SOURCEID)) {
     throw new Error(ssd.user.Auth.Error.ALREADY_REGISTERED + selfObj.SOURCEID);
   }
 
+  /**
+   * @type {ssd.user.Auth.SourceItem}
+   */
+  var sourceItem = {
+     sourceId        : selfObj.SOURCEID,
+     inst            : selfObj,
+     initAuthStatus  : false,
+     isAuthed        : false
+   };
+
   // add the new plugin to our map
-  this._extSupportedSources.set(selfObj.SOURCEID, selfObj);
+  this._mapSources.set(selfObj.SOURCEID, sourceItem);
 
   // register the plugin as a method in this instance
   this[selfObj.SOURCEID] = selfObj;
@@ -291,6 +270,10 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj) {
  * @param {ssd.Core} ssdInst
  */
 ssd.user.Auth.onRegisterRun = function( ssdInst ) {
+
+  ssd.user.Auth.prototype.logger.shout('onRegisterRun() :: Module registers. ' +
+    'Core instance: ' + ssdInst._instanceCount);
+
   /**
    * The instance of the user auth class
    * @type {ssd.user.Auth}
@@ -303,10 +286,8 @@ ssd.user.Auth.onRegisterRun = function( ssdInst ) {
   // assign isAuthed method
   ssdInst.isAuthed = goog.bind(ssdInst.user.isAuthed, ssdInst.user);
 
-  ssdInst.user.logger.info('onRegisterRun() :: Module Auth registers...');
-
   // initialize ext auth plugins
-  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME );
+  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, ssdInst.user._instance );
 
   // register the init method
   ssd.register.init( ssdInst.user.init, ssdInst.user );

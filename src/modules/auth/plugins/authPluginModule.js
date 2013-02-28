@@ -9,10 +9,11 @@ goog.require('ssd.user.Auth');
 /**
  * The basic auth plugin class
  *
+ * @param {ssd.user.Auth} authInstance the auth module instance.
  * @constructor
  * @extends {ssd.Module}
  */
-ssd.user.auth.PluginModule = function()
+ssd.user.auth.PluginModule = function( authInstance )
 {
   goog.base(this);
   /**
@@ -20,7 +21,7 @@ ssd.user.auth.PluginModule = function()
    * @private
    * @type {ssd.user.Auth}
    */
-  this._auth = ssd.user.Auth.getInstance();
+  this._auth = authInstance;
 
   // set auth main as the parent event target
   this.setParentEventTarget( this._auth );

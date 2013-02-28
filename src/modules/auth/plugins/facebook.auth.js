@@ -15,13 +15,14 @@ goog.require('ssd.register');
 /**
  * The Facebook auth constructor
  *
+ * @param {ssd.user.Auth} authInst The auth module instance.
  * @constructor
  * @implements {ssd.user.auth.PluginInterface}
  * @extends {ssd.user.auth.PluginModule}
  */
-ssd.user.auth.Facebook = function() {
-  this.logger.info('Constructor() :: Init.');
-  goog.base(this);
+ssd.user.auth.Facebook = function( authInst ) {
+  this.logger.info('ctor() :: Init.');
+  goog.base(this, authInst);
 
   /** @type {ssd.Config} */
   this.config = this._config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
@@ -105,14 +106,14 @@ ssd.user.auth.Facebook.prototype.logger =  goog.debug.Logger.getLogger('ssd.user
 ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
 
 /**
- * Start initial authentication checks
+ * Start initial authentication checks.
+ *
  * When a definitive result is produced, dispatch the INITIAL_AUTH_STATUS
- * event
- * @param {goog.events.Event=} opt_e Optionally, if FBAPI is not loaded, we
- *      listen for the relevant event
+ * event.
+ *
  * @return {goog.async.Deferred}
  */
-ssd.user.auth.Facebook.prototype.init = function( opt_e ) {
+ssd.user.auth.Facebook.prototype.init = function() {
   this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
 
   var def = new goog.async.Deferred();
@@ -125,7 +126,9 @@ ssd.user.auth.Facebook.prototype.init = function( opt_e ) {
     this.addEventListener(ssd.user.auth.Facebook.EventType.JSAPILOADED,
       this.init, false, this);
 
-    this._loadExtAPI();
+    if ( !this._loadExtAPI() ) {
+      this.dispatchEvent(ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE);
+    }
 
     return def;
   }
@@ -151,7 +154,7 @@ ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response) {
 
   this._FBGotResponce = true;
 
-  this.dispatchEvent(ssd.user.auth.EventType.INITIAL_AUTH_STATUS);
+  this.dispatchEvent(ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE);
 };
 
 /**
@@ -169,14 +172,14 @@ ssd.user.auth.Facebook.prototype._getAppId = function () {
  * Will async load the FB JS API
  *
  * @private
- * @return {void}
+ * @return {boolean}
  */
 ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
   try {
     this.logger.info('_loadExtAPI() :: Init. FB API Loading:' + this._FBAPILoading + ' Loaded:' + this._FBAPILoaded);
 
     if (this._FBAPILoaded || this._FBAPILoading) {
-      return;
+      return false;
     }
 
     // capture FB API Load event
@@ -185,7 +188,7 @@ ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
     // Check if JS API loading is closed by config.
     if (!this.config('loadFBjsAPI')) {
       this.logger.warning('_loadExtAPI() :: JS API load is closed from Config. Assuming API loaded by user');
-      return;
+      return false;
     }
 
     // request the facebook api
@@ -195,7 +198,7 @@ ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
       // FB API JS Script tag already in DOM
       this.logger.warning('_loadExtAPI() :: FB script tag was found in DOM before we insert our own');
       this._FBAPILoading = true;
-      return;
+      return false;
     }
     // Insert the FB API script tag just above the current one
     var scripts = d.getElementsByTagName('script');
@@ -203,15 +206,19 @@ ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
 
     var el = d.createElement('script');
     el['id'] = scriptId;
-    el['src'] = "//connect.facebook.net/en_US/all" + (ssd.DEVEL ? "/debug" : "") + ".js";
+    el['src'] = '//connect.facebook.net/en_US/all' +
+      (ssd.DEVEL ? '/debug' : '') + '.js';
     el['async'] = true;
 
     ownScriptTag.parentNode.insertBefore(el, ownScriptTag);
 
     this._FBAPILoading = true;
 
+    return true;
+
   } catch(e){
     ssd.error(e);
+    return false;
   }
 };
 
@@ -410,9 +417,9 @@ ssd.user.auth.Facebook.prototype.getAccessToken = function() {
  * Register to auth module.
  *
  */
-ssd.user.auth.Facebook.onPluginRun = function( ) {
+ssd.user.auth.Facebook.onPluginRun = function( authInstance ) {
   // initialize facebook auth plugin
-  ssd.user.auth.Facebook.getInstance();
+  authInstance.facebook = new ssd.user.auth.Facebook(authInstance);
 };
 ssd.register.plugin( ssd.user.Auth.MODULE_NAME,
   ssd.user.auth.Facebook.onPluginRun );

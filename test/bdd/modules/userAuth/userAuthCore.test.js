@@ -116,11 +116,11 @@ describe('User Auth Module :: Core functionality', function () {
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj) {
-        expect(true).to.be.false;
+        expect(true).to.be.true;
         done();
       }
       var ssAltNew = new ss();
-      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATUS, cb);
+      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATE, cb);
       // boot up the app
       ssAltNew();
     });
@@ -136,7 +136,7 @@ describe('User Auth Module :: Core functionality', function () {
       }
 
       var ssAltNew = new ss();
-      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATUS, cb);
+      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATE, cb);
       // boot up the app
       ssAltNew();
     });
@@ -150,7 +150,7 @@ describe('User Auth Module :: Core functionality', function () {
       }
 
       var ssAltNew = new ss();
-      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATUS, cb);
+      var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATE, cb);
       // boot up the app
       ssAltNew();
     });

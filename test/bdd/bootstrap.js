@@ -6,10 +6,8 @@ goog.provide('ssd.test.bootstrap');
 mocha.ui('bdd');
 mocha.reporter('html');
 mocha.setup({
-  globals: ['fbAsyncInit']
+  globals: ['fbAsyncInit', 'liveReload']
 });
-
-goog.DEBUG = false;
 
 var expect;
 expect = (typeof chai !== "undefined" && chai !== null ?
@@ -33,3 +31,8 @@ window.FB = {
 goog.require('ssd.test.core');
 goog.require('ssd.test.event.api');
 goog.require('ssd.test.userAuth.core');
+
+// var ssNew = new ss();
+// var cid = ssNew.listen('user.initialAuthState', function(){console.log('CALLED')});
+
+// ssNew();

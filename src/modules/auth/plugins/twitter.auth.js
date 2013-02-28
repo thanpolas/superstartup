@@ -8,6 +8,7 @@ goog.provide('ssd.user.auth.Twitter.EventType');
 goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.auth.PluginModule');
+goog.require('ssd.user.auth.ConfigKeys');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.register');
@@ -15,20 +16,20 @@ goog.require('ssd.register');
 /**
  * The Twitter auth constructor
  *
- * @constructor
+ * @param {ssd.user.Auth} authInstance the auth module instance. * @constructor
  * @implements {ssd.user.auth.PluginInterface}
  * @extends {ssd.user.auth.PluginModule}
  */
-ssd.user.auth.Twitter = function()
+ssd.user.auth.Twitter = function( authInstance )
 {
-  goog.base(this);
+  goog.base(this, authInstance);
 
   /** @type {ssd.Config} */
   this.config = this._config.prependPath( ssd.user.auth.Twitter.CONFIG_PATH );
 
   // set if a local auth with the server should be performed when this
   // plugin authenticates.
-  this.config(ssd.user.Auth.ConfigKeys.HAS_LOCAL_AUTH, false);
+  this.config(ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH, false);
 
   this.config('authUrl', '/users/twitter');
 
@@ -72,9 +73,9 @@ ssd.user.auth.Twitter.prototype.SOURCEID = 'twitter';
 ssd.user.auth.Twitter.prototype.init = function() {
   var def = new goog.async.Deferred();
 
-  this.logger.info('Init init(). Dispatching dummy event');
+  this.logger.info('init() :: Dispatching dummy event');
 
-  this.dispatchEvent( ssd.user.auth.EventType.INITIAL_AUTH_STATUS );
+  this.dispatchEvent( ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE );
   // resolve the deferred and pass current auth status.
   def.callback( false );
 
@@ -145,9 +146,9 @@ ssd.user.auth.Twitter.prototype.getUser = function()
  * Register to auth module.
  *
  */
-ssd.user.auth.Twitter.onPluginRun = function( ) {
+ssd.user.auth.Twitter.onPluginRun = function( authInstance ) {
   // twitter auth plugin
-  ssd.user.auth.Twitter.getInstance();
+  authInstance.twitter = new ssd.user.auth.Twitter( authInstance );
 };
 ssd.register.plugin( ssd.user.Auth.MODULE_NAME,
   ssd.user.auth.Twitter.onPluginRun );

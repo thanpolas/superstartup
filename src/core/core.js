@@ -62,7 +62,7 @@ ssd.Core = function()
    * @type {number} The current instance count.
    * @private
    */
-  this._instanceCount = ssd._instanceCount++;
+  this._instanceCount = ++ssd._instanceCount;
 
   if (goog.DEBUG) {
     ssd.debug.openFancyWin();

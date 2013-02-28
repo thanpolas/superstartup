@@ -30,7 +30,7 @@ ssd.test.fixture.event.user = {
   AUTH_CHANGE: 'user.authChange',
   // Trigger this event as soon as we can resolve
   // the auth status from an ext source
-  INITIAL_AUTH_STATUS: 'user.initialAuthStatus',
+  INITIAL_AUTH_STATE: 'user.initialAuthState',
   // Triggers if authed user is new, first time signup
   NEWUSER: 'user.newUser',
   // before ext source local auth
