@@ -9,6 +9,7 @@ goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.AuthModel');
 goog.require('ssd.user.AuthLogin');
+goog.require('ssd.user.auth.config');
 
 goog.require('ssd.structs.DynamicMap');
 goog.require('ssd.structs.Map');
@@ -35,42 +36,15 @@ ssd.user.Auth = function( ssdInst ) {
   /**
    * @type {ssd.Core}
    */
-  this._ssdInst = ssdInst;
+  this._ssdInst = ssdInst._instance;
 
   /** @type {ssd.Config} */
-  this.config = this._config.prependPath( ssd.user.auth.ConfigKeys.CONFIG_PATH );
+  this.config = this._ssdInst.config.prependPath( ssd.user.auth.config.PATH );
 
   /**
    * Config parameters
    */
-  // if we'll check auth events of ext sources with our server
-  this.config('performLocalAuth', false);
-
-  // The var name to use when (ajax) posting the SOURCEID to the server
-  // depends on 'performLocalAuth'
-  this.config(ssd.user.auth.ConfigKeys.PARAM_SOURCE_ID, 'sourceId');
-
-  // When performing a local authentication we pass the
-  // access token to the server so he can validate the
-  // authentication. This is the query parameter
-  // name
-  this.config('localAuthAccessToken', 'accessToken');
-
-  // When an external auth source becomes authenticated
-  // we use this URL to inform the server.
-  // Depends on 'performLocalAuth'
-  //
-  // Auth plugins can overwrite this parameter
-  this.config('localAuthUrl', '/users/verifyAuth');
-
-  // When we get an authentication response from the server
-  // Under which key / path do we expect the user data
-  // object to be found?
-  // Set to null when response root is the udo.
-  this.config(ssd.user.auth.ConfigKeys.RESPONSE_KEY_UDO, null);
-
-  // In the user object, what is the name of the user's ID?
-  this.config('userId', 'id');
+  this.config.addAll( ssd.user.auth.config.defaults );
 
   return ssd.invocator.encapsulate(this, this._dynmapUdo.getSet);
 
@@ -121,7 +95,7 @@ ssd.user.Auth.prototype.init = function() {
 
   // shortcut assign the performLocalAuth config directive to our
   // local var
-  this._hasLocalAuth = !!this.config(ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH);
+  this._hasLocalAuth = !!this.config(ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL);
 
   this.logger.config('init() :: Local auth enabled: ' +
     this._hasLocalAuth + ' auth sources registered: ' +

@@ -10,6 +10,7 @@ goog.require('goog.async.Deferred');
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.EventType');
+goog.require('ssd.user.auth.config');
 goog.require('ssd.register');
 
 /**
@@ -25,18 +26,18 @@ ssd.user.auth.Facebook = function( authInst ) {
   goog.base(this, authInst);
 
   /** @type {ssd.Config} */
-  this.config = this._config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
+  this.config = authInst.config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
 
   // set if a local auth with the server should be performed when this
   // plugin authenticates.
-  this.config(ssd.user.Auth.HAS_LOCAL_AUTH, true);
+  this.config(ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL, true);
 
   // set required default configuration values
-  this.config('appId', '');
-  this.config('permissions', '');
+  this.config(ssd.user.auth.config.Key.FB_APP_ID, '');
+  this.config(ssd.user.auth.config.Key.FB_PERMISSIONS, '');
   // If this is set to false, we assume that the FB JS API was loaded
   // synchronously
-  this.config('loadFBjsAPI', true);
+  this.config(ssd.user.auth.config.Key.FB_LOAD_API, true);
 
   /**
    * @type {string}
@@ -80,7 +81,7 @@ goog.addSingletonGetter(ssd.user.auth.Facebook);
  * String path that we'll store the config
  * @const {string}
  */
-ssd.user.auth.Facebook.CONFIG_PATH = 'user.auth.fb';
+ssd.user.auth.Facebook.CONFIG_PATH = 'fb';
 
 
 /**
@@ -165,7 +166,8 @@ ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response) {
  * @return {string}
  */
 ssd.user.auth.Facebook.prototype._getAppId = function () {
-  return this._appId || (this._appId = this.config('appId'));
+  return this._appId ||
+    (this._appId = this.config(ssd.user.auth.config.Key.FB_APP_ID));
 };
 
 /**
@@ -186,7 +188,7 @@ ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
     goog.global['fbAsyncInit'] = goog.bind(this._extAPIloaded, this);
 
     // Check if JS API loading is closed by config.
-    if (!this.config('loadFBjsAPI')) {
+    if (!this.config( ssd.user.auth.config.Key.FB_LOAD_API )) {
       this.logger.warning('_loadExtAPI() :: JS API load is closed from Config. Assuming API loaded by user');
       return false;
     }

@@ -12,11 +12,28 @@ describe('Core API', function(){
     it('should boot up the application', function(){
       expect( ss ).to.not.Throw(Error);
     });
+
+    it('should report a ready state of true', function(){
+      expect( ss.isReady()).to.be.true;
+    });
   });
   describe('new instances of ss()', function () {
+    var ssNew = new ss();
     it('should create a new instance', function () {
-      var ssNew = new ss();
       expect( ssNew.isReady() ).to.be.false;
+    });
+    it('should be a function', function(){
+      expect( ssNew ).to.be.a('function');
+    });
+
+    it('should boot up the application', function(){
+      expect( ssNew ).to.not.Throw(Error);
+    });
+
+    it('should report a ready state of true', function(){
+      expect( ssNew.isReady()).to.be.true;
+    });
+    it('should not affect the original ss instance ready state', function() {
       // original ss should still remain ready
       expect(ss.isReady()).to.be.true;
     });

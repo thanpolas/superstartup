@@ -31,9 +31,11 @@ window.FB = {
 goog.require('ssd.test.core');
 goog.require('ssd.test.event.api');
 goog.require('ssd.test.userAuth.core');
-// goog.require('ssd.test.userAuth.login');
+//goog.require('ssd.test.userAuth.login');
 
 // var ssNew = new ss();
 // var cid = ssNew.listen('user.initialAuthState', function(){console.log('CALLED')});
 
 // ssNew();
+// ss();
+// console.log(ss.isReady());

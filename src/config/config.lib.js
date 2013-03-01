@@ -5,6 +5,8 @@
   */
 goog.provide('ssd.Config');
 
+goog.require('goog.object');
+
 goog.require('ssd.debug');
 goog.require('ssd.structs.FancyGetSet');
 goog.require('ssd.structs.StringPath');
@@ -14,12 +16,18 @@ goog.require('ssd.invocator');
 /**
  * A generic config setter / getter
  *
+ * @param {string=} optPath prepend this path.
  * @constructor
  * @extends {ssd.structs.FancyGetSet}
  */
-ssd.Config = function()
+ssd.Config = function( optPath )
 {
   goog.base(this);
+
+  this._path = optPath || '';
+  if (this._path.length) {
+    this._path += '.';
+  }
 
   /**
    * override the internal storage object.
@@ -137,19 +145,33 @@ ssd.Config.prototype.set = function(key, value)
  * @return {ssd.Config} a rigged Config singleton instance.
  */
 ssd.Config.prototype.prependPath = function( path ) {
+  // chain configs
+  path = this._path + path;
+
   this.logger.info('prependPath() :: Init. path: ' + path);
 
-  var configInst = new ssd.Config();
+  var configInst = new ssd.Config( path );
 
-  configInst.set = function( key, value ) {
-    return ssd.Config.getInstance().set( path + '.' + key, value );
-  };
+  configInst.set = goog.bind(function( key, value ) {
+    return this.set( path + '.' + key, value );
+  }, this);
 
-  configInst.get = function( key ) {
-    return ssd.Config.getInstance().get( path + '.' + key );
-  };
+  configInst.get = goog.bind(function( key ) {
+    return this.get( path + '.' + key );
+  }, this);
 
   return configInst;
 };
 
+/**
+ * Add multiple key, value pairs.
+ *
+ * @param {Object} config An object with key value pairs.
+ */
+ssd.Config.prototype.addAll = function( config ) {
+  this.logger.info('addAll() :: Init. path: ' + this._path);
 
+  goog.object.forEach( config, function( key, value ) {
+    this.set( this._path + key, value);
+  }, this);
+};

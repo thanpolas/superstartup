@@ -8,7 +8,7 @@ goog.provide('ssd.user.auth.Twitter.EventType');
 goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.auth.PluginModule');
-goog.require('ssd.user.auth.ConfigKeys');
+goog.require('ssd.user.auth.config');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.register');
@@ -25,19 +25,17 @@ ssd.user.auth.Twitter = function( authInstance )
   goog.base(this, authInstance);
 
   /** @type {ssd.Config} */
-  this.config = this._config.prependPath( ssd.user.auth.Twitter.CONFIG_PATH );
+  this.config = authInstance.config.prependPath(
+    ssd.user.auth.Twitter.CONFIG_PATH );
 
   // set if a local auth with the server should be performed when this
   // plugin authenticates.
-  this.config(ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH, false);
+  this.config(ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL, false);
 
-  this.config('authUrl', '/users/twitter');
+  this.config(ssd.user.auth.config.Key.EXT_SOURCES_AUTH_URL,
+    '/auth/twitter');
 
-  // name of GET param to use when redirecting for twitter
-  // oAuth login, which will contain the current url so
-  // we know where to redirect the user once he/she comes
-  // back from Twitter
-  this.config('returnPathParam', 'url');
+  this.config(ssd.user.auth.config.Key.TW_CALLBACK_URL, 'url');
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -49,7 +47,7 @@ goog.addSingletonGetter(ssd.user.auth.Twitter);
  * String path that we'll store the config
  * @const {string}
  */
-ssd.user.auth.Twitter.CONFIG_PATH = 'user.auth.twitter';
+ssd.user.auth.Twitter.CONFIG_PATH = 'twitter';
 
 /**
  * A logger to help debugging
@@ -92,8 +90,8 @@ ssd.user.auth.Twitter.prototype.init = function() {
  */
 ssd.user.auth.Twitter.prototype.login = function(optCallback, optPerms) {
   // use the current path of the user for return
-  var returnPath = '?' + this.config('returnPathParam') + '=' +
-    ssd.encURI(window.location.pathname);
+  var returnPath = '?' + this.config(ssd.user.auth.config.Key.TW_CALLBACK_URL) +
+    '=' + ssd.encURI(window.location.pathname);
 
   this.logger.info('Init login(). Return path:' + returnPath);
 
@@ -101,7 +99,8 @@ ssd.user.auth.Twitter.prototype.login = function(optCallback, optPerms) {
   // to start the authentication process
 
   // redirect the browser now
-  window.location.href = this.config('loginUrl') + returnPath;
+  window.location.href = this.config( ssd.user.auth.config.Keys
+    .EXT_SOURCES_AUTH_URL ) + returnPath;
 };
 
 /**

@@ -75,6 +75,12 @@ ssd.Core = function()
 
   this.logger.info('ctor() :: Registering modules...');
 
+
+  /**
+   * @type {ssd.Config} The configuration class.
+   */
+  this.config = new ssd.Config();
+
   //
   // hack
   // run encapsulator before we run modules so we won't need to
@@ -111,6 +117,9 @@ ssd.Core.EventType = {
  *   a new instance if called with the 'new' keyword.
  */
 ssd.Core.prototype.init = function (optCallback) {
+
+  // this.logger.info('init() :: Determine if invoked with new keyword:' +
+  //     this instanceof ssd.Core, this._instanceCount, this.__seenBefore);
 
   // As init is the method exposed as 'ss' we need to support
   // getting called as a constructor with the 'new' keyword
@@ -206,5 +215,5 @@ ssd.noop = function(){};
 // start of synchronous (silent) initialization of the library
 // wake up the monster
 //ssd.core = ssd.invocator( ssd.Core, 'init' );
-ssd.core = ssd.Core.getInstance();
+ssd.core = new ssd.Core();
 

@@ -17,12 +17,12 @@ goog.addDependency('../../../src/main.js', ['ssd'], ['ssd.Config', 'ssd.Core', '
 goog.addDependency('../../../src/modules/auth/plugins/authPluginInterface.js', ['ssd.user.auth.PluginInterface'], []);
 goog.addDependency('../../../src/modules/auth/plugins/authPluginModule.js', ['ssd.user.auth.PluginModule'], ['ssd.Module', 'ssd.user.Auth']);
 goog.addDependency('../../../src/modules/auth/plugins/facebook.auth.js', ['ssd.user.auth.Facebook', 'ssd.user.auth.Facebook.EventType'], ['goog.async.Deferred', 'ssd.register', 'ssd.user.Auth', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule']);
-goog.addDependency('../../../src/modules/auth/plugins/twitter.auth.js', ['ssd.user.auth.Twitter', 'ssd.user.auth.Twitter.EventType'], ['goog.async.Deferred', 'ssd.register', 'ssd.user.Auth', 'ssd.user.auth.ConfigKeys', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule']);
-goog.addDependency('../../../src/modules/auth/user.auth.config.js', ['ssd.user.auth.ConfigKeys'], []);
-goog.addDependency('../../../src/modules/auth/user.auth.controller.js', ['ssd.user.Auth', 'ssd.user.Auth.Error'], ['goog.async.Deferred', 'ssd.invocator', 'ssd.register', 'ssd.structs.DynamicMap', 'ssd.structs.Map', 'ssd.user.AuthLogin', 'ssd.user.AuthModel', 'ssd.user.OwnItem', 'ssd.user.auth.EventType', 'ssd.user.types']);
+goog.addDependency('../../../src/modules/auth/plugins/twitter.auth.js', ['ssd.user.auth.Twitter', 'ssd.user.auth.Twitter.EventType'], ['goog.async.Deferred', 'ssd.register', 'ssd.user.Auth', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule', 'ssd.user.auth.config']);
+goog.addDependency('../../../src/modules/auth/user.auth.config.js', ['ssd.user.auth.config'], []);
+goog.addDependency('../../../src/modules/auth/user.auth.controller.js', ['ssd.user.Auth', 'ssd.user.Auth.Error'], ['goog.async.Deferred', 'ssd.invocator', 'ssd.register', 'ssd.structs.DynamicMap', 'ssd.structs.Map', 'ssd.user.AuthLogin', 'ssd.user.AuthModel', 'ssd.user.OwnItem', 'ssd.user.auth.EventType', 'ssd.user.auth.config', 'ssd.user.types']);
 goog.addDependency('../../../src/modules/auth/user.auth.events.js', ['ssd.user.auth.EventType'], []);
-goog.addDependency('../../../src/modules/auth/user.auth.login.js', ['ssd.user.AuthLogin'], ['goog.async.Deferred', 'goog.dom', 'goog.dom.forms', 'ssd.ajax', 'ssd.helpers', 'ssd.user.AuthModel', 'ssd.user.auth.ConfigKeys', 'ssd.user.auth.EventType']);
-goog.addDependency('../../../src/modules/auth/user.auth.model.js', ['ssd.user.AuthModel'], ['goog.async.Deferred', 'ssd.Module', 'ssd.ajax', 'ssd.user.auth.ConfigKeys', 'ssd.user.auth.EventType']);
+goog.addDependency('../../../src/modules/auth/user.auth.login.js', ['ssd.user.AuthLogin'], ['goog.async.Deferred', 'goog.dom', 'goog.dom.forms', 'ssd.ajax', 'ssd.helpers', 'ssd.user.AuthModel', 'ssd.user.auth.EventType', 'ssd.user.auth.config']);
+goog.addDependency('../../../src/modules/auth/user.auth.model.js', ['ssd.user.AuthModel'], ['goog.async.Deferred', 'ssd.Module', 'ssd.ajax', 'ssd.user.auth.EventType', 'ssd.user.auth.config']);
 goog.addDependency('../../../src/modules/metrics/googleAnalytics.js', ['ssd.metrics.ga'], []);
 goog.addDependency('../../../src/modules/metrics/metrics.js', ['ssd.metrics'], ['ssd.metrics.ga', 'ssd.metrics.mixpanel']);
 goog.addDependency('../../../src/modules/metrics/mixpanel.js', ['ssd.metrics.mixpanel'], []);

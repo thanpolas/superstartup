@@ -24,7 +24,7 @@ ssd.user.auth.EventType = {
   NEWUSER: 'user.newUser',
   // before ext source local auth
   BEFORE_EXT_LOCAL_AUTH: 'user.beforeExtLocalAuth',
-  // Befora local Auth
+  // Before local Auth
   BEFORE_LOCAL_AUTH: 'user.beforeLocalAuth',
   // before we process the response object from the AJAX callback
   // of an authentication operation with local server

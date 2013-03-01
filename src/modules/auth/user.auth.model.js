@@ -9,7 +9,7 @@ goog.provide('ssd.user.AuthModel');
 goog.require('goog.async.Deferred');
 
 goog.require('ssd.user.auth.EventType');
-goog.require('ssd.user.auth.ConfigKeys');
+goog.require('ssd.user.auth.config');
 goog.require('ssd.Module');
 goog.require('ssd.ajax');
 
@@ -28,15 +28,6 @@ ssd.user.AuthModel = function() {
    * @private
    */
   this._isAuthed = false;
-
-  /**
-   * performLocalAuth config parameter is used multiple times
-   * we'll use this private symbol to assign it so it can get
-   * compressed better by the compiler
-   * @private
-   * @type {boolean}
-   */
-  this._hasLocalAuth = false;
 
   /**
    * The user data object
@@ -105,15 +96,10 @@ ssd.user.AuthModel.prototype._initAuthStatus = function(e) {
   this._mapSources.set(e.target.SOURCEID, sourceItem);
 
   // check if this auth plugin requires authentication with the server
-  if ( e.target.config( ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH )) {
-    this.verifyExtAuthWithLocal( e.target.SOURCEID )
-      .addBoth(function(){
-        this._checkInitAuthComplete();
-      }, this);
-  } else {
-    this._doAuth( true );
-    this._checkInitAuthComplete();
-  }
+  this.verifyExtAuthWithLocal( e.target.SOURCEID )
+    .addBoth(function(){
+      this._checkInitAuthComplete();
+    }, this);
 };
 
 /**
@@ -143,7 +129,7 @@ ssd.user.AuthModel.prototype._checkInitAuthComplete = function() {
 };
 
 /**
- * Listener for external (FB, TW ...) initial auth event
+ * Listener for external (FB, TW ...)  auth state change events.
  *
  * @private
  * @param {goog.events.Event} e
@@ -153,49 +139,58 @@ ssd.user.AuthModel.prototype._authChange = function(e) {
     e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
 
   // check if in our authed map
-  var inAuthMap = this._mapSources.get(e.target.SOURCEID);
+  var extItem = this._mapSources.get(e.target.SOURCEID);
+  var isExtAuthed = extItem.isAuthed;
 
-  if (e.target.isAuthed()) {
-    // If authed and we already have it in map then it's a double trigger, ignore
-    if (inAuthMap) {
-      this.logger.warning('_authChange() :: BOGUS situation. Received auth ' +
-        'event but we already had a record of this source being authed. ' +
-        'Double trigger');
-      return;
-    }
+  // If authed and we already have it in map then it's a double trigger, ignore
+  if (e.target.isAuthed() === isExtAuthed) {
+    this.logger.warning('_authChange() :: BOGUS situation. Received auth ' +
+      'event but we already had a record of this source being authed. ' +
+      'Double trigger');
+    return;
+  }
 
-    this._mapSources.set(e.target.SOURCEID, true);
+  // change the status
+  extItem.isAuthed = e.target.isAuthed();
+  this._mapSources.set(e.target.SOURCEID, extItem);
 
-    // check if this auth plugin requires authentication with the server
-    if ( e.target.config( ssd.user.auth.ConfigKeys.HAS_LOCAL_AUTH ) ) {
-      this.verifyExtAuthWithLocal(e.target.SOURCEID);
-    }
-
-    // check if we were in a not authed state and change that
-    if (!this._isAuthed && !this._hasLocalAuth) {
-      this._doAuth(true);
-    }
+  if (isExtAuthed) {
+    this.verifyExtAuthWithLocal(e.target.SOURCEID);
   } else {
-    // got logged out from ext source
-    if (!inAuthMap) {
-      this.logger.warning('_authChange() :: BOGUS situation. ' +
-        'Received de-auth event but had no record of being authed');
-      return;
-    }
-
-    // remove from map
-    this._mapSources.remove(e.target.SOURCEID);
-
-    // check if was last auth source left and we were authed
-    if (0 === this._mapSources.getCount() && this._isAuthed) {
-      this._doAuth(false);
-    }
+    this._checkAuthState();
   }
 };
 
 /**
+ * Checks the auth state of all sources and determines the global state.
+ * @private
+ */
+ssd.user.AuthModel.prototype._checkAuthState = function() {
+  this.logger.info('_checkAuthState() :: Init.');
+
+  var authState = false;
+  this._mapSources.forEach( function(key, item) {
+    if (item.isAuthed) {
+      authState = true;
+    }
+  }, this);
+
+  if ( this.isAuthed() === authState ) {
+    return;
+  }
+
+  this.logger.info('_checkAuthState() :: NEW AUTH STATE:' + authState);
+
+  // there is a change of auth state
+  this._doAuth( authState );
+
+};
+
+
+
+/**
  * When an external auth source changes state and becomes authenticated
- * we use this method to inform the server.
+ * this method is invoked to inform the server.
  *
  * The server will then determine if we are eligible to get authenticated
  * using that provider and if we are, an auth session is created.
@@ -208,25 +203,13 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   var def = new goog.async.Deferred();
 
   this.logger.info('_verifyExtAuthWithLocal() :: Init. LocalAuth Switch:' +
-    this._hasLocalAuth + ' sourceId :' + sourceId );
+    ' sourceId :' + sourceId );
 
-  if (!this._hasLocalAuth) {
-    def.errback();
-    return def;
-  }
+  // get plugin item
+  var extItem = this._mapSources.get(sourceId);
 
   // get plugin instance
-  var extInst = this._extSupportedSources.get( sourceId );
-
-  //check if we have already started auth with server
-  if ( extInst.localAuthInit ) {
-    this.logger.warning('_verifyExtAuthWithLocal() :: Local auth has ' +
-      'already started');
-    def.errback();
-    return def;
-  }
-
-  extInst.localAuthInit = true;
+  var extInst =extItem.inst;
 
   // dispatch event and check for cancel...
   var eventObj = {
@@ -237,7 +220,19 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   if (!this.dispatchEvent(eventObj)) {
     this.logger.info('_verifyExtAuthWithLocal() :: canceled due to ' +
       'event preventDefault');
-    def.errback();
+    def.errback('preventDefault called on verifyExtAuthWithLocal');
+    return def;
+  }
+
+  // check if this auth plugin does not require authentication with the server
+  if ( extInst.config( ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL ) &&
+      // Check if auth with server is disabled
+      this.config( ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL ) ) {
+
+    // No verification with server is allowed by config.
+    // authenticate the user.
+    this._doAuth( true );
+    def.callback( true );
     return def;
   }
 
@@ -245,15 +240,46 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   // Prepare the ajax call
   //
   // get local auth url from ext plugin or use default one.
-  var url = extInst.config(ssd.user.auth.ConfigKeys.LOCAL_AUTH_URL) ||
-    this.config(ssd.user.auth.ConfigKeys.LOCAL_AUTH_URL);
+  var url = extInst.config( ssd.user.auth.Key.EXT_SOURCES_AUTH_URL ) ||
+    this.config( ssd.user.auth.Key.AUTH_URL );
 
   var data = {},
-      paramSource = this.config(ssd.user.auth.ConfigKeys.PARAM_SOURCE_ID),
-      paramAccessToken = this.config(ssd.user.auth.ConfigKeys.PARAM_ACCESS_TOKEN);
+      paramSource = this.config( ssd.user.auth.Key.PARAM_SOURCE_ID ),
+      paramAccessToken = this.config( ssd.user.auth.Key.PARAM_ACCESS_TOKEN );
 
   data[paramSource] = sourceId;
   data[paramAccessToken] = extInst.getAccessToken();
+
+
+  return this.performLocalAuth( url, data );
+
+};
+
+
+/**
+ * When an external auth source changes state and becomes authenticated
+ * we use this method to inform the server.
+ *
+ * The server will then determine if we are eligible to get authenticated
+ * using that provider and if we are, an auth session is created.
+ *
+ * @protected
+ * @param {string} url The url.
+ * @param {Object} data The data.
+ * @return {goog.async.Deferred}
+ */
+ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
+  var def = new goog.async.Deferred();
+
+  this.logger.info('performLocalAuth() :: Init. url:' + url);
+
+  // dispatch event and check for cancel...
+  if (!this.dispatchEvent( ssd.user.auth.EventType.BEFORE_LOCAL_AUTH )) {
+    this.logger.info('performLocalAuth() :: canceled due to ' +
+      'event preventDefault');
+    def.errback('preventDefault canceled the op');
+    return def;
+  }
 
   var cb = goog.bind(function() {
     this._serverAuthResponse.apply(this, arguments)
@@ -265,6 +291,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   return def;
 };
 
+
 /**
  * Callback method for AJAX requests that query the server for
  * the authentication state.
@@ -272,7 +299,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
  * This is the main entry point for any type of authentication
  * request to the local server (native or from a provider)
  *
- * In this method we determine if:
+ * In this method it is determined if:
  *   1. The operation succeeded
  *   2. We received a positive or negative response from the server
  *
@@ -285,7 +312,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
 
   this.logger.info('_serverAuthResponse() :: Init');
 
-  /** @type {goog.net.XhrIo} */
+  /** @type {ssd.ajax} */
   var xhr = ev.target,
       httpStatus = null,
       success = false,
@@ -303,8 +330,8 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
     type: ssd.user.auth.EventType.ON_AUTH_RESPONSE,
     'responseRaw': responseRaw,
     'httpStatus': httpStatus,
-    'success': success,
-    'status': false,
+    'xhrStatus': success,
+    'authState': false,
     'errorMessage': errorMessage
   };
 
@@ -312,7 +339,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   if ( false === this.dispatchEvent(eventObj) ) {
     this.logger.info('_serverAuthResponse() :: canceled due to ' +
       'event preventDefault');
-    def.errback();
+    def.errback('preventDefault canceled resp op');
     return def;
   }
 
@@ -322,7 +349,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   // Check if ajax op was successful
   if ( !success ) {
     this.dispatchEvent(eventObj);
-    def.errback();
+    def.errback('xhr failed');
     return def;
   }
 
@@ -334,7 +361,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   } catch(ex) {
     eventObj['errorMessage'] = 'response not JSON';
     this.dispatchEvent(eventObj);
-    def.errback();
+    def.errback('resp not JSON');
     return def;
   }
 
@@ -347,9 +374,8 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
     if (statusObject.valuator !== responseJson[statusObject.status]) {
       // operation has failed...
       this.logger.warning('_serverAuthResponse() :: operation got a false response');
-      eventObj['errorMessage'] = 'server said no dice';
       this.dispatchEvent(eventObj);
-      def.errback();
+      def.callback(false);
       return def;
     }
   }
@@ -358,21 +384,21 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   var udo;
   /** @preserveTry */
   try {
-    udo = responseJson[this.config(ssd.user.auth.ConfigKeys.RESPONSE_KEY_UDO)];
+    udo = responseJson[this.config(ssd.user.auth.Key.RESPONSE_KEY_UDO)];
   } catch(e){}
 
   // auth method will also validate.
   if ( !this.auth(udo) ) {
     eventObj['errorMessage'] = 'user data object not valid';
     this.dispatchEvent(eventObj);
-    def.errback();
+    def.errback('udo not valid');
     return def;
   }
 
   eventObj['response'] = udo;
-  eventObj['status'] = true;
+  eventObj['authState'] = true;
   this.dispatchEvent(eventObj);
-  def.callback();
+  def.callback(true);
   return def;
 };
 
@@ -424,11 +450,13 @@ ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
     // clear the dynamic map data object
     this._dynmapUdo.clear();
   }
+
   var eventObj  = {
-    'authState': this._isAuthed,
+    'authState': isAuthed,
     type: ssd.user.auth.EventType.AUTH_CHANGE
   };
   this.dispatchEvent(eventObj);
+
 };
 
 /**
@@ -437,7 +465,7 @@ ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
  * @return {boolean}
  */
 ssd.user.AuthModel.prototype.isAuthed = function() {
-    return this._isAuthed;
+  return this._isAuthed;
 };
 
 /**
