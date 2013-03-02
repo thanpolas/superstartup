@@ -16,3 +16,8 @@ goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthLogin.test.
 goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthLogout.test.js', ['ssd.test.userAuth.logout'], ['ssd.test.fixture.event', 'ssd.test.fixture.userOne']);
 goog.addDependency('../../../../../test/bdd/network/ajax.test.js', ['ssd.test.ajax'], []);
 goog.addDependency('../../../../../test/bdd/network/sync.test.js', ['ssd.test.sync'], []);
+goog.addDependency('../../../../../test/unit/bootstrap.js', ['ssd.test.unit.bootstrap'], ['ssd.test.main', 'ssd.test.unit.config']);
+goog.addDependency('../../../../../test/unit/fixtures/configClass.mock.js', ['ssd.test.unit.configClass'], ['ssd.Config', 'ssd.Module']);
+goog.addDependency('../../../../../test/unit/helpers/helpers.test.js', ['ssd.test.helpers'], []);
+goog.addDependency('../../../../../test/unit/modules/userAuth/plugins/facebook.auth.unitTest.js', ['ssd.unitTest.userAuth.facebook'], ['ssd.test.fixture.auth.fb', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne']);
+goog.addDependency('../../../../../test/unit/structs/config.test.js', ['ssd.test.unit.config'], ['ssd.Config', 'ssd.test.unit.configClass']);

@@ -7,21 +7,20 @@ goog.require('ssd.test.fixture.event');
 
 
 describe('User Auth Module :: Core functionality', function () {
-  var ssNew;
-  var stub;
-  var userFix;
-  var event = ssd.test.fixture.event;
+    var ssNew;
+    var stub;
+    var userFix;
+    var event = ssd.test.fixture.event;
 
-  beforeEach(function() {
-    ssNew = new ss();
-    ssNew();
-    userFix = goog.object.unsafeClone(ssd.test.fixture.userOne);
-    stub = sinon.stub(ssNew.ajax, 'send');
-  });
-  afterEach(function() {
-    stub.restore();
-  });
-
+    beforeEach(function() {
+      ssNew = new ss();
+      ssNew();
+      userFix = goog.object.unsafeClone(ssd.test.fixture.userOne);
+      stub = sinon.stub(ssNew.ajax, 'send');
+    });
+    afterEach(function() {
+      stub.restore();
+    });
 
   describe('Auth / Deauth', function () {
     it('should not be authed (root alias)', function () {
@@ -81,9 +80,6 @@ describe('User Auth Module :: Core functionality', function () {
 
 
   describe('Core Auth Events', function () {
-    before(function () {
-      ssNew.user.deAuth();
-    });
 
     it('should trigger the auth event synchronously', function(){
       var triggered = false;
@@ -112,12 +108,11 @@ describe('User Auth Module :: Core functionality', function () {
 
 
     it('should trigger an initial auth status event after core init',
-      function(done){
+      function(){
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj) {
         expect(true).to.be.true;
-        done();
       }
       var ssAltNew = new ss();
       var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATE, cb);
@@ -126,13 +121,12 @@ describe('User Auth Module :: Core functionality', function () {
     });
 
     it('should have an authState key when "initial auth status" triggers',
-      function(done){
+      function(){
       var triggered = false;
       // the test is synchronous on purpose
       function cb (eventObj) {
         expect(eventObj.authState).to.be.a('boolean');
         expect(eventObj.authState).to.be.false;
-        done();
       }
 
       var ssAltNew = new ss();
@@ -148,7 +142,6 @@ describe('User Auth Module :: Core functionality', function () {
         expect(ssAltNew.isAuthed()).to.be.false;
         done();
       }
-
       var ssAltNew = new ss();
       var cid = ssAltNew.listen(event.user.INITIAL_AUTH_STATE, cb);
       // boot up the app

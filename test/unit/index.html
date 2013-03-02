@@ -4,22 +4,7 @@
     <link rel="stylesheet" href="../../node_modules/mocha/mocha.css" />
   </head>
   <body>
-    <div id="tests-container" style="display:none">
-      <form method="post" id="login" action="/user/auth">
-        <p>
-          <label for="username">Nickname or email&nbsp;</label>
-          <input value="thanpolas" name="username" type="text" id="username" />
-        </p>
-        <p>
-          <label for="password">Password</label>
-          <input value="passpass" name="password" type="password" id="password" />
-        </p>
-        <p style="padding:10px 0px;">
-          <input id="signin_submit" value="Sign in" type="submit" class="btn" />
-          <input id="remember" name="perm_login" value="1" type="checkbox" checked />
-        </p>
-      </form>
-
+    <div id="tests-unit-container" style="display:none">
       <div id="fb-root"></div>
       <script id="facebook-jssdk" type="text/javascript">
         // dummy tag to forbit FB API to load
@@ -34,13 +19,12 @@
     <script src="../../node_modules/chai/chai.js"></script>
     <script src="../../closure-library/closure/goog/base.js" charset="utf-8"></script>
     <script src="../../src/deps-superstartup.js" charset="utf-8"></script>
-    <script src="deps-test-bdd.js"></script>
+    <script src="deps-test-tdd.js"></script>
     <script>
-      goog.DEBUG = true;
-      mocha.ui('bdd');
+      goog.DEBUG = false;
+      mocha.ui('tdd');
       mocha.reporter('html');
     </script>
-    <script src="../../src/main.js" charset="utf-8"></script>
     <script src="bootstrap.js"></script>
     <script>
       if (window.mochaPhantomJS) { mochaPhantomJS.run(); }

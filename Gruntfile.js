@@ -33,6 +33,12 @@ module.exports = function(grunt) {
           root_with_prefix: ['"test/bdd ../../../../../test/bdd"']
         },
         dest: 'test/bdd/deps-test-bdd.js'
+      },
+      tddTest: {
+        options: {
+          root_with_prefix: ['"test ../../../../../test"']
+        },
+        dest: 'test/unit/deps-test-tdd.js'
       }
     },
     closureBuilder: {

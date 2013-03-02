@@ -16,17 +16,32 @@ goog.require('ssd.invocator');
 /**
  * A generic config setter / getter
  *
- * @param {string=} optPath prepend this path.
+ * @param {Object|string=} optPath prepend this path or set object as initial data.
+ * @param {ssd.Config=} optParent Instance of parent config.
  * @constructor
  * @extends {ssd.structs.FancyGetSet}
  */
-ssd.Config = function( optPath )
+ssd.Config = function( optPath, optParent )
 {
   goog.base(this);
 
-  this._path = optPath || '';
-  if (this._path.length) {
-    this._path += '.';
+  // check for object input
+  var optData = {};
+  if (goog.isObject(optPath)) {
+    optData = optPath;
+  }
+
+  /** @type {string} */
+  this._path = '';
+  /** @type {?ssd.Config} */
+  this._optParent = optParent || null;
+
+  if (goog.isString(optPath)) {
+    this._path = optPath;
+
+    if (this._path.length) {
+      this._path += '.';
+    }
   }
 
   /**
@@ -34,14 +49,7 @@ ssd.Config = function( optPath )
    * @type {ssd.structs.StringPath}
    * @private
    */
-  this._obj = new ssd.structs.StringPath();
-
-  /**
-   * override get/toObject methods with the ones
-   * from StringPath class
-   */
-  this.get = goog.bind( this._obj.get, this._obj );
-  this.toObject = goog.bind( this._obj.toObject, this._obj );
+  this._obj = new ssd.structs.StringPath( optData );
 
   /**
    * And now expose methods from StringPath class to
@@ -57,7 +65,6 @@ goog.addSingletonGetter(ssd.Config);
 
 /** @enum {string} Error strings this class throws */
 ssd.Config.Error = {
-  methodRemoved: 'method not supported'
 };
 
 /**
@@ -112,8 +119,12 @@ ssd.Config.prototype.set = function(key, value)
 {
   this.logger.fine('Setting: ' + key);
 
+  if (this._path.length && this._optParent) {
+    return this._optParent.set( this._path + key, value );
+  }
+
   // check if value is object
-  if (goog.isObject(value)) {
+  if (goog.isObject(value) && !goog.isArray(value)) {
     throw new TypeError('value for "' + key + '" cannot be object type');
   }
 
@@ -124,7 +135,7 @@ ssd.Config.prototype.set = function(key, value)
 
   /* @preserveTry */
   try {
-    val = this._obj.get(key, true);
+    val = this.get(key, true);
   } catch(e) {
     exists = false;
   }
@@ -135,7 +146,42 @@ ssd.Config.prototype.set = function(key, value)
   }
 
   // call the original set method
-  this._obj.set.call(this._obj, key, value);
+  this._obj.set(key, value);
+};
+
+/**
+ * Check if current instance is part of a chain and call parent
+ * get or call super's get.
+ *
+ * @override
+ * @param  {string} key [description]
+ * @param  {boolean=} optThrowError [description]
+ * @return {*}     [description]
+ */
+ssd.Config.prototype.get = function( key, optThrowError ) {
+
+  if (this._path.length && this._optParent) {
+    return this._optParent.get( this._path + key );
+  } else {
+    return this._obj.get(key, optThrowError);
+  }
+};
+
+/**
+ * override toObject method
+ *
+ * @override
+ */
+ssd.Config.prototype.toObject = function() {
+
+  if (this._path.length && this._optParent) {
+    // remove trailing dot
+    var pathKey = this._path.substr(0, this._path.length - 1 );
+    return this._optParent.get( pathKey );
+  } else {
+    return this._obj.toObject();
+  }
+
 };
 
 /**
@@ -150,15 +196,7 @@ ssd.Config.prototype.prependPath = function( path ) {
 
   this.logger.info('prependPath() :: Init. path: ' + path);
 
-  var configInst = new ssd.Config( path );
-
-  configInst.set = goog.bind(function( key, value ) {
-    return this.set( path + '.' + key, value );
-  }, this);
-
-  configInst.get = goog.bind(function( key ) {
-    return this.get( path + '.' + key );
-  }, this);
+  var configInst = new ssd.Config( path, this );
 
   return configInst;
 };
@@ -166,12 +204,12 @@ ssd.Config.prototype.prependPath = function( path ) {
 /**
  * Add multiple key, value pairs.
  *
- * @param {Object} config An object with key value pairs.
+ * @param {Object} params An object with key value pairs.
  */
-ssd.Config.prototype.addAll = function( config ) {
+ssd.Config.prototype.addAll = function( params ) {
   this.logger.info('addAll() :: Init. path: ' + this._path);
 
-  goog.object.forEach( config, function( key, value ) {
-    this.set( this._path + key, value);
+  goog.object.forEach( params, function( value, key) {
+    this.set( key, value);
   }, this);
 };

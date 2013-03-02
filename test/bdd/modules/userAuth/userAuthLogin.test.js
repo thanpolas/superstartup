@@ -26,7 +26,7 @@ describe( 'User Auth Module :: Login', function () {
 
   beforeEach( function() {
     ssNew = new ss();
-    ssNew.config()
+    ssNew.config();
     ssNew();
     stub = sinon.stub( ssNew.ajax, 'send' );
     stub.yields( userFix );

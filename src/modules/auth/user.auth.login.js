@@ -125,8 +125,9 @@ ssd.user.AuthLogin.prototype._loginjQuery = function( $el ) {
 ssd.user.AuthLogin.prototype._loginStart = function( data ) {
   this.logger.info('_loginStart() :: Init.');
 
-  var url = this.config(ssd.user.auth.Key.LOCAL_AUTH_URL);
+  var url = this.config(ssd.user.auth.config.Key.AUTH_URL);
 
+  console.log(url);
   return this.performLocalAuth( url, data );
 };
 
