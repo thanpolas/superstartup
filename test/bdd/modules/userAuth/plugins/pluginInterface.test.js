@@ -190,86 +190,105 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
       _this.afterEach();
     });
 
-    it('should return ' + _this.hasJSAPI + ' when asked if hasJSAPI()', function(){
-      expect( plugin.hasJSAPI() ).to.equal(_this.hasJSAPI);
+    describe('login callback tests', function() {
+      it('should have a working callback', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.calledOnce ).to.be.true;
+      });
+
+      it('should have a callback', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+
+        expect(spyCB.calledOnce).to.be.true;
+      });
+
+      it('should have a callback with 5 arguments', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.args[0].length ).to.equal(5);
+      });
+
+      it('should have a callback with arg1, the error message, null', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.args[0][0] ).to.be.null;
+      });
+
+      it('should have a callback with arg2, authState, boolean', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.args[0][1] ).to.be.a('boolean');
+      });
+
+      it('should have a callback with arg3, udo, object', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.args[0][2] ).to.be.an('object');
+      });
+
+      it('should have a callback with arg4, server response raw, object', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.args[0][3] ).to.be.an('object');
+      });
+
+      it('should have a callback with arg5, third-party response raw, object', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.args[0][4] ).to.be.an('object');
+      });
+
+      it('should have a proper user data object provided on the callback', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.getCall(0).args[2] ).to.deep.equal(fixtures.userOne);
+      });
+
+      it('should have a proper server response data object provided on the callback', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.getCall(0).args[3] ).to.deep.equal(fixtures.userOne);
+      });
+
+      it('should have a proper 3rd party response data object provided on the callback', function(){
+        var spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        expect( spyCB.getCall(0).args[4] ).to.deep.equal(_this.pluginResponse);
+      });
     });
 
-    it('should have a working callback', function(){
-      var spyCB = sinon.spy.create('loginCB');
-      plugin.login(spyCB);
-      expect( spyCB.calledOnce ).to.be.true;
+    describe('utility methods', function() {
+      it('should return ' + _this.hasJSAPI + ' when asked if hasJSAPI()', function(){
+        expect( plugin.hasJSAPI() ).to.equal(_this.hasJSAPI);
+      });
+
+      it('should try to verify with local server', function(){
+        plugin.login();
+        expect( stubNet.calledOnce ).to.be.true;
+      });
+
+      it('should globally authenticate us', function(){
+        plugin.login();
+        expect( ssNew.isAuthed() ).to.be.true;
+      });
+
+      it('should exist in the authedSources() returning array', function(){
+        plugin.login();
+        expect( ssNew.user.authedSources() ).to.include(_this.pluginName);
+      });
+
+      it('should return the UDO as provided by the plugin', function(){
+        plugin.login();
+        expect( plugin.getUser() ).to.deep.equal(_this.pluginUDO);
+      });
+
+      it('should return the Access Token of the plugin', function(){
+        plugin.login();
+        expect( plugin.getAccessToken() ).to.equal(_this.pluginResponse.accessToken);
+      });
     });
-
-    it('should have a callback with the proper signature', function(){
-      var spyCB = sinon.spy.create('loginCB');
-      plugin.login(spyCB);
-
-      // that's the signature of the callback
-      // err, authState, user, response, response3rdParty
-      var args = spyCB.args;
-
-      // the err object should be undefined
-      expect( args[0] ).to.be.undefined;
-
-      // the authState should be a boolean
-      expect( args[1] ).to.be.a('boolean');
-
-      // the user data object should be an object
-      expect( args[2] ).to.be.an('object');
-
-      // the [server]ressponse and 3rd party response should be objects
-      expect( args[3] ).to.be.an('object');
-      expect( args[4] ).to.be.an('object');
-
-      // in total, 5 arguments
-      expect( args.length ).to.equal(5);
-    });
-
-
-    it('should have a proper user data object provided on the callback', function(){
-      var spyCB = sinon.spy.create('loginCB');
-      plugin.login(spyCB);
-      expect( spyCB.getCall(0).args[2] ).to.deep.equal(fixtures.userOne);
-    });
-
-    it('should have a proper server response data object provided on the callback', function(){
-      var spyCB = sinon.spy.create('loginCB');
-      plugin.login(spyCB);
-      expect( spyCB.getCall(0).args[3] ).to.deep.equal(fixtures.userOne);
-    });
-
-    it('should have a proper 3rd party response data object provided on the callback', function(){
-      var spyCB = sinon.spy.create('loginCB');
-      plugin.login(spyCB);
-      expect( spyCB.getCall(0).args[4] ).to.deep.equal(_this.pluginResponse);
-    });
-
-    it('should try to verify with local server', function(){
-      plugin.login();
-      expect( stubNet.calledOnce ).to.be.true;
-    });
-
-    it('should globally authenticate us', function(){
-      plugin.login();
-      expect( ssNew.isAuthed() ).to.be.true;
-    });
-
-    it('should exist in the authedSources() returning array', function(){
-      plugin.login();
-      expect( ssNew.user.authedSources() ).to.include(_this.pluginName);
-    });
-
-    it('should return the UDO as provided by the plugin', function(){
-      plugin.login();
-      expect( plugin.getUser() ).to.deep.equal(_this.pluginUDO);
-    });
-
-    it('should return the Access Token of the plugin', function(){
-      plugin.login();
-      expect( plugin.getAccessToken() ).to.equal(_this.pluginResponse.accessToken);
-    });
-
-
   });
 };
 

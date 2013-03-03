@@ -68,7 +68,7 @@ ssd.user.auth.Facebook = function( authCapsule ) {
    * @type {boolean} Got initial auth response from FB
    * @private
    */
-  this._FBGotResponce = false;
+  this._gotInitialResponse = false;
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -152,7 +152,7 @@ ssd.user.auth.Facebook.prototype._gotInitialAuthStatus = function (response) {
 
   this._isAuthedFromResponse(response);
 
-  this._FBGotResponce = true;
+  this._gotInitialResponse = true;
 
   this.dispatchEvent(ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE);
 };
@@ -336,8 +336,7 @@ ssd.user.auth.Facebook.prototype._loginListener = function (cb, response) {
   this.logger.info('_loginListener() :: Init');
 
   var resp = this._isAuthedFromResponse(response);
-  console.log('login listener:', cb, resp);
-  cb(resp);
+  cb(null, resp, {}, {}, {});
 };
 
 /**
@@ -353,8 +352,12 @@ ssd.user.auth.Facebook.prototype._loginListener = function (cb, response) {
  * @return {boolean} if we are authed or not
  */
 ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
-  try {
   this.logger.info('_isAuthedFromResponse() :: Init.');
+
+  if ( !goog.isObject(response)) {
+    this.logger.warn('_isAuthedFromResponse() :: response not object:' + response);
+    return false;
+  }
 
   var isAuthed = 'connected' === response['status'];
 
@@ -362,17 +365,13 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   if (isAuthed !== this._isAuthed) {
     this._isAuthed = isAuthed;
     // only dispatch EXT_AUTH_CHANGE event AFTER we got initial auth response
-    if (this._FBGotResponce) {
+    if (this._gotInitialResponse) {
       this.dispatchEvent(ssd.user.auth.EventType.EXT_AUTH_CHANGE);
     }
   }
 
   return isAuthed;
 
-  } catch(e) {
-    ssd.error(e);
-    return false;
-  }
 };
 
 /**
