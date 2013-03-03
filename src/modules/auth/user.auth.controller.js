@@ -5,8 +5,6 @@
 goog.provide('ssd.user.Auth');
 goog.provide('ssd.user.Auth.Error');
 
-goog.require('goog.async.Deferred');
-
 goog.require('ssd.user.AuthModel');
 goog.require('ssd.user.AuthLogin');
 goog.require('ssd.user.auth.config');
@@ -93,7 +91,7 @@ ssd.user.Auth.SourceItem;
 /**
  * Kicks off authentication flows for all ext auth sources
  *
- * @return {goog.async.Deferred}
+ * @return {when.Promise} a promise.
  */
 ssd.user.Auth.prototype.init = function() {
   this.logger.info('init() :: starting...');
@@ -106,13 +104,13 @@ ssd.user.Auth.prototype.init = function() {
     this._hasLocalAuth + ' auth sources registered: ' +
     this._mapSources.getCount());
 
-  var deferreds = [];
+  var promises = [];
   this._mapSources.forEach( function( key, sourceItem ) {
     this.logger.fine('init() :: Initializing plugin:' + key);
-    deferreds.push( sourceItem.inst.init() );
+    promises.push( sourceItem.inst.init() );
   }, this);
 
-  return new goog.async.DeferredList(deferreds);
+  return when.all(promises);
 };
 
 /**

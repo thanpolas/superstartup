@@ -5,8 +5,6 @@ goog.provide('ssd.user.AuthLogin');
 
 goog.require('goog.dom');
 goog.require('goog.dom.forms');
-goog.require('goog.async.Deferred');
-
 
 goog.require('ssd.user.AuthModel');
 
@@ -39,16 +37,16 @@ goog.inherits( ssd.user.AuthLogin, ssd.user.AuthModel);
  *   define a callback, the full sig of the callback is:
  *   cb(err, authState, udo, response).
  * @param {Object} optSelfObj Object context to use for optCB.
- * @return {goog.async.Deferred} A promise.
+ * @return {when.Promise} A promise.
  * @throws {TypeError} If argument not of expected types.
  */
 ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
   this.logger.info('login() :: Init.');
 
-  var def = new goog.async.Deferred();
+  var def = when.defer();
   var cb = optCB || ssd.noop;
 
-  def.addCallback(function( statusObj ) {
+  def.promise.then(goog.bind(function( statusObj ) {
     if (false === statusObj) {
       cb.call(optSelfObj, null, false);
     }
@@ -56,21 +54,22 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
     cb.call(optSelfObj, null, statusObj.authState, statusObj.udo,
       statusObj.response);
 
-  }, this);
-  def.addErrback(function( errMsg ) {
+  }, this));
+
+  def.promise.otherwise(goog.bind(function( errMsg ) {
     cb.call(optSelfObj, errMsg, this.isAuthed() );
-  }, this);
+  }, this));
 
   if (goog.dom.isElement(arg1)) {
-    return this._loginElement( arg1 ).chainDeferred( def );
+    return when.chain( this._loginElement( arg1 ), def );
   }
 
   if (ssd.isjQ(arg1)) {
-    return this._loginjQuery( arg1 ).chainDeferred( def );
+    return when.chain( this._loginjQuery( arg1 ), def );
   }
 
   if (goog.isObject(arg1)) {
-    return this._loginStart( arg1 ).chainDeferred( def );
+    return when.chain( this._loginStart( arg1 ), def );
   }
 
   throw new TypeError('auth.login argument not Object or Element or jQuery');
@@ -81,12 +80,12 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
  * to pass to the server.
  *
  * @param  {Element} el [description]
- * @return {goog.async.Deferred} A promise.
+ * @return {when.Promise} A promise.
  */
 ssd.user.AuthLogin.prototype._loginElement = function( el ) {
   this.logger.info('_loginElement() :: Init.');
 
-  var def = new goog.async.Deferred();
+  var def = when.defer();
 
   /** @type {goog.structs.Map} */
   var paramsMap;
@@ -94,26 +93,22 @@ ssd.user.AuthLogin.prototype._loginElement = function( el ) {
   try {
     paramsMap = goog.dom.forms.getFormDataMap( el );
   } catch (ex) {
-    def.errback('not a form element');
-    return def;
+    return def.reject('not a form element');
   }
 
   if ( 0 === paramsMap.getCount()) {
-    def.errback('no form data');
-    return def;
+    return def.reject('no form data');
   }
 
   return this._loginStart( paramsMap.toObject() );
-
 };
-
 
 /**
  * Scan the jQuery form's childs for input fields and create the login object
  * to pass to the server.
  *
  * @param  {jQuery} $el jQuery object.
- * @return {goog.async.Deferred} A promise.
+ * @return {when.Promise} A promise.
  */
 ssd.user.AuthLogin.prototype._loginjQuery = function( $el ) {
   this.logger.info('_loginjQuery() :: Init.');
@@ -126,7 +121,7 @@ ssd.user.AuthLogin.prototype._loginjQuery = function( $el ) {
  * The data object is ready, prep and perform server query.
  *
  * @param  {Object} data The data object with credentials.
- * @return {goog.async.Deferred} a promise.
+ * @return {when.Promise} a promise.
  */
 ssd.user.AuthLogin.prototype._loginStart = function( data ) {
   this.logger.info('_loginStart() :: Init.');
@@ -142,48 +137,48 @@ ssd.user.AuthLogin.prototype._loginStart = function( data ) {
  *
  * @param {function(boolean)=} optCb callback with the status as parameter (xhr op).
  * @param  {Object=} optSelfObj self object to invoke the cb on.
- * @return {goog.async.Deferred}
+ * @return {when.Promise}
  */
 ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
   this.logger.info('logout() :: init');
-  var def = new goog.async.Deferred();
+  var def = when.defer();
 
   var cb = optCb || ssd.noop;
 
-  def.addCallback(function( success ) {
+  def.promise.then( goog.bind( function( success ) {
     cb.call(optSelfObj, null, success );
-  }, this);
-  def.addErrback(function( errMsg ) {
+  }, this ));
+  def.promise.otherwise( goog.bind( function( errMsg ) {
     cb.call(optSelfObj, errMsg, false );
-  }, this);
+  }, this));
 
 
   // check if local auth enabled
   if (! this.config( ssd.user.auth.config.Key.HAS_LOCAL_AUTH )) {
     this.logger.info('logout() :: local auth is disabled');
-    def.callback(true);
     this._doAuth(false);
-    return def;
+    return def.resolve(true);
   }
 
   if (!this.dispatchEvent(ssd.user.auth.EventType.BEFORE_LOGOUT)) {
     this.logger.info('login() :: Canceled by event');
-    def.callback(true);
-    return def;
+    return def.resolve(true);
   }
 
   // perform deauthentication
   this._doAuth(false);
 
   var respCb = goog.bind(function() {
-    this._logoutResponse.apply(this, arguments)
-      .chainDeferred( def );
+    when.chain(
+      this._logoutResponse.apply(this, arguments),
+      def.resolver
+    );
   }, this);
 
   ssd.ajax.send( this.config(ssd.user.auth.config.Key.LOGOUT_URL), respCb,
     ssd.ajax.Method.POST);
 
-  return def;
+  return def.promise;
 };
 
 
@@ -192,12 +187,12 @@ ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
  *
  * @param  {ssd.ajax.ResponseObject} response The response object.
  * @private
- * @return {goog.async.Deferred} a deferred.
+ * @return {when.Promise} a Promise.
  */
 ssd.user.AuthLogin.prototype._logoutResponse = function( response ) {
   this.logger.info('_logoutResponse() :: Init.');
 
-  var def = new goog.async.Deferred();
+  var def = when.defer();
 
   var eventObj = {
     type: ssd.user.auth.EventType.ON_LOGOUT_RESPONSE,
@@ -212,14 +207,12 @@ ssd.user.AuthLogin.prototype._logoutResponse = function( response ) {
   if ( false === this.dispatchEvent(eventObj) ) {
     this.logger.info('_logoutResponse() :: canceled due to ' +
       'event preventDefault');
-    def.callback(true);
-    return def;
+    return def.resolve(true);
   }
 
   // switch event type
   eventObj.type = ssd.user.auth.EventType.AFTER_LOGOUT_RESPONSE;
   this.dispatchEvent(eventObj);
-  def.callback(true);
-  return def;
+  return def.resolve(true);
 };
 

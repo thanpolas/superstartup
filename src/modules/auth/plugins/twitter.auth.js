@@ -5,8 +5,6 @@
 goog.provide('ssd.user.auth.Twitter');
 goog.provide('ssd.user.auth.Twitter.EventType');
 
-goog.require('goog.async.Deferred');
-
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.auth.config');
 goog.require('ssd.user.Auth');
@@ -66,18 +64,17 @@ ssd.user.auth.Twitter.prototype.SOURCEID = 'twitter';
  * When a definitive result is produced, dispatch the INITIAL_AUTH_STATUS
  * event
  *
- * @return {goog.async.Deferred}
+ * @return {when.Promise}
  */
 ssd.user.auth.Twitter.prototype.init = function() {
-  var def = new goog.async.Deferred();
+  var def = when.defer();
 
   this.logger.info('init() :: Dispatching dummy event');
 
   this.dispatchEvent( ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE );
-  // resolve the deferred and pass current auth status.
-  def.callback( false );
 
-  return def;
+  // resolve the deferred and pass current auth status.
+  return def.resolve( false );
 };
 
 /**

@@ -115,7 +115,7 @@ ssd.Core.EventType = {
  * This function is exposed and is invoked by our handlers
  *
  * @param  {Function=} optCallback A callback for when ready ops finish.
- * @return {goog.async.Deferred|ssd.Core} a deferred for init operation or
+ * @return {when.Promise|ssd.Core} a promise for init operation or
  *   a new instance if called with the 'new' keyword.
  */
 ssd.Core.prototype.init = function (optCallback) {
@@ -141,11 +141,11 @@ ssd.Core.prototype.init = function (optCallback) {
 
   // start modules initialization and wait till finished
   return ssd.register.runModuleInits( this )
-    .addBoth( function() {
+    .always( function() {
       this._isReady = true;
       this.dispatchEvent( ssd.Core.EventType.INIT );
     }, this)
-    .addBoth( fn );
+    .always( fn );
 
 };
 

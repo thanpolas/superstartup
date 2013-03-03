@@ -6,7 +6,6 @@
 
 goog.provide('ssd.user.AuthModel');
 
-goog.require('goog.async.Deferred');
 goog.require('goog.json');
 
 goog.require('ssd.core.config');
@@ -199,10 +198,10 @@ ssd.user.AuthModel.prototype._checkAuthState = function() {
  *
  * @protected
  * @param {ssd.user.types.extSourceId} sourceId
- * @return {goog.async.Deferred}
+ * @return {when.Promise}
  */
 ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
-  var def = new goog.async.Deferred();
+  var def = when.defer();
 
   this.logger.info('_verifyExtAuthWithLocal() :: Init. LocalAuth Switch:' +
     ' sourceId :' + sourceId );
@@ -222,8 +221,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   if (!this.dispatchEvent(eventObj)) {
     this.logger.info('_verifyExtAuthWithLocal() :: canceled due to ' +
       'event preventDefault');
-    def.errback('preventDefault called on verifyExtAuthWithLocal');
-    return def;
+    return def.reject('preventDefault called');
   }
 
   // check if this auth plugin does not require authentication with the server
@@ -234,8 +232,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
     // No verification with server is allowed by config.
     // authenticate the user.
     this._doAuth( true );
-    def.callback( true );
-    return def;
+    return def.resolve( true );
   }
 
   //
@@ -268,10 +265,10 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
  * @protected
  * @param {string} url The url.
  * @param {Object} data The data.
- * @return {goog.async.Deferred}
+ * @return {when.Promise}
  */
 ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
-  var def = new goog.async.Deferred();
+  var def = when.defer();
 
   this.logger.info('performLocalAuth() :: Init. url:' + url);
 
@@ -279,8 +276,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
   if (! this.config( ssd.user.auth.Key.HAS_LOCAL_AUTH )) {
     this.logger.info('performLocalAuth() :: local auth is disabled');
     this._doAuth( true );
-    def.callback( true );
-    return true;
+    return def.reject( true );
   }
 
 
@@ -296,15 +292,16 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
   if (!this.dispatchEvent( eventObj )) {
     this.logger.info('performLocalAuth() :: canceled due to ' +
       'event preventDefault');
-    def.errback('preventDefault canceled the op');
-    return def;
+    return def.reject('preventDefault called');
   }
 
   data = backPipe();
 
   var cb = goog.bind(function() {
-    this._serverAuthResponse.apply(this, arguments)
-      .chainDeferred( def );
+    when.chain(
+      this._serverAuthResponse.apply(this, arguments),
+      def.resolver
+    );
   }, this);
 
   ssd.ajax.send( url, cb, ssd.ajax.Method.POST, data );
@@ -325,11 +322,11 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
  *   2. We received a positive or negative response from the server
  *
  * @param  {ssd.ajax.ResponseObject} response The response object.
- * @return {goog.async.Deferred} A deferred.
+ * @return {when.Promise} A promise.
  * @private
  */
 ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
-  var def = new goog.async.Deferred();
+  var def = when.defer();
 
   this.logger.info('_serverAuthResponse() :: Init');
 
@@ -346,8 +343,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   if ( false === this.dispatchEvent(eventObj) ) {
     this.logger.info('_serverAuthResponse() :: canceled due to ' +
       'event preventDefault');
-    def.errback('preventDefault canceled resp op');
-    return def;
+    return def.reject('preventDefault canceled resp op');
   }
 
   // switch event type
@@ -357,8 +353,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   if ( !response.success ) {
     this.logger.warning('_serverAuthResponse() :: xhr operation was not a success');
     this.dispatchEvent(eventObj);
-    def.errback('xhr failed');
-    return def;
+    return def.reject('xhr failed');
   }
 
   // try to parse the response
@@ -372,8 +367,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
         ' to parse as JSON');
       eventObj['errorMessage'] = 'response not JSON';
       this.dispatchEvent(eventObj);
-      def.errback('resp not JSON');
-      return def;
+      return def.reject('resp not JSON');
     }
 
     // check if status check is enabled.
@@ -387,8 +381,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
         this.logger.warning('_serverAuthResponse() :: operation got a false response');
         eventObj['errorMessage'] = 'status failed';
         this.dispatchEvent(eventObj);
-        def.callback(false);
-        return def;
+        return def.resolve( false );
       }
     }
 
@@ -411,20 +404,18 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   if ( !this.auth(udo) ) {
     eventObj['errorMessage'] = 'user data object not valid';
     this.dispatchEvent(eventObj);
-    def.errback('udo not valid');
-    return def;
+    return def.reject('udo not valid');
   }
 
   eventObj['udo'] = udo;
   eventObj['authState'] = true;
   this.dispatchEvent(eventObj);
 
-  def.callback({
+  return def.resolve({
     authState: true,
     udo: udo,
     response: response.responseRaw
   });
-  return def;
 };
 
 /**

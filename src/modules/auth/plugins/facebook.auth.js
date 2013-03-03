@@ -5,8 +5,6 @@
 goog.provide('ssd.user.auth.Facebook');
 goog.provide('ssd.user.auth.Facebook.EventType');
 
-goog.require('goog.async.Deferred');
-
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.EventType');
@@ -111,13 +109,13 @@ ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
  * When a definitive result is produced, dispatch the INITIAL_AUTH_STATUS
  * event.
  *
- * @return {goog.async.Deferred}
+ * @return {when.Promise} a Promise.
  */
 ssd.user.auth.Facebook.prototype.init = function() {
   this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
 
-  var def = new goog.async.Deferred();
-  def.callback();
+  var def = when.defer();
+  def.resolve();
 
   if (!this._FBAPILoaded) {
     // API not loaded yet
@@ -130,14 +128,14 @@ ssd.user.auth.Facebook.prototype.init = function() {
       this.dispatchEvent(ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE);
     }
 
-    return def;
+    return def.promise;
   }
 
   this.logger.info('init() :: Asking for login status');
   // catch initial login status
   FB.getLoginStatus(goog.bind(this._gotInitialAuthStatus, this));
 
-  return def;
+  return def.promise;
 };
 
 /**

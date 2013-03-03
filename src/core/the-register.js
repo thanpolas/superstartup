@@ -6,8 +6,6 @@ goog.provide('ssd.Register');
 goog.provide('ssd.register');
 
 goog.require('goog.array');
-goog.require('goog.async.Deferred');
-goog.require('goog.async.DeferredList');
 
 /**
  * The register class.
@@ -49,9 +47,9 @@ ssd.Register.prototype.module = function( cb ) {
  * Registers the 'init' method of modules. This method is called when the
  * consumer app invokes the ss.init() method.
  *
- * All methods should return a goog.Deferred
+ * All methods should return a when.Promise
  *
- * @param  {function(...*=):goog.Deferred} method [description]
+ * @param  {function(...*=):when.Promise} method [description]
  * @param  {Object=}   optSelf    context to run the callback on.
  */
 ssd.Register.prototype.init = function( method, optSelf ) {
@@ -97,7 +95,7 @@ ssd.Register.prototype.runModules = function( capsule ) {
 /**
  * Invoke the init methods of all the modules.
  *
- * @return {goog.async.Deferred} A deferred.
+ * @return {when.Promise} A promise.
  */
 ssd.Register.prototype.runModuleInits = function( ) {
   var def = this._invoke( this._init, {deferred: true} );
@@ -108,12 +106,10 @@ ssd.Register.prototype.runModuleInits = function( ) {
  * Invoke all the functions in an array.
  * @param {Array.<Function>} ar An array of functions.
  * @param {Object=} optParams Parameters to run the invoke.
- * @return {goog.async.Deferred} a promise.
+ * @return {when.Promise} a promise.
  */
 ssd.Register.prototype._invoke = function( ar, optParams ) {
   var params = optParams || {};
-
-  var arg0 = params.params;
 
   var ret = [];
   goog.array.forEach( ar, function( fn ) {
@@ -121,7 +117,7 @@ ssd.Register.prototype._invoke = function( ar, optParams ) {
   }, this);
 
   if ( true === params.deferred ) {
-    return new goog.async.DeferredList(ret);
+    return when.all(ret);
   }
 };
 
