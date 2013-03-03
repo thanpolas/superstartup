@@ -280,12 +280,18 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
     'data': data,
     type: ssd.user.auth.EventType.BEFORE_LOCAL_AUTH
   };
+
+  // add a backpipe in case listener needs to chang data
+  var backPipe = ssd.eventBackPipe( eventObj, data );
+
   if (!this.dispatchEvent( eventObj )) {
     this.logger.info('performLocalAuth() :: canceled due to ' +
       'event preventDefault');
     def.errback('preventDefault canceled the op');
     return def;
   }
+
+  data = backPipe();
 
   var cb = goog.bind(function() {
     this._serverAuthResponse.apply(this, arguments)
@@ -322,7 +328,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
     type: ssd.user.auth.EventType.ON_AUTH_RESPONSE,
     'responseRaw': response.responseRaw,
     'httpStatus': response.httpStatus,
-    'xhrStatus': response.success,
+    'ajaxStatus': response.success,
     'authState': false,
     'errorMessage': response.errorMessage
   };

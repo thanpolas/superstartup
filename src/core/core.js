@@ -210,12 +210,6 @@ ssd.Core.prototype.removeAllListeners = function( optType ) {
 
 
 /**
- * No operation function
- */
-ssd.noop = function(){};
-
-
-/**
  * Synchronous (silent) initialization of the library.
  * @type {ssd.Core}
  */

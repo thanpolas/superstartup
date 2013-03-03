@@ -39,5 +39,4 @@ ssd.user.auth.EventType = {
   AFTER_SET:     'user.data.afterSet',
   BEFORE_ADDALL: 'user.data.beforeAddall',
   AFTER_ADDALL:  'user.data.afterAddall'
-
 };

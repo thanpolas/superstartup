@@ -1,25 +1,35 @@
 goog.provide('ssd.test.userAuth.login.events');
 
+goog.require('ssd.test.userAuth.login.events');
+goog.require('goog.test.mock.net');
+goog.require('ssd.test.fixture.userOne');
+goog.require('ssd.test.fixture.event');
+goog.require('ssd.test.fixture.errorCodes');
+
 /**
  * [events description]
  * @param  {string} loginTriggerNS The namespace to the function that will
  *   trigger the auth process. Ok lame but it works.
- * @param  {*=} opt_params     parameters to invoke the auth trigger with.
+ * @param  {*=} optParams     parameters to invoke the auth trigger with.
  */
-ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
+ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
 
   var ssNew,
       stubNet,
+      userFix = ssd.test.fixture.userOne,
+      userEvent = ssd.test.fixture.event.user,
+      errorCodes = ssd.test.fixture.errorCodes,
       loginTrigger;
+
 
   describe( 'Basic login events', function(){
     beforeEach( function() {
       ssNew = new ss();
       ssNew();
       stubNet = sinon.stub( ssNew.ajax, 'send' );
-      stubNet.yields( userFix );
-      if ( opt_params ) {
-        loginTrigger = goog.partial( ssNew.user[loginTriggerNS], opt_params );
+      stubNet.yields( goog.test.mock.net.getResponse( userFix ) );
+      if ( optParams ) {
+        loginTrigger = goog.partial( ssNew.user[loginTriggerNS], optParams );
       } else {
         loginTrigger = ssNew.user[loginTriggerNS];
       }
@@ -30,8 +40,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
       stubNet.restore();
     });
 
-
     it( 'should trigger the AUTH_CHANGE event', function( done ){
+
       ssNew.listen( userEvent.AUTH_CHANGE, function( eventObj ){
         expect( eventObj.authState ).to.be.true;
         expect( ssNew.isAuthed() ).to.be.true;
@@ -60,8 +70,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
         expect( ssNew.isAuthed() ).to.be.false;
         expect( authState ).to.be.false;
 
-        // error checks
-        expect( err.code ).to.equal( errorCodes.gen.CANCEL_BY_EVENT );
+        expect( err ).to.be.a('string');
         done();
       });
     });
@@ -75,7 +84,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
         expect( ssNew.isAuthed() ).to.be.false;
         expect( authState ).to.be.false;
 
-        expect( err.code ).to.equal( errorCodes.gen.CANCEL_BY_EVENT );
+        expect( err ).to.be.a('string');
         done();
       });
     });
@@ -90,13 +99,16 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
       };
 
       ssNew.listen( userEvent.BEFORE_LOCAL_AUTH, function( eventObj ){
+        eventObj.backPipe(function(data) {
+          expect( data ).to.deep.equal(optParams);
+          return funnyData;
+        });
 
       });
 
       loginTrigger( function( err, authState, user, response ){
 
-        expect( stubNet ).to.deep.equal( funnyData );
-
+        expect( stubNet.getCall( 0 ).args[3] ).to.deep.equal( funnyData );
         done();
 
       });
@@ -104,8 +116,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
 
     });
 
-    it( 'should trigger the BEFORE_AUTH_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.BEFORE_AUTH_RESPONSE, function( eventObj ){
+    it( 'should trigger the ON_AUTH_RESPONSE event', function( done ){
+      ssNew.listen( userEvent.ON_AUTH_RESPONSE, function( eventObj ){
         expect( stubNet.calledOnce ).to.be.true;
         expect( ssNew.isAuthed() ).to.be.false;
         done();
@@ -113,31 +125,36 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, opt_params ) {
       loginTrigger();
     });
 
-    it( 'should prevent login if we return false at the BEFORE_AUTH_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.BEFORE_AUTH_RESPONSE, function( eventObj ){
+    it( 'should prevent login if we return false at the ON_AUTH_RESPONSE event', function( done ){
+      ssNew.listen( userEvent.ON_AUTH_RESPONSE, function( eventObj ){
         return false;
       });
       loginTrigger( function( err, authState, user, response ){
         expect( stubNet.calledOnce ).to.be.true;
         expect( ssNew.isAuthed() ).to.be.false;
-        expect( status ).to.be.false;
+        expect( authState ).to.be.false;
 
-        expect( err.code ).to.equal( errorCodes.gen.CANCEL_BY_EVENT );
+        expect( err ).to.be.a('string');
         done();
       });
     });
 
-    it( 'should trigger the AUTH_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.AUTH_RESPONSE, function( eventObj ){
+    it( 'should trigger the AFTER_AUTH_RESPONSE event', function( done ){
+      ssNew.listen( userEvent.AFTER_AUTH_RESPONSE, function( eventObj ){
         expect( stubNet.calledOnce ).to.be.true;
+
         // network operation
-        expect( eventObj.status ).to.be.true;
+        expect( eventObj.ajaxStatus ).to.be.true;
+
         // user authed
         expect( eventObj.authState ).to.be.true;
+
         // UDO
-        expect( eventObj.user ).to.deep.equal( userFix );
+        expect( eventObj.udo ).to.deep.equal( userFix );
+
         // response object
-        expect( eventObj.response ).to.deep.equal( userFix );
+        expect( eventObj.responseRaw ).to.deep.equal( JSON.stringify(userFix) );
+
         expect( ssNew.isAuthed() ).to.be.true;
         done();
       });

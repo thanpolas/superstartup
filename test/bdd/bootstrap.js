@@ -8,7 +8,7 @@ goog.require('ssd.test.fixture.userOne');
 
 goog.require('ssd.test.main');
 
-// goog.require('ssd.test.core');
-// goog.require('ssd.test.event.api');
-// goog.require('ssd.test.userAuth.core');
+goog.require('ssd.test.core');
+goog.require('ssd.test.event.api');
+goog.require('ssd.test.userAuth.core');
 goog.require('ssd.test.userAuth.login');
