@@ -153,6 +153,12 @@ ssd.Config.prototype.set = function(key, value)
  * Check if current instance is part of a chain and call parent
  * get or call super's get.
  *
+ * A cascading type of getting is implemented. e.g. getting:
+ * path.to.the.key, all paths will be cheked down to root 'key':
+ * path.to.key
+ * path.key
+ * key
+ *
  * @override
  * @param  {string} key [description]
  * @param  {boolean=} optThrowError [description]
@@ -163,7 +169,7 @@ ssd.Config.prototype.get = function( key, optThrowError ) {
   if (this._path.length && this._optParent) {
     return this._optParent.get( this._path + key );
   } else {
-    return this._obj.get(key, optThrowError);
+    return this._obj.getCascading(key, optThrowError);
   }
 };
 

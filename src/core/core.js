@@ -20,7 +20,7 @@
  /** @fileoverview The core API class */
 
 goog.provide('ssd.Core');
-goog.provide('ssd.core');
+goog.provide('ssd.c');
 
 goog.require('ssd.Module');
 goog.require('ssd.Config');
@@ -32,6 +32,7 @@ goog.require('ssd.metadata');
 goog.require('ssd.web.cookies');
 goog.require('ssd.register');
 goog.require('ssd.sync');
+goog.require('ssd.core.config');
 
 /**
  * An instance counter.
@@ -80,6 +81,7 @@ ssd.Core = function()
    * @type {ssd.Config} The configuration class.
    */
   this.config = new ssd.Config();
+  this.config.addAll( ssd.core.config.defaults );
 
   //
   // hack
@@ -188,6 +190,7 @@ ssd.Core.prototype.trigger = function( event ) {
 
 /**
  * [trigger description]
+ * @param  {[type]} key [description]
  * @param  {goog.events.ListenableKey } key The key from listen().
  * @return {boolean} indicating whether the listener was there to remove.
  */
@@ -212,8 +215,9 @@ ssd.Core.prototype.removeAllListeners = function( optType ) {
 ssd.noop = function(){};
 
 
-// start of synchronous (silent) initialization of the library
-// wake up the monster
-//ssd.core = ssd.invocator( ssd.Core, 'init' );
-ssd.core = new ssd.Core();
+/**
+ * Synchronous (silent) initialization of the library.
+ * @type {ssd.Core}
+ */
+ssd.c = new ssd.Core();
 

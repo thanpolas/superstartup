@@ -34,50 +34,6 @@ goog.require('goog.object');
  */
 ssd.noop = function(){};
 
-
-/**
- * Returns a proper status object that can be used
- * to check the status of incoming responces from the
- * server.
- *
- * The functionality is to check if the provided config
- * instance has the 'status' and 'statusTrue' keys defined.
- *
- * If they are defined we use them, if not we use the default ones
- * from the 'core' config namespace
- *
- * @param  {ssd.FancyGetSet} config The default config instance the
- *                                  base module class provides.
- * @return {ssd.helpers.statusObject} A proper status object to use.
- */
-ssd.helpers.getStatusObject = function (config)
-{
-  var coreConfig = ssd.Core.getInstance().config;
-  var statusObject = {
-    hasStatus: false,
-    status: '',
-    valuator: true
-  };
-  statusObject.status = config(ssd.Core.CONFIG_STATUS) || coreConfig.get(ssd.Core.CONFIG_PATH)[ssd.Core.CONFIG_STATUS];
-
-  // check if status is a string
-  if ('string' !== goog.typeOf(statusObject.status)) {
-    // not a string, no need to go further
-    return statusObject;
-  }
-
-  // ok status is string
-  statusObject.hasStatus = true;
-  // fetch the evaluator now, see if we have a local override
-  if (config.containsKey(ssd.Core.CONFIG_STATUS_TRUE)) {
-    statusObject.valuator = config(ssd.Core.CONFIG_STATUS_TRUE);
-    return statusObject;
-  }
-
-  statusObject.valuator = coreConfig.get(ssd.Core.CONFIG_STATUS_TRUE);
-  return statusObject;
-};
-
  /**
   * Wrapper for goog.array.find
   * Will search each element of an array and

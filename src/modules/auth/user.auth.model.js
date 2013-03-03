@@ -7,7 +7,9 @@
 goog.provide('ssd.user.AuthModel');
 
 goog.require('goog.async.Deferred');
+goog.require('goog.json');
 
+goog.require('ssd.core.config');
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.user.auth.config');
 goog.require('ssd.Module');
@@ -274,7 +276,11 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
   this.logger.info('performLocalAuth() :: Init. url:' + url);
 
   // dispatch event and check for cancel...
-  if (!this.dispatchEvent( ssd.user.auth.EventType.BEFORE_LOCAL_AUTH )) {
+  var eventObj  = {
+    'data': data,
+    type: ssd.user.auth.EventType.BEFORE_LOCAL_AUTH
+  };
+  if (!this.dispatchEvent( eventObj )) {
     this.logger.info('performLocalAuth() :: canceled due to ' +
       'event preventDefault');
     def.errback('preventDefault canceled the op');
@@ -303,36 +309,22 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
  *   1. The operation succeeded
  *   2. We received a positive or negative response from the server
  *
- * @param  {goog.events.Event} ev A goog event object.
+ * @param  {ssd.ajax.ResponseObject} response The response object.
  * @return {goog.async.Deferred} A deferred.
  * @private
  */
-ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
+ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   var def = new goog.async.Deferred();
 
   this.logger.info('_serverAuthResponse() :: Init');
 
-  /** @type {ssd.ajax} */
-  var xhr = ev.target,
-      httpStatus = null,
-      success = false,
-      responseRaw = null,
-      errorMessage = null;
-
-  if ( xhr ) {
-    httpStatus = xhr.getStatus();
-    success = xhr.isSuccess();
-    responseRaw = xhr.getResponse();
-    errorMessage = xhr.getLastError();
-  }
-
   var eventObj = {
     type: ssd.user.auth.EventType.ON_AUTH_RESPONSE,
-    'responseRaw': responseRaw,
-    'httpStatus': httpStatus,
-    'xhrStatus': success,
+    'responseRaw': response.responseRaw,
+    'httpStatus': response.httpStatus,
+    'xhrStatus': response.success,
     'authState': false,
-    'errorMessage': errorMessage
+    'errorMessage': response.errorMessage
   };
 
   // dispatch event and check if don't want exec.
@@ -347,45 +339,58 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
   eventObj.type = ssd.user.auth.EventType.AFTER_AUTH_RESPONSE;
 
   // Check if ajax op was successful
-  if ( !success ) {
+  if ( !response.success ) {
+    this.logger.warning('_serverAuthResponse() :: xhr operation was not a success');
     this.dispatchEvent(eventObj);
     def.errback('xhr failed');
     return def;
   }
 
   // try to parse the response
-  var responseJson;
-  /** @preserveTry */
-  try {
-    responseJson = xhr.getResponseAjax();
-  } catch(ex) {
-    eventObj['errorMessage'] = 'response not JSON';
-    this.dispatchEvent(eventObj);
-    def.errback('resp not JSON');
-    return def;
-  }
-
-  // get the statusObject
-  var statusObject = ssd.helpers.getStatusObject(this.config);
-
-  // check if we have status to check
-  if (statusObject.hasStatus) {
-    // yes we do... check the response
-    if (statusObject.valuator !== responseJson[statusObject.status]) {
-      // operation has failed...
-      this.logger.warning('_serverAuthResponse() :: operation got a false response');
+  var responseParsed, udo;
+  if ( this.config( ssd.user.auth.config.Key.RESPONSE_AUTH_JSON )) {
+    /** @preserveTry */
+    try {
+      responseParsed = goog.json.parse(response.responseRaw);
+    } catch(ex) {
+      this.logger.warning('_serverAuthResponse() :: response failed' +
+        ' to parse as JSON');
+      eventObj['errorMessage'] = 'response not JSON';
       this.dispatchEvent(eventObj);
-      def.callback(false);
+      def.errback('resp not JSON');
       return def;
     }
-  }
 
-  // we had a successful operation, attempt to read the user data object
-  var udo;
-  /** @preserveTry */
-  try {
-    udo = responseJson[this.config(ssd.user.auth.Key.RESPONSE_KEY_UDO)];
-  } catch(e){}
+    // check if status check is enabled.
+    if (this.config( ssd.core.config.Key.STATUS_ENABLED )) {
+      // fetch the value of the status and compare it
+      var valuator = this.config( ssd.core.config.Key.STATUS_VALUATOR );
+      var statusKey = this.config( ssd.core.config.Key.STATUS_KEY );
+
+      if (valuator !== responseParsed[statusKey]) {
+        // operation has failed...
+        this.logger.warning('_serverAuthResponse() :: operation got a false response');
+        eventObj['errorMessage'] = 'status failed';
+        this.dispatchEvent(eventObj);
+        def.callback(false);
+        return def;
+      }
+    }
+
+    var udoKey = this.config(ssd.user.auth.config.Key.RESPONSE_KEY_UDO);
+
+    if (udoKey && udoKey.length) {
+      /** @preserveTry */
+      try {
+        udo = responseParsed[udoKey];
+      } catch(e){}
+    } else {
+      udo = responseParsed;
+    }
+
+  } else {
+    responseParsed = udo = response.responseRaw;
+  }
 
   // auth method will also validate.
   if ( !this.auth(udo) ) {
@@ -395,10 +400,15 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function(ev) {
     return def;
   }
 
-  eventObj['response'] = udo;
+  eventObj['udo'] = udo;
   eventObj['authState'] = true;
   this.dispatchEvent(eventObj);
-  def.callback(true);
+
+  def.callback({
+    authState: true,
+    udo: udo,
+    response: response.responseRaw
+  });
   return def;
 };
 

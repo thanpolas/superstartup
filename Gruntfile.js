@@ -30,7 +30,7 @@ module.exports = function(grunt) {
       },
       bddTest: {
         options: {
-          root_with_prefix: ['"test/bdd ../../../../../test/bdd"']
+          root_with_prefix: ['"test ../../../../../test"']
         },
         dest: 'test/bdd/deps-test-bdd.js'
       },

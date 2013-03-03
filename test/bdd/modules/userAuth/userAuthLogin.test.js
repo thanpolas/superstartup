@@ -1,10 +1,11 @@
 goog.provide( 'ssd.test.userAuth.login' );
 
 goog.require('ssd.test.userAuth.login.events');
-goog.require( 'ssd.test.fixture.userOne' );
-goog.require( 'ssd.test.fixture.event' );
-goog.require( 'ssd.test.fixture.errorCodes' );
-goog.require( 'goog.dom' );
+goog.require('goog.test.mock.net');
+goog.require('ssd.test.fixture.userOne');
+goog.require('ssd.test.fixture.event');
+goog.require('ssd.test.fixture.errorCodes');
+goog.require('goog.dom');
 
 describe( 'User Auth Module :: Login', function () {
   var ssNew;
@@ -23,13 +24,12 @@ describe( 'User Auth Module :: Login', function () {
     remember: '1'
   };
 
-
   beforeEach( function() {
     ssNew = new ss();
     ssNew.config();
     ssNew();
     stub = sinon.stub( ssNew.ajax, 'send' );
-    stub.yields( userFix );
+    stub.yields( goog.test.mock.net.getResponse( userFix) );
   });
   afterEach( function() {
     stub.restore();
@@ -58,29 +58,24 @@ describe( 'User Auth Module :: Login', function () {
       expect( stub.getCall( 0 ).args[3] ).to.deep.equal( userLoginData );
     });
 
-    it( 'login results in correct UDO being propagated', function(){
-      ssNew.user.login( $element );
-      expect( ssNew.user ).to.deep.equal( userFix );
-    });
-
     it( 'should have a callback with authState', function( done ){
       ssNew.user.login( $element, function( err, authState, user, response ){
-        expect( err ).to.be.undefined;
+        expect( err ).to.be.null;
         expect( authState ).to.be.true;
         done();
       });
     });
 
     it( 'should have a callback with the UDO', function( done ){
-      ssNew.user.login( $element, function( err, authState, user, response ){
-        expect( user ).to.deep.equal( userFix );
+      ssNew.user.login( $element, function( err, authState, udo, response ){
+        expect( udo ).to.deep.equal( userFix );
         done();
       });
     });
 
     it( 'should have a callback with the complete response from the server', function( done ){
-      ssNew.user.login( $element, function( err, authState, user, response ){
-        expect( response ).to.deep.equal( userFix );
+      ssNew.user.login( $element, function( err, authState, udo, response ){
+        expect( udo ).to.deep.equal( userFix );
         done();
       });
     });
@@ -89,7 +84,7 @@ describe( 'User Auth Module :: Login', function () {
     it( 'should provide the data to be sent when the BEFORE_LOCAL_AUTH event triggers',
       function( done ){
       ssNew.listen( userEvent.BEFORE_LOCAL_AUTH, function( eventObj ){
-        expect( stubNet.called ).to.be.false;
+        expect( stub.called ).to.be.false;
         expect( eventObj.data ).to.deep.equal( userLoginData );
       });
 

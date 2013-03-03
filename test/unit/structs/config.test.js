@@ -118,9 +118,7 @@ suite('ssd.Config', function() {
         assert.strictEqual(config('the.path.to.classOne.num'), 740,
           'check crosscheck access of rel/abs set params. Should be 740');
       });
-
     });
-
   });
 
   suite('Root class config', function() {
@@ -198,6 +196,17 @@ suite('ssd.Config', function() {
         'check crosscheck access of rel/abs set params. Should be three');
       assert.strictEqual(rootClass.config('the.path.to.classOne.num'), 740,
         'check crosscheck access of rel/abs set params. Should be 740');
+    });
+
+    suite('Cascaging get of values', function() {
+      test('cascading get of values', function() {
+        assert.strictEqual( rootClass.classOne.config('howmany'), 42,
+          'The undefined howmany param should cascade to the root and return the root value');
+      });
+      test('cascading get of values on root instance', function() {
+        assert.strictEqual( rootClass.config('what.ever.path.howmany'), 42,
+          'The undefined howmany param should cascade to the root and return the root value');
+      });
     });
 
   });

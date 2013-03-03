@@ -3,6 +3,7 @@
  */
 goog.provide('ssd.test.main');
 
+goog.require('goog.test.mock.net');
 
 mocha.setup({
   globals: ['fbAsyncInit', 'liveReload']
@@ -39,8 +40,7 @@ window.FB = {
 //   password: 'passpass',
 //   remember: '1'
 // };
-// console.log(ssd.test);
-// stub.yields( ssd.test.fixture.userOne );
+// stub.yields( goog.test.mock.net.getResponse(ssd.test.fixture.userOne ));
 
 // ss.user.login(userLoginData);
 

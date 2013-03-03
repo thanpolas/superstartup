@@ -42,6 +42,11 @@ ssd.user.auth.config.Key = {
   // type: string | null
   RESPONSE_KEY_UDO: 'udoKey',
 
+  //
+  // Define if the authentication response is JSON
+  //
+  RESPONSE_AUTH_JSON: 'resAuthJson',
+
   // Callback url
   // type: string
   TW_CALLBACK_URL: 'twCallbackUrl',
@@ -80,6 +85,7 @@ ssd.user.auth.config.defaults = {};
   def[ key.PARAM_SOURCE_ID ] = 'sourceId';
   def[ key.PARAM_ACCESS_TOKEN ] = 'accessToken';
   def[ key.RESPONSE_KEY_UDO ] = null;
+  def[ key.RESPONSE_AUTH_JSON] = true;
 })();
 
 

@@ -30,10 +30,10 @@ goog.provide('ssd.structs.StringPath.Errors');
 
 /**
  * The constructor
- * @param {Object|ssd.structs.StringPath=} opt_obj Initial data to load
+ * @param {Object|ssd.structs.StringPath=} optObj Initial data to load
  * @constructor
  */
-ssd.structs.StringPath = function(opt_obj)
+ssd.structs.StringPath = function(optObj)
 {
   /**
    * @type {Object} Underlying JS object used to implement the map.
@@ -41,8 +41,8 @@ ssd.structs.StringPath = function(opt_obj)
    */
   this._data = {};
 
-  if (opt_obj) {
-    this.addRaw(opt_obj);
+  if (optObj) {
+    this.addRaw(optObj);
   }
 };
 
@@ -70,8 +70,7 @@ ssd.structs.StringPath.prototype.addRaw = function(obj)
  * (Native JS Object)
  * @return {Object}
  */
-ssd.structs.StringPath.prototype.toObject = function()
-{
+ssd.structs.StringPath.prototype.toObject = function() {
   return this._data;
 };
 
@@ -89,7 +88,7 @@ ssd.structs.StringPath.prototype.toObject = function()
  */
 ssd.structs.StringPath.prototype.set = function(key, value) {
   // some plain validations
-  if('string' != typeof key) {
+  if('string' !== typeof key) {
       throw new TypeError();
   }
   this._resolvePath(key.split(ssd.structs.StringPath.DOT), this._data, {isSet:true}, value);
@@ -103,16 +102,52 @@ ssd.structs.StringPath.prototype.set = function(key, value) {
  * 'guest' would return the full guest object
  *
  * @param {string} key
- * @param {boolean=} opt_throwError optionally throw a ReferenceError if key not found
+ * @param {boolean=} optThrowError optionally throw a ReferenceError if key not found
  * @return {*} null if value not found
  * @throws {TypeError} if key not string
  */
-ssd.structs.StringPath.prototype.get = function(key, opt_throwError)
-{
-  if('string' != typeof key) {
+ssd.structs.StringPath.prototype.get = function(key, optThrowError) {
+  if('string' !== typeof key) {
     throw new TypeError();
   }
-  return this._resolvePath(key.split(ssd.structs.StringPath.DOT), this._data, {isGet:true}, null, opt_throwError);
+  return this._resolvePath(key.split(ssd.structs.StringPath.DOT), this._data, {isGet:true}, null, optThrowError);
+};
+
+/**
+ * A cascading type of getting. e.g. getting:
+ * path.to.the.key, all paths will be cheked down to root 'key':
+ * path.to.key
+ * path.key
+ * key
+ *
+ * @param  {[type]} keyPath       [description]
+ * @param {boolean=} optThrowError optionally throw a ReferenceError if key not found
+ * !param {string} key
+ * @return {*} null if value not found
+ * @throws {TypeError} if key not string
+ */
+ssd.structs.StringPath.prototype.getCascading = function( keyPath, optThrowError) {
+  var parts = keyPath.split( ssd.structs.StringPath.DOT );
+
+  if ( 1 === parts.length ) {
+    return this.get( keyPath, optThrowError );
+  }
+
+  var key = parts.pop();
+  var currentKey;
+  do {
+    currentKey = parts.join( ssd.structs.StringPath.DOT ) +
+      ssd.structs.StringPath.DOT + key;
+
+    /** @preserveTry */
+    try {
+      return this.get( currentKey, true);
+    } catch( ex ) {
+      // nothing todo, next loop
+    }
+  } while(parts.pop());
+
+  return this.get( key, optThrowError );
 };
 
 /**
@@ -158,25 +193,24 @@ ssd.structs.StringPath.prototype.containsKey = function(key)
  *          isSet if we want to SET a variable
  *          isGet if we want to GET a variable
  *          isDel if we want to DELETE a variable
- * @param {*=} opt_val If we want to set, include here the value
- * @param {boolean=} opt_throwError optionally throw a ReferenceError if key not found
+ * @param {*=} optVal If we want to set, include here the value
+ * @param {boolean=} optThrowError optionally throw a ReferenceError if key not found
  *      Only valid for isGet and isDel mode
  * @return {*} The value we resolved
  */
-ssd.structs.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val, opt_throwError)
-{
+ssd.structs.StringPath.prototype._resolvePath = function(parts, obj, op, optVal, optThrowError) {
     var part = parts.shift();
     // check if we are in the last part of our path
     if (0 === parts.length) {
         if (op.isSet) {
             // force overwrite
-            obj[part] = opt_val;
+            obj[part] = optVal;
             return;
         }
         if (op.isDel) {
             delete obj[part];
         } else {
-            if (!goog.isDef(obj[part]) && opt_throwError) {
+            if (!goog.isDef(obj[part]) && optThrowError) {
               throw new ReferenceError();
             } else {
               return obj[part];
@@ -188,18 +222,18 @@ ssd.structs.StringPath.prototype._resolvePath = function(parts, obj, op, opt_val
         if (op.isSet) {
             obj[part] = {};
         } else {
-          if (opt_throwError) {
+          if (optThrowError) {
             throw new ReferenceError();
           } else {
             return null;
           }
         }
-    } else if (op.isSet && 'object' != goog.typeOf(obj[part])) {
+    } else if (op.isSet && 'object' !== goog.typeOf(obj[part])) {
         // This is the case where we want to SET a value
         // in a path and somewhere along the path we don't find an
         // object. In this case we have to overwrite whatever was
         // previously set as this is the described functionality
         obj[part] = {};
     }
-    return this._resolvePath(parts, obj[part], op, opt_val, opt_throwError);
+    return this._resolvePath(parts, obj[part], op, optVal, optThrowError);
 };

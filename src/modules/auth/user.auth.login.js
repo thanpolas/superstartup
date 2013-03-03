@@ -48,8 +48,14 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
   var def = new goog.async.Deferred();
   var cb = optCB || ssd.noop;
 
-  def.addCallback(function( optUdo, optResponse ) {
-    cb.call(optSelfObj, null, this.isAuthed(), optUdo, optResponse);
+  def.addCallback(function( statusObj ) {
+    if (false === statusObj) {
+      cb.call(optSelfObj, null, false);
+    }
+
+    cb.call(optSelfObj, null, statusObj.authState, statusObj.udo,
+      statusObj.response);
+
   }, this);
   def.addErrback(function( errMsg ) {
     cb.call(optSelfObj, errMsg, this.isAuthed() );
@@ -127,7 +133,6 @@ ssd.user.AuthLogin.prototype._loginStart = function( data ) {
 
   var url = this.config(ssd.user.auth.config.Key.AUTH_URL);
 
-  console.log(url);
   return this.performLocalAuth( url, data );
 };
 
