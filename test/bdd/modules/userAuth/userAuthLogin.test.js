@@ -1,7 +1,7 @@
 goog.provide( 'ssd.test.userAuth.login' );
 
 goog.require('ssd.test.userAuth.login.events');
-goog.require('goog.test.mock.net');
+goog.require('ssd.test.mock.net');
 goog.require('ssd.test.fixture.userOne');
 goog.require('ssd.test.fixture.event');
 goog.require('ssd.test.fixture.errorCodes');
@@ -40,7 +40,7 @@ describe( 'User Auth Module :: Login', function () {
         ssNew.config();
         ssNew();
         stub = sinon.stub( ssNew.ajax, 'send' );
-        stub.yields( goog.test.mock.net.getResponse( userFix) );
+        stub.yields( ssd.test.mock.net.getResponse( userFix) );
       });
       afterEach( function() {
         stub.restore();

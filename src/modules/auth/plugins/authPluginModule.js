@@ -9,11 +9,11 @@ goog.require('ssd.user.Auth');
 /**
  * The basic auth plugin class
  *
- * @param {ssd.user.Auth} authInstance the auth module instance.
+ * @param {Function} authCapsule the auth module capsule.
  * @constructor
  * @extends {ssd.Module}
  */
-ssd.user.auth.PluginModule = function( authInstance )
+ssd.user.auth.PluginModule = function( authCapsule )
 {
   goog.base(this);
   /**
@@ -21,7 +21,7 @@ ssd.user.auth.PluginModule = function( authInstance )
    * @private
    * @type {ssd.user.Auth}
    */
-  this._auth = authInstance;
+  this._auth = authCapsule._instance;
 
   // set auth main as the parent event target
   this.setParentEventTarget( this._auth );
@@ -38,8 +38,6 @@ ssd.user.auth.PluginModule = function( authInstance )
    * @type {boolean}
    */
   this.localAuthInit = false;
-
-
 };
 goog.inherits(ssd.user.auth.PluginModule, ssd.Module);
 
@@ -47,10 +45,15 @@ goog.inherits(ssd.user.auth.PluginModule, ssd.Module);
  * Current user is authenticated with (ext auth source) service
  * @return {boolean}
  */
-ssd.user.auth.PluginModule.prototype.isAuthed = function()
-{
+ssd.user.auth.PluginModule.prototype.isAuthed = function() {
   return this._isAuthed;
 };
+
+/**
+ * Overwrite this method
+ * @return {boolean}
+ */
+ssd.user.auth.PluginModule.prototype.hasJSAPI = goog.abstractMethod;
 
 /**
  * Mock the getAccessToken method. Overwrite if LOCALAUTH
@@ -59,8 +62,13 @@ ssd.user.auth.PluginModule.prototype.isAuthed = function()
  * @protected
  * @return {string} The oAuth access token
  */
-ssd.user.auth.PluginModule.prototype.getAccessToken = function()
-{
+ssd.user.auth.PluginModule.prototype.getAccessToken = function() {
   return '';
 };
 
+/**
+ * @return {string} the ext source id ( plugin name).
+ */
+ssd.user.auth.PluginModule.prototype.getSourceId = function() {
+  return this.SOURCEID;
+};

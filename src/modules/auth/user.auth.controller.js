@@ -23,11 +23,11 @@ goog.require('ssd.user.auth.EventType');
 /**
  * User authentication class
  *
- * @param {ssd.Core} ssdInst [description]
+ * @param {Function} capsule the result of invocator.
  * @constructor
  * @extends {ssd.user.AuthLogin}
  */
-ssd.user.Auth = function( ssdInst ) {
+ssd.user.Auth = function( capsule ) {
 
   this.logger.info('ctor() :: Instantiating Auth module...');
 
@@ -36,7 +36,7 @@ ssd.user.Auth = function( ssdInst ) {
   /**
    * @type {ssd.Core}
    */
-  this._ssdInst = ssdInst._instance;
+  this._ssdInst = capsule._instance;
 
   /** @type {ssd.Config} */
   this.config = this._ssdInst.config.prependPath( ssd.user.auth.config.PATH );
@@ -46,7 +46,12 @@ ssd.user.Auth = function( ssdInst ) {
    */
   this.config.addAll( ssd.user.auth.config.defaults );
 
-  return ssd.invocator.encapsulate(this, this._dynmapUdo.getSet);
+  /**
+   * @type {Function}
+   * @private
+   */
+  this._capsule = ssd.invocator.encapsulate(this, this._dynmapUdo.getSet);
+  return this._capsule;
 
 };
 goog.inherits(ssd.user.Auth, ssd.user.AuthLogin);
@@ -192,30 +197,30 @@ ssd.user.Auth.prototype.addExtSource = function(selfObj) {
 /**
  * Registration to Core
  *
- * @param {ssd.Core} ssdInst
+ * @param {Function} capsule
  */
-ssd.user.Auth.onRegisterRun = function( ssdInst ) {
+ssd.user.Auth.onRegisterRun = function( capsule ) {
 
   ssd.user.Auth.prototype.logger.shout('onRegisterRun() :: Module registers. ' +
-    'Core instance: ' + ssdInst._instanceCount);
+    'Core instance: ' + capsule._instance._instanceCount);
 
   /**
    * The instance of the user auth class
    * @type {ssd.user.Auth}
    */
-  ssdInst.user = new ssd.user.Auth( ssdInst );
+  capsule.user = new ssd.user.Auth( capsule );
 
   // bubble user auth events to core.
-  ssdInst.user.setParentEventTarget( ssdInst._instance );
+  capsule.user.setParentEventTarget( capsule._instance );
 
   // assign isAuthed method
-  ssdInst.isAuthed = goog.bind(ssdInst.user.isAuthed, ssdInst.user);
+  capsule.isAuthed = goog.bind(capsule.user.isAuthed, capsule.user);
 
   // initialize ext auth plugins
-  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, ssdInst.user._instance );
+  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, capsule.user );
 
   // register the init method
-  ssd.register.init( ssdInst.user.init, ssdInst.user );
+  ssd.register.init( capsule.user.init, capsule.user );
 
 };
 ssd.register.module( ssd.user.Auth.onRegisterRun );

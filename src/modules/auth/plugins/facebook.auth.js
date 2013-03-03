@@ -16,17 +16,17 @@ goog.require('ssd.register');
 /**
  * The Facebook auth constructor
  *
- * @param {ssd.user.Auth} authInst The auth module instance.
+ * @param {Function} authCapsule The auth module capsule.
  * @constructor
  * @implements {ssd.user.auth.PluginInterface}
  * @extends {ssd.user.auth.PluginModule}
  */
-ssd.user.auth.Facebook = function( authInst ) {
+ssd.user.auth.Facebook = function( authCapsule ) {
   this.logger.info('ctor() :: Init.');
-  goog.base(this, authInst);
+  goog.base(this, authCapsule);
 
   /** @type {ssd.Config} */
-  this.config = authInst.config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
+  this.config = authCapsule._instance.config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
 
   // set if a local auth with the server should be performed when this
   // plugin authenticates.
@@ -70,12 +70,11 @@ ssd.user.auth.Facebook = function( authInst ) {
    */
   this._FBGotResponce = false;
 
-
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
+
 };
 goog.inherits(ssd.user.auth.Facebook, ssd.user.auth.PluginModule);
-goog.addSingletonGetter(ssd.user.auth.Facebook);
 
 /**
  * String path that we'll store the config
@@ -177,51 +176,45 @@ ssd.user.auth.Facebook.prototype._getAppId = function () {
  * @return {boolean}
  */
 ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
-  try {
-    this.logger.info('_loadExtAPI() :: Init. FB API Loading:' + this._FBAPILoading + ' Loaded:' + this._FBAPILoaded);
+  this.logger.info('_loadExtAPI() :: Init. FB API Loading:' + this._FBAPILoading + ' Loaded:' + this._FBAPILoaded);
 
-    if (this._FBAPILoaded || this._FBAPILoading) {
-      return false;
-    }
-
-    // capture FB API Load event
-    goog.global['fbAsyncInit'] = goog.bind(this._extAPIloaded, this);
-
-    // Check if JS API loading is closed by config.
-    if (!this.config( ssd.user.auth.config.Key.FB_LOAD_API )) {
-      this.logger.warning('_loadExtAPI() :: JS API load is closed from Config. Assuming API loaded by user');
-      return false;
-    }
-
-    // request the facebook api
-    var d = goog.global.document;
-    var scriptId = 'facebook-jssdk';
-    if (d.getElementById(scriptId)) {
-      // FB API JS Script tag already in DOM
-      this.logger.warning('_loadExtAPI() :: FB script tag was found in DOM before we insert our own');
-      this._FBAPILoading = true;
-      return false;
-    }
-    // Insert the FB API script tag just above the current one
-    var scripts = d.getElementsByTagName('script');
-    var ownScriptTag = scripts[scripts.length - 1];
-
-    var el = d.createElement('script');
-    el['id'] = scriptId;
-    el['src'] = '//connect.facebook.net/en_US/all' +
-      (ssd.DEVEL ? '/debug' : '') + '.js';
-    el['async'] = true;
-
-    ownScriptTag.parentNode.insertBefore(el, ownScriptTag);
-
-    this._FBAPILoading = true;
-
-    return true;
-
-  } catch(e){
-    ssd.error(e);
+  if (this._FBAPILoaded || this._FBAPILoading) {
     return false;
   }
+
+  // capture FB API Load event
+  goog.global['fbAsyncInit'] = goog.bind(this._extAPIloaded, this);
+
+  // Check if JS API loading is closed by config.
+  if (!this.config( ssd.user.auth.config.Key.FB_LOAD_API )) {
+    this.logger.warning('_loadExtAPI() :: JS API load is closed from Config. Assuming API loaded by user');
+    return false;
+  }
+
+  // request the facebook api
+  var d = goog.global.document;
+  var scriptId = 'facebook-jssdk';
+  if (d.getElementById(scriptId)) {
+    // FB API JS Script tag already in DOM
+    this.logger.warning('_loadExtAPI() :: FB script tag was found in DOM before we insert our own');
+    this._FBAPILoading = true;
+    return false;
+  }
+  // Insert the FB API script tag just above the current one
+  var scripts = d.getElementsByTagName('script');
+  var ownScriptTag = scripts[scripts.length - 1];
+
+  var el = d.createElement('script');
+  el['id'] = scriptId;
+  el['src'] = '//connect.facebook.net/en_US/all' +
+    (ssd.DEVEL ? '/debug' : '') + '.js';
+  el['async'] = true;
+
+  ownScriptTag.parentNode.insertBefore(el, ownScriptTag);
+
+  this._FBAPILoading = true;
+
+  return true;
 };
 
 /**
@@ -258,7 +251,7 @@ ssd.user.auth.Facebook.prototype._FBinit = function () {
     this.logger.warning('_FBinit:: Facebook application id was not set!');
     throw new Error('FB appId not set');
   }
-  var resp = FB.init({
+  FB.init({
     'appId'  : this._getAppId(),
     'status' : true, // check login status
     'cookie' : true, // enable cookies to allow the server to access the session
@@ -282,7 +275,6 @@ ssd.user.auth.Facebook.prototype._FBinit = function () {
  */
 ssd.user.auth.Facebook.prototype._sessionChange = function (response) {
   this.logger.info('_sessionChange() :: Init');
-  console.log(response);
   this._isAuthedFromResponse(response);
     /**
      * response expose:
@@ -302,18 +294,18 @@ ssd.user.auth.Facebook.prototype._sessionChange = function (response) {
 /**
  * Opens the login dialog or starts the authentication flow
  *
- * @param  {Function(boolean)=} opt_callback optional callback
- * @param {string=} opt_perms set permissions if we need to...
+ * @param  {Function(boolean)=} optCb optional callback
+ * @param {string=} optPerms set permissions if we need to...
  *      comma separate them
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms) {
+ssd.user.auth.Facebook.prototype.login = function(optCb, optPerms) {
   this.logger.info('login() :: init.');
 
-  var callback = opt_callback || function (){};
+  var callback = optCb || ssd.noop;
 
   var paramObj = {
-    'scope': opt_perms || this.config('permissions')
+    'scope': optPerms || this.config(ssd.user.auth.config.Key.FB_PERMISSIONS)
   };
 
   FB.login(goog.bind(this._loginListener, this, callback), paramObj);
@@ -321,14 +313,14 @@ ssd.user.auth.Facebook.prototype.login = function(opt_callback, opt_perms) {
 
 /**
  * Facebook Login Listener.
- * We listen for the completion of the fb login modal
+ * Listen for the completion of the fb login modal
  *
  * @private
  * @param {object} response
- * @param {Function(boolean)} callback
+ * @param {Function(boolean)} cb
  * @return {void}
  */
-ssd.user.auth.Facebook.prototype._loginListener = function (response, callback) {
+ssd.user.auth.Facebook.prototype._loginListener = function (cb, response) {
 /*  ---response expose---
 
     response == {
@@ -343,7 +335,9 @@ ssd.user.auth.Facebook.prototype._loginListener = function (response, callback) 
 */
   this.logger.info('_loginListener() :: Init');
 
-  callback(this._isAuthedFromResponse(response));
+  var resp = this._isAuthedFromResponse(response);
+  console.log('login listener:', cb, resp);
+  cb(resp);
 };
 
 /**
@@ -362,10 +356,10 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   try {
   this.logger.info('_isAuthedFromResponse() :: Init.');
 
-  var isAuthed = 'connected' == response['status'];
+  var isAuthed = 'connected' === response['status'];
 
   // check if the response received differs from our stored state
-  if (isAuthed != this._isAuthed) {
+  if (isAuthed !== this._isAuthed) {
     this._isAuthed = isAuthed;
     // only dispatch EXT_AUTH_CHANGE event AFTER we got initial auth response
     if (this._FBGotResponce) {
@@ -402,7 +396,16 @@ ssd.user.auth.Facebook.prototype.logout = function() {
  */
 ssd.user.auth.Facebook.prototype.getUser = function() {
 
+  return null;
 };
+
+/**
+ * @return {boolean}
+ */
+ssd.user.auth.Facebook.prototype.hasJSAPI = function() {
+  return true;
+};
+
 
 /**
  * @inheritDoc
@@ -419,9 +422,9 @@ ssd.user.auth.Facebook.prototype.getAccessToken = function() {
  * Register to auth module.
  *
  */
-ssd.user.auth.Facebook.onPluginRun = function( authInstance ) {
+ssd.user.auth.Facebook.onPluginRun = function( authCapsule ) {
   // initialize facebook auth plugin
-  authInstance.facebook = new ssd.user.auth.Facebook(authInstance);
+  authCapsule['fb'] = new ssd.user.auth.Facebook(authCapsule);
 };
 ssd.register.plugin( ssd.user.Auth.MODULE_NAME,
   ssd.user.auth.Facebook.onPluginRun );

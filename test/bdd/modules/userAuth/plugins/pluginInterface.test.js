@@ -7,6 +7,8 @@ goog.provide('ssd.test.userAuth.genIface');
 
 goog.require('ssd.test.fixture.event');
 goog.require('ssd.test.fixture.userOne');
+goog.require('ssd.test.userAuth.login.events');
+goog.require('ssd.test.mock.net');
 
 /**
  * @param  {Object} params Parameters to run the tests. Keys
@@ -27,6 +29,7 @@ goog.require('ssd.test.fixture.userOne');
  */
 ssd.test.userAuth.genIface = function(params) {
   this.pluginName     = params.pluginName;
+  this.pluginNameSpace = params.pluginNameSpace;
   this.pluginSpace    = params.pluginSpace;
   this.hasJSAPI       = params.hasJSAPI;
   this.pluginResponse = params.pluginResponse;
@@ -75,7 +78,7 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
 
     beforeEach(function() {
       ssNew = new ss();
-      plugin = ssNew.user[_this.pluginPathname];
+      plugin = ssNew.user[_this.pluginNameSpace];
       _this.beforeEach();
     });
 
@@ -83,11 +86,12 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
       _this.afterEach();
     });
 
+
     it('should have a getSourceId() method', function(){
       expect( plugin.getSourceId ).to.be.a('function');
     });
     it('getSourceId() should return the plugin name', function(){
-      expect( plugin.getSourceId() ).to.equal(pluginName);
+      expect( plugin.getSourceId() ).to.equal( _this.pluginName );
     });
     it('should have a login() method', function(){
       expect( plugin.login ).to.be.a('function');
@@ -124,7 +128,7 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
  * Basic events and initialization tests
  *
  */
-ssd.test.userAuth.getIface.prototype.basicEventsInitTests = function() {
+ssd.test.userAuth.genIface.prototype.basicEventsInitTests = function() {
   var _this = this;
 
   describe('Basic events emitted for plugin:' + _this.pluginName, function() {
@@ -159,22 +163,26 @@ ssd.test.userAuth.getIface.prototype.basicEventsInitTests = function() {
  *
  */
 ssd.test.userAuth.genIface.prototype.loginTests = function() {
-  var _this = this;
+  var _this = this,
       ssNew,
       plugin,
       stubNet,
-      fixtures = ssd.test.fixtures;
+      fixtures = ssd.test.fixture;
 
   describe('Login tests for plugin: ' + _this.pluginName, function(){
 
     beforeEach(function(done) {
       ssNew = new ss();
-      plugin = ssNew.user[_this.pluginPathname];
-      stubNet = sinon.stub(ssNew.net, 'sync');
-      stubNet.yields(fixtures.userOne);
+      plugin = ssNew.user[_this.pluginNameSpace];
+      stubNet = sinon.stub(ssNew.ajax, 'send');
+      stubNet.yields( ssd.test.mock.net.getResponse( fixtures.userOne ));
 
-      _this.beforeEach();
-      ssNew(done);
+      ssNew.config('user.auth.fb.appId', '540');
+
+      ssNew(function(){
+        _this.beforeEach();
+        done();
+      });
     });
 
     afterEach(function() {
@@ -275,23 +283,23 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
  *
  */
 ssd.test.userAuth.genIface.prototype.loginEvents = function() {
-  var _this = this;
+  var _this = this,
       ssNew,
       plugin,
       stubNet,
-      ev = fixtures.event.user;
+      ev = ssd.test.fixture.event.user;
 
   // run the basic auth events tests
-  ssd.test.userAuth.login.events(_this.pluginPathname + '.login');
+  ssd.test.userAuth.login.events(_this.pluginNameSpace + '.login');
 
   describe('Events emitted during 3rd party login operation. Plugin: ' +
       _this.pluginName, function(){
 
     beforeEach(function(done) {
       ssNew = new ss();
-      plugin = ssNew.user[_this.pluginPathname];
-      stubNet = sinon.stub(ssNew.net, 'sync');
-      stubNet.yields(fixtures.userOne);
+      plugin = ssNew.user[_this.pluginNameSpace];
+      stubNet = sinon.stub(ssNew.ajax, 'send');
+      stubNet.yields( ssd.test.mock.net.getResponse( fixtures.userOne ));
       _this.beforeEach();
       ssNew(done);
     });

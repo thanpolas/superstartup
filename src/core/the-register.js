@@ -73,25 +73,25 @@ ssd.Register.prototype.plugin = function( moduleName, cb, optSelf) {
  * Invoke the callbacks of all the plugins that registered for the
  * specified module.
  * @param  {string} moduleName The module's name.
- * @param  {Object} selfObj The instance.
+ * @param  {Function} capsule The result of invocator.
  */
-ssd.Register.prototype.runPlugins = function( moduleName, selfObj ) {
+ssd.Register.prototype.runPlugins = function( moduleName, capsule ) {
   if ( !this._plugins[moduleName] ) {
     return;
   }
   if ( !this._plugins[moduleName].length ) {
     return;
   }
-  this._invoke( this._plugins[moduleName], {params: selfObj} );
+  this._invoke( this._plugins[moduleName], {params: [capsule]} );
 };
 
 /**
  * Invoke the callbacks of all the modules.
  *
- * @param {Object} selfObj The instance.
+ * @param  {Function} capsule The result of invocator.
  */
-ssd.Register.prototype.runModules = function( selfObj ) {
-  this._invoke( this._modules, {params: selfObj} );
+ssd.Register.prototype.runModules = function( capsule ) {
+  this._invoke( this._modules, {params: [capsule]} );
 };
 
 /**
@@ -117,7 +117,7 @@ ssd.Register.prototype._invoke = function( ar, optParams ) {
 
   var ret = [];
   goog.array.forEach( ar, function( fn ) {
-    ret.push( fn(arg0) );
+    ret.push( fn.apply(undefined, params.params) );
   }, this);
 
   if ( true === params.deferred ) {

@@ -197,11 +197,10 @@ ssd.Config.prototype.toObject = function() {
  * @return {ssd.Config} a rigged Config singleton instance.
  */
 ssd.Config.prototype.prependPath = function( path ) {
-  // chain configs
-  path = this._path + path;
 
   this.logger.info('prependPath() :: Init. path: ' + path);
 
+  // chain configs
   var configInst = new ssd.Config( path, this );
 
   return configInst;

@@ -16,16 +16,16 @@ goog.require('ssd.register');
 /**
  * The Twitter auth constructor
  *
- * @param {ssd.user.Auth} authInstance the auth module instance. * @constructor
+ * @param {Function} authCapsule the auth module capsule.
  * @implements {ssd.user.auth.PluginInterface}
  * @extends {ssd.user.auth.PluginModule}
  */
-ssd.user.auth.Twitter = function( authInstance )
+ssd.user.auth.Twitter = function( authCapsule )
 {
-  goog.base(this, authInstance);
+  goog.base(this, authCapsule);
 
   /** @type {ssd.Config} */
-  this.config = authInstance.config.prependPath(
+  this.config = authCapsule._instance.config.prependPath(
     ssd.user.auth.Twitter.CONFIG_PATH );
 
   // set if a local auth with the server should be performed when this
@@ -145,9 +145,9 @@ ssd.user.auth.Twitter.prototype.getUser = function()
  * Register to auth module.
  *
  */
-ssd.user.auth.Twitter.onPluginRun = function( authInstance ) {
+ssd.user.auth.Twitter.onPluginRun = function( authCapsule ) {
   // twitter auth plugin
-  authInstance.twitter = new ssd.user.auth.Twitter( authInstance );
+  authCapsule['tw'] = new ssd.user.auth.Twitter( authCapsule );
 };
 ssd.register.plugin( ssd.user.Auth.MODULE_NAME,
   ssd.user.auth.Twitter.onPluginRun );

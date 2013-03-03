@@ -211,6 +211,71 @@ suite('ssd.Config', function() {
 
   });
 
+
+  //
+  //
+  // Third level
+  //
+  //
+  suite('Third level class config', function() {
+
+    beforeEach(function(){
+      rootClass = new ssd.test.unit.configClass.RootClass();
+    });
+
+    test('Access a config param', function() {
+      assert.equal(rootClass.config('the.path.to.classOne.classTwo.numTwo'), 2,
+        'using the full path to access a third level class config');
+    });
+
+    test('Access a config param from the third class instance', function() {
+      assert.equal(rootClass.classOne.classTwo.config('numTwo'), 2,
+        'using rel path to access a third level class config');
+    });
+
+    test('Check type of third level config param', function() {
+      assert.strictEqual(rootClass.classOne.classTwo.config('numTwo'), 2,
+        'Checking type for numeric');
+    });
+
+    test('Set a third level config param relatively and access it',function() {
+      rootClass.classOne.classTwo.config.set('numTwo', 540);
+      assert.strictEqual(rootClass.classOne.classTwo.config('numTwo'), 540,
+        'set a config param and expect to get the value we set (540)');
+    });
+
+    test('Set a third level config param with absolute path and access it',
+      function() {
+      rootClass.config.set('the.path.to.classOne.classTwo.numTwo', 540);
+      assert.strictEqual(rootClass.config('the.path.to.classOne.classTwo.numTwo'), 540,
+        'set a config param and expect to get the value we set (540)');
+    });
+
+    test('Set a third level config param and crosscheck abs / rel path',
+      function() {
+      rootClass.classOne.classTwo.config.set('numTwo', 740);
+      rootClass.config.set('the.path.to.classOne.classTwo.aString', 'three');
+
+      assert.strictEqual(rootClass.classOne.classTwo.config('aString'), 'three',
+        'check crosscheck access of rel/abs set params. Should be three');
+      assert.strictEqual(rootClass.config('the.path.to.classOne.classTwo.numTwo'), 740,
+        'check crosscheck access of rel/abs set params. Should be 740');
+    });
+
+    suite('Cascaging get of values', function() {
+      test('cascading get of values', function() {
+        assert.strictEqual( rootClass.classOne.classTwo.config('howmany'), 42,
+          'The undefined howmany param should cascade to the root and return the root value');
+      });
+    });
+
+  });
+
+  //
+  //
+  // Error throwing
+  //
+  //
   suite('Error throwing functionality', function() {
     test('Error throwing functionality', function() {
       var config = new ssd.Config({

@@ -1,7 +1,7 @@
 goog.provide('ssd.test.userAuth.login.events');
 
 goog.require('ssd.test.userAuth.login.events');
-goog.require('goog.test.mock.net');
+goog.require('ssd.test.mock.net');
 goog.require('ssd.test.fixture.userOne');
 goog.require('ssd.test.fixture.event');
 goog.require('ssd.test.fixture.errorCodes');
@@ -27,7 +27,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       ssNew = new ss();
       ssNew();
       stubNet = sinon.stub( ssNew.ajax, 'send' );
-      stubNet.yields( goog.test.mock.net.getResponse( userFix ) );
+      stubNet.yields( ssd.test.mock.net.getResponse( userFix ) );
       if ( optParams ) {
         loginTrigger = goog.partial( ssNew.user[loginTriggerNS], optParams );
       } else {

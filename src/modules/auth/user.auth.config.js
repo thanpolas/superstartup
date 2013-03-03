@@ -58,7 +58,7 @@ ssd.user.auth.config.Key = {
 
   // Callback url
   // type: string
-  TW_CALLBACK_URL: 'twCallbackUrl',
+  TW_CALLBACK_URL: 'callbackUrl',
 
   //
   // Facebook only keys
@@ -66,15 +66,15 @@ ssd.user.auth.config.Key = {
 
   // The app id key.
   // type: string
-  FB_APP_ID: 'fbAppId',
+  FB_APP_ID: 'appId',
 
   // Permissions to ask for.
   // type: string
-  FB_PERMISSIONS: 'fbPerm',
+  FB_PERMISSIONS: 'perm',
 
   // Load facebook's API asynchronously and listen for load finish.
   // type: boolean
-  FB_LOAD_API: 'fbLoadAPI'
+  FB_LOAD_API: 'loadAPI'
 
 };
 

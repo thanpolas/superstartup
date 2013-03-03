@@ -7,10 +7,10 @@ goog.provide('ssd.user.auth.PluginInterface');
 
 /**
  * The interface for external authentication plugins
- * @param {ssd.user.Auth} authInstance the auth module instance.
+ * @param {Function} authCapsule The result of the invocator.
  * @interface
  */
-ssd.user.auth.PluginInterface = function( authInstance ){};
+ssd.user.auth.PluginInterface = function( authCapsule ){};
 
 /**
  * @const {ssd.user.types.extSourceId} The plugin's name (e.g. Facebook)
