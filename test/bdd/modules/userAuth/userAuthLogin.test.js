@@ -85,9 +85,9 @@ describe( 'User Auth Module :: Login', function () {
       });
 
 
-      it( 'should provide the data to be sent when the BEFORE_LOCAL_AUTH event triggers',
+      it( 'should provide the data to be sent when the BEFORE_LOGIN event triggers',
         function( done ){
-        ssNew.listen( userEvent.BEFORE_LOCAL_AUTH, function( eventObj ){
+        ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
           expect( stub.called ).to.be.false;
           expect( eventObj.data ).to.deep.equal( userLoginData );
         });

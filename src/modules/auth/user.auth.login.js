@@ -131,8 +131,95 @@ ssd.user.AuthLogin.prototype._loginjQuery = function( $el ) {
 ssd.user.AuthLogin.prototype._loginStart = function( data ) {
   this.logger.info('_loginStart() :: Init.');
 
-  var url = this.config(ssd.user.auth.config.Key.AUTH_URL);
+  var url = this.config(ssd.user.auth.config.Key.LOGIN_URL);
 
   return this.performLocalAuth( url, data );
+};
+
+
+/**
+ * Logout from all auth sources.
+ *
+ * @param {function(boolean)=} optCb callback with the status as parameter (xhr op).
+ * @param  {Object=} optSelfObj self object to invoke the cb on.
+ * @return {goog.async.Deferred}
+ */
+ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
+  this.logger.info('logout() :: init');
+  var def = new goog.async.Deferred();
+
+  var cb = optCb || ssd.noop;
+
+  def.addCallback(function( success ) {
+    cb.call(optSelfObj, null, success );
+  }, this);
+  def.addErrback(function( errMsg ) {
+    cb.call(optSelfObj, errMsg, false );
+  }, this);
+
+
+  // check if local auth enabled
+  if (! this.config( ssd.user.auth.config.Key.HAS_LOCAL_AUTH )) {
+    this.logger.info('logout() :: local auth is disabled');
+    def.callback(true);
+    this._doAuth(false);
+    return def;
+  }
+
+  if (!this.dispatchEvent(ssd.user.auth.EventType.BEFORE_LOGOUT)) {
+    this.logger.info('login() :: Canceled by event');
+    def.callback(true);
+    return def;
+  }
+
+  // perform deauthentication
+  this._doAuth(false);
+
+  var respCb = goog.bind(function() {
+    this._logoutResponse.apply(this, arguments)
+      .chainDeferred( def );
+  }, this);
+
+  ssd.ajax.send( this.config(ssd.user.auth.config.Key.LOGOUT_URL), respCb,
+    ssd.ajax.Method.POST);
+
+  return def;
+};
+
+
+/**
+ * XHR Response for logout
+ *
+ * @param  {ssd.ajax.ResponseObject} response The response object.
+ * @private
+ * @return {goog.async.Deferred} a deferred.
+ */
+ssd.user.AuthLogin.prototype._logoutResponse = function( response ) {
+  this.logger.info('_logoutResponse() :: Init.');
+
+  var def = new goog.async.Deferred();
+
+  var eventObj = {
+    type: ssd.user.auth.EventType.ON_LOGOUT_RESPONSE,
+    'responseRaw': response.responseRaw,
+    'httpStatus': response.httpStatus,
+    'ajaxStatus': response.success,
+    'authState': false,
+    'errorMessage': response.errorMessage
+  };
+
+  // dispatch event and check if don't want exec.
+  if ( false === this.dispatchEvent(eventObj) ) {
+    this.logger.info('_logoutResponse() :: canceled due to ' +
+      'event preventDefault');
+    def.callback(true);
+    return def;
+  }
+
+  // switch event type
+  eventObj.type = ssd.user.auth.EventType.AFTER_LOGOUT_RESPONSE;
+  this.dispatchEvent(eventObj);
+  def.callback(true);
+  return def;
 };
 

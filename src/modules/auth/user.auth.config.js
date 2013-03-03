@@ -12,9 +12,18 @@ ssd.user.auth.config.PATH = 'user.auth';
  */
 ssd.user.auth.config.Key = {
 
+  // if authentication with local server is enabled
+  // or we are only on the air
+  // type: boolean
+  HAS_LOCAL_AUTH: 'hasLocalAuth',
+
   // The url for server authentication (login)
   // type: string
-  AUTH_URL: 'authUrl',
+  LOGIN_URL: 'loginUrl',
+
+  // the logout url
+  // type: string
+  LOGOUT_URL: 'logoutUrl',
 
   // Enable extenral authentication sources to verify with the local server
   // type: boolean
@@ -79,7 +88,9 @@ ssd.user.auth.config.defaults = {};
   var def = ssd.user.auth.config.defaults;
   var key = ssd.user.auth.config.Key;
 
-  def[ key.AUTH_URL ] = '/auth/';
+  def[ key.HAS_LOCAL_AUTH ] = true;
+  def[ key.LOGIN_URL ] = '/user/login';
+  def[ key.LOGOUT_URL ] = '/user/logout';
   def[ key.EXT_SOURCES_TO_LOCAL ] = false;
   def[ key.EXT_SOURCES_AUTH_URL ] = '/auth/';
   def[ key.PARAM_SOURCE_ID ] = 'sourceId';

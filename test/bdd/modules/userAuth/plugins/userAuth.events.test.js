@@ -51,8 +51,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       loginTrigger();
     });
 
-    it( 'should trigger the BEFORE_LOCAL_AUTH event', function( done ){
-      ssNew.listen( userEvent.BEFORE_LOCAL_AUTH, function( eventObj ){
+    it( 'should trigger the BEFORE_LOGIN event', function( done ){
+      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         expect( stubNet.called ).to.be.false;
         expect( ssNew.isAuthed() ).to.be.false;
         done();
@@ -61,8 +61,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       loginTrigger();
     });
 
-    it( 'should cancel login if we return false at the BEFORE_LOCAL_AUTH event', function( done ){
-      ssNew.listen( userEvent.BEFORE_LOCAL_AUTH, function( eventObj ){
+    it( 'should cancel login if we return false at the BEFORE_LOGIN event', function( done ){
+      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         return false;
       });
       loginTrigger( function( err, authState, user, response ){
@@ -75,8 +75,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       });
     });
 
-    it( 'should cancel login if we execute preventDefault at the BEFORE_LOCAL_AUTH event', function( done ){
-      ssNew.listen( userEvent.BEFORE_LOCAL_AUTH, function( eventObj ){
+    it( 'should cancel login if we execute preventDefault at the BEFORE_LOGIN event', function( done ){
+      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         eventObj.preventDefault();
       });
       loginTrigger( function( err, authState, user, response ){
@@ -89,7 +89,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       });
     });
 
-    it('should be able to change data sent to the server when BEFORE_LOCAL_AUTH triggers',
+    it('should be able to change data sent to the server when BEFORE_LOGIN triggers',
       function( done ) {
 
       var funnyData = {
@@ -98,7 +98,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
         gangnam: ['style', 42]
       };
 
-      ssNew.listen( userEvent.BEFORE_LOCAL_AUTH, function( eventObj ){
+      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         eventObj.backPipe(function(data) {
           expect( data ).to.deep.equal(optParams);
           return funnyData;
@@ -116,8 +116,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
 
     });
 
-    it( 'should trigger the ON_AUTH_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.ON_AUTH_RESPONSE, function( eventObj ){
+    it( 'should trigger the ON_LOGIN_RESPONSE event', function( done ){
+      ssNew.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
         expect( stubNet.calledOnce ).to.be.true;
         expect( ssNew.isAuthed() ).to.be.false;
         done();
@@ -125,8 +125,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       loginTrigger();
     });
 
-    it( 'should prevent login if we return false at the ON_AUTH_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.ON_AUTH_RESPONSE, function( eventObj ){
+    it( 'should prevent login if we return false at the ON_LOGIN_RESPONSE event', function( done ){
+      ssNew.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
         return false;
       });
       loginTrigger( function( err, authState, user, response ){
@@ -139,8 +139,8 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       });
     });
 
-    it( 'should trigger the AFTER_AUTH_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.AFTER_AUTH_RESPONSE, function( eventObj ){
+    it( 'should trigger the AFTER_LOGIN_RESPONSE event', function( done ){
+      ssNew.listen( userEvent.AFTER_LOGIN_RESPONSE, function( eventObj ){
         expect( stubNet.calledOnce ).to.be.true;
 
         // network operation

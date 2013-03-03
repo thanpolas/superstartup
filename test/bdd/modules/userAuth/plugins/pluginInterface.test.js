@@ -310,7 +310,7 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
         spyLoginCB =        sinon.spy.create();
 
       ssNew.listen(ev.EXT_AUTH_CHANGE, spyExtAuth);
-      ssNew.listen(ev.BEFORE_LOCAL_AUTH, spyBeforeLocal);
+      ssNew.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
       ssNew.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
       ssNew.listen(ev.AUTH_RESPONSE, spyAuthResponse);
       ssNew.listen(ev.AUTH_CHANGE, spyAuthChange);
@@ -354,7 +354,7 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
       spyAuthResponse =     sinon.spy.create(),
       spyAuthChange =       sinon.spy.create();
 
-      ssNew.listen(ev.BEFORE_LOCAL_AUTH, spyBeforeLocal);
+      ssNew.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
       ssNew.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
       ssNew.listen(ev.AUTH_RESPONSE, spyAuthResponse);
       ssNew.listen(ev.AUTH_CHANGE, spyAuthChange);
@@ -372,7 +372,7 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
     });
 
     it('should provide proper data on the beforeLocalAuth event', function(done){
-      ssNew.listen(ev.BEFORE_LOCAL_AUTH, function( eventObj ) {
+      ssNew.listen(ev.BEFORE_LOGIN, function( eventObj ) {
         expect( ssNew.isAuthed() ).to.be.false;
         expect( stubNet.called ).to.be.false;
 

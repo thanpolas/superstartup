@@ -243,7 +243,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   //
   // get local auth url from ext plugin or use default one.
   var url = extInst.config( ssd.user.auth.Key.EXT_SOURCES_AUTH_URL ) ||
-    this.config( ssd.user.auth.Key.AUTH_URL );
+    this.config( ssd.user.auth.Key.LOGIN_URL );
 
   var data = {},
       paramSource = this.config( ssd.user.auth.Key.PARAM_SOURCE_ID ),
@@ -275,10 +275,19 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
 
   this.logger.info('performLocalAuth() :: Init. url:' + url);
 
+  // check if local auth enabled
+  if (! this.config( ssd.user.auth.Key.HAS_LOCAL_AUTH )) {
+    this.logger.info('performLocalAuth() :: local auth is disabled');
+    this._doAuth( true );
+    def.callback( true );
+    return true;
+  }
+
+
   // dispatch event and check for cancel...
   var eventObj  = {
     'data': data,
-    type: ssd.user.auth.EventType.BEFORE_LOCAL_AUTH
+    type: ssd.user.auth.EventType.BEFORE_LOGIN
   };
 
   // add a backpipe in case listener needs to chang data
@@ -325,7 +334,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   this.logger.info('_serverAuthResponse() :: Init');
 
   var eventObj = {
-    type: ssd.user.auth.EventType.ON_AUTH_RESPONSE,
+    type: ssd.user.auth.EventType.ON_LOGIN_RESPONSE,
     'responseRaw': response.responseRaw,
     'httpStatus': response.httpStatus,
     'ajaxStatus': response.success,
@@ -342,7 +351,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   }
 
   // switch event type
-  eventObj.type = ssd.user.auth.EventType.AFTER_AUTH_RESPONSE;
+  eventObj.type = ssd.user.auth.EventType.AFTER_LOGIN_RESPONSE;
 
   // Check if ajax op was successful
   if ( !response.success ) {
@@ -504,18 +513,6 @@ ssd.user.AuthModel.prototype.isVerified = function() {
   return this._isAuthed && this._dynmapUdo.get(ssd.conf.user.typeMappings.ownuser.verified);
 };
 
-/**
- * Logout from all auth sources, clear data objects
- * and dispose everything
- * @return {void}
- */
-ssd.user.AuthModel.prototype.logout = function() {
 
-  // we used goog.mixin() to do multiple inheritance for
-  // events, thus we have to directly call event's disposeInternal
-  goog.events.EventTarget.disposeInternal.call(this._dynmapUdo);
-
-  this._doAuth(false);
-};
 
 
