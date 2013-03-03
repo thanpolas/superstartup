@@ -141,10 +141,10 @@ ssd.Core.prototype.init = function (optCallback) {
 
   // start modules initialization and wait till finished
   return ssd.register.runModuleInits( this )
-    .always( function() {
+    .always( goog.bind(function() {
       this._isReady = true;
       this.dispatchEvent( ssd.Core.EventType.INIT );
-    }, this)
+    }, this))
     .always( fn );
 
 };
@@ -168,6 +168,7 @@ ssd.Core.prototype.isReady = function() {
  * Generic listener method for all events emitted by ss
  *
  * @param {Object | goog.events.Event | null | string} event object
+ * @param  {[type]}   event   [description]
  * @param {Function} cb The callback function.
  * @param {Object=} optSelf optionally define a context to invoke the callback on.
  * @return {goog.events.ListenableKey} a unique event key.

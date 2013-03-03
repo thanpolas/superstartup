@@ -273,7 +273,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
   this.logger.info('performLocalAuth() :: Init. url:' + url);
 
   // check if local auth enabled
-  if (! this.config( ssd.user.auth.Key.HAS_LOCAL_AUTH )) {
+  if (! this.config( ssd.user.auth.config.Key.HAS_LOCAL_AUTH )) {
     this.logger.info('performLocalAuth() :: local auth is disabled');
     this._doAuth( true );
     return def.reject( true );

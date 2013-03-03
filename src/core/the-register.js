@@ -98,8 +98,7 @@ ssd.Register.prototype.runModules = function( capsule ) {
  * @return {when.Promise} A promise.
  */
 ssd.Register.prototype.runModuleInits = function( ) {
-  var def = this._invoke( this._init, {deferred: true} );
-  return def;
+  return this._invoke( this._init, {deferred: true} );
 };
 
 /**
