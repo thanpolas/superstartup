@@ -10,7 +10,7 @@ goog.require('ssd.user.AuthModel');
 
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.user.auth.config');
-goog.require('ssd.ajax');
+goog.require('ssd.sync');
 goog.require('ssd.helpers');
 
 /**
@@ -175,7 +175,7 @@ ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
     );
   }, this);
 
-  ssd.ajax.send( this.config(ssd.user.auth.config.Key.LOGOUT_URL), respCb,
+  ssd.sync.send( this.config(ssd.user.auth.config.Key.LOGOUT_URL), respCb,
     ssd.ajax.Method.POST);
 
   return def.promise;
@@ -185,7 +185,7 @@ ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
 /**
  * XHR Response for logout
  *
- * @param  {ssd.ajax.ResponseObject} response The response object.
+ * @param  {ssd.sync.ResponseObject} response The response object.
  * @private
  * @return {when.Promise} a Promise.
  */

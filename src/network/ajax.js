@@ -17,18 +17,6 @@ ssd.ajax.Method = {
 };
 
 
-/**
- * Defines the response object that will be passed on ajax.send callbaks.
- *
- * @typedef {{
- *
- *   httpStatus     : ?number,
- *   success        : boolean,
- *   responseRaw    : ?string,
- *   errorMessage   : ?string
- *   }}
- */
-ssd.ajax.ResponseObject;
 
 
 /**
@@ -36,10 +24,10 @@ ssd.ajax.ResponseObject;
  *
  * Abstract away the intricacies of net.XhrIo and make for easier testing.
  *
+ * @return {when.Promise} a promise.
  */
 ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
   opt_headers, opt_timeoutInterval, opt_withCredentials) {
-
 
   /**
    * Create a wrapping callback that normalizes the parameters of the
@@ -58,13 +46,14 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
      * The response object that will be used as the first argument of
      * the original callback.
      *
-     * @type {ssd.ajax.ResponseObject}
+     * @type {ssd.sync.ResponseObject}
      */
     var responseObject = {
       httpStatus: null,
       success: false,
       responseRaw: null,
-      errorMessage: null
+      errorMessage: null,
+      xhr: null
     };
 
     if ( xhr ) {
@@ -72,9 +61,18 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
       responseObject.success = xhr.isSuccess();
       responseObject.responseRaw = xhr.getResponse();
       responseObject.errorMessage = xhr.getLastError();
+      responseObject.xhr = xhr;
     }
-    origCb(responseObject, ev);
+
+    if (responseObject.success) {
+      def.resolve(responseObject);
+    } else {
+      def.reject(responseObject);
+    }
+    origCb(responseObject);
   };
+
+  var def = when.defer();
 
   // hijack callback
   var xhrArgs = Array.prototype.slice.call(arguments, 0);

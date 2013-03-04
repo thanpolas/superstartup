@@ -14,7 +14,7 @@ describe('User Auth Module :: Logging out', function () {
     ssNew = new ss();
     ssNew();
     ssNew.user.auth(userFix);
-    stub = sinon.stub(ssNew.ajax, 'send');
+    stub = sinon.stub(ssNew.sync, 'send');
     stub.yields(stubResponse);
   });
   afterEach(function() {

@@ -39,7 +39,7 @@ describe( 'User Auth Module :: Login', function () {
         ssNew = new ss();
         ssNew.config();
         ssNew();
-        stub = sinon.stub( ssNew.ajax, 'send' );
+        stub = sinon.stub( ssNew.sync, 'send' );
         stub.yields( ssd.test.mock.net.getResponse( userFix) );
       });
       afterEach( function() {

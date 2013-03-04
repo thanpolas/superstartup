@@ -12,7 +12,7 @@ goog.require('ssd.core.config');
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.user.auth.config');
 goog.require('ssd.Module');
-goog.require('ssd.ajax');
+goog.require('ssd.sync');
 
 /**
  * User authentication class
@@ -304,7 +304,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
     );
   }, this);
 
-  ssd.ajax.send( url, cb, ssd.ajax.Method.POST, data );
+  ssd.sync.send( url, cb, ssd.ajax.Method.POST, data );
 
   return def;
 };
@@ -321,7 +321,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
  *   1. The operation succeeded
  *   2. We received a positive or negative response from the server
  *
- * @param  {ssd.ajax.ResponseObject} response The response object.
+ * @param  {ssd.sync.ResponseObject} response The response object.
  * @return {when.Promise} A promise.
  * @private
  */

@@ -16,7 +16,7 @@ describe('User Auth Module :: Core functionality', function () {
       ssNew = new ss();
       ssNew();
       userFix = goog.object.unsafeClone(ssd.test.fixture.userOne);
-      stub = sinon.stub(ssNew.ajax, 'send');
+      stub = sinon.stub(ssNew.sync, 'send');
     });
     afterEach(function() {
       stub.restore();

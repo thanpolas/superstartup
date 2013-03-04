@@ -26,7 +26,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
     beforeEach( function() {
       ssNew = new ss();
       ssNew();
-      stubNet = sinon.stub( ssNew.ajax, 'send' );
+      stubNet = sinon.stub( ssNew.sync, 'send' );
       stubNet.yields( ssd.test.mock.net.getResponse( userFix ) );
       if ( optParams ) {
         loginTrigger = goog.partial( ssNew.user[loginTriggerNS], optParams );

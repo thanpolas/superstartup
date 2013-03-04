@@ -26,7 +26,7 @@ goog.provide('ssd');
 
 goog.require('ssd.debug');
 goog.require('ssd.error');
-goog.require('ssd.ajax');
+goog.require('ssd.sync');
 goog.require('ssd.Config');
 goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
