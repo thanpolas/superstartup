@@ -121,11 +121,11 @@ ssd.user.AuthModel.prototype._checkInitAuthComplete = function() {
     this.logger.shout('_checkInitAuthComplete() :: All initial auth ' +
       'checks complete. Instance:' + this._ssdInst._instanceCount);
 
-      var eventObj  = {
-        authState: this.isAuthed(),
-        type: ssd.user.auth.EventType.INITIAL_AUTH_STATE
-      };
-      this.dispatchEvent(eventObj);
+    var eventObj  = {
+      authState: this.isAuthed(),
+      type: ssd.user.auth.EventType.INITIAL_AUTH_STATE
+    };
+    this.dispatchEvent(eventObj);
   }
 };
 
@@ -133,43 +133,64 @@ ssd.user.AuthModel.prototype._checkInitAuthComplete = function() {
  * Listener for external (FB, TW ...)  auth state change events.
  *
  * @private
- * @param {goog.events.Event} e
+ * @param {goog.events.Event} ev
  */
-ssd.user.AuthModel.prototype._authChange = function(e) {
+ssd.user.AuthModel.prototype._authChange = function( ev ) {
+
+  var plugin = ev.target;
+
   this.logger.info('_authChange() :: Auth CHANGE dispatched from:' +
-    e.target.SOURCEID + ' Authed:' + e.target.isAuthed());
+    plugin.SOURCEID + ' Authed:' + plugin.isAuthed());
+
+  var def = when.defer();
+
+  // check if a backpipe is provided and return the promise.
+  var backpipe = ev[ssd.BACKPIPE_KEY];
+  if ( goog.isFuntion(backpipe) ) {
+    backpipe(function() {
+      return def.promise;
+    });
+  }
 
   // check if in our authed map
-  var extItem = this._mapSources.get(e.target.SOURCEID);
+  var extItem = this._mapSources.get(plugin.SOURCEID);
   var isExtAuthed = extItem.isAuthed;
 
   // If authed and we already have it in map then it's a double trigger, ignore
-  if (e.target.isAuthed() === isExtAuthed) {
+  if (plugin.isAuthed() === isExtAuthed) {
     this.logger.warning('_authChange() :: BOGUS situation. Received auth ' +
       'event but we already had a record of this source being authed. ' +
       'Double trigger');
+    def.reject('double trigger');
     return;
   }
 
-  // change the status
-  extItem.isAuthed = e.target.isAuthed();
-  this._mapSources.set(e.target.SOURCEID, extItem);
+  // change and store  authState
+  extItem.isAuthed = plugin.isAuthed();
+  this._mapSources.set(plugin.SOURCEID, extItem);
 
+  var promise;
   if (isExtAuthed) {
-    this.verifyExtAuthWithLocal(e.target.SOURCEID);
+    promise = this.verifyExtAuthWithLocal(plugin.SOURCEID);
   } else {
-    this._checkAuthState();
+    promise = this._checkAuthState();
   }
+
+  when.chain(promise, def.resolver);
+
 };
 
 /**
  * Checks the auth state of all sources and determines the global state.
+ *
  * @private
+ * @return {when.Promise} a promise.
  */
 ssd.user.AuthModel.prototype._checkAuthState = function() {
   this.logger.info('_checkAuthState() :: Init.');
-
+  var def = when.defer();
   var authState = false;
+
   this._mapSources.forEach( function(key, item) {
     if (item.isAuthed) {
       authState = true;
@@ -177,14 +198,13 @@ ssd.user.AuthModel.prototype._checkAuthState = function() {
   }, this);
 
   if ( this.isAuthed() === authState ) {
-    return;
+    return def.resolve(true);
   }
 
   this.logger.info('_checkAuthState() :: NEW AUTH STATE:' + authState);
 
   // there is a change of auth state
-  this._doAuth( authState );
-
+  return this._doAuth( authState );
 };
 
 
@@ -297,12 +317,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
 
   data = backPipe();
 
-  var cb = goog.bind(function() {
-    when.chain(
-      this._serverAuthResponse.apply(this, arguments),
-      def.resolver
-    );
-  }, this);
+  var cb = ssd.cb2promise(def.resolver, this._serverAuthResponse, this);
 
   ssd.sync.send( url, cb, ssd.ajax.Method.POST, data );
 
@@ -330,6 +345,17 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
 
   this.logger.info('_serverAuthResponse() :: Init');
 
+
+  //
+  //
+  //
+  // Make this object a typed response object both for events and promises.
+  //
+  // All auth class promises should return this object
+  //
+  //
+  //
+  //
   var eventObj = {
     type: ssd.user.auth.EventType.ON_LOGIN_RESPONSE,
     'responseRaw': response.responseRaw,
@@ -456,6 +482,7 @@ ssd.user.AuthModel.prototype.deAuth = function() {
  *
  * @param {boolean} isAuthed
  * @private
+ * @return {when.Promise} a promise.
  */
 ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
   this.logger.info('_doAuth() :: Init. isAuthed:' + isAuthed);
@@ -473,6 +500,7 @@ ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
   };
   this.dispatchEvent(eventObj);
 
+  return when.defer().resolve(isAuthed);
 };
 
 /**

@@ -1,74 +1,87 @@
+/**
+ * @externs
+ * @license MIT License (c) copyright 2011-2013 original author or authors
+ */
 
 /**
  * [when description]
  * @param  {[type]} promiseOrValue [description]
- * @param  {[type]} onFulfilled    [description]
- * @param  {[type]} onRejected     [description]
- * @param  {[type]} onProgress     [description]
+ * @param  {Function=} optOnFulfilled    [description]
+ * @param  {Function=} optOnRejected     [description]
+ * @param  {Function=} optOnProgress     [description]
  * @return {[type]}                [description]
  */
-function when (promiseOrValue, onFulfilled, onRejected, onProgress) {}
+when = function(promiseOrValue, optOnFulfilled, optOnRejected, optOnProgress) {};
+
+/** @type {Object} */
+when.Deferred = {};
+
+when.Deferred.promise = when.Promise;
+
+/** @type {Object} */
+when.Deferred.resolver = {};
+
+/** @return {when.Promise} */
+when.Deferred.resolver.resolve = function () {};
+
+/** @return {when.Promise} */
+when.Deferred.resolver.reject = function () {};
+
+/** @return {when.Promise} */
+when.Deferred.resolver.notify = function () {};
+when.Deferred.resolve = when.Deferred.resolver.resolve;
+when.Deferred.reject = when.Deferred.resolver.reject;
+when.Deferred.notify = when.Deferred.resolver.notify;
+
+/** @type {Object} */
+when.Promise = {};
+
+// ... Promise funcs
 
 /**
  * Create a deferred
  *
- * @return {when.deferred} a deferred.
+ * @return {when.Deferred} a deferred.
  */
-function when.defer(){}
+when.defer = function (){};
 
 /**
  * Create a resolved promise
  */
-function when.resolve(){}
+when.resolve = function (){};
 /**
  * Create a rejected promise
  */
-function when.reject(){}
+when.reject = function (){};
 /**
  * Join 2 or more promises
  */
-function when.join(){}
+when.join = function (){};
 /**
  * Resolve a list of promises
  */
-function when.all(){}
+when.all = function (){};
 /**
  * Array.map() for promises
  */
-function when.map(){}
+when.map = function (){};
 /**
  * Array.reduce() for promises
  */
-function when.reduce(){}
+when.reduce = function (){};
 /**
  * One-winner race
  */
-function when.any(){}
+when.any = function (){};
 /**
  * Multi-winner race
  */
-function when.some(){}
+when.some = function (){};
 /**
  * Make a promise trigger another resolver
  */
-function when.chain(){}
+when.chain = function (){};
 /**
  * Determine if a thing is a promise
  */
-function when.isPromise(){}
-
-
-when.deferred = {
-  then:     function(){}, // DEPRECATED: use deferred.promise.then
-  resolve:  function(){},
-  reject:   function(){},
-  progress: function(){}, // DEPRECATED: use deferred.notify
-  notify:   function(){},
-  promise:  function(){},
-  resolver: {
-    resolve:  function(){},
-    reject:   function(){},
-    progress: function(){}, // DEPRECATED: use deferred.notify
-    notify:   function(){}
-  }
-};
+when.isPromise = function (){};

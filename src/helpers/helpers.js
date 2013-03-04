@@ -12,6 +12,8 @@ goog.require('goog.object');
  */
 ssd.noop = function(){};
 
+/** @const {string} the back pipe key */
+ssd.BACKPIPE_KEY = 'backPipe';
 
 /**
  * Will add a key in the eventObj that is a function
@@ -26,7 +28,7 @@ ssd.noop = function(){};
  */
 ssd.eventBackPipe = function(eventObj, data) {
 
-  eventObj['backPipe'] = function(fn, optSelf) {
+  eventObj[ssd.BACKPIPE_KEY] = function(fn, optSelf) {
     data = fn.call(optSelf, data);
   };
 
@@ -268,3 +270,17 @@ ssd.eventBackPipe = function(eventObj, data) {
      return true;
 
  };
+
+/**
+ * Hijack a callback and resolve a provided resolver when it is invoked.
+ *
+ * @param  {when.Resolver} resolver A resolver Object.
+ * @param  {Function:when.Promise} cb The callback, must return a promise.
+ * @param  {Object=} optSelf context for cb.
+ * @return {Function} A Function that will resolve resolver.
+ */
+ssd.cb2promise = function(resolver, cb, optSelf) {
+  return function() {
+    when.chain( cb.apply(optSelf, arguments), resolver );
+  };
+};
