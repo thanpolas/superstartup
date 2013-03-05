@@ -3,7 +3,7 @@
  *
  */
 goog.provide('ssd.user.auth.Twitter');
-goog.provide('ssd.user.auth.Twitter.EventType');
+goog.provide('ssd.user.auth.twitter.EventType');
 
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.auth.config');

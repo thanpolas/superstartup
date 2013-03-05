@@ -3,13 +3,13 @@
 goog.addDependency('../../../../../test/bdd/bootstrap.js', ['ssd.test.bootstrap'], ['ssd.test.core', 'ssd.test.event.api', 'ssd.test.fixture.userOne', 'ssd.test.main', 'ssd.test.userAuth.core', 'ssd.test.userAuth.login', 'ssd.test.userAuth.logout']);
 goog.addDependency('../../../../../test/bdd/core/core.test.js', ['ssd.test.core'], ['ssd.test.fixture.event']);
 goog.addDependency('../../../../../test/bdd/events/eventsAPI.test.js', ['ssd.test.event.api'], []);
-goog.addDependency('../../../../../test/bdd/main.js', ['ssd.test.main'], ['ssd.test.mock.net']);
+goog.addDependency('../../../../../test/bdd/main.js', ['ssd.test.main'], []);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/facebook.auth.test.js', ['ssd.test.userAuth.facebook'], ['ssd.test.fixture.auth.fb', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.userAuth.genIface']);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/pluginInterface.test.js', ['ssd.test.userAuth.genIface'], ['ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events']);
-goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/userAuth.events.test.js', ['ssd.test.userAuth.login.events'], ['ssd.test.fixture.errorCodes', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events']);
+goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuth.events.test.js', ['ssd.test.userAuth.login.events'], ['ssd.test.fixture.errorCodes', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events']);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthCore.test.js', ['ssd.test.userAuth.core'], ['goog.object', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne']);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthLogin.test.js', ['ssd.test.userAuth.login'], ['goog.dom', 'ssd.test.fixture.errorCodes', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events']);
-goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthLogout.test.js', ['ssd.test.userAuth.logout'], ['ssd.test.fixture.event', 'ssd.test.fixture.userOne']);
+goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthLogout.test.js', ['ssd.test.userAuth.logout'], ['ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net']);
 goog.addDependency('../../../../../test/bdd/network/ajax.test.js', ['ssd.test.ajax'], []);
 goog.addDependency('../../../../../test/bdd/network/sync.test.js', ['ssd.test.sync'], []);
 goog.addDependency('../../../../../test/fixtures/errorCodes.fixture.js', ['ssd.test.fixture.errorCodes'], []);

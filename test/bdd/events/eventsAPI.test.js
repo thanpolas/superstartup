@@ -5,29 +5,27 @@ goog.provide('ssd.test.event.api');
 
 
 describe('Events API', function(){
-  var ssNew;
 
   beforeEach(function() {
-    ssNew = new ss();
-    ssNew();
   });
   afterEach(function() {
+    ss.removeAllListeners();
   });
 
   it('should listen and trigger arbitrary events', function(done){
     function cb () {
       done();
     }
-    ssNew.listen('custom.event', cb);
-    ssNew.trigger('custom.event');
+    ss.listen('custom.event', cb);
+    ss.trigger('custom.event');
   });
 
   it('should cancel execution if listener executes preventDefault', function(done){
     function cb (eventObj) {
       eventObj.preventDefault();
     }
-    ssNew.listen('custom.event', cb);
-    expect(ssNew.trigger('custom.event')).to.be.false;
+    ss.listen('custom.event', cb);
+    expect(ss.trigger('custom.event')).to.be.false;
     done();
   });
 
@@ -35,8 +33,8 @@ describe('Events API', function(){
     function cb (eventObj) {
       return false;
     }
-    ssNew.listen('custom.event', cb);
-    expect(ssNew.trigger('custom.event')).to.be.false;
+    ss.listen('custom.event', cb);
+    expect(ss.trigger('custom.event')).to.be.false;
     done();
   });
 
@@ -48,8 +46,8 @@ describe('Events API', function(){
       expect(this.a).to.be.equal(1);
       done();
     }
-    ssNew.listen('custom.eventTwo', cb, obj);
-    ssNew.trigger('custom.eventTwo');
+    ss.listen('custom.eventTwo', cb, obj);
+    ss.trigger('custom.eventTwo');
   });
 
   it('should pass parameters from trigger', function(done){
@@ -58,23 +56,23 @@ describe('Events API', function(){
       expect(eventObj.arg2).to.be.equal(2);
       done();
     }
-    ssNew.listen('custom.eventThree', cb);
+    ss.listen('custom.eventThree', cb);
     var eventObj = {
       type: 'custom.eventThree',
       arg1: 1,
       arg2: 2
     };
-    ssNew.trigger(eventObj);
+    ss.trigger(eventObj);
   });
 
   it('should remove listeners', function(){
-    var cid = ssNew.listen('custom.eventFour', function(){
+    var cid = ss.listen('custom.eventFour', function(){
       // should never be here
       expect(false).to.be.true;
     });
 
-    ssNew.unlisten(cid);
-    ssNew.trigger('custom.eventFour');
+    ss.unlisten(cid);
+    ss.trigger('custom.eventFour');
     expect(true).to.be.true;
   });
 
@@ -84,13 +82,13 @@ describe('Events API', function(){
       expect(false).to.be.true;
     }
 
-    ssNew.listen('custom.eventFive', cb);
-    ssNew.listen('custom.eventFive', cb);
-    ssNew.listen('custom.eventSix', cb);
-    ssNew.listen('custom.eventSeven', cb);
+    ss.listen('custom.eventFive', cb);
+    ss.listen('custom.eventFive', cb);
+    ss.listen('custom.eventSix', cb);
+    ss.listen('custom.eventSeven', cb);
 
-    var n = ssNew.removeAllListeners();
-    ssNew.trigger('custom.eventFive');
+    var n = ss.removeAllListeners();
+    ss.trigger('custom.eventFive');
     expect(true).to.be.true;
   });
 

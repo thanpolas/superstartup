@@ -14,47 +14,55 @@ goog.require('ssd.test.fixture.errorCodes');
  */
 ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
 
-  var ssNew,
-      stubNet,
+  var stubNet,
       userFix = ssd.test.fixture.userOne,
       userEvent = ssd.test.fixture.event.user,
       errorCodes = ssd.test.fixture.errorCodes,
+      sillyme = false,
       loginTrigger;
 
+  if ( optParams ) {
+    loginTrigger = goog.partial( ss.user[loginTriggerNS], optParams );
+  } else {
+    loginTrigger = ss.user[loginTriggerNS];
+  }
 
   describe( 'Basic login events', function(){
     beforeEach( function() {
-      ssNew = new ss();
-      ssNew();
-      stubNet = sinon.stub( ssNew.sync, 'send' );
-      stubNet.yields( ssd.test.mock.net.getResponse( userFix ) );
-      if ( optParams ) {
-        loginTrigger = goog.partial( ssNew.user[loginTriggerNS], optParams );
-      } else {
-        loginTrigger = ssNew.user[loginTriggerNS];
+      if (!ss.sync.send.id) {
+        stubNet = sinon.stub( ss.sync, 'send' );
+        stubNet.yields( ssd.test.mock.net.getResponse( userFix ) );
+        sillyme = true;
       }
-
     });
 
     afterEach( function() {
-      stubNet.restore();
+      if (sillyme) {
+        stubNet.restore();
+        sillyme = false;
+      }
+      ss.removeAllListeners();
+      ss.user.deAuth();
     });
 
-    it( 'should trigger the AUTH_CHANGE event', function( done ){
-
-      ssNew.listen( userEvent.AUTH_CHANGE, function( eventObj ){
-        expect( eventObj.authState ).to.be.true;
-        expect( ssNew.isAuthed() ).to.be.true;
-        done();
-      });
-
+    it( 'should trigger the AUTH_CHANGE event', function(){
+      var spy = sinon.spy();
+      ss.listen( userEvent.AUTH_CHANGE, spy);
       loginTrigger();
+      expect( spy.calledOnce ).to.be.true;
+    });
+
+    it( 'should have an authState and be true when triggering the AUTH_CHANGE event', function(){
+      var spy = sinon.spy();
+      ss.listen( userEvent.AUTH_CHANGE, spy);
+      loginTrigger();
+      expect( spy.getCall(0).args[0].authState ).to.be.true;
     });
 
     it( 'should trigger the BEFORE_LOGIN event', function( done ){
-      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
+      ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         expect( stubNet.called ).to.be.false;
-        expect( ssNew.isAuthed() ).to.be.false;
+        expect( ss.isAuthed() ).to.be.false;
         done();
       });
 
@@ -62,12 +70,12 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
     });
 
     it( 'should cancel login if we return false at the BEFORE_LOGIN event', function( done ){
-      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
+      ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         return false;
       });
       loginTrigger( function( err, authState, user, response ){
         expect( stubNet.called ).to.be.false;
-        expect( ssNew.isAuthed() ).to.be.false;
+        expect( ss.isAuthed() ).to.be.false;
         expect( authState ).to.be.false;
 
         expect( err ).to.be.a('string');
@@ -76,12 +84,12 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
     });
 
     it( 'should cancel login if we execute preventDefault at the BEFORE_LOGIN event', function( done ){
-      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
+      ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         eventObj.preventDefault();
       });
       loginTrigger( function( err, authState, user, response ){
         expect( stubNet.called ).to.be.false;
-        expect( ssNew.isAuthed() ).to.be.false;
+        expect( ss.isAuthed() ).to.be.false;
         expect( authState ).to.be.false;
 
         expect( err ).to.be.a('string');
@@ -98,7 +106,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
         gangnam: ['style', 42]
       };
 
-      ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
+      ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         eventObj.backPipe(function(data) {
           expect( data ).to.deep.equal(optParams);
           return funnyData;
@@ -107,31 +115,27 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       });
 
       loginTrigger( function( err, authState, user, response ){
-
         expect( stubNet.getCall( 0 ).args[3] ).to.deep.equal( funnyData );
         done();
-
       });
-
-
     });
 
     it( 'should trigger the ON_LOGIN_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
+      ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
         expect( stubNet.calledOnce ).to.be.true;
-        expect( ssNew.isAuthed() ).to.be.false;
+        expect( ss.isAuthed() ).to.be.false;
         done();
       });
       loginTrigger();
     });
 
     it( 'should prevent login if we return false at the ON_LOGIN_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
+      ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
         return false;
       });
       loginTrigger( function( err, authState, user, response ){
         expect( stubNet.calledOnce ).to.be.true;
-        expect( ssNew.isAuthed() ).to.be.false;
+        expect( ss.isAuthed() ).to.be.false;
         expect( authState ).to.be.false;
 
         expect( err ).to.be.a('string');
@@ -140,7 +144,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
     });
 
     it( 'should trigger the AFTER_LOGIN_RESPONSE event', function( done ){
-      ssNew.listen( userEvent.AFTER_LOGIN_RESPONSE, function( eventObj ){
+      ss.listen( userEvent.AFTER_LOGIN_RESPONSE, function( eventObj ){
         expect( stubNet.calledOnce ).to.be.true;
 
         // network operation
@@ -155,7 +159,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
         // response object
         expect( eventObj.responseRaw ).to.deep.equal( JSON.stringify(userFix) );
 
-        expect( ssNew.isAuthed() ).to.be.true;
+        expect( ss.isAuthed() ).to.be.true;
         done();
       });
       loginTrigger();

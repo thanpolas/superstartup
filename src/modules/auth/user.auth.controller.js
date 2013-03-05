@@ -53,7 +53,6 @@ ssd.user.Auth = function( capsule ) {
 
 };
 goog.inherits(ssd.user.Auth, ssd.user.AuthLogin);
-goog.addSingletonGetter(ssd.user.Auth);
 
 /**
  * A logger to help debugging
@@ -206,19 +205,19 @@ ssd.user.Auth.onRegisterRun = function( capsule ) {
    * The instance of the user auth class
    * @type {ssd.user.Auth}
    */
-  capsule.user = new ssd.user.Auth( capsule );
+  var u = capsule['user'] = new ssd.user.Auth( capsule );
 
   // bubble user auth events to core.
-  capsule.user.setParentEventTarget( capsule._instance );
+  u.setParentEventTarget( capsule._instance );
 
   // assign isAuthed method
-  capsule.isAuthed = goog.bind(capsule.user.isAuthed, capsule.user);
+  capsule['isAuthed'] = goog.bind( u.isAuthed, u );
 
   // initialize ext auth plugins
-  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, capsule.user );
+  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, u );
 
   // register the init method
-  ssd.register.init( capsule.user.init, capsule.user );
+  ssd.register.init( u.init, u );
 
 };
 ssd.register.module( ssd.user.Auth.onRegisterRun );

@@ -8,7 +8,6 @@ goog.require('ssd.test.fixture.errorCodes');
 goog.require('goog.dom');
 
 describe( 'User Auth Module :: Login', function () {
-  var ssNew;
   var stub;
   var userFix = ssd.test.fixture.userOne;
   var userEvent = ssd.test.fixture.event.user;
@@ -36,34 +35,33 @@ describe( 'User Auth Module :: Login', function () {
     describe( 'login operations', function() {
 
       beforeEach( function() {
-        ssNew = new ss();
-        ssNew.config();
-        ssNew();
-        stub = sinon.stub( ssNew.sync, 'send' );
-        stub.yields( ssd.test.mock.net.getResponse( userFix) );
+        stub = sinon.stub( ss.sync, 'send' );
+        stub.yields( ssd.test.mock.net.getResponse( userFix ));
       });
       afterEach( function() {
+        ss.user.deAuth();
         stub.restore();
+        ss.removeAllListeners();
       });
 
       it( 'should call ssd.ajax once', function(){
-        ssNew.user.login( $element );
+        ss.user.login( $element );
         expect( stub.calledOnce ).to.be.true;
       });
 
       it( 'should auth with provided argument', function(){
-        ssNew.user.login( $element );
-        expect( ssNew.isAuthed() ).to.be.true;
+        ss.user.login( $element );
+        expect( ss.isAuthed() ).to.be.true;
       });
 
 
       it( 'login passes expected name/value pairs ', function(){
-        ssNew.user.login( $element );
+        ss.user.login( $element );
         expect( stub.getCall( 0 ).args[3] ).to.deep.equal( userLoginData );
       });
 
       it( 'should have a callback with authState', function( done ){
-        ssNew.user.login( $element, function( err, authState, user, response ){
+        ss.user.login( $element, function( err, authState, user, response ){
           expect( err ).to.be.null;
           expect( authState ).to.be.true;
           done();
@@ -71,14 +69,14 @@ describe( 'User Auth Module :: Login', function () {
       });
 
       it( 'should have a callback with the UDO', function( done ){
-        ssNew.user.login( $element, function( err, authState, udo, response ){
+        ss.user.login( $element, function( err, authState, udo, response ){
           expect( udo ).to.deep.equal( userFix );
           done();
         });
       });
 
       it( 'should have a callback with the complete response from the server', function( done ){
-        ssNew.user.login( $element, function( err, authState, udo, response ){
+        ss.user.login( $element, function( err, authState, udo, response ){
           expect( udo ).to.deep.equal( userFix );
           done();
         });
@@ -87,14 +85,14 @@ describe( 'User Auth Module :: Login', function () {
 
       it( 'should provide the data to be sent when the BEFORE_LOGIN event triggers',
         function( done ){
-        ssNew.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
+        ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
           expect( stub.called ).to.be.false;
           expect( eventObj.data ).to.deep.equal( userLoginData );
+          done();
         });
 
-        ssNew.user.login( $element, function(){
-          expect( ssNew.isAuthed() ).to.be.true;
-          done();
+        ss.user.login( $element, function(){
+          expect( ss.isAuthed() ).to.be.true;
         });
       });
     });
@@ -106,13 +104,18 @@ describe( 'User Auth Module :: Login', function () {
    * @param  {jQuery|element} $element [description]
    */
   function loginFormTests( $element ){
-    it( 'should use the URL that exists in the FORM', function(){
-      ssNew.user.login( $element );
-      expect( stub.getCall( 0 ).args[0] ).to.equal( formUrl );
-    });
-    it( 'should use the method that exists in the FORM', function(){
-      ssNew.user.login( $element );
-      expect( stub.getCall( 0 ).args[2] ).to.equal( formMethod );
+    describe('DOM Form type login tests', function() {
+      beforeEach(function() {
+        ss.deAuth();
+      });
+      it( 'should use the URL that exists in the FORM', function(){
+        ss.user.login( $element );
+        expect( stub.getCall( 0 ).args[0] ).to.equal( formUrl );
+      });
+      it( 'should use the method that exists in the FORM', function(){
+        ss.user.login( $element );
+        expect( stub.getCall( 0 ).args[2] ).to.equal( formMethod );
+      });
     });
   }
 

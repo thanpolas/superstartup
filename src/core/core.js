@@ -20,7 +20,7 @@
  /** @fileoverview The core API class */
 
 goog.provide('ssd.Core');
-goog.provide('ssd.c');
+goog.provide('ss');
 
 goog.require('ssd.Module');
 goog.require('ssd.Config');
@@ -105,7 +105,7 @@ ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
  * @enum {string}
  */
 ssd.Core.EventType = {
-  INIT: 'ss.init'
+  INIT: 'init'
 };
 
 
@@ -120,27 +120,17 @@ ssd.Core.EventType = {
  */
 ssd.Core.prototype.init = function (optCallback) {
 
-  // this.logger.info('init() :: Determine if invoked with new keyword:' +
-  //     this instanceof ssd.Core, this._instanceCount, this.__seenBefore);
-
-  // As init is the method exposed as 'ss' we need to support
-  // getting called as a constructor with the 'new' keyword
-  // and supply a new instance of superstartup.
-  // http://stackoverflow.com/questions/367768/how-to-detect-if-a-function-is-called-as-constructor
-  //
-  if ( !(this instanceof ssd.Core) && !this.__seenBefore) {
-    this.__seenBefore = true;
-    return new ssd.Core();
-  }
-
-  this.logger.info('init() :: Kicking off Super Startup. Instance count:' +
-    this._instanceCount);
-
+  this.logger.info('init() :: Kicking off SuperStartup. isReady:' + this._isReady);
 
   var fn = optCallback || ssd.noop;
 
+  if ( this._isReady ) {
+    fn();
+    return when.defer().resolve();
+  }
+
   // start modules initialization and wait till finished
-  return ssd.register.runModuleInits( this )
+  return ssd.register.runModuleInit( this )
     .always( goog.bind(function() {
       this._isReady = true;
       this.dispatchEvent( ssd.Core.EventType.INIT );
@@ -199,7 +189,6 @@ ssd.Core.prototype.unlisten = function( key ) {
   return goog.events.unlistenByKey( key );
 };
 
-
 /**
  * [trigger description]
  * @param  {string=} optType Optionally narrow down to specific type.
@@ -209,10 +198,9 @@ ssd.Core.prototype.removeAllListeners = function( optType ) {
   return goog.events.removeAll( this, optType);
 };
 
-
 /**
  * Synchronous (silent) initialization of the library.
  * @type {ssd.Core}
  */
-ssd.c = new ssd.Core();
+ss = new ssd.Core();
 

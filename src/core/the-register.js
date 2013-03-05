@@ -97,7 +97,7 @@ ssd.Register.prototype.runModules = function( capsule ) {
  *
  * @return {when.Promise} A promise.
  */
-ssd.Register.prototype.runModuleInits = function( ) {
+ssd.Register.prototype.runModuleInit = function( ) {
   return this._invoke( this._init, {deferred: true} );
 };
 
@@ -109,7 +109,6 @@ ssd.Register.prototype.runModuleInits = function( ) {
  */
 ssd.Register.prototype._invoke = function( ar, optParams ) {
   var params = optParams || {};
-
   var ret = [];
   goog.array.forEach( ar, function( fn ) {
     ret.push( fn.apply(undefined, params.params) );

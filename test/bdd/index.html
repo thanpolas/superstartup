@@ -26,22 +26,51 @@
       </script>
     </div>
 
+
+  <div><span>
+    <script type="text/javascript">
+
+    var IS_COMPILED = !!window.location.search.match(/compiled/);
+
+    (function(){
+      var anchor = {
+        href: 'index.html?compiled=true',
+        value: 'Compiled Mode'
+      };
+      if(IS_COMPILED) {
+        anchor.href = 'index.html';
+        anchor.value = 'Uncompiled Mode';
+      }
+      document.write('<a href="' + anchor.href + '">' + anchor.value + '<\/a>');
+    })();
+    </script>
+  </span></div>
+
     <div id="mocha"></div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/test/vendor/jquery.1.8.0.js"><\/script>')</script>
     <script src="../../node_modules/mocha/mocha.js"></script>
     <script src="../vendor/sinon-1.6.0.js"></script>
     <script src="../../node_modules/chai/chai.js"></script>
-    <script src="../../closure-library/closure/goog/base.js" charset="utf-8"></script>
-    <script src="../../src/deps-superstartup.js" charset="utf-8"></script>
-    <script src="deps-test-bdd.js"></script>
     <script>
-      goog.DEBUG = false;
-      mocha.ui('bdd');
-      mocha.reporter('html');
+(function(){
+
+  if(IS_COMPILED) {
+    document.write('<script src="..\/..\/src\/vendor\/when.js"><\/script>');
+    document.write("<script src='..\/..\/dist\/superstartup.min.js'><\/script>");
+    document.write('<script src="..\/..\/closure-library\/closure\/goog\/base.js"><\/script>');
+    document.write('<script src="deps-test-bdd.js"><\/script>');
+  } else {
+    document.write('<script src="..\/..\/closure-library\/closure\/goog\/base.js"><\/script>');
+    document.write('<script src="..\/..\/src\/deps-superstartup.js"><\/script>');
+    document.write('<script src="deps-test-bdd.js"><\/script>');
+    document.write('<script src="..\/..\/src\/vendor\/when.js"><\/script>');
+    document.write('<script>goog.DEBUG = false;<\/script>');
+    document.write('<script src="..\/..\/src\/main.js"><\/script>');
+  }
+
+})();
     </script>
-    <script src="../../src/vendor/when.js"></script>
-    <script src="../../src/main.js" charset="utf-8"></script>
     <script src="bootstrap.js"></script>
     <script>
       if (window.mochaPhantomJS) { mochaPhantomJS.run(); }

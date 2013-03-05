@@ -43,6 +43,8 @@ ssd.user.auth.Facebook = function( authCapsule ) {
    */
   this._appId = '';
 
+  /** @type {boolean} ready state */
+  this._ready = false;
 
   /**
    * @type {boolean} FB JS API is loading...
@@ -113,9 +115,15 @@ ssd.user.auth.Facebook.prototype.init = function() {
   this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
 
   var def = when.defer();
+
+  if ( this._ready ) {
+    this.logger.warning('init() :: Double trigger for FB init!');
+    return def.reject('double trigger for fb');
+  }
+  this._ready = true;
   def.resolve();
 
-  if (!this._FBAPILoaded) {
+  if ( !this._FBAPILoaded ) {
     // API not loaded yet
     // listen for load event
     // and start async loading of FB JS API
@@ -308,7 +316,8 @@ ssd.user.auth.Facebook.prototype.login = function(optCb, optPerms) {
 
   def.promise.then()
   var cb = ssd.cb2promise(def.resolver, this._loginListener, this);
-  cb(null, resp, {}, {}, {});
+
+  //cb(null, resp, {}, {}, {});
 
   FB.login(goog.bind(this._loginListener, this, cb), paramObj);
 };
@@ -358,7 +367,7 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   var def = when.defer();
 
   if ( !goog.isObject(response)) {
-    this.logger.warn('_isAuthedFromResponse() :: response not object:' + response);
+    this.logger.warning('_isAuthedFromResponse() :: response not object:' + response);
     return def.reject('response not an object');
   }
   var isAuthed = 'connected' === response['status'];

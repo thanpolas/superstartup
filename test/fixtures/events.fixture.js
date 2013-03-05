@@ -8,7 +8,7 @@ goog.provide('ssd.test.fixture.event');
  * @enum {string} Core events emitted.
  */
 ssd.test.fixture.event.core = {
-  INIT: 'ss.init'
+  INIT: 'init'
 };
 
 /**

@@ -30,34 +30,37 @@ goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
 
 // core
-goog.exportSymbol('ss', ssd.c);
-goog.exportSymbol('ss.init', ssd.c.init);
+goog.exportSymbol('ss', ss);
+goog.exportSymbol('ss.init', ss.init);
 
-goog.exportSymbol('ss.isReady', ssd.c.isReady);
+// core methods
+goog.exportSymbol('ss.isReady', ss.isReady);
 
 // net
 goog.exportSymbol('ss.ajax', ssd.ajax);
+goog.exportSymbol('ss.ajax.send', ssd.ajax.send);
 goog.exportSymbol('ss.sync', ssd.sync);
+goog.exportSymbol('ss.sync.send', ssd.sync.send);
 
 // events
-goog.exportSymbol('ss.trigger', ssd.c.dispatchEvent);
+goog.exportSymbol('ss.listen', ss.listen);
+goog.exportSymbol('ss.trigger', ss.trigger);
+goog.exportSymbol('ss.unlisten', ss.unlisten);
+goog.exportSymbol('ss.removeAllListeners', ss.removeAllListeners);
 
 // user
-goog.exportSymbol('ss.user', ssd.c.user);
-goog.exportSymbol('ss.user.isAuthed', ssd.c.user.isAuthed);
-goog.exportSymbol('ss.isAuthed', ssd.c.user.isAuthed);
-goog.exportSymbol('ss.user.isExtAuthed', ssd.c.user.isExtAuthed);
-goog.exportSymbol('ss.user.isVerified', ssd.c.user.isVerified);
-goog.exportSymbol('ss.user.logout', ssd.c.user.logout);
+goog.exportSymbol('ss.ssd', ssd);
+goog.exportSymbol('ss.ssd.user.AuthModel.prototype.isAuthed', ss.ssd.user.AuthModel.prototype.isAuthed);
 
-// external auth
-goog.exportSymbol('ss.user.facebook.login', ssd.user.auth.Facebook.prototype.login);
-goog.exportSymbol('ss.user.facebook.logout', ssd.user.auth.Facebook.prototype.logout);
+// goog.exportSymbol('ss.user.isAuthed', ss.ssd.user.AuthModel.prototype.isAuthed);
+// goog.exportSymbol('ss.isAuthed', ss.ssd.user.AuthModel.prototype.isAuthed);
+goog.exportSymbol('ss.ssd.user.Auth.prototype.isExtAuthed', ss.ssd.user.Auth.prototype.isExtAuthed);
+goog.exportSymbol('ss.ssd.user.Auth.prototype.login', ss.ssd.user.Auth.prototype.login);
+goog.exportSymbol('ss.ssd.user.Auth.prototype.logout', ss.ssd.user.Auth.prototype.logout);
 
-goog.exportSymbol('ss.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
-goog.exportSymbol('ss.user.twitter.logout', ssd.user.auth.Twitter.prototype.logout);
+// auth plugins
+// goog.exportSymbol('ss.user.fb.login', ss.user.fb.login);
+// goog.exportSymbol('ss.user.fb.logout', ss.user.fb.logout);
+// goog.exportSymbol('ss.user.tw.logout', ss.user.tw.logout);
+// goog.exportSymbol('ss.user.tw.logout', ss.user.tw.logout);
 
-// modules
-goog.exportSymbol('ss.metrics.trackEvent', ssd.metrics.trackEvent);
-goog.exportSymbol('ss.metrics.trackMetrics', ssd.metrics.trackMetrics);
-goog.exportSymbol('ss.metrics.trackPageview', ssd.metrics.trackPageview);

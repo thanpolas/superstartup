@@ -11,7 +11,7 @@
  * @param  {Function=} optOnProgress     [description]
  * @return {[type]}                [description]
  */
-when = function(promiseOrValue, optOnFulfilled, optOnRejected, optOnProgress) {};
+var when = function(promiseOrValue, optOnFulfilled, optOnRejected, optOnProgress) {};
 
 /** @type {Object} */
 when.Deferred = {};

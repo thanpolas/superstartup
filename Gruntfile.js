@@ -1,4 +1,7 @@
 /*jshint camelcase:false */
+
+var compiler = require('superstartup-closure-compiler'),
+    path     = require('path');
 /**
  * [exports description]
  * @param  {[type]} grunt [description]
@@ -7,9 +10,18 @@
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-closure-tools');
+  grunt.loadNpmTasks('grunt-contrib-livereload');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-regarde');
+
+  var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
+
+  var folderMount = function folderMount(connect, point) {
+    return connect.static(path.resolve(point));
+  };
+
 
   var externsPath = 'build/externs/';
   // don't put the extension here
@@ -46,7 +58,7 @@ module.exports = function(grunt) {
         closureLibraryPath: 'closure-library',
         inputs: ['src/main.js'],
         compile: true,
-        compilerFile: 'build/closure_compiler/sscompiler.jar'
+        compilerFile: compiler.getPathSS()
 
       },
 
@@ -54,7 +66,7 @@ module.exports = function(grunt) {
         options: {
           compilerOpts: {
             compilation_level: 'ADVANCED_OPTIMIZATIONS',
-            externs: [externsPath + '*.js'],
+            externs: [externsPath + '*.js', externsPath + 'when.externs.js'],
             define: [
               "'goog.DEBUG=false'",
               "'ss.STANDALONE=false'"
@@ -63,8 +75,10 @@ module.exports = function(grunt) {
             jscomp_off: ['checkTypes', 'fileoverviewTags'],
             summary_detail_level: 3,
             only_closure_dependencies: null,
-            closure_entry_point: 'ss',
-            output_wrapper: '(function(){%output%}).call(this);'
+            closure_entry_point: 'ssd',
+            output_wrapper: '(function(){%output%}).call(this);',
+            formatting: 'PRETTY_PRINT',
+            debug: null
           }
         },
         src: ['src', 'closure-library'],
@@ -74,12 +88,31 @@ module.exports = function(grunt) {
       }
     },
 
+
+
     /**
-     *
-     * TESTING
+     * Live Reload
      *
      */
+   regarde: {
+      compiled: {
+        files: ['dist/**/*.js'],
+        tasks: ['livereload']
+      },
+      dev: {
+        files: ['src/**/*.js', 'test/bdd/**/*.js'],
+        tasks:['livereload']
+      }
+    },
     connect: {
+      livereload: {
+        options: {
+          port: 9001,
+          middleware: function(connect) {
+            return [lrSnippet, folderMount(connect, '.')];
+          }
+        }
+      },
       test: {
         options: {
           port: 4242,
@@ -88,6 +121,26 @@ module.exports = function(grunt) {
         }
       }
     },
+    //
+    // watch is not yet compatible with livereload
+    //
+    watch: {
+      test: {
+        options: {
+          nospawn: true
+        },
+        files: ['src/**/*.js'],
+        tasks: ['build']
+      }
+    },
+
+
+
+    /**
+     *
+     * TESTING
+     *
+     */
 
     mochaPhantom: 'node_modules/mocha-phantomjs/bin/mocha-phantomjs ' +
       'http://localhost:4242/test/bdd/index.html',
@@ -108,6 +161,9 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['connect:test', 'shell:mochaPhantom']);
   grunt.registerTask('test:min', 'Test using mocha-phantom min Reporter', 'shell:mochaPhantomMin');
   grunt.registerTask('deps', 'closureDepsWriter');
+  grunt.registerTask('build', 'closureBuilder:superstartup');
+  grunt.registerTask('live', ['livereload-start', 'connect:livereload', 'regarde:dev']);
+  grunt.registerTask('live:compiled', ['livereload-start', 'connect:livereload', 'regarde:compiled']);
 
   // Default task.
   grunt.registerTask('default', 'closureDepsWriter');

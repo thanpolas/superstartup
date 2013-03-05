@@ -3,11 +3,7 @@
  */
 goog.provide('ssd.test.main');
 
-goog.require('ssd.test.mock.net');
-
-mocha.setup({
-  globals: ['fbAsyncInit', 'liveReload']
-});
+// goog.require('ssd.test.mock.net');
 
 var expect, assert;
 expect = (typeof chai !== "undefined" && chai !== null ?
