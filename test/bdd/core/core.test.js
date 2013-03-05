@@ -51,7 +51,9 @@ describe('Core API :: ss()', function(){
 
         window.fbAsyncInit();
 
-        ssReturn.always(done).then(ss.removeAllListeners);
+        ssReturn.always(ss.removeAllListeners).always(function() {
+          done();
+        });
       });
 
       it('should have not made any sync calls', function() {
@@ -137,6 +139,7 @@ describe('Core API :: ss()', function(){
         expect( authChangeCb.calledOnce ).to.be.true;
       });
       it('should have the authState property', function() {
+        expect( authChangeCb.calledOnce ).to.be.true;
         var ev = authChangeCb.getCall(0).args[0];
         expect( ev.authState ).to.be.a('boolean');
         expect( ev.authState ).to.be.false;

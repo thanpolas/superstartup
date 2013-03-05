@@ -60,6 +60,17 @@ ssd.Core = function()
   this._isReady = false;
 
   /**
+   * @type {when.Defer}
+   * @private
+   */
+  this._readyDefer = when.defer();
+
+  if (goog.DEBUG) {
+    this._readyDefer.promise.always(goog.bind(function(){
+      this.logger.info('ctor() :: Core Deferred resolved.');
+    }, this));
+  }
+  /**
    * @type {number} The current instance count.
    * @private
    */
@@ -76,13 +87,20 @@ ssd.Core = function()
 
   this.logger.info('ctor() :: Registering modules...');
 
-
   /**
    * @type {ssd.Config} The configuration class.
    */
   this.config = new ssd.Config();
   this.config.addAll( ssd.core.config.defaults );
 
+
+  /**
+   * The singleton instance of the user auth class
+   * @type {ssd.user.Auth}
+   */
+  this.user = ssd.user.Auth.getInstance(this);
+
+  this.isAuthed = this.user.isAuthed;
   //
   // hack
   // run encapsulator before we run modules so we won't need to
@@ -90,13 +108,14 @@ ssd.Core = function()
   //
   var selfObj = ssd.invocator.encapsulate( this, this.init );
 
-  ssd.register.runModules( selfObj );
+  selfObj.user = this.user;
+
+  // ssd.register.runModules( selfObj );
 
   return selfObj;
 
 };
 goog.inherits(ssd.Core, ssd.Module);
-goog.addSingletonGetter(ssd.Core);
 
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
@@ -108,6 +127,22 @@ ssd.Core.EventType = {
   INIT: 'init'
 };
 
+/**
+ * A custom getInstance method for the Auth class singleton.
+ *
+ * We want this custom method so as to return a proper
+ * encapsulated instance that is binded (when invoked will
+ * execute) the 'get' method.
+ *
+ *
+ * @return {Function} The encapsulated instance.
+ */
+ssd.Core.getInstance = function()
+{
+  return ssd.Core._instance ||
+    (ssd.Core._instance = new ssd.Core());
+};
+
 
 /**
  * Kicks off the library.
@@ -115,22 +150,19 @@ ssd.Core.EventType = {
  * This function is exposed and is invoked by our handlers
  *
  * @param  {Function=} optCallback A callback for when ready ops finish.
- * @return {when.Promise|ssd.Core} a promise for init operation or
- *   a new instance if called with the 'new' keyword.
+ * @return {when.Promise} a promise.
  */
 ssd.Core.prototype.init = function (optCallback) {
 
   this.logger.info('init() :: Kicking off SuperStartup. isReady:' + this._isReady);
-
   var fn = optCallback || ssd.noop;
 
   if ( this._isReady ) {
     fn();
-    return when.defer().resolve();
+    return this._readyDefer.promise;
   }
 
-  // start modules initialization and wait till finished
-  return ssd.register.runModuleInit( this )
+  return when.chain(this.user.init(), this._readyDefer.resolver)
     .always( goog.bind(function() {
       this._isReady = true;
       this.dispatchEvent( ssd.Core.EventType.INIT );
@@ -202,5 +234,5 @@ ssd.Core.prototype.removeAllListeners = function( optType ) {
  * Synchronous (silent) initialization of the library.
  * @type {ssd.Core}
  */
-ss = new ssd.Core();
+ss = ssd.Core.getInstance();
 

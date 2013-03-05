@@ -13,30 +13,40 @@
  */
 var when = function(promiseOrValue, optOnFulfilled, optOnRejected, optOnProgress) {};
 
+
+/** @type {Object} */
+when.Resolver = {};
+
+/** @return {when.Promise} */
+when.Resolver.resolve = function () {};
+
+/** @return {when.Promise} */
+when.Resolver.reject = function () {};
+
+/** @return {when.Promise} */
+when.Resolver.notify = function () {};
+
+/** @type {Object} */
+when.Promise = {};
+
+/** @return {when.Promise} */
+when.Promise.then = function(){};
+/** @return {when.Promise} */
+when.Promise.always = function(){};
+/** @return {when.Promise} */
+when.Promise.otherwise = function(){};
+
 /** @type {Object} */
 when.Deferred = {};
 
 when.Deferred.promise = when.Promise;
 
-/** @type {Object} */
-when.Deferred.resolver = {};
+when.Deferred.resolver = when.Resolver;
 
-/** @return {when.Promise} */
-when.Deferred.resolver.resolve = function () {};
-
-/** @return {when.Promise} */
-when.Deferred.resolver.reject = function () {};
-
-/** @return {when.Promise} */
-when.Deferred.resolver.notify = function () {};
 when.Deferred.resolve = when.Deferred.resolver.resolve;
 when.Deferred.reject = when.Deferred.resolver.reject;
 when.Deferred.notify = when.Deferred.resolver.notify;
 
-/** @type {Object} */
-when.Promise = {};
-
-// ... Promise funcs
 
 /**
  * Create a deferred

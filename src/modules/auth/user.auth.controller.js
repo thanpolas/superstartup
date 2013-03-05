@@ -21,11 +21,11 @@ goog.require('ssd.user.auth.EventType');
 /**
  * User authentication class
  *
- * @param {Function} capsule the result of invocator.
+ * @param {ssd.Core} ssdInst the ssd.Core singleton instance.
  * @constructor
  * @extends {ssd.user.AuthLogin}
  */
-ssd.user.Auth = function( capsule ) {
+ssd.user.Auth = function(ssdInst) {
 
   this.logger.info('ctor() :: Instantiating Auth module...');
 
@@ -34,7 +34,10 @@ ssd.user.Auth = function( capsule ) {
   /**
    * @type {ssd.Core}
    */
-  this._ssdInst = capsule._instance;
+  this._ssdInst = ssdInst;
+
+  // bubble user auth events to core.
+  this.setParentEventTarget( this._ssdInst );
 
   /** @type {ssd.Config} */
   this.config = this._ssdInst.config.prependPath( ssd.user.auth.config.PATH );
@@ -43,6 +46,9 @@ ssd.user.Auth = function( capsule ) {
    * Config parameters
    */
   this.config.addAll( ssd.user.auth.config.defaults );
+
+
+  this.fb = new ssd.user.auth.Facebook(this);
 
   /**
    * @type {Function}
@@ -87,6 +93,23 @@ ssd.user.Auth.Error = {
  */
 ssd.user.Auth.SourceItem;
 
+
+/**
+ * A custom getInstance method for the Auth class singleton.
+ *
+ * We want this custom method so as to return a proper
+ * encapsulated instance that is binded (when invoked will
+ * execute) the 'get' method.
+ *
+ *
+ * @param  {optSsdInst} optSsdInst
+ * @return {Function} The encapsulated instance.
+ */
+ssd.user.Auth.getInstance = function(optSsdInst) {
+  return ssd.user.Auth._instance ||
+    (ssd.user.Auth._instance = new ssd.user.Auth(optSsdInst));
+};
+
 /**
  * Kicks off authentication flows for all ext auth sources
  *
@@ -94,6 +117,9 @@ ssd.user.Auth.SourceItem;
  */
 ssd.user.Auth.prototype.init = function() {
   this.logger.info('init() :: starting...');
+
+  // // initialize ext auth plugins
+  // ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, ssd.user.Auth.getInstance() );
 
   // shortcut assign the performLocalAuth config directive to our
   // local var
@@ -205,20 +231,20 @@ ssd.user.Auth.onRegisterRun = function( capsule ) {
    * The instance of the user auth class
    * @type {ssd.user.Auth}
    */
-  var u = capsule['user'] = new ssd.user.Auth( capsule );
+  var u = capsule['user'] = ssd.user.Auth.getInstance();
 
   // bubble user auth events to core.
-  u.setParentEventTarget( capsule._instance );
+  u._instance.setParentEventTarget( capsule._instance );
 
   // assign isAuthed method
-  capsule['isAuthed'] = goog.bind( u.isAuthed, u );
+  capsule['isAuthed'] = goog.bind( u.isAuthed, u._instance );
 
   // initialize ext auth plugins
-  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, u );
+  ssd.register.runPlugins( ssd.user.Auth.MODULE_NAME, u._instance );
 
   // register the init method
-  ssd.register.init( u.init, u );
+  ssd.register.init( u.init, u._instance );
 
 };
-ssd.register.module( ssd.user.Auth.onRegisterRun );
+// ssd.register.module( ssd.user.Auth.onRegisterRun );
 

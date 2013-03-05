@@ -122,7 +122,7 @@ ssd.user.AuthModel.prototype._checkInitAuthComplete = function() {
       'checks complete. Instance:' + this._ssdInst._instanceCount);
 
     var eventObj  = {
-      authState: this.isAuthed(),
+      'authState': this.isAuthed(),
       type: ssd.user.auth.EventType.INITIAL_AUTH_STATE
     };
     this.dispatchEvent(eventObj);
@@ -289,7 +289,6 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
  */
 ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
   var def = when.defer();
-
   this.logger.info('performLocalAuth() :: Init. url:' + url);
 
   // check if local auth enabled
@@ -321,7 +320,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
 
   ssd.sync.send( url, cb, ssd.ajax.Method.POST, data );
 
-  return def;
+  return def.promise;
 };
 
 
@@ -345,6 +344,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
 
   this.logger.info('_serverAuthResponse() :: Init');
 
+console.log('response:', response);
 
   //
   //
@@ -438,9 +438,9 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   this.dispatchEvent(eventObj);
 
   return def.resolve({
-    authState: true,
-    udo: udo,
-    response: response.responseRaw
+    'authState': true,
+    'udo': udo,
+    'response': response.responseRaw
   });
 };
 

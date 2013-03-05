@@ -33,10 +33,15 @@ describe( 'User Auth Module :: Login', function () {
    */
   function loginTests( $element ) {
     describe( 'login operations', function() {
+      var sillyme = false;
 
       beforeEach( function() {
+        if (ss.sync.send.id) {
+          ss.sync.send.restore();
+        }
         stub = sinon.stub( ss.sync, 'send' );
         stub.yields( ssd.test.mock.net.getResponse( userFix ));
+        sillyme = true;
       });
       afterEach( function() {
         ss.user.deAuth();
@@ -49,7 +54,7 @@ describe( 'User Auth Module :: Login', function () {
         expect( stub.calledOnce ).to.be.true;
       });
 
-      it( 'should auth with provided argument', function(){
+      it( 'should login with provided argument', function(){
         ss.user.login( $element );
         expect( ss.isAuthed() ).to.be.true;
       });

@@ -14,17 +14,17 @@ goog.require('ssd.register');
 /**
  * The Facebook auth constructor
  *
- * @param {Function} authCapsule The auth module capsule.
+ * @param {ssd.user.Auth} authInst The auth module.
  * @constructor
  * @implements {ssd.user.auth.PluginInterface}
  * @extends {ssd.user.auth.PluginModule}
  */
-ssd.user.auth.Facebook = function( authCapsule ) {
+ssd.user.auth.Facebook = function( authInst ) {
   this.logger.info('ctor() :: Init.');
-  goog.base(this, authCapsule);
+  goog.base(this, authInst);
 
   /** @type {ssd.Config} */
-  this.config = authCapsule._instance.config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
+  this.config = authInst.config.prependPath( ssd.user.auth.Facebook.CONFIG_PATH );
 
   // set if a local auth with the server should be performed when this
   // plugin authenticates.

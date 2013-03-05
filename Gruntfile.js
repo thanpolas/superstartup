@@ -96,8 +96,8 @@ module.exports = function(grunt) {
      */
    regarde: {
       compiled: {
-        files: ['dist/**/*.js'],
-        tasks: ['livereload']
+        files: ['src/**/*.js'],
+        tasks: ['build','livereload']
       },
       dev: {
         files: ['src/**/*.js', 'test/bdd/**/*.js'],

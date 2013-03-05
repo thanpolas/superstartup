@@ -20,6 +20,11 @@ describe('User Auth Module :: Logging out', function () {
     ss.removeAllListeners();
   });
 
+  it('should be authenticated when starting a logout test', function(){
+    expect( ss.isAuthed() ).to.be.true;
+  });
+
+
   it('should perform an xhr request on logout', function(){
     ss.user.logout();
     expect(stub.calledOnce).to.be.true;

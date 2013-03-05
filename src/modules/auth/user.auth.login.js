@@ -61,15 +61,15 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
   }, this));
 
   if (goog.dom.isElement(arg1)) {
-    return when.chain( this._loginElement( arg1 ), def );
+    return when.chain( this._loginElement( arg1 ), def.resolver );
   }
 
   if (ssd.isjQ(arg1)) {
-    return when.chain( this._loginjQuery( arg1 ), def );
+    return when.chain( this._loginjQuery( arg1 ), def.resolver );
   }
 
   if (goog.isObject(arg1)) {
-    return when.chain( this._loginStart( arg1 ), def );
+    return when.chain( this._loginStart( arg1 ), def.resolver );
   }
 
   throw new TypeError('auth.login argument not Object or Element or jQuery');

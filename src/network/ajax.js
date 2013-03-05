@@ -7,6 +7,7 @@
 goog.provide('ssd.ajax');
 goog.provide('ssd.ajax.Method');
 
+
 goog.require('goog.net.XhrIo');
 
 /**
@@ -46,30 +47,24 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
      * The response object that will be used as the first argument of
      * the original callback.
      *
-     * @type {ssd.sync.ResponseObject}
+     * @type {ssd.sync.Response}
      */
-    var responseObject = {
-      httpStatus: null,
-      success: false,
-      responseRaw: null,
-      errorMessage: null,
-      xhr: null
-    };
+    var response = new ssd.sync.Response();
 
     if ( xhr ) {
-      responseObject.httpStatus = xhr.getStatus();
-      responseObject.success = xhr.isSuccess();
-      responseObject.responseRaw = xhr.getResponse();
-      responseObject.errorMessage = xhr.getLastError();
-      responseObject.xhr = xhr;
+      response.httpStatus = xhr.getStatus();
+      response.success = xhr.isSuccess();
+      response.responseRaw = xhr.getResponse();
+      response.errorMessage = xhr.getLastError();
+      response.xhr = xhr;
     }
 
-    if (responseObject.success) {
-      def.resolve(responseObject);
+    if (response.success) {
+      def.resolve(response);
     } else {
-      def.reject(responseObject);
+      def.reject(response);
     }
-    origCb(responseObject);
+    origCb(response);
   };
 
   var def = when.defer();
