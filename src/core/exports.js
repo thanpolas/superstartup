@@ -36,6 +36,7 @@ goog.exportSymbol('ss.init', ss.init);
 // core methods
 goog.exportSymbol('ss.isReady', ss.isReady);
 goog.exportSymbol('ss.config', ss.config);
+goog.exportSymbol('ss._getResponse', ssd._getResponse);
 
 // net
 goog.exportSymbol('ss.ajax', ssd.ajax);

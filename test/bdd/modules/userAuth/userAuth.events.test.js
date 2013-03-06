@@ -31,7 +31,7 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
     beforeEach( function() {
       if (!ss.sync.send.id) {
         stubNet = sinon.stub( ss.sync, 'send' );
-        stubNet.yields( ssd.test.mock.net.getResponse( userFix ) );
+        stubNet.yields( ss._getResponse( userFix ) );
         sillyme = true;
       }
     });

@@ -13,7 +13,7 @@ describe('User Auth Module :: Logging out', function () {
   beforeEach(function() {
     ss.user.auth( userFix );
     stub = sinon.stub(ss.sync, 'send');
-    stub.yields( ssd.test.mock.net.getResponse( userFix ) );
+    stub.yields( ss._getResponse( userFix ) );
   });
   afterEach(function() {
     stub.restore();

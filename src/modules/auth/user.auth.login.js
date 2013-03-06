@@ -51,8 +51,8 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
       cb.call(optSelfObj, null, false);
     }
 
-    cb.call(optSelfObj, null, statusObj.authState, statusObj.udo,
-      statusObj.response);
+    cb.call(optSelfObj, null, statusObj['authState'], statusObj['udo'],
+      statusObj['response']);
 
   }, this));
 
@@ -89,6 +89,7 @@ ssd.user.AuthLogin.prototype._loginElement = function( el ) {
 
   /** @type {goog.structs.Map} */
   var paramsMap;
+
   /** @preserveTry */
   try {
     paramsMap = goog.dom.forms.getFormDataMap( el );

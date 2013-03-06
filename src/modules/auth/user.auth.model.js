@@ -344,8 +344,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
 
   this.logger.info('_serverAuthResponse() :: Init');
 
-console.log('response:', response);
-
+  'onetotrack';
   //
   //
   //

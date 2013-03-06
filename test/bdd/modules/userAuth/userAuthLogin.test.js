@@ -40,7 +40,7 @@ describe( 'User Auth Module :: Login', function () {
           ss.sync.send.restore();
         }
         stub = sinon.stub( ss.sync, 'send' );
-        stub.yields( ssd.test.mock.net.getResponse( userFix ));
+        stub.yields( ss._getResponse( userFix ));
         sillyme = true;
       });
       afterEach( function() {
@@ -64,20 +64,37 @@ describe( 'User Auth Module :: Login', function () {
         ss.user.login( $element );
         expect( stub.getCall( 0 ).args[3] ).to.deep.equal( userLoginData );
       });
-
-      it( 'should have a callback with authState', function( done ){
-        ss.user.login( $element, function( err, authState, user, response ){
-          expect( err ).to.be.null;
-          expect( authState ).to.be.true;
-          done();
-        });
+      it( 'should have a callback', function(){
+        var spy = sinon.spy();
+        ss.user.login( $element, spy);
+        expect( spy.calledOnce ).to.be.true;
       });
 
-      it( 'should have a callback with the UDO', function( done ){
-        ss.user.login( $element, function( err, authState, udo, response ){
-          expect( udo ).to.deep.equal( userFix );
-          done();
-        });
+      it( 'should have a callback with err null', function(){
+        var spy = sinon.spy();
+        ss.user.login( $element, spy);
+        // err, authState, udo, response
+        var args = spy.getCall(0).args;
+        // err
+        expect( args[0] ).to.be.null;
+      });
+
+      it( 'should have a callback with authState', function(){
+        var spy = sinon.spy();
+        ss.user.login( $element, spy);
+        // err, authState, udo, response
+        var args = spy.getCall(0).args;
+        // authState
+        expect( args[1] ).to.be.true;
+      });
+
+      it( 'should have a callback with the UDO', function(){
+        var spy = sinon.spy();
+        ss.user.login( $element, spy);
+        // err, authState, udo, response
+        var args = spy.getCall(0).args;
+        // udo
+        expect( args[2] ).to.deep.equal( userFix );
       });
 
       it( 'should have a callback with the complete response from the server', function( done ){

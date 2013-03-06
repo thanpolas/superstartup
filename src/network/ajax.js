@@ -9,6 +9,7 @@ goog.provide('ssd.ajax.Method');
 
 
 goog.require('goog.net.XhrIo');
+goog.require('ssd.sync.Response');
 
 /**
  * @enum {string}

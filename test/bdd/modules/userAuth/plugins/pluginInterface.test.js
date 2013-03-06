@@ -175,7 +175,7 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
       ssNew = new ss();
       plugin = ssNew.user[_this.pluginNameSpace];
       stubNet = sinon.stub(ssNew.sync, 'send');
-      stubNet.yields( ssd.test.mock.net.getResponse( fixtures.userOne ));
+      stubNet.yields( ss._getResponse( fixtures.userOne ));
 
       ssNew.config('user.auth.fb.appId', '540');
 
@@ -318,7 +318,7 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
       ssNew = new ss();
       plugin = ssNew.user[_this.pluginNameSpace];
       stubNet = sinon.stub(ssNew.sync, 'send');
-      stubNet.yields( ssd.test.mock.net.getResponse( fixtures.userOne ));
+      stubNet.yields( ss._getResponse( fixtures.userOne ));
       _this.beforeEach();
       ssNew(done);
     });

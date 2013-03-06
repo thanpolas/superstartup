@@ -5,7 +5,7 @@ goog.provide('ssd.helpers');
 
 goog.require('goog.array');
 goog.require('goog.object');
-
+goog.require('goog.json');
 
 /**
  * The noop function
@@ -282,5 +282,22 @@ ssd.eventBackPipe = function(eventObj, data) {
 ssd.cb2promise = function(resolver, cb, optSelf) {
   return function() {
     when.chain( cb.apply(optSelf, arguments), resolver );
+  };
+};
+
+
+
+/**
+ * Testing purposes only.
+ *
+ * @param  {*} responseRaw [description]
+ * @return {ssd.sync.Response}
+ */
+ssd._getResponse = function (responseRaw) {
+  return {
+    httpStatus: 200,
+    success: true,
+    responseRaw: goog.json.serialize(responseRaw),
+    errorMessage: null
   };
 };

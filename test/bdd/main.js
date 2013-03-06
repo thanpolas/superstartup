@@ -36,7 +36,7 @@ window.FB = {
 //   password: 'passpass',
 //   remember: '1'
 // };
-// stub.yields( ssd.test.mock.net.getResponse(ssd.test.fixture.userOne ));
+// stub.yields( ss._getResponse(ssd.test.fixture.userOne ));
 
 // ss.user.login(userLoginData);
 
