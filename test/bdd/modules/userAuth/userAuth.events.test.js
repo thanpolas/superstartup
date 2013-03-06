@@ -105,13 +105,10 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
         cow: 'cow',
         gangnam: ['style', 42]
       };
-
       ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         eventObj.backPipe(function(data) {
-          expect( data ).to.deep.equal(optParams);
           return funnyData;
         });
-
       });
 
       loginTrigger( function( err, authState, user, response ){

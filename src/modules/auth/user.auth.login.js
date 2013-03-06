@@ -88,11 +88,14 @@ ssd.user.AuthLogin.prototype._loginElement = function( el ) {
   var def = when.defer();
 
   /** @type {goog.structs.Map} */
-  var paramsMap;
+  var paramsMap, params;
 
   /** @preserveTry */
   try {
     paramsMap = goog.dom.forms.getFormDataMap( el );
+    params = goog.object.map(paramsMap.toObject(), function(value) {
+      return value[0];
+    });
   } catch (ex) {
     return def.reject('not a form element');
   }
@@ -101,7 +104,7 @@ ssd.user.AuthLogin.prototype._loginElement = function( el ) {
     return def.reject('no form data');
   }
 
-  return this._loginStart( paramsMap.toObject() );
+  return this._loginStart( params );
 };
 
 /**

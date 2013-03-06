@@ -97,14 +97,6 @@ describe( 'User Auth Module :: Login', function () {
         expect( args[2] ).to.deep.equal( userFix );
       });
 
-      it( 'should have a callback with the complete response from the server', function( done ){
-        ss.user.login( $element, function( err, authState, udo, response ){
-          expect( udo ).to.deep.equal( userFix );
-          done();
-        });
-      });
-
-
       it( 'should provide the data to be sent when the BEFORE_LOGIN event triggers',
         function( done ){
         ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
@@ -146,13 +138,13 @@ describe( 'User Auth Module :: Login', function () {
     ssd.test.userAuth.login.events( 'login', userLoginData );
   });
 
-  // describe( 'Login from a DOM Form using jQuery', function(){
-  //   loginTests( $( '#login' ));
-  //   ssd.test.userAuth.login.events( 'login', $( '#login' ));
-  // });
+  describe( 'Login from a DOM Form using jQuery', function(){
+    loginTests( $( '#login' ));
+    ssd.test.userAuth.login.events( 'login', $( '#login' ));
+  });
 
-  // describe( 'Login from a DOM Form using DOM Element', function(){
-  //   loginTests( goog.dom.getElement( 'login' ));
-  //   ssd.test.userAuth.login.events( 'login', goog.dom.getElement( 'login' ));
-  // });
+  describe( 'Login from a DOM Form using DOM Element', function(){
+    loginTests( goog.dom.getElement( 'login' ));
+    ssd.test.userAuth.login.events( 'login', goog.dom.getElement( 'login' ));
+  });
 });
