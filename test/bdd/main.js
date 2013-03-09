@@ -27,7 +27,10 @@ window.FB = {
     subscribe: function(event, cb){}
   },
   getLoginStatus: function(cb){},
-  login: function(cb, params){}
+  getAccessToken: function(){return 'ACCESS_TOKEN';},
+  login: function(cb, params){},
+  logout: function(){},
+  api: function(what, cb){}
 };
 
 
@@ -57,7 +60,7 @@ window.FB = {
 //   password: 'passpass',
 //   remember: '1'
 // };
-// stub.yields( ss._getResponse(ssd.test.fixture.userOne ));
+// stub.returns( ss._getResponse(ssd.test.fixture.userOne ));
 
 // ss.user.login(userLoginData);
 

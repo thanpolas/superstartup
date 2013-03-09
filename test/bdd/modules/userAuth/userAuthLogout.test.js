@@ -12,8 +12,9 @@ describe('User Auth Module :: Logging out', function () {
 
   beforeEach(function() {
     ss.user.auth( userFix );
+    if ( ss.sync.send.id ) { ss.sync.send.restore(); }
     stub = sinon.stub(ss.sync, 'send');
-    stub.yields( ss._getResponse( userFix ) );
+    stub.returns( ss._getResponse( userFix ) );
   });
   afterEach(function() {
     stub.restore();
@@ -44,15 +45,36 @@ describe('User Auth Module :: Logging out', function () {
 
   });
 
-  it('should have a callback when logging out', function(done){
+  it('should have a callback when logging out', function(){
+    var spy = sinon.spy();
+    ss.user.logout(spy);
+    expect( spy.calledOnce ).to.be.true;
+  });
+  it('should not be authed inside the callback', function(done) {
     ss.user.logout(function(err, success){
-      expect(success).to.be.true;
-      expect(stub.calledOnce).to.be.true;
       expect(ss.isAuthed()).to.be.false;
       done();
     });
   });
-
+  it('the callback should have two arguments', function() {
+    var spy = sinon.spy();
+    ss.user.logout(spy);
+    var args = spy.getCall(0).args;
+    expect( args.length ).to.equal(2);
+  });
+  it('callback first arg is the err and should be null', function() {
+    var spy = sinon.spy();
+    ss.user.logout(spy);
+    var args = spy.getCall(0).args;
+    expect( args[0] ).to.be.null;
+  });
+  it('callback second arg is the success and should be true', function() {
+    var spy = sinon.spy();
+    ss.user.logout(spy);
+    var args = spy.getCall(0).args;
+    expect( args[1] ).to.be.a('boolean');
+    expect( args[1] ).to.be.true;
+  });
   it('should trigger the AUTH_CHANGE event', function(){
     var spy = sinon.spy();
     ss.listen(userEvent.AUTH_CHANGE, spy);

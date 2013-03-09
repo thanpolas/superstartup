@@ -31,6 +31,7 @@
     <script type="text/javascript">
 
     var IS_COMPILED = !!window.location.search.match(/compiled/);
+    var DEBUG = !!window.location.search.match(/debug/);
 
     (function(){
       var anchor = {
@@ -65,7 +66,7 @@
     document.write('<script src="..\/..\/src\/deps-superstartup.js"><\/script>');
     document.write('<script src="deps-test-bdd.js"><\/script>');
     document.write('<script src="..\/..\/src\/vendor\/when.js"><\/script>');
-    document.write('<script>goog.DEBUG = false;<\/script>');
+    document.write('<script>goog.DEBUG = DEBUG;<\/script>');
     document.write('<script src="..\/..\/src\/main.js"><\/script>');
   }
 

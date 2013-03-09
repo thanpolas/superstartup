@@ -14,7 +14,7 @@ goog.require('goog.json');
 ssd.noop = function(){};
 
 /** @const {string} the back pipe key */
-ssd.BACKPIPE_KEY = '__backPipe';
+ssd.BACKPIPE_KEY = 'backPipe';
 
 /**
  * Will add a key in the eventObj that is a function
@@ -298,10 +298,11 @@ ssd.cb2promise = function(defer, cb, optSelf) {
  * @return {ssd.sync.Response}
  */
 ssd._getResponse = function (responseRaw) {
-  return {
-    httpStatus: 200,
-    success: true,
-    responseRaw: goog.json.serialize(responseRaw),
-    errorMessage: null
-  };
+  var syncResp = new ssd.sync.Response();
+  syncResp.httpStatus= 200;
+  syncResp.success= true;
+  syncResp.responseRaw= goog.json.serialize(responseRaw);
+  syncResp.errorMessage= null;
+
+  return when.resolve(syncResp);
 };

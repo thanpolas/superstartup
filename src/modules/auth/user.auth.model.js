@@ -9,6 +9,7 @@ goog.provide('ssd.user.AuthModel');
 goog.require('goog.json');
 
 goog.require('ssd.core.config');
+goog.require('ssd.user.auth.Response');
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.user.auth.config');
 goog.require('ssd.Module');
@@ -61,6 +62,14 @@ ssd.user.AuthModel = function() {
    *   ssd.user.Auth.SourceItem>}
    */
   this._mapSources = new ssd.structs.Map();
+
+  /**
+   * An array containing the id's of all the ext sources that are currently
+   * authenticated.
+   * @type {Array.<ssd.user.types.extSourceId>}
+   */
+  this._authedSources = [];
+
 };
 goog.inherits( ssd.user.AuthModel, ssd.Module);
 
@@ -152,7 +161,7 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
     });
   }
 
-  // check if in our authed map
+  // get saved auth state from the sources map
   var extItem = this._mapSources.get(plugin.SOURCEID);
   var isExtAuthed = extItem.isAuthed;
 
@@ -169,13 +178,26 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
   this._mapSources.set(plugin.SOURCEID, extItem);
 
   var promise;
-  if (isExtAuthed) {
+  if ( extItem.isAuthed ) {
+    if ( -1 === this._authedSources.indexOf(plugin.SOURCEID) ) {
+      this._authedSources.push( plugin.SOURCEID );
+    }
     promise = this.verifyExtAuthWithLocal(plugin.SOURCEID);
   } else {
+    var pluginIndex = this._authedSources.indexOf(plugin.SOURCEID);
+    if ( 0 <= pluginIndex) {
+      this._authedSources.splice(pluginIndex, 1);
+    }
     promise = this._checkAuthState();
   }
 
-  def.resolver.resolve(promise);
+  // when response comes back, extend it with the properties of the event obj
+  // (for now just passes responsePluginRaw prop)
+  promise.then(function(response){
+    var respObj = new ssd.user.auth.plugin.Response( response );
+    respObj.extend(ev);
+    def.resolve(respObj);
+  }, def.reject);
 
 };
 
@@ -223,13 +245,13 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   var def = when.defer();
 
   this.logger.info('_verifyExtAuthWithLocal() :: Init. LocalAuth Switch:' +
-    ' sourceId :' + sourceId );
+    ' sourceId: ' + sourceId );
 
   // get plugin item
   var extItem = this._mapSources.get(sourceId);
 
   // get plugin instance
-  var extInst =extItem.inst;
+  var extInst = extItem.inst;
 
   // dispatch event and check for cancel...
   var eventObj = {
@@ -250,24 +272,22 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
 
     // No verification with server is allowed by config.
     // authenticate the user.
-    this._doAuth( true );
-    return def.resolve( true );
+    return this._doAuth( true );
   }
 
   //
   // Prepare the ajax call
   //
   // get local auth url from ext plugin or use default one.
-  var url = extInst.config( ssd.user.auth.Key.EXT_SOURCES_AUTH_URL ) ||
-    this.config( ssd.user.auth.Key.LOGIN_URL );
+  var url = extInst.config( ssd.user.auth.config.Key.EXT_SOURCES_AUTH_URL ) ||
+    this.config( ssd.user.auth.config.Key.LOGIN_URL );
 
   var data = {},
-      paramSource = this.config( ssd.user.auth.Key.PARAM_SOURCE_ID ),
-      paramAccessToken = this.config( ssd.user.auth.Key.PARAM_ACCESS_TOKEN );
+      paramSource = this.config( ssd.user.auth.config.Key.PARAM_SOURCE_ID ),
+      paramAccessToken = this.config( ssd.user.auth.config.Key.PARAM_ACCESS_TOKEN );
 
   data[paramSource] = sourceId;
   data[paramAccessToken] = extInst.getAccessToken();
-
 
   return this.performLocalAuth( url, data );
 
@@ -315,9 +335,10 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
 
   data = backPipe();
 
-  var cb = ssd.cb2promise(def, this._serverAuthResponse, this);
-
-  ssd.sync.send( url, cb, ssd.ajax.Method.POST, data );
+  this.logger.fine('performLocalAuth() :: sending request...');
+  ssd.sync.send( url, null, ssd.ajax.Method.POST, data )
+    .then(goog.bind(this._serverAuthResponse, this), def.reject)
+    .then(def.resolve, def.reject);
 
   return def.promise;
 };
@@ -334,7 +355,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
  *   1. The operation succeeded
  *   2. We received a positive or negative response from the server
  *
- * @param  {ssd.sync.ResponseObject} response The response object.
+ * @param  {ssd.sync.Response} response The response object.
  * @return {when.Promise} A promise.
  * @private
  */
@@ -343,25 +364,10 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
 
   this.logger.info('_serverAuthResponse() :: Init');
 
-  'onetotrack';
-  //
-  //
-  //
-  // Make this object a typed response object both for events and promises.
-  //
-  // All auth class promises should return this object
-  //
-  //
-  //
-  //
-  var eventObj = {
-    type: ssd.user.auth.EventType.ON_LOGIN_RESPONSE,
-    'responseRaw': response.responseRaw,
-    'httpStatus': response.httpStatus,
-    'ajaxStatus': response.success,
-    'authState': false,
-    'errorMessage': response.errorMessage
-  };
+  var respObj = new ssd.user.auth.Response( response );
+  respObj.authState = this.isAuthed();
+
+  var eventObj = respObj.event(ssd.user.auth.EventType.ON_LOGIN_RESPONSE, this);
 
   // dispatch event and check if don't want exec.
   if ( false === this.dispatchEvent(eventObj) ) {
@@ -389,9 +395,9 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
     } catch(ex) {
       this.logger.warning('_serverAuthResponse() :: response failed' +
         ' to parse as JSON');
-      eventObj['errorMessage'] = 'response not JSON';
+      eventObj.errorMessage = 'response not JSON';
       this.dispatchEvent(eventObj);
-      return def.reject('resp not JSON');
+      return def.reject(eventObj.errorMessage);
     }
 
     // check if status check is enabled.
@@ -403,9 +409,9 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
       if (valuator !== responseParsed[statusKey]) {
         // operation has failed...
         this.logger.warning('_serverAuthResponse() :: operation got a false response');
-        eventObj['errorMessage'] = 'status failed';
+        respObj.errorMessage = eventObj.errorMessage = 'status failed';
         this.dispatchEvent(eventObj);
-        return def.resolve( false );
+        return def.resolve( respObj );
       }
     }
 
@@ -424,22 +430,22 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
     responseParsed = udo = response.responseRaw;
   }
 
+  respObj.udo = udo;
+  respObj.serverRaw = responseParsed;
+
   // auth method will also validate.
   if ( !this.auth(udo) ) {
-    eventObj['errorMessage'] = 'user data object not valid';
+    eventObj.errorMessage = 'user data object not valid';
     this.dispatchEvent(eventObj);
     return def.reject('udo not valid');
   }
 
-  eventObj['udo'] = udo;
-  eventObj['authState'] = true;
+  respObj.authState = true;
+  eventObj = respObj.event(ssd.user.auth.EventType.AFTER_LOGIN_RESPONSE, this);
   this.dispatchEvent(eventObj);
 
-  return def.resolve({
-    'authState': true,
-    'udo': udo,
-    'response': response.responseRaw
-  });
+
+  return def.resolve(respObj);
 };
 
 /**
@@ -473,8 +479,6 @@ ssd.user.AuthModel.prototype.deAuth = function() {
   this._doAuth( false );
 };
 
-
-
 /**
  * Perform an auth or deauth based on parameter
  *
@@ -497,8 +501,20 @@ ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
     type: ssd.user.auth.EventType.AUTH_CHANGE
   };
   this.dispatchEvent(eventObj);
-  return when.defer().resolve(isAuthed);
+  return when.resolve(isAuthed);
 };
+
+/**
+ * Return an array of string with the id's of external sources
+ * that are authenticated.
+ *
+ * @return {Array.<ssd.user.types.extSourceId>} An array of strings.
+ */
+ssd.user.AuthModel.prototype.authedSources  = function() {
+  return Array.prototype.slice.call(this._authedSources, 0);
+};
+
+
 
 /**
  * If current user is authenticated

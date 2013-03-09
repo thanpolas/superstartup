@@ -28,19 +28,18 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
   }
 
   describe( 'Basic login events', function(){
-    beforeEach( function() {
-      if (!ss.sync.send.id) {
-        stubNet = sinon.stub( ss.sync, 'send' );
-        stubNet.yields( ss._getResponse( userFix ) );
-        sillyme = true;
+    beforeEach( function(done) {
+      if (ss.sync.send.id) {
+        ss.sync.send.restore();
       }
+      stubNet = sinon.stub( ss.sync, 'send' );
+      stubNet.returns( ss._getResponse( userFix ) );
+
+      ss(done);
     });
 
     afterEach( function() {
-      if (sillyme) {
-        stubNet.restore();
-        sillyme = false;
-      }
+      stubNet.restore();
       ss.removeAllListeners();
       ss.user.deAuth();
     });
@@ -140,26 +139,52 @@ ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
       });
     });
 
-    it( 'should trigger the AFTER_LOGIN_RESPONSE event', function( done ){
-      ss.listen( userEvent.AFTER_LOGIN_RESPONSE, function( eventObj ){
-        expect( stubNet.calledOnce ).to.be.true;
-
-        // network operation
-        expect( eventObj.ajaxStatus ).to.be.true;
-
-        // user authed
-        expect( eventObj.authState ).to.be.true;
-
-        // UDO
-        expect( eventObj.udo ).to.deep.equal( userFix );
-
-        // response object
-        expect( eventObj.responseRaw ).to.deep.equal( JSON.stringify(userFix) );
-
-        expect( ss.isAuthed() ).to.be.true;
-        done();
-      });
+    it( 'should trigger the AFTER_LOGIN_RESPONSE event', function(){
+      var spy = sinon.spy();
+      ss.listen( userEvent.AFTER_LOGIN_RESPONSE, spy);
       loginTrigger();
+      expect( spy.calledOnce ).to.be.true;
+    });
+
+    describe('Analyze the event object of AFTER_LOGIN_RESPONSE', function() {
+      var spy = sinon.spy();
+      var eventObj;
+
+      beforeEach(function(done){
+        ss.listen( userEvent.AFTER_LOGIN_RESPONSE, spy );
+        loginTrigger().then(function(){
+          eventObj = spy.getCall(0).args[0];
+          done();
+        });
+      });
+
+      it('should have an "authState" key, boolean, true', function() {
+        expect( eventObj.authState ).to.be.a('boolean');
+        expect( eventObj.authState ).to.be.true;
+      });
+      it('should have a "success" key, boolean, true', function() {
+        expect( eventObj.success ).to.be.a('boolean');
+        expect( eventObj.success ).to.be.true;
+      });
+      it('should have an "errorMessage" key, null', function() {
+        expect( eventObj.errorMessage ).to.be.null;
+      });
+      it('should have a "httpStatus" key, number, 200', function() {
+        expect( eventObj.httpStatus ).to.be.a('number');
+        expect( eventObj.httpStatus ).to.equal(200);
+      });
+      it('should have a "responseRaw" key, string', function() {
+        expect( eventObj.responseRaw ).to.be.a('string');
+      });
+      it('should have a "responseRaw" key with the proper value', function() {
+        expect( eventObj.responseRaw ).to.equal( JSON.stringify(userFix) );
+      });
+      it('should have a "udo" key, object', function() {
+        expect( eventObj.udo ).to.be.an('object');
+      });
+      it('should have a "udo" key deep equal to the udo fixture', function() {
+        expect( eventObj.udo ).to.deep.equal( userFix );
+      });
     });
   });
 };

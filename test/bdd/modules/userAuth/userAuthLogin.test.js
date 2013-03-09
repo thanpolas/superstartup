@@ -33,17 +33,17 @@ describe( 'User Auth Module :: Login', function () {
    */
   function loginTests( $element ) {
     describe( 'login operations', function() {
-      var sillyme = false;
 
-      beforeEach( function() {
+      beforeEach( function(done) {
         if (ss.sync.send.id) {
           ss.sync.send.restore();
         }
         stub = sinon.stub( ss.sync, 'send' );
-        stub.yields( ss._getResponse( userFix ));
-        sillyme = true;
+        stub.returns( ss._getResponse( userFix ));
+        ss(done);
       });
       afterEach( function() {
+        ss.log.info('afterEach!');
         ss.user.deAuth();
         stub.restore();
         ss.removeAllListeners();

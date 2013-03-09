@@ -39,6 +39,12 @@ ssd.user.auth.Facebook = function( authInst ) {
   this.config(ssd.user.auth.config.Key.FB_LOAD_API, true);
 
   /**
+   * @type {?Object} udo as provided by facebook
+   * @private
+   */
+  this._fbUdo = null;
+
+  /**
    * @type {string}
    * @private
    */
@@ -343,31 +349,27 @@ ssd.user.auth.Facebook.prototype.login = function(optCb, optSelf) {
  * @param  {!Function} cb a function.
  * @param  {Object|undefined} self scope.
  * @param  {boolean} status operation status.
- * @param  {ssd.user.auth.plugin.Response|string=} optResObj response object or
+ * @param  {ssd.user.auth.plugin.Response|string=} optRespObj response object or
  *   error message.
- * @param  {ssd.user.auth.Response=}   optAuthResObj The response object from
- *   auth class.
  * @private
  */
 ssd.user.auth.Facebook.prototype._promise2cb = function(cb, self, status,
-  optResObj, optAuthResObj) {
+  optRespObj) {
 
   this.logger.finer('_promise2cb() :: Init.');
-  var resObj = optResObj || {};
+  var respObj = optRespObj || {};
 
   if (!status) {
-    cb.call(self, resObj, this._auth.isAuthed());
+    cb.call(self, respObj, this._auth.isAuthed());
     return;
   }
-
-  var authResObj = optAuthResObj || {};
 
   cb.call(self,
     null,
     this._auth.isAuthed(),
     this._auth.getSet(),
-    authResObj.rawServer,
-    resObj.rawThirdParty
+    respObj.serverRaw,
+    respObj.responsePluginRaw
   );
 };
 
@@ -415,43 +417,40 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   this.logger.info('_isAuthedFromResponse() :: Init.');
   var def = when.defer();
 
-  var resObj = new ssd.user.auth.plugin.Response();
+  var respObj = new ssd.user.auth.plugin.Response();
 
   if ( !goog.isObject(response)) {
-    this.logger.warning('_isAuthedFromResponse() :: response not object:' + response);
+    this.logger.warning('_isAuthedFromResponse() :: response not object: ' + response);
     return def.reject('response not an object');
   }
 
   var isAuthed = 'connected' === response['status'];
 
-  resObj.rawThirdParty = response;
-  resObj.authState = isAuthed;
-
+  respObj.responsePluginRaw = response;
+  respObj.authState = isAuthed;
   // check if the response received differs from our stored state
   if (isAuthed === this._isAuthed) {
     this.logger.fine('New auth state same as old: ' + isAuthed);
-    return def.resolve(resObj);
+    return def.resolve(respObj);
   }
 
   this._isAuthed = isAuthed;
 
   // only dispatch EXT_AUTH_CHANGE events AFTER initial auth response
   if (!this._gotInitialResponse) {
-    this.logger.fine('Initial auth response not received yet');
-    return def.resolve(resObj);
+    this.logger.fine('Initial auth response not received yet.');
+    return def.resolve(respObj);
   }
 
   this.logger.info('_isAuthedFromResponse() :: Auth state changed to: ' + isAuthed);
 
-  var eventObj = resObj.event(ssd.user.auth.EventType.EXT_AUTH_CHANGE, this);
-
-  // add a backpipe so that auth lib will pass back
-  // a promise.
+  var eventObj = respObj.event(ssd.user.auth.EventType.EXT_AUTH_CHANGE, this);
+  // add a backpipe so that auth lib will pass back a promise.
   var backPipe = ssd.eventBackPipe( eventObj, when.defer() );
 
-  this.dispatchEvent(eventObj);
+  this.dispatchEvent( eventObj );
 
-  backPipe().then( goog.partial(def.resolve, response), def.reject);
+  backPipe().then( def.resolve, def.reject );
 
   return def;
 };
@@ -464,6 +463,7 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
 ssd.user.auth.Facebook.prototype.logout = function() {
   this.logger.info('logout() :: Init');
   this._isAuthed = false;
+  this._fbUdo = null;
   this.dispatchEvent(ssd.user.auth.EventType.EXT_AUTH_CHANGE);
   FB.logout(function(response) {
     this.logger.info('logout() :: callback. Deep expose of response:' + goog.debug.deepExpose(response, false, true));
@@ -471,13 +471,36 @@ ssd.user.auth.Facebook.prototype.logout = function() {
 };
 
 /**
- * If user is authed returns us a {@link ssd.user.types.extSource}
- * data object
- * @return {ssd.user.types.extSource|null} null if not authed
+ * If user is authed returns the user data object as provided by facebook.
+ *
+ * @param  {Function=} optCb Callback.
+ * @param  {Object} optSelf scope for cb.
+ * @return {when.Promise} null if not authed.
  */
-ssd.user.auth.Facebook.prototype.getUser = function() {
+ssd.user.auth.Facebook.prototype.getUser = function(optCb, optSelf) {
+  var def = when.defer();
 
-  return null;
+  var cb = optCb || ssd.noop;
+
+  def.promise.then(goog.bind(cb, optSelf), goog.bind(cb, optSelf));
+
+  if ( !this.isAuthed() ) {
+    return def.resolve(null);
+  }
+
+  if (this._fbUdo) {
+    return def.resolve( this._fbUdo );
+  }
+  FB.api('/me', goog.bind(function(response) {
+    if ( goog.isObject( response )) {
+      this._fbUdo = response;
+      def.resolve(response);
+    } else {
+      def.reject( response );
+    }
+  }, this));
+
+  return def.promise;
 };
 
 /**

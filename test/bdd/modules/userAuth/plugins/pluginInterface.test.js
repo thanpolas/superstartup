@@ -177,17 +177,23 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
 
   describe('Login tests for plugin: ' + _this.pluginName, function(){
 
-    beforeEach(function() {
+    beforeEach(function(done) {
       plugin = ss.user[_this.pluginNameSpace];
+      if ( ss.sync.send.id ) { ss.sync.send.restore(); }
       stubNet = sinon.stub(ss.sync, 'send');
-      stubNet.yields( ss._getResponse( fixtures.userOne ));
+      stubNet.returns( ss._getResponse( fixtures.userOne ));
 
-      _this.beforeEach();
+      ss(function(){
+        _this.beforeEach();
+        done();
+      });
+
     });
 
     afterEach(function() {
       stubNet.restore();
       ss.user.deAuth();
+      plugin.logout();
       ss.removeAllListeners();
       _this.afterEach();
     });
@@ -283,12 +289,14 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
 
       it('should return the UDO as provided by the plugin', function(){
         plugin.login();
-        expect( plugin.getUser() ).to.deep.equal(_this.pluginUDO);
+        var spy = sinon.spy();
+        plugin.getUser( spy );
+        expect( spy.getCall(0).args[0] ).to.deep.equal(_this.pluginUDO);
       });
 
       it('should return the Access Token of the plugin', function(){
         plugin.login();
-        expect( plugin.getAccessToken() ).to.equal(_this.pluginResponse.accessToken);
+        expect( plugin.getAccessToken() ).to.equal(_this.pluginResponse.authResponse.accessToken);
       });
     });
   });
@@ -318,7 +326,7 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
     beforeEach(function() {
       plugin = ss.user[_this.pluginNameSpace];
       stubNet = sinon.stub(ss.sync, 'send');
-      stubNet.yields( ss._getResponse( fixtures.userOne ));
+      stubNet.returns( ss._getResponse( fixtures.userOne ));
       _this.beforeEach();
     });
 

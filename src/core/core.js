@@ -119,6 +119,9 @@ goog.inherits(ssd.Core, ssd.Module);
 
 ssd.Core.prototype.logger = goog.debug.Logger.getLogger('ssd.Core');
 
+ssd.Core.prototype.log = goog.debug.Logger.getLogger('myapp');
+
+
 /**
  * Events triggered by core
  * @enum {string}

@@ -149,8 +149,8 @@ ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
 
   var cb = optCb || ssd.noop;
 
-  def.promise.then( goog.bind( function( success ) {
-    cb.call(optSelfObj, null, success );
+  def.promise.then( goog.bind( function( respObj ) {
+    cb.call(optSelfObj, null, respObj.success );
   }, this ));
   def.promise.otherwise( goog.bind( function( errMsg ) {
     cb.call(optSelfObj, errMsg, false );
@@ -172,15 +172,11 @@ ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
   // perform deauthentication
   this._doAuth(false);
 
-  var respCb = goog.bind(function() {
-    when.chain(
-      this._logoutResponse.apply(this, arguments),
-      def.resolver
-    );
-  }, this);
+  var logoutUrl = this.config(ssd.user.auth.config.Key.LOGOUT_URL);
 
-  ssd.sync.send( this.config(ssd.user.auth.config.Key.LOGOUT_URL), respCb,
-    ssd.ajax.Method.POST);
+  ssd.sync.send( logoutUrl, null, ssd.ajax.Method.POST )
+    .then( goog.bind(this._logoutResponse, this), def.reject )
+    .then( def.resolve, def.reject );
 
   return def.promise;
 };
@@ -198,25 +194,19 @@ ssd.user.AuthLogin.prototype._logoutResponse = function( response ) {
 
   var def = when.defer();
 
-  var eventObj = {
-    type: ssd.user.auth.EventType.ON_LOGOUT_RESPONSE,
-    'responseRaw': response.responseRaw,
-    'httpStatus': response.httpStatus,
-    'ajaxStatus': response.success,
-    'authState': false,
-    'errorMessage': response.errorMessage
-  };
+  var respObj = new ssd.user.auth.Response(response);
+  var eventObj = respObj.event(ssd.user.auth.EventType.ON_LOGOUT_RESPONSE, this);
 
   // dispatch event and check if don't want exec.
   if ( false === this.dispatchEvent(eventObj) ) {
     this.logger.info('_logoutResponse() :: canceled due to ' +
       'event preventDefault');
-    return def.resolve(true);
+    return def.resolve(respObj);
   }
 
   // switch event type
   eventObj.type = ssd.user.auth.EventType.AFTER_LOGOUT_RESPONSE;
   this.dispatchEvent(eventObj);
-  return def.resolve(true);
+  return def.resolve(respObj);
 };
 

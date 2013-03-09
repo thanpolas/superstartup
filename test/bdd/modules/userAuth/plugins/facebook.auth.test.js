@@ -29,14 +29,21 @@ describe('User Auth Module Plugins :: Facebook', function () {
   genTest.basicTests();
 
   var stubFBLogin,
-      stubFBgetLoginStatus;
+      stubFBgetLoginStatus,
+      stubFBapi;
 
   var loginBeforeEach = function() {
     ss.config('user.auth.fb.appId', '540');
     window.fbAsyncInit();
+
+
     if (FB.login.id) { FB.login.restore(); }
     stubFBLogin = sinon.stub(FB, 'login')
       .yields(fixtures.auth.fb.authedObj);
+
+    if (FB.api.id) { FB.api.restore(); }
+    stubFBapi = sinon.stub(FB, 'api')
+      .yields(fixtures.auth.fb.udo);
 
     if (FB.getLoginStatus.id) { FB.getLoginStatus.restore(); }
     stubgetLoginStatus = sinon.stub(FB, 'getLoginStatus')
@@ -45,6 +52,7 @@ describe('User Auth Module Plugins :: Facebook', function () {
   var loginAfterEach = function() {
     stubFBLogin.restore();
     stubgetLoginStatus.restore();
+    stubFBapi.restore();
   };
 
   // prepare login callback tests

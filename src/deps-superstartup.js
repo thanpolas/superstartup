@@ -26,7 +26,7 @@ goog.addDependency('../../../src/modules/auth/user.auth.config.js', ['ssd.user.a
 goog.addDependency('../../../src/modules/auth/user.auth.controller.js', ['ssd.user.Auth', 'ssd.user.Auth.Error'], ['ssd.invocator', 'ssd.register', 'ssd.structs.DynamicMap', 'ssd.structs.Map', 'ssd.user.AuthLogin', 'ssd.user.AuthModel', 'ssd.user.OwnItem', 'ssd.user.auth.EventType', 'ssd.user.auth.config', 'ssd.user.types']);
 goog.addDependency('../../../src/modules/auth/user.auth.events.js', ['ssd.user.auth.EventType'], []);
 goog.addDependency('../../../src/modules/auth/user.auth.login.js', ['ssd.user.AuthLogin'], ['goog.dom', 'goog.dom.forms', 'ssd.helpers', 'ssd.sync', 'ssd.user.AuthModel', 'ssd.user.auth.EventType', 'ssd.user.auth.config']);
-goog.addDependency('../../../src/modules/auth/user.auth.model.js', ['ssd.user.AuthModel'], ['goog.json', 'ssd.Module', 'ssd.core.config', 'ssd.sync', 'ssd.user.auth.EventType', 'ssd.user.auth.config']);
+goog.addDependency('../../../src/modules/auth/user.auth.model.js', ['ssd.user.AuthModel'], ['goog.json', 'ssd.Module', 'ssd.core.config', 'ssd.sync', 'ssd.user.auth.EventType', 'ssd.user.auth.Response', 'ssd.user.auth.config']);
 goog.addDependency('../../../src/modules/metrics/googleAnalytics.js', ['ssd.metrics.ga'], []);
 goog.addDependency('../../../src/modules/metrics/metrics.js', ['ssd.metrics'], ['ssd.metrics.ga', 'ssd.metrics.mixpanel']);
 goog.addDependency('../../../src/modules/metrics/mixpanel.js', ['ssd.metrics.mixpanel'], []);
@@ -35,7 +35,7 @@ goog.addDependency('../../../src/modules/user/user.item.js', ['ssd.user.Item', '
 goog.addDependency('../../../src/modules/user/user.ownItem.js', ['ssd.user.OwnItem'], ['ssd.user.Item', 'ssd.user.auth.EventType']);
 goog.addDependency('../../../src/modules/user/user.types.js', ['ssd.user.types'], ['ssd.structs.Map']);
 goog.addDependency('../../../src/network/ajax.js', ['ssd.ajax', 'ssd.ajax.Method'], ['goog.net.XhrIo', 'ssd.sync.Response']);
-goog.addDependency('../../../src/network/response.js', ['ssd.sync.Response'], ['goog.object', 'ssd.Response']);
+goog.addDependency('../../../src/network/response.sync.js', ['ssd.sync.Response'], ['goog.object', 'ssd.Response']);
 goog.addDependency('../../../src/network/sync.js', ['ssd.sync'], ['ssd.ajax', 'ssd.sync.Response']);
 goog.addDependency('../../../src/structs/dynamicLinkedMap.js', ['ssd.structs.DynamicLinkedMap', 'ssd.structs.DynamicLinkedMap.EventType'], ['goog.events.EventTarget', 'goog.object', 'ssd.structs.DynamicMap', 'ssd.structs.LinkedMap']);
 goog.addDependency('../../../src/structs/dynamicMap.js', ['ssd.structs.DynamicMap', 'ssd.structs.DynamicMap.EventType', 'ssd.structs.DynamicMap.Operation'], ['goog.events.EventTarget', 'goog.object', 'ssd.structs.Map']);

@@ -2,7 +2,7 @@ goog.provide('ssd.test.fixture.auth.fb');
 
 ssd.test.fixture.auth.fb.authedObj = {
   authResponse: {
-    accessToken: "xxx",
+    accessToken: "ACCESS_TOKEN",
     expiresIn: 5685,
     signedRequest: "xxx",
     userID: "99999999"
