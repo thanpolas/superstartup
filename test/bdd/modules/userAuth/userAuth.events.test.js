@@ -8,24 +8,15 @@ goog.require('ssd.test.fixture.errorCodes');
 
 /**
  * [events description]
- * @param  {string} loginTriggerNS The namespace to the function that will
+ * @param  {string} loginTrigger The namespace to the function that will
  *   trigger the auth process. Ok lame but it works.
- * @param  {*=} optParams     parameters to invoke the auth trigger with.
  */
-ssd.test.userAuth.login.events = function( loginTriggerNS, optParams ) {
+ssd.test.userAuth.login.events = function( loginTrigger ) {
 
   var stubNet,
       userFix = ssd.test.fixture.userOne,
       userEvent = ssd.test.fixture.event.user,
-      errorCodes = ssd.test.fixture.errorCodes,
-      sillyme = false,
-      loginTrigger;
-
-  if ( optParams ) {
-    loginTrigger = goog.partial( ss.user[loginTriggerNS], optParams );
-  } else {
-    loginTrigger = ss.user[loginTriggerNS];
-  }
+      errorCodes = ssd.test.fixture.errorCodes;
 
   describe( 'Basic login events', function(){
     beforeEach( function(done) {

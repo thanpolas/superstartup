@@ -135,16 +135,16 @@ describe( 'User Auth Module :: Login', function () {
 
   describe( 'Basic login operation with Object Literal', function(){
     loginTests( userLoginData );
-    ssd.test.userAuth.login.events( 'login', userLoginData );
+    ssd.test.userAuth.login.events( goog.partial(ss.user.login, userLoginData ));
   });
 
   describe( 'Login from a DOM Form using jQuery', function(){
     loginTests( $( '#login' ));
-    ssd.test.userAuth.login.events( 'login', $( '#login' ));
+    ssd.test.userAuth.login.events( goog.partial(ss.user.login, $( '#login' )));
   });
 
   describe( 'Login from a DOM Form using DOM Element', function(){
     loginTests( goog.dom.getElement( 'login' ));
-    ssd.test.userAuth.login.events( 'login', goog.dom.getElement( 'login' ));
+    ssd.test.userAuth.login.events( goog.partial(ss.user.login, goog.dom.getElement( 'login' )));
   });
 });

@@ -108,7 +108,9 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
       expect( plugin.getUser ).to.be.a('function');
     });
     it('getUser() should return null when not authed with the plugin', function(){
-      expect( plugin.getUser() ).to.be.a('null');
+      var spy = sinon.spy();
+      plugin.getUser(spy);
+      expect( spy.getCall(0).args[0] ).to.be.a('null');
     });
     it('should have a getAccessToken() method', function(){
       expect( plugin.getAccessToken ).to.be.a('function');
@@ -315,107 +317,131 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
   var _this = this,
       plugin,
       stubNet,
-      ev = ssd.test.fixture.event.user;
+      ev = ssd.test.fixture.event.user,
+      fixtures = ssd.test.fixture;
 
-  // run the basic auth events tests
-  ssd.test.userAuth.login.events(_this.pluginNameSpace + '.login');
 
-  describe('Events emitted during 3rd party login operation. Plugin: ' +
-      _this.pluginName, function(){
+  describe('Event tests for plugin: ' + _this.pluginName, function(){
 
-    beforeEach(function() {
+    beforeEach(function(done) {
       plugin = ss.user[_this.pluginNameSpace];
-      stubNet = sinon.stub(ss.sync, 'send');
-      stubNet.returns( ss._getResponse( fixtures.userOne ));
-      _this.beforeEach();
-    });
 
-    afterEach(function() {
-      stubNet.restore();
-      _this.afterEach();
-    });
-
-    it('should emit the following events in the following order and only once', function(done) {
-      var spyExtAuth =      sinon.spy.create(),
-        spyBeforeLocal =    sinon.spy.create(),
-        spyBeforeResponse = sinon.spy.create(),
-        spyAuthResponse =   sinon.spy.create(),
-        spyAuthChange =     sinon.spy.create(),
-        spyLoginCB =        sinon.spy.create();
-
-      ss.listen(ev.EXT_AUTH_CHANGE, spyExtAuth);
-      ss.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
-      ss.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
-      ss.listen(ev.AUTH_RESPONSE, spyAuthResponse);
-      ss.listen(ev.AUTH_CHANGE, spyAuthChange);
-
-      plugin.login(spyLoginCB);
-
-      expect( spyExtAuth.calledOnce        ).to.be.true;
-      expect( spyBeforeLocal.calledOnce    ).to.be.true;
-      expect( spyBeforeResponse.calledOnce ).to.be.true;
-      expect( spyAuthResponse.calledOnce   ).to.be.true;
-      expect( spyAuthChange.calledOnce     ).to.be.true;
-      expect( spyLoginCB.calledOnce     ).to.be.true;
-
-      expect( spyExtAuth.calledBefore(        spyBeforeLocal    )).to.be.true;
-      expect( spyBeforeLocal.calledBefore(    spyBeforeResponse )).to.be.true;
-      expect( spyBeforeResponse.calledBefore( spyAuthResponse   )).to.be.true;
-      expect( spyAuthResponse.calledBefore(   spyAuthChange     )).to.be.true;
-      expect( spyAuthChange.calledBefore(     spyLoginCB        )).to.be.true;
-      expect( spyLoginCB.calledAfter(         spyAuthChange     )).to.be.true;
-    });
-
-    it('should provide proper data on the extAuthChange event', function(done){
-      ss.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
-        expect( stubNet.called ).to.be.false;
-        expect( eventObj.source ).to.be.equal( _this.pluginName );
-        expect( eventObj.authStatePlugin ).to.be.true;
-        expect( eventObj.authState ).to.be.false;
-        expect( eventObj.responsePlugin ).to.deep.equal( _this.pluginResponse );
+      ss(function(){
+        _this.beforeEach();
         done();
       });
 
-      plugin.login();
     });
 
-    it('should stop authentication if false is returned on extAuthChange', function(done){
-      ss.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
-        return false;
+    afterEach(function() {
+      ss.user.deAuth();
+      plugin.logout();
+      ss.removeAllListeners();
+      _this.afterEach();
+    });
+
+
+
+    // run the basic auth events tests
+    ssd.test.userAuth.login.events( goog.bind(
+      ss.user[_this.pluginNameSpace].login, ss.user[_this.pluginNameSpace] ));
+
+    describe('Events emitted during 3rd party login operation. Plugin: ' +
+        _this.pluginName, function(){
+
+      beforeEach(function(){
+        if ( ss.sync.send.id ) { ss.sync.send.restore(); }
+        stubNet = sinon.stub(ss.sync, 'send');
+        stubNet.returns( ss._getResponse( fixtures.userOne ));
+
       });
-      var spyBeforeLocal =  sinon.spy.create(),
-      spyBeforeResponse =   sinon.spy.create(),
-      spyAuthResponse =     sinon.spy.create(),
-      spyAuthChange =       sinon.spy.create();
 
-      ss.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
-      ss.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
-      ss.listen(ev.AUTH_RESPONSE, spyAuthResponse);
-      ss.listen(ev.AUTH_CHANGE, spyAuthChange);
+      afterEach(function() {
+        stubNet.restore();
+      });
 
-      plugin.login(done);
 
-      expect( spyBeforeLocal.called    ).to.be.false;
-      expect( spyBeforeResponse.called ).to.be.false;
-      expect( spyAuthResponse.called   ).to.be.false;
-      expect( spyAuthChange.called     ).to.be.false;
+      it('should emit the following events in the following order and only once', function(done) {
+        var spyExtAuth =      sinon.spy.create(),
+          spyBeforeLocal =    sinon.spy.create(),
+          spyBeforeResponse = sinon.spy.create(),
+          spyAuthResponse =   sinon.spy.create(),
+          spyAuthChange =     sinon.spy.create(),
+          spyLoginCB =        sinon.spy.create();
 
-      expect( ss.isAuthed() ).to.be.false;
-      expect( plugin.isAuthed() ).to.be.true;
+        ss.listen(ev.EXT_AUTH_CHANGE, spyExtAuth);
+        ss.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
+        ss.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
+        ss.listen(ev.AUTH_RESPONSE, spyAuthResponse);
+        ss.listen(ev.AUTH_CHANGE, spyAuthChange);
 
-    });
+        plugin.login(spyLoginCB);
 
-    it('should provide proper data on the beforeLocalAuth event', function(done){
-      ss.listen(ev.BEFORE_LOGIN, function( eventObj ) {
+        expect( spyExtAuth.calledOnce        ).to.be.true;
+        expect( spyBeforeLocal.calledOnce    ).to.be.true;
+        expect( spyBeforeResponse.calledOnce ).to.be.true;
+        expect( spyAuthResponse.calledOnce   ).to.be.true;
+        expect( spyAuthChange.calledOnce     ).to.be.true;
+        expect( spyLoginCB.calledOnce     ).to.be.true;
+
+        expect( spyExtAuth.calledBefore(        spyBeforeLocal    )).to.be.true;
+        expect( spyBeforeLocal.calledBefore(    spyBeforeResponse )).to.be.true;
+        expect( spyBeforeResponse.calledBefore( spyAuthResponse   )).to.be.true;
+        expect( spyAuthResponse.calledBefore(   spyAuthChange     )).to.be.true;
+        expect( spyAuthChange.calledBefore(     spyLoginCB        )).to.be.true;
+        expect( spyLoginCB.calledAfter(         spyAuthChange     )).to.be.true;
+      });
+
+      it('should provide proper data on the extAuthChange event', function(done){
+        ss.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
+          expect( stubNet.called ).to.be.false;
+          expect( eventObj.source ).to.be.equal( _this.pluginName );
+          expect( eventObj.authStatePlugin ).to.be.true;
+          expect( eventObj.authState ).to.be.false;
+          expect( eventObj.responsePlugin ).to.deep.equal( _this.pluginResponse );
+          done();
+        });
+
+        plugin.login();
+      });
+
+      it('should stop authentication if false is returned on extAuthChange', function(done){
+        ss.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
+          return false;
+        });
+        var spyBeforeLocal =  sinon.spy.create(),
+        spyBeforeResponse =   sinon.spy.create(),
+        spyAuthResponse =     sinon.spy.create(),
+        spyAuthChange =       sinon.spy.create();
+
+        ss.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
+        ss.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
+        ss.listen(ev.AUTH_RESPONSE, spyAuthResponse);
+        ss.listen(ev.AUTH_CHANGE, spyAuthChange);
+
+        plugin.login(done);
+
+        expect( spyBeforeLocal.called    ).to.be.false;
+        expect( spyBeforeResponse.called ).to.be.false;
+        expect( spyAuthResponse.called   ).to.be.false;
+        expect( spyAuthChange.called     ).to.be.false;
+
         expect( ss.isAuthed() ).to.be.false;
-        expect( stubNet.called ).to.be.false;
+        expect( plugin.isAuthed() ).to.be.true;
 
-        expect( eventObj.data ).to.deep.equal( {/* wtf bbq? */} );
       });
 
-      plugin.login(done);
+      it('should provide proper data on the beforeLocalAuth event', function(done){
+        ss.listen(ev.BEFORE_LOGIN, function( eventObj ) {
+          expect( ss.isAuthed() ).to.be.false;
+          expect( stubNet.called ).to.be.false;
+
+          expect( eventObj.data ).to.deep.equal( {/* wtf bbq? */} );
+        });
+
+        plugin.login(done);
+      });
+
     });
-
   });
-
 };
