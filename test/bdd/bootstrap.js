@@ -23,4 +23,4 @@ goog.require('ssd.test.userAuth.login');
 
 goog.require('ssd.test.userAuth.logout');
 
-// goog.require('ssd.test.userAuth.facebook');
+goog.require('ssd.test.userAuth.facebook');

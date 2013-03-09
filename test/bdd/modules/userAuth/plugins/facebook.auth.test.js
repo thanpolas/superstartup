@@ -8,7 +8,6 @@ goog.require('ssd.test.fixture.userOne');
 
 
 describe('User Auth Module Plugins :: Facebook', function () {
-  var ssNew;
   var stub;
   var userFix = ssd.test.fixture.userOne;
   var event = ssd.test.fixture.event;
@@ -33,10 +32,13 @@ describe('User Auth Module Plugins :: Facebook', function () {
       stubFBgetLoginStatus;
 
   var loginBeforeEach = function() {
+    ss.config('user.auth.fb.appId', '540');
     window.fbAsyncInit();
+    if (FB.login.id) { FB.login.restore(); }
     stubFBLogin = sinon.stub(FB, 'login')
       .yields(fixtures.auth.fb.authedObj);
 
+    if (FB.getLoginStatus.id) { FB.getLoginStatus.restore(); }
     stubgetLoginStatus = sinon.stub(FB, 'getLoginStatus')
       .yields();
   };
@@ -45,19 +47,17 @@ describe('User Auth Module Plugins :: Facebook', function () {
     stubgetLoginStatus.restore();
   };
 
-
   // prepare login callback tests
   var loginTests = new ssd.test.userAuth.genIface(testConfig)
     .setBeforeEach(loginBeforeEach)
     .setAfterEach(loginAfterEach)
-  // and run the login tests
+    // and run the login tests
     .loginTests();
-
 
   // prepare login event tests
   var loginEventTests = new ssd.test.userAuth.genIface(testConfig)
     .setBeforeEach(loginBeforeEach)
     .setAfterEach(loginAfterEach)
-  // and run the login event tests
+    // and run the login event tests
     .loginEvents();
 });

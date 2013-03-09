@@ -1,3 +1,4 @@
+/*jshint camelcase:false */
 /**
  * @fileOverview generic function helpers.
  */
@@ -13,7 +14,7 @@ goog.require('goog.json');
 ssd.noop = function(){};
 
 /** @const {string} the back pipe key */
-ssd.BACKPIPE_KEY = 'backPipe';
+ssd.BACKPIPE_KEY = '__backPipe';
 
 /**
  * Will add a key in the eventObj that is a function
@@ -272,16 +273,19 @@ ssd.eventBackPipe = function(eventObj, data) {
  };
 
 /**
- * Hijack a callback and resolve a provided resolver when it is invoked.
+ * For traditional methods that don't return promises but only accept callbacks
+ * use this helper to get a deferred resolved when the callback is invoked.
  *
- * @param  {when.Resolver} resolver A resolver Object.
+ * It is expected that the callback returns a promise.
+ *
+ * @param  {when.Deferred} defer A deferred.
  * @param  {Function:when.Promise} cb The callback, must return a promise.
  * @param  {Object=} optSelf context for cb.
  * @return {Function} A Function that will resolve resolver.
  */
-ssd.cb2promise = function(resolver, cb, optSelf) {
+ssd.cb2promise = function(defer, cb, optSelf) {
   return function() {
-    when.chain( cb.apply(optSelf, arguments), resolver );
+    cb.apply(optSelf, arguments).then(defer.resolve, defer.reject);
   };
 };
 

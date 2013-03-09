@@ -3,6 +3,11 @@
  */
 goog.provide('ssd.test.main');
 
+goog.require('ssd.test.fixture.auth.fb');
+goog.require('ssd.test.fixture.userOne');
+goog.require('ssd.test.fixture.userOne');
+
+
 // goog.require('ssd.test.mock.net');
 
 var expect, assert;
@@ -24,6 +29,22 @@ window.FB = {
   getLoginStatus: function(cb){},
   login: function(cb, params){}
 };
+
+
+// stubNet = sinon.stub(ss.sync, 'send');
+// stubNet.yields( ss._getResponse( ssd.test.fixture.userOne ));
+// stubFBLogin = sinon.stub(FB, 'login')
+//   .yields(ssd.test.fixture.auth.fb.authedObj);
+// stubgetLoginStatus = sinon.stub(FB, 'getLoginStatus')
+//   .yields();
+
+// ss.config('user.auth.fb.appId', '540');
+// ss(function() {
+//   window.fbAsyncInit();
+//   var spyCB = sinon.spy.create('loginCB');
+//   ss.user.fb.login(spyCB);
+//   console.log( spyCB.callCount );
+// });
 
 
 // var cid = ss.listen('user.initialAuthState', function(){console.log('CALLED')});

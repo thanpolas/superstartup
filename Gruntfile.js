@@ -150,15 +150,22 @@ module.exports = function(grunt) {
         stdout: true
       },
       mochaPhantom: {
-          command: '<%= mochaPhantom %> -R spec'
+        command: '<%= mochaPhantom %> -R spec'
+      },
+      mochaPhantomCompiled: {
+        command: '<%= mochaPhantom %>?compiled=true -R spec'
       },
       mochaPhantomMin: {
-          command: '<%= mochaPhantom %> -R min'
+        command: '<%= mochaPhantom %> -R min'
       }
     }
   });
 
-  grunt.registerTask('test', ['connect:test', 'shell:mochaPhantom']);
+  grunt.registerTask('test', [
+    'connect:test',
+    'shell:mochaPhantom',
+    'shell:mochaPhantomCompiled'
+  ]);
   grunt.registerTask('test:min', 'Test using mocha-phantom min Reporter', 'shell:mochaPhantomMin');
   grunt.registerTask('deps', 'closureDepsWriter');
   grunt.registerTask('build', 'closureBuilder:superstartup');

@@ -71,14 +71,12 @@ ssd.test.userAuth.genIface.prototype.setAfterEach = function(fn){
 ssd.test.userAuth.genIface.prototype.basicTests = function() {
 
   var _this = this;
-  var ssNew;
   var plugin;
 
   describe('Proper Interface implementation for ' + _this.pluginName, function(){
 
     beforeEach(function() {
-      ssNew = new ss();
-      plugin = ssNew.user[_this.pluginNameSpace];
+      plugin = ss.user[_this.pluginNameSpace];
       _this.beforeEach();
     });
 
@@ -131,21 +129,30 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
 ssd.test.userAuth.genIface.prototype.basicEventsInitTests = function() {
   var _this = this;
 
+  beforeEach(function() {
+    _this.beforeEach();
+  });
+
+  afterEach(function() {
+    ss.removeAllListeners();
+    _this.afterEach();
+  });
+
   describe('Basic events emitted for plugin:' + _this.pluginName, function() {
     it('should emit the initial auth status event', function(done){
-      ssNew.listen(_this.eventInitialAuthStatus, function(eventObj){
+      ss.listen(_this.eventInitialAuthStatus, function(eventObj){
         expect( eventObj ).to.be.a('boolean');
         done();
       });
-      ssNew();
+      ss();
     });
 
     if (_this.hasJSAPI) {
       it('should emit the JS API Loaded event', function(done){
-        ssNew.listen(_this.eventJSLoaded, function(eventObj){
+        ss.listen(_this.eventJSLoaded, function(eventObj){
           done();
         });
-        ssNew();
+        ss();
       });
     }
 
@@ -164,29 +171,24 @@ ssd.test.userAuth.genIface.prototype.basicEventsInitTests = function() {
  */
 ssd.test.userAuth.genIface.prototype.loginTests = function() {
   var _this = this,
-      ssNew,
       plugin,
       stubNet,
       fixtures = ssd.test.fixture;
 
   describe('Login tests for plugin: ' + _this.pluginName, function(){
 
-    beforeEach(function(done) {
-      ssNew = new ss();
-      plugin = ssNew.user[_this.pluginNameSpace];
-      stubNet = sinon.stub(ssNew.sync, 'send');
+    beforeEach(function() {
+      plugin = ss.user[_this.pluginNameSpace];
+      stubNet = sinon.stub(ss.sync, 'send');
       stubNet.yields( ss._getResponse( fixtures.userOne ));
 
-      ssNew.config('user.auth.fb.appId', '540');
-
-      ssNew(function(){
-        _this.beforeEach();
-        done();
-      });
+      _this.beforeEach();
     });
 
     afterEach(function() {
       stubNet.restore();
+      ss.user.deAuth();
+      ss.removeAllListeners();
       _this.afterEach();
     });
 
@@ -271,12 +273,12 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
 
       it('should globally authenticate us', function(){
         plugin.login();
-        expect( ssNew.isAuthed() ).to.be.true;
+        expect( ss.isAuthed() ).to.be.true;
       });
 
       it('should exist in the authedSources() returning array', function(){
         plugin.login();
-        expect( ssNew.user.authedSources() ).to.include(_this.pluginName);
+        expect( ss.user.authedSources() ).to.include(_this.pluginName);
       });
 
       it('should return the UDO as provided by the plugin', function(){
@@ -303,7 +305,6 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
  */
 ssd.test.userAuth.genIface.prototype.loginEvents = function() {
   var _this = this,
-      ssNew,
       plugin,
       stubNet,
       ev = ssd.test.fixture.event.user;
@@ -314,13 +315,11 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
   describe('Events emitted during 3rd party login operation. Plugin: ' +
       _this.pluginName, function(){
 
-    beforeEach(function(done) {
-      ssNew = new ss();
-      plugin = ssNew.user[_this.pluginNameSpace];
-      stubNet = sinon.stub(ssNew.sync, 'send');
+    beforeEach(function() {
+      plugin = ss.user[_this.pluginNameSpace];
+      stubNet = sinon.stub(ss.sync, 'send');
       stubNet.yields( ss._getResponse( fixtures.userOne ));
       _this.beforeEach();
-      ssNew(done);
     });
 
     afterEach(function() {
@@ -336,11 +335,11 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
         spyAuthChange =     sinon.spy.create(),
         spyLoginCB =        sinon.spy.create();
 
-      ssNew.listen(ev.EXT_AUTH_CHANGE, spyExtAuth);
-      ssNew.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
-      ssNew.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
-      ssNew.listen(ev.AUTH_RESPONSE, spyAuthResponse);
-      ssNew.listen(ev.AUTH_CHANGE, spyAuthChange);
+      ss.listen(ev.EXT_AUTH_CHANGE, spyExtAuth);
+      ss.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
+      ss.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
+      ss.listen(ev.AUTH_RESPONSE, spyAuthResponse);
+      ss.listen(ev.AUTH_CHANGE, spyAuthChange);
 
       plugin.login(spyLoginCB);
 
@@ -360,7 +359,7 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
     });
 
     it('should provide proper data on the extAuthChange event', function(done){
-      ssNew.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
+      ss.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
         expect( stubNet.called ).to.be.false;
         expect( eventObj.source ).to.be.equal( _this.pluginName );
         expect( eventObj.authStatePlugin ).to.be.true;
@@ -373,7 +372,7 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
     });
 
     it('should stop authentication if false is returned on extAuthChange', function(done){
-      ssNew.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
+      ss.listen(ev.EXT_AUTH_CHANGE, function(eventObj) {
         return false;
       });
       var spyBeforeLocal =  sinon.spy.create(),
@@ -381,10 +380,10 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
       spyAuthResponse =     sinon.spy.create(),
       spyAuthChange =       sinon.spy.create();
 
-      ssNew.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
-      ssNew.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
-      ssNew.listen(ev.AUTH_RESPONSE, spyAuthResponse);
-      ssNew.listen(ev.AUTH_CHANGE, spyAuthChange);
+      ss.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
+      ss.listen(ev.BEFORE_AUTH_RESPONSE, spyBeforeResponse);
+      ss.listen(ev.AUTH_RESPONSE, spyAuthResponse);
+      ss.listen(ev.AUTH_CHANGE, spyAuthChange);
 
       plugin.login(done);
 
@@ -393,14 +392,14 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
       expect( spyAuthResponse.called   ).to.be.false;
       expect( spyAuthChange.called     ).to.be.false;
 
-      expect( ssNew.isAuthed() ).to.be.false;
+      expect( ss.isAuthed() ).to.be.false;
       expect( plugin.isAuthed() ).to.be.true;
 
     });
 
     it('should provide proper data on the beforeLocalAuth event', function(done){
-      ssNew.listen(ev.BEFORE_LOGIN, function( eventObj ) {
-        expect( ssNew.isAuthed() ).to.be.false;
+      ss.listen(ev.BEFORE_LOGIN, function( eventObj ) {
+        expect( ss.isAuthed() ).to.be.false;
         expect( stubNet.called ).to.be.false;
 
         expect( eventObj.data ).to.deep.equal( {/* wtf bbq? */} );

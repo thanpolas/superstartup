@@ -1,19 +1,19 @@
 /**
  * @fileOverview The response data object used globaly by superstartup.
  */
-goog.provide('ssd.sync.Response');
+goog.provide('ssd.user.auth.plugin.Response');
 
 goog.require('goog.object');
-goog.require('ssd.Response');
+goog.require('ssd.user.auth.Response');
 
 /**
  * Defines the response object that will be passed on ajax.send callbaks.
  *
  *
  * @constructor
- * @extends {ssd.Response}
+ * @extends {ssd.user.auth.Response}
  */
-ssd.sync.Response = function() {
+ssd.user.auth.plugin.Response = function() {
   goog.base(this);
 
   goog.object.map(ssd.sync.response, function(el, ind){
@@ -21,7 +21,7 @@ ssd.sync.Response = function() {
   }, this);
 
 };
-goog.inherits( ssd.sync.Response, ssd.Response);
+goog.inherits( ssd.user.auth.plugin.Response, ssd.user.auth.Response);
 
 
 /**
@@ -29,14 +29,9 @@ goog.inherits( ssd.sync.Response, ssd.Response);
  *
  * @type {Object}
  */
-ssd.sync.response = {
+ssd.user.auth.plugin.response = {
 
-  /** @type {?number} */
-  httpStatus: null,
+  /** @type {?Object|string} The raw response from the third-party API */
+  rawThirdParty: null
 
-  /** @type {?string} */
-  rawResponse: null,
-
-  /** @type {?goog.net.XhrIo} */
-  xhr: null
 };

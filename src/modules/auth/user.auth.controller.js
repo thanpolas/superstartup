@@ -50,11 +50,13 @@ ssd.user.Auth = function(ssdInst) {
 
   this.fb = new ssd.user.auth.Facebook(this);
 
+  this.getSet = goog.bind( this._dynmapUdo.getSet, this._dynmapUdo);
+
   /**
    * @type {Function}
    * @private
    */
-  this._capsule = ssd.invocator.encapsulate(this, this._dynmapUdo.getSet);
+  this._capsule = ssd.invocator.encapsulate(this, this.getSet);
   return this._capsule;
 
 };

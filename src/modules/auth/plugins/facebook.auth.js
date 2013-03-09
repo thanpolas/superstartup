@@ -6,6 +6,7 @@ goog.provide('ssd.user.auth.Facebook');
 goog.provide('ssd.user.auth.Facebook.EventType');
 
 goog.require('ssd.user.auth.PluginModule');
+goog.require('ssd.user.auth.plugin.Response');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.user.auth.config');
@@ -116,11 +117,7 @@ ssd.user.auth.Facebook.prototype.init = function() {
 
   var def = when.defer();
 
-  if ( this._ready ) {
-    this.logger.warning('init() :: Double trigger for FB init!');
-    return def.reject('double trigger for fb');
-  }
-  this._ready = true;
+
   def.resolve();
 
   if ( !this._FBAPILoaded ) {
@@ -130,15 +127,19 @@ ssd.user.auth.Facebook.prototype.init = function() {
     this.addEventListener(ssd.user.auth.Facebook.EventType.JSAPILOADED,
       this.init, false, this);
 
-    if ( !this._loadExtAPI() ) {
-      this.dispatchEvent(ssd.user.auth.EventType.INITIAL_EXT_AUTH_STATE);
-    }
+    this._loadExtAPI();
 
     return def.promise;
   }
 
-  this.logger.info('init() :: Asking for login status');
+  if ( this._ready ) {
+    this.logger.warning('init() :: Double trigger for FB init!');
+    return def.reject('double trigger for fb');
+  }
+  this._ready = true;
 
+
+  this.logger.info('init() :: Asking for login status');
   // catch initial login status
   FB.getLoginStatus(goog.bind(this._gotInitialAuthStatus, this));
 
@@ -228,7 +229,7 @@ ssd.user.auth.Facebook.prototype._loadExtAPI = function () {
  * @private
  */
 ssd.user.auth.Facebook.prototype._extAPIloaded = function () {
-  this.logger.info('_extAPIloaded() :: FB JS API Loaded');
+  this.logger.shout('_extAPIloaded() :: FB JS API Loaded');
   this._FBAPILoaded = true;
 
   // attempt to initialize Facebook JS API
@@ -299,28 +300,78 @@ ssd.user.auth.Facebook.prototype._sessionChange = function (response) {
 /**
  * Opens the login dialog or starts the authentication flow.
  *
- * @param  {Function(boolean)=} optCb optional callback
- * @param {string=} optPerms set permissions if we need to...
- *      comma separate them
+ * @param  {Function=} optCb optional callback
+ * @param  {Object} optSelf Scope to run callback on.
  * @return {when.Promise} a promise.
  */
-ssd.user.auth.Facebook.prototype.login = function(optCb, optPerms) {
+ssd.user.auth.Facebook.prototype.login = function(optCb, optSelf) {
   this.logger.info('login() :: init.');
   var def = when.defer();
 
   var callback = optCb || ssd.noop;
 
   var paramObj = {
-    'scope': optPerms || this.config(ssd.user.auth.config.Key.FB_PERMISSIONS)
+    'scope': this.config(ssd.user.auth.config.Key.FB_PERMISSIONS)
   };
 
-  def.promise.then()
-  var cb = ssd.cb2promise(def.resolver, this._loginListener, this);
+  def.promise.then(
+    goog.bind(this._promise2cb, this, callback, optSelf, true),
+    goog.bind(this._promise2cb, this, callback, optSelf, false)
+  );
 
-  //cb(null, resp, {}, {}, {});
+  var cb = ssd.cb2promise(def, this._loginListener, this);
 
-  FB.login(goog.bind(this._loginListener, this, cb), paramObj);
+  FB.login(cb, paramObj);
+
+  return def.promise;
 };
+
+/**
+ * Convert a promise outcome into a callback.
+ *
+ * On error the callback expects:
+ * 1. string : error message
+ * 2. boolean : authState
+ *
+ * On Success of operation callback expects:
+ * 1. null : error message null
+ * 2. boolean : authState
+ * 3. Object : udo
+ * 4. Object|string= : Server response raw
+ * 5. Object|string= : Third Party response raw
+ *
+ * @param  {!Function} cb a function.
+ * @param  {Object|undefined} self scope.
+ * @param  {boolean} status operation status.
+ * @param  {ssd.user.auth.plugin.Response|string=} optResObj response object or
+ *   error message.
+ * @param  {ssd.user.auth.Response=}   optAuthResObj The response object from
+ *   auth class.
+ * @private
+ */
+ssd.user.auth.Facebook.prototype._promise2cb = function(cb, self, status,
+  optResObj, optAuthResObj) {
+
+  this.logger.finer('_promise2cb() :: Init.');
+  var resObj = optResObj || {};
+
+  if (!status) {
+    cb.call(self, resObj, this._auth.isAuthed());
+    return;
+  }
+
+  var authResObj = optAuthResObj || {};
+
+  cb.call(self,
+    null,
+    this._auth.isAuthed(),
+    this._auth.getSet(),
+    authResObj.rawServer,
+    resObj.rawThirdParty
+  );
+};
+
+
 
 /**
  * Facebook Login Listener.
@@ -328,10 +379,9 @@ ssd.user.auth.Facebook.prototype.login = function(optCb, optPerms) {
  *
  * @private
  * @param {object} response
- * @param {Function(boolean)} cb
  * @return {when.Promise}
  */
-ssd.user.auth.Facebook.prototype._loginListener = function (cb, response) {
+ssd.user.auth.Facebook.prototype._loginListener = function (response) {
 /*  ---response expose---
 
     response == {
@@ -363,38 +413,47 @@ ssd.user.auth.Facebook.prototype._loginListener = function (cb, response) {
  */
 ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   this.logger.info('_isAuthedFromResponse() :: Init.');
-
   var def = when.defer();
+
+  var resObj = new ssd.user.auth.plugin.Response();
 
   if ( !goog.isObject(response)) {
     this.logger.warning('_isAuthedFromResponse() :: response not object:' + response);
     return def.reject('response not an object');
   }
+
   var isAuthed = 'connected' === response['status'];
 
+  resObj.rawThirdParty = response;
+  resObj.authState = isAuthed;
+
   // check if the response received differs from our stored state
-  if (isAuthed !== this._isAuthed) {
-    this._isAuthed = isAuthed;
-
-    // only dispatch EXT_AUTH_CHANGE events AFTER initial auth response
-    if (this._gotInitialResponse) {
-
-      var eventObj = {
-        type: ssd.user.auth.EventType.EXT_AUTH_CHANGE
-      };
-
-      // add a backpipe so that auth lib will pass back
-      // a promise.
-      var backPipe = ssd.eventBackPipe( eventObj, when.defer() );
-
-      this.dispatchEvent(eventObj);
-
-      backPipe().then(function(){});
-    }
+  if (isAuthed === this._isAuthed) {
+    this.logger.fine('New auth state same as old: ' + isAuthed);
+    return def.resolve(resObj);
   }
 
-  return isAuthed;
+  this._isAuthed = isAuthed;
 
+  // only dispatch EXT_AUTH_CHANGE events AFTER initial auth response
+  if (!this._gotInitialResponse) {
+    this.logger.fine('Initial auth response not received yet');
+    return def.resolve(resObj);
+  }
+
+  this.logger.info('_isAuthedFromResponse() :: Auth state changed to: ' + isAuthed);
+
+  var eventObj = resObj.event(ssd.user.auth.EventType.EXT_AUTH_CHANGE, this);
+
+  // add a backpipe so that auth lib will pass back
+  // a promise.
+  var backPipe = ssd.eventBackPipe( eventObj, when.defer() );
+
+  this.dispatchEvent(eventObj);
+
+  backPipe().then( goog.partial(def.resolve, response), def.reject);
+
+  return def;
 };
 
 /**
@@ -440,14 +499,4 @@ ssd.user.auth.Facebook.prototype.getAccessToken = function() {
   return FB.getAccessToken();
 };
 
-/**
- * Register to auth module.
- *
- */
-ssd.user.auth.Facebook.onPluginRun = function( authCapsule ) {
-  // initialize facebook auth plugin
-  authCapsule['fb'] = new ssd.user.auth.Facebook(authCapsule);
-};
-ssd.register.plugin( ssd.user.Auth.MODULE_NAME,
-  ssd.user.auth.Facebook.onPluginRun );
 

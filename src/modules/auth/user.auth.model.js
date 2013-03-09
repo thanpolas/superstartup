@@ -139,14 +139,14 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
 
   var plugin = ev.target;
 
-  this.logger.info('_authChange() :: Auth CHANGE dispatched from:' +
+  this.logger.info('_authChange() :: AUTH CHANGE dispatched from:' +
     plugin.SOURCEID + ' Authed:' + plugin.isAuthed());
 
   var def = when.defer();
 
   // check if a backpipe is provided and return the promise.
   var backpipe = ev[ssd.BACKPIPE_KEY];
-  if ( goog.isFuntion(backpipe) ) {
+  if ( goog.isFunction(backpipe) ) {
     backpipe(function() {
       return def.promise;
     });
@@ -161,8 +161,7 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
     this.logger.warning('_authChange() :: BOGUS situation. Received auth ' +
       'event but we already had a record of this source being authed. ' +
       'Double trigger');
-    def.reject('double trigger');
-    return;
+    return def.reject('double trigger');
   }
 
   // change and store  authState
@@ -176,7 +175,7 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
     promise = this._checkAuthState();
   }
 
-  when.chain(promise, def.resolver);
+  def.resolver.resolve(promise);
 
 };
 
@@ -316,7 +315,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
 
   data = backPipe();
 
-  var cb = ssd.cb2promise(def.resolver, this._serverAuthResponse, this);
+  var cb = ssd.cb2promise(def, this._serverAuthResponse, this);
 
   ssd.sync.send( url, cb, ssd.ajax.Method.POST, data );
 
@@ -498,7 +497,6 @@ ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
     type: ssd.user.auth.EventType.AUTH_CHANGE
   };
   this.dispatchEvent(eventObj);
-
   return when.defer().resolve(isAuthed);
 };
 
