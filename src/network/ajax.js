@@ -50,22 +50,22 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
      *
      * @type {ssd.sync.Response}
      */
-    var response = new ssd.sync.Response();
+    var respObj = new ssd.sync.Response();
 
     if ( xhr ) {
-      response['httpStatus'] = xhr.getStatus();
-      response['success'] = xhr.isSuccess();
-      response['responseRaw'] = xhr.getResponse();
-      response['errorMessage'] = xhr.getLastError();
-      response['xhr'] = xhr;
+      respObj.httpStatus = xhr.getStatus();
+      respObj.success = xhr.isSuccess();
+      respObj.respObjRaw = xhr.getResponse();
+      respObj.errorMessage = xhr.getLastError();
+      respObj.xhr = xhr;
     }
 
-    if (response.success) {
-      def.resolve(response);
+    if (respObj.success) {
+      def.resolve(respObj);
     } else {
-      def.reject(response);
+      def.reject(respObj);
     }
-    origCb(response);
+    origCb(respObj);
   };
 
   var def = when.defer();

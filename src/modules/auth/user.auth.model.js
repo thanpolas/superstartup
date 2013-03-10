@@ -402,7 +402,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
   this.logger.info('_serverAuthResponse() :: Init');
 
   var respObj = new ssd.user.auth.Response( respObjSync );
-  respObj['authState'] = this.isAuthed();
+  respObj.authState = this.isAuthed();
 
   var eventObj = respObj.event(ssd.user.auth.EventType.ON_LOGIN_RESPONSE, this);
 
@@ -416,7 +416,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
   // switch event type
   eventObj.type = ssd.user.auth.EventType.AFTER_LOGIN_RESPONSE;
   // Check if ajax op was successful
-  if ( !respObjSync['success'] ) {
+  if ( !respObjSync.success ) {
     this.logger.warning('_serverAuthResponse() :: xhr operation was not a success');
     this.dispatchEvent(eventObj);
     return def.reject('xhr failed');
@@ -431,9 +431,9 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
     } catch(ex) {
       this.logger.warning('_serverAuthResponse() :: response failed' +
         ' to parse as JSON');
-      eventObj['errorMessage'] = 'response not JSON';
+      eventObj.errorMessage = 'response not JSON';
       this.dispatchEvent(eventObj);
-      return def.reject(eventObj['errorMessage']);
+      return def.reject(eventObj.errorMessage);
     }
 
     // check if status check is enabled.
@@ -445,7 +445,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
       if (valuator !== responseParsed[statusKey]) {
         // operation has failed...
         this.logger.warning('_serverAuthResponse() :: operation got a false response');
-        respObj['errorMessage'] = eventObj['errorMessage'] = 'status failed';
+        respObj.errorMessage = eventObj.errorMessage = 'status failed';
         this.dispatchEvent(eventObj);
         return def.resolve( respObj );
       }
@@ -463,23 +463,23 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
     }
 
   } else {
-    responseParsed = udo = respObjSync['responseRaw'];
+    responseParsed = udo = respObjSync.responseRaw;
   }
 
-  respObj['udo'] = udo;
-  respObj['serverRaw'] = responseParsed;
+  respObj.udo = udo;
+  respObj.serverRaw = responseParsed;
 
   eventObj = respObj.event(ssd.user.auth.EventType.AFTER_LOGIN_RESPONSE, this);
   this.dispatchEvent(eventObj);
 
   // auth method will also validate.
   if ( !this.auth(udo) ) {
-    eventObj['errorMessage'] = 'user data object not valid';
+    eventObj.errorMessage = 'user data object not valid';
     this.dispatchEvent(eventObj);
     return def.reject('udo not valid');
   }
 
-  respObj['authState'] = true;
+  respObj.authState = true;
   return def.resolve(respObj);
 };
 

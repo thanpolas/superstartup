@@ -16,14 +16,23 @@ goog.require('ssd.Response');
  */
 ssd.sync.Response = function( optResp ) {
 
-  /** @type {?number} */
-  this['httpStatus'] = null;
+  /**
+   * @type {?number}
+   * @expose
+   */
+  this.httpStatus = null;
 
-  /** @type {?string} */
-  this['responseRaw'] = null;
+  /**
+   * @type {?string}
+   * @expose
+   */
+  this.responseRaw = null;
 
-  /** @type {?goog.net.XhrIo} */
-  this['xhr'] = null;
+  /**
+   * @type {?goog.net.XhrIo}
+   * @expose
+   */
+  this.xhr = null;
 
   goog.base(this, optResp);
 
@@ -31,7 +40,32 @@ ssd.sync.Response = function( optResp ) {
 goog.inherits( ssd.sync.Response, ssd.Response);
 
 
+// /**
+//  * [T description]
+//  * @constructor
+//  */
+// ssd.sync.T = function() {
+//   /**
+//    * @type {boolean}
+//    * @expose
+//    */
+//   ssd.sync.T.prototype.sugarFree = false;
+
+//   *
+//    * @type {?number}
+//    * @expose
+
+//   ssd.sync.T.prototype.httpStatus = null;
+
+//   this.peep = true;
+// };
 
 
 
+// var z = new ssd.sync.T();
+
+// z.httpStatus = 200;
+// z.sugarFree = true;
+
+// window['z'] = z;
 

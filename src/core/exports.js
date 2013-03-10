@@ -70,7 +70,6 @@ goog.exportSymbol('ss.removeAllListeners', ss.removeAllListeners);
 // goog.exportSymbol('ssdvar .sync.Response.prototype.xhr', ssd.sync.Response.prototype.xhr);
 
 // goog.exportSymbol('ss.sync.T', ssd.sync.T);
-// //goog.exportSymbol('ss.sync.T.prototype.httpStatus', ss.sync.T.prototype.httpStatus);
+// goog.exportSymbol('ss.sync.T.prototype.sugarFree', ssd.sync.T.prototype.sugarFree);
 // goog.exportProperty(ssd.sync.T.prototype, 'httpStatus', ssd.sync.T.prototype.httpStatus);
-// goog.exportSymbol('ss.sync.T.prototype.responseRaw', ssd.sync.T.prototype.responseRaw);
 

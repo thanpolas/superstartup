@@ -15,14 +15,23 @@ goog.require('ssd.user.auth.Response');
  */
 ssd.user.auth.plugin.Response = function( optResp ) {
 
-  /** @type {?Object|string} The raw response from the third-party API */
-  this['responsePluginRaw'] = null;
+  /**
+   * @type {?Object|string} The raw response from the third-party API
+   * @expose
+   */
+  this.responsePluginRaw = null;
 
-  /** @type {boolean} The plugin's auth state */
-  this['authStatePlugin'] = false;
+  /**
+   * @type {boolean} The plugin's auth state
+   * @expose
+   */
+  this.authStatePlugin = false;
 
-  /** @type {ssd.user.types.extSourceId} The name of the plugin */
-  this['source'] = '';
+  /**
+   * @type {ssd.user.types.extSourceId} The name of the plugin
+   * @expose
+   */
+  this.source = '';
 
   goog.base(this, optResp);
 };
@@ -38,9 +47,9 @@ goog.inherits( ssd.user.auth.plugin.Response, ssd.user.auth.Response);
  */
 ssd.user.auth.plugin.Response.prototype.extend = function( inst ) {
   if ( inst instanceof goog.events.Event || goog.isObject(inst.target)) {
-    this['responsePluginRaw'] = inst['responsePluginRaw'];
-    this['authStatePlugin'] = inst['authStatePlugin'];
-    this['source'] = inst['source'];
+    this.responsePluginRaw = inst.responsePluginRaw;
+    this.authStatePlugin = inst.authStatePlugin;
+    this.source = inst.source;
     return this;
   }
   goog.base(this, 'extend', inst);

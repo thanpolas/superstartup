@@ -299,10 +299,10 @@ ssd.cb2promise = function(defer, cb, optSelf) {
  */
 ssd._getResponse = function (responseRaw) {
   var syncResp = new ssd.sync.Response();
-  syncResp['httpStatus']= 200;
-  syncResp['success']= true;
-  syncResp['responseRaw']= goog.json.serialize(responseRaw);
-  syncResp['errorMessage']= null;
+  syncResp.httpStatus = 200;
+  syncResp.success = true;
+  syncResp.responseRaw = goog.json.serialize(responseRaw);
+  syncResp.errorMessage = null;
 
   return when.resolve(syncResp);
 };

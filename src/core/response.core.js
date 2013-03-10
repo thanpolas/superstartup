@@ -15,11 +15,17 @@ goog.require('goog.events.Event');
  */
 ssd.Response = function( optResp ) {
 
-  /** @type {boolean} */
-  this['success'] = false;
+  /**
+   * @type {boolean}
+   * @expose
+   */
+  this.success = false;
 
-  /** @type {?string} */
-  this['errorMessage'] = null;
+  /**
+   * @type {?string}
+   * @expose
+   */
+  this.errorMessage = null;
 
   if ( goog.isObject(optResp)) {
     this.extend(optResp);

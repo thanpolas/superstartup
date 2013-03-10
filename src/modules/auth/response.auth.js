@@ -17,14 +17,23 @@ goog.require('ssd.sync.Response');
  */
 ssd.user.auth.Response = function( optResp ) {
 
-  /** @type {boolean} The current authentication state */
-  this['authState'] = false;
+  /**
+   * @type {boolean} The current authentication state
+   * @expose
+   */
+  this.authState = false;
 
-  /** @type {Object} User data Object */
-  this['udo'] = null;
+  /**
+   * @type {Object} User data Object
+   * @expose
+   */
+  this.udo = null;
 
-  /** @type {?Object|string} The raw response from the server */
-  this['serverRaw'] = null;
+  /**
+   * @type {?Object|string} The raw response from the server
+   * @expose
+   */
+  this.serverRaw = null;
 
   goog.base(this, optResp);
 
