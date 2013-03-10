@@ -31,8 +31,10 @@ goog.inherits( ssd.user.auth.plugin.Response, ssd.user.auth.Response);
  *   resp object provided directly as it is not cloned.
  */
 ssd.user.auth.plugin.Response.prototype.extend = function( inst ) {
-  if ( inst instanceof goog.events.Event ) {
+  if ( inst instanceof goog.events.Event || goog.isObject(inst.target)) {
     this.responsePluginRaw = inst.responsePluginRaw;
+    this.authStatePlugin = inst.authStatePlugin;
+    this.source = inst.source;
     return this;
   }
   goog.base(this, 'extend', inst);
@@ -46,6 +48,12 @@ ssd.user.auth.plugin.Response.prototype.extend = function( inst ) {
 ssd.user.auth.plugin.response = {
 
   /** @type {?Object|string} The raw response from the third-party API */
-  responsePluginRaw: null
+  responsePluginRaw: null,
+
+  /** @type {boolean} The plugin's auth state */
+  authStatePlugin: false,
+
+  /** @type {ssd.user.types.extSourceId} The name of the plugin */
+  source: ''
 
 };

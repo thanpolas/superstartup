@@ -150,10 +150,10 @@ module.exports = function(grunt) {
         stdout: true
       },
       mochaPhantom: {
-        command: '<%= mochaPhantom %> -R spec'
+        command: '<%= mochaPhantom %> -R dot'
       },
       mochaPhantomCompiled: {
-        command: '<%= mochaPhantom %>?compiled=true -R spec'
+        command: '<%= mochaPhantom %>?compiled=true -R dot'
       },
       mochaPhantomMin: {
         command: '<%= mochaPhantom %> -R min'

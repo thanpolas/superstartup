@@ -14,8 +14,6 @@ describe('User Auth Module Plugins :: Facebook', function () {
   var eventFB = event.user.facebook;
   var fixtures = ssd.test.fixture;
 
-  // init ss
-  ss();
 
   var testConfig = {
     pluginName:      'facebook',

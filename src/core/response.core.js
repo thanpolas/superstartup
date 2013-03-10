@@ -18,6 +18,12 @@ goog.require('goog.events.Event');
 ssd.Response = function( optResp, optChilds ) {
   var childs = optChilds || [];
 
+  /**
+   * @type {Array} Contains all the keys available by this response object.
+   * @private
+   */
+  this._keys = [];
+
   this._copyDefaults( ssd.response );
   // if childs are there then the first item is the top-most child,
   // so we want to start from the bottom up
@@ -26,8 +32,8 @@ ssd.Response = function( optResp, optChilds ) {
     this._copyDefaults( childs[len] );
   }
 
-  if (optResp && optResp.extend) {
-    optResp.extend(this);
+  if ( goog.isObject(optResp)) {
+    this.extend(optResp);
   }
 
 };
@@ -41,28 +47,29 @@ ssd.Response = function( optResp, optChilds ) {
 ssd.Response.prototype._copyDefaults = function(obj) {
   goog.object.map( obj , function(el, ind){
     this[ind] = el;
+    if ( -1 === this._keys.indexOf(ind)) {
+      this._keys.push(ind);
+    }
   }, this);
 };
 
 /**
- * Will augment the provided response object with the values of this one.
+ * Will augment this instance with the provided response instance.
  *
- * The extending resp obj overwrites values of the provided one.
+ * The provided instance overwrite any properties of this object.
  *
  * @param  {ssd.Response} inst A response object instance to extend.
- * @return {ssd.Response} The augmented resp object although you may use the
- *   resp object provided directly as it is not cloned.
  */
 ssd.Response.prototype.extend = function( inst ) {
-  var clonedSelf = goog.object.clone( this );
-  // remove methods
-  delete clonedSelf.extend;
-  delete clonedSelf.event;
-  delete clonedSelf._copyDefaults;
 
-  goog.object.extend( inst, clonedSelf );
-
-  return inst;
+  var len = this._keys.length;
+  var key;
+  while(len--) {
+    key = this._keys[len];
+    if ( key in inst ) {
+      this[key] = inst[key];
+    }
+  }
 };
 
 /**

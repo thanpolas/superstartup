@@ -306,3 +306,17 @@ ssd._getResponse = function (responseRaw) {
 
   return when.resolve(syncResp);
 };
+
+
+/**
+ * fake a fork to force async.
+ * @param  {Function} cb The function to fork
+ * @param  {Object}   optSelf scope for cb.
+ * @param  {...*}   optArgs Any number of arguments to pass on the cb.
+ */
+ssd.fork = function(cb, optSelf, optArgs) {
+  var args = arguments;
+  setTimeout(function(){
+    cb.apply(optSelf, Array.prototype.slice.call(args, 2));
+  }, 25);
+};

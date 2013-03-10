@@ -46,9 +46,8 @@ ssd.test.fixture.event.user = {
   // before we process the response object from the AJAX callback
   // of an authentication operation with local server
   ON_LOGIN_RESPONSE: 'user.onLoginResponse',
-  AFTER_LOGIN_RESPONSE: 'user.afterLoginResponse',
   // After the auth response has been processed
-  AUTH_RESPONSE: 'user.authResponse',
+  AFTER_LOGIN_RESPONSE: 'user.afterLoginResponse',
   // Current authed UDO events (piped from DynamicMap)
   BEFORE_SET:    'user.data.beforeSet',
   AFTER_SET:     'user.data.afterSet',

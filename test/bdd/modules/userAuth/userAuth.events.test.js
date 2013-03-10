@@ -49,7 +49,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       expect( spy.getCall(0).args[0].authState ).to.be.true;
     });
 
-    it( 'should trigger the BEFORE_LOGIN event', function( done ){
+    it( 'should trigger the "' + userEvent.BEFORE_LOGIN + '" event',
+      function( done ){
       ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         expect( stubNet.called ).to.be.false;
         expect( ss.isAuthed() ).to.be.false;
@@ -59,7 +60,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       loginTrigger();
     });
 
-    it( 'should cancel login if we return false at the BEFORE_LOGIN event', function( done ){
+    it( 'should cancel login if we return false at the "' +
+      userEvent.BEFORE_LOGIN + '" event', function( done ){
       ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         return false;
       });
@@ -73,7 +75,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       });
     });
 
-    it( 'should cancel login if we execute preventDefault at the BEFORE_LOGIN event', function( done ){
+    it( 'should cancel login if we execute preventDefault at the "' +
+      userEvent.BEFORE_LOGIN + '" event', function( done ){
       ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         eventObj.preventDefault();
       });
@@ -87,7 +90,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       });
     });
 
-    it('should be able to change data sent to the server when BEFORE_LOGIN triggers',
+    it('should be able to change data sent to the server when "' +
+      userEvent.BEFORE_LOGIN + '" triggers',
       function( done ) {
 
       var funnyData = {
@@ -107,7 +111,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       });
     });
 
-    it( 'should trigger the ON_LOGIN_RESPONSE event', function( done ){
+    it( 'should trigger the "' + userEvent.ON_LOGIN_RESPONSE + '" event',
+      function( done ){
       ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
         expect( stubNet.calledOnce ).to.be.true;
         expect( ss.isAuthed() ).to.be.false;
@@ -116,7 +121,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       loginTrigger();
     });
 
-    it( 'should prevent login if we return false at the ON_LOGIN_RESPONSE event', function( done ){
+    it( 'should prevent login if we return false at the "' +
+      userEvent.ON_LOGIN_RESPONSE + '" event', function( done ){
       ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
         return false;
       });
@@ -137,7 +143,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       expect( spy.calledOnce ).to.be.true;
     });
 
-    describe('Analyze the event object of AFTER_LOGIN_RESPONSE', function() {
+    describe('Analyze the event object of the "' +
+      userEvent.AFTER_LOGIN_RESPONSE + '" event', function() {
       var spy = sinon.spy();
       var eventObj;
 
@@ -149,9 +156,9 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
         });
       });
 
-      it('should have an "authState" key, boolean, true', function() {
+      it('should have an "authState" key, boolean, false', function() {
         expect( eventObj.authState ).to.be.a('boolean');
-        expect( eventObj.authState ).to.be.true;
+        expect( eventObj.authState ).to.be.false;
       });
       it('should have a "success" key, boolean, true', function() {
         expect( eventObj.success ).to.be.a('boolean');

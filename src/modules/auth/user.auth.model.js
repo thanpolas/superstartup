@@ -148,6 +148,10 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
 
   var plugin = ev.target;
 
+  // stop propagation, it will be re-emit by this method so it's
+  // surely the first that bubles up.
+  ev.stopPropagation();
+
   this.logger.info('_authChange() :: AUTH CHANGE dispatched from:' +
     plugin.SOURCEID + ' Authed:' + plugin.isAuthed());
 
@@ -159,6 +163,15 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
     backpipe(function() {
       return def.promise;
     });
+  }
+
+  // re-emit the event
+  var pluginRespObj = new ssd.user.auth.plugin.Response(ev);
+  var eventObj = pluginRespObj.event(ev.type, ev.target);
+  if ( false === this.dispatchEvent(eventObj) ) {
+    // canceled
+    this.logger.warning('_authChange() :: event "' + ev.type + '" canceled');
+    return def.reject('canceled');
   }
 
   // get saved auth state from the sources map
@@ -177,17 +190,41 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
   extItem.isAuthed = plugin.isAuthed();
   this._mapSources.set(plugin.SOURCEID, extItem);
 
+
+  // allow for the event to propagate and resume execution right after that.
+  // not an elegant solution, refactor
+  //ssd.fork(this._authChangePayload, this, def, extItem, plugin, ev);
+  this._authChangePayload( def, extItem, plugin, ev);
+
+  return def.promise;
+};
+
+/**
+ * Async followup of _authChange method.
+ *
+ * @param  {when.Deferred} def the def.
+ * @param  {sdd.user.auth.SourceItem} extItem the extItem.
+ * @param  {ssd.user.auth.PluginModule} plugin the plugin.
+ * @param  {goog.event.Event} ev the ev.
+ * @private
+ */
+ssd.user.AuthModel.prototype._authChangePayload = function( def, extItem,
+  plugin, ev ) {
   var promise;
+  // dangle a bit to keep the _authedSources array updated
   if ( extItem.isAuthed ) {
     if ( -1 === this._authedSources.indexOf(plugin.SOURCEID) ) {
       this._authedSources.push( plugin.SOURCEID );
     }
+
     promise = this.verifyExtAuthWithLocal(plugin.SOURCEID);
+
   } else {
     var pluginIndex = this._authedSources.indexOf(plugin.SOURCEID);
     if ( 0 <= pluginIndex) {
       this._authedSources.splice(pluginIndex, 1);
     }
+
     promise = this._checkAuthState();
   }
 
@@ -378,7 +415,6 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
 
   // switch event type
   eventObj.type = ssd.user.auth.EventType.AFTER_LOGIN_RESPONSE;
-
   // Check if ajax op was successful
   if ( !response.success ) {
     this.logger.warning('_serverAuthResponse() :: xhr operation was not a success');
@@ -433,6 +469,9 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   respObj.udo = udo;
   respObj.serverRaw = responseParsed;
 
+  eventObj = respObj.event(ssd.user.auth.EventType.AFTER_LOGIN_RESPONSE, this);
+  this.dispatchEvent(eventObj);
+
   // auth method will also validate.
   if ( !this.auth(udo) ) {
     eventObj.errorMessage = 'user data object not valid';
@@ -441,10 +480,6 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( response ) {
   }
 
   respObj.authState = true;
-  eventObj = respObj.event(ssd.user.auth.EventType.AFTER_LOGIN_RESPONSE, this);
-  this.dispatchEvent(eventObj);
-
-
   return def.resolve(respObj);
 };
 
