@@ -38,9 +38,9 @@ goog.inherits( ssd.user.auth.plugin.Response, ssd.user.auth.Response);
  */
 ssd.user.auth.plugin.Response.prototype.extend = function( inst ) {
   if ( inst instanceof goog.events.Event || goog.isObject(inst.target)) {
-    this.responsePluginRaw = inst.responsePluginRaw;
-    this.authStatePlugin = inst.authStatePlugin;
-    this.source = inst.source;
+    this['responsePluginRaw'] = inst['responsePluginRaw'];
+    this['authStatePlugin'] = inst['authStatePlugin'];
+    this['source'] = inst['source'];
     return this;
   }
   goog.base(this, 'extend', inst);

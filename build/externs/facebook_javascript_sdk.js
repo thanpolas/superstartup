@@ -30,6 +30,11 @@ var FB = {};
 FB.getSession = function() { };
 
 /**
+ * @return {string}
+ */
+FB.getAccessToken = function() { };
+
+/**
  * @see http://developers.facebook.com/docs/reference/javascript/fb.api/
  * @param {string} path
  * @param {(string|Object.<string, *>|function(Object.<*,*>))=} method

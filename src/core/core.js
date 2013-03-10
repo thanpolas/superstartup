@@ -35,13 +35,6 @@ goog.require('ssd.sync');
 goog.require('ssd.core.config');
 
 /**
- * An instance counter.
- * @type {number}
- * @private
- */
-ssd._instanceCount = 0;
-
-/**
  * The base class
  *
  * This class will be exported as our main entry point
@@ -70,11 +63,6 @@ ssd.Core = function()
       this.logger.info('ctor() :: Core Deferred resolved.');
     }, this));
   }
-  /**
-   * @type {number} The current instance count.
-   * @private
-   */
-  this._instanceCount = ++ssd._instanceCount;
 
   if (goog.DEBUG) {
     ssd.debug.openFancyWin();

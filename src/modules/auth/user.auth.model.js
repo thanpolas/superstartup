@@ -479,7 +479,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
     return def.reject('udo not valid');
   }
 
-  respObj.authState = true;
+  respObj['authState'] = true;
   return def.resolve(respObj);
 };
 

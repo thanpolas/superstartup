@@ -1,5 +1,10 @@
 goog.provide('ssd.user.auth.exports');
 
+goog.require('ssd.user.Auth');
+goog.require('ssd.user.auth.Facebook');
+goog.require('ssd.user.auth.Twitter');
+
+
 // user
 goog.exportSymbol('ss.user', ss.user);
 goog.exportSymbol('ss.isAuthed', ss.isAuthed);
@@ -9,6 +14,16 @@ goog.exportSymbol('ss.user.deAuth', ss.user.deAuth);
 goog.exportSymbol('ss.user.isExtAuthed', ss.user.isExtAuthed);
 goog.exportSymbol('ss.user.login', ss.user.login);
 goog.exportSymbol('ss.user.logout', ss.user.logout);
+goog.exportSymbol('ss.user.authedSources', ss.user.authedSources);
+
+goog.exportSymbol('ss.user.fb', ss.user.fb);
+goog.exportSymbol('ss.user.fb.getSourceId', ss.user.fb.getSourceId);
+goog.exportSymbol('ss.user.fb.hasJSAPI', ss.user.fb.hasJSAPI);
+goog.exportSymbol('ss.user.fb.isAuthed', ss.user.fb.isAuthed);
+goog.exportSymbol('ss.user.fb.getUser', ss.user.fb.getUser);
+goog.exportSymbol('ss.user.fb.getAccessToken', ss.user.fb.getAccessToken);
+
+
 
 //
 // response object

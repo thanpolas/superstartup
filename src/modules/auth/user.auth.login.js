@@ -50,7 +50,6 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
     if (false === respObj) {
       cb.call(optSelfObj, null, false);
     }
-
     cb.call(optSelfObj, null, respObj['authState'], respObj['udo'],
       respObj['response']);
 
