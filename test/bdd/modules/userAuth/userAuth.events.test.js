@@ -42,7 +42,8 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       expect( spy.calledOnce ).to.be.true;
     });
 
-    it( 'should have an authState and be true when triggering the AUTH_CHANGE event', function(){
+    it( 'should have an authState and be true when triggering the "' +
+      userEvent.AUTH_CHANGE + '" event', function(){
       var spy = sinon.spy();
       ss.listen( userEvent.AUTH_CHANGE, spy);
       loginTrigger();
@@ -156,10 +157,13 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
         });
       });
 
-      it('should have an "authState" key, boolean, false', function() {
+      it('should have an "authState" key, boolean', function() {
         expect( eventObj.authState ).to.be.a('boolean');
+      });
+      it('should have an "authState" key, false', function() {
         expect( eventObj.authState ).to.be.false;
       });
+
       it('should have a "success" key, boolean, true', function() {
         expect( eventObj.success ).to.be.a('boolean');
         expect( eventObj.success ).to.be.true;

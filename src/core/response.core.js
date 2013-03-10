@@ -1,5 +1,5 @@
 /**
- * @fileOverview The response data object used globaly by superstartup.
+ * @fileoverview The response data object used globaly by superstartup.
  */
 goog.provide('ssd.Response');
 
@@ -11,47 +11,21 @@ goog.require('goog.events.Event');
  *
  *
  * @param {ssd.Response=} optResp Another response object to augment.
- * @param {Array.Object=} optChilds An array of object with keys to use for the
- *   response Object.
  * @constructor
  */
-ssd.Response = function( optResp, optChilds ) {
-  var childs = optChilds || [];
+ssd.Response = function( optResp ) {
 
-  /**
-   * @type {Array} Contains all the keys available by this response object.
-   * @private
-   */
-  this._keys = [];
+  /** @type {boolean} */
+  this['success'] = false;
 
-  this._copyDefaults( ssd.response );
-  // if childs are there then the first item is the top-most child,
-  // so we want to start from the bottom up
-  var len = childs.length;
-  while(len--) {
-    this._copyDefaults( childs[len] );
-  }
+  /** @type {?string} */
+  this['errorMessage'] = null;
 
   if ( goog.isObject(optResp)) {
     this.extend(optResp);
   }
-
 };
 
-/**
- * Copy the default key/value pairs from the provided object.
- *
- * @param {Object} obj the object with the default values.
- * @private
- */
-ssd.Response.prototype._copyDefaults = function(obj) {
-  goog.object.map( obj , function(el, ind){
-    this[ind] = el;
-    if ( -1 === this._keys.indexOf(ind)) {
-      this._keys.push(ind);
-    }
-  }, this);
-};
 
 /**
  * Will augment this instance with the provided response instance.
@@ -61,15 +35,11 @@ ssd.Response.prototype._copyDefaults = function(obj) {
  * @param  {ssd.Response} inst A response object instance to extend.
  */
 ssd.Response.prototype.extend = function( inst ) {
-
-  var len = this._keys.length;
-  var key;
-  while(len--) {
-    key = this._keys[len];
-    if ( key in inst ) {
-      this[key] = inst[key];
+  goog.object.forEach( inst, function(val, key) {
+    if (!goog.isFunction(val)) {
+      this[key] = val;
     }
-  }
+  }, this);
 };
 
 /**
@@ -81,23 +51,16 @@ ssd.Response.prototype.extend = function( inst ) {
  */
 ssd.Response.prototype.event = function( eventType, optTarget ) {
   var ev = new goog.events.Event(eventType, optTarget);
+  var objNoMethods = goog.object.map( this, function(val) {
+    if ( !goog.isFunction(val) ) {
+      return val;
+    }
+    return null;
+  }, this );
 
-  goog.object.extend( ev, this );
+  goog.object.extend(ev, objNoMethods);
 
   return ev;
 };
 
-/**
- * The response object.
- *
- * @type {Object}
- */
-ssd.response = {
 
-  /** @type {boolean} */
-  success: false,
-
-  /** @type {?string} */
-  errorMessage: null
-
-};

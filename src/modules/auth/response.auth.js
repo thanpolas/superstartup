@@ -1,9 +1,10 @@
 /**
- * @fileOverview The response data object used globaly by superstartup.
+ * @fileoverview The response data object used globaly by superstartup.
  */
 goog.provide('ssd.user.auth.Response');
 
 goog.require('goog.object');
+goog.require('ssd.Response');
 goog.require('ssd.sync.Response');
 
 /**
@@ -11,35 +12,23 @@ goog.require('ssd.sync.Response');
  *
  *
  * @param {ssd.Response=} optResp Another response object to augment.
- * @param {Array.Object=} optChilds An array of object with keys to use for the
- *   response Object.
  * @constructor
  * @extends {ssd.sync.Response}
  */
-ssd.user.auth.Response = function( optResp, optChilds ) {
-  var childs = optChilds || [];
-  childs.push( ssd.user.auth.response );
-  goog.base(this, optResp, childs);
+ssd.user.auth.Response = function( optResp ) {
+
+  /** @type {boolean} The current authentication state */
+  this['authState'] = false;
+
+  /** @type {Object} User data Object */
+  this['udo'] = null;
+
+  /** @type {?Object|string} The raw response from the server */
+  this['serverRaw'] = null;
+
+  goog.base(this, optResp);
 
 };
 goog.inherits( ssd.user.auth.Response, ssd.sync.Response);
 
 
-/**
- * The response object.
- *
- * @type {Object}
- */
-ssd.user.auth.response = {
-
-  /** @type {boolean} The current authentication state */
-  authState: false,
-
-  /** @type {Object} User data Object */
-  udo: null,
-
-  /** @type {?Object|string} The raw response from the server */
-  serverRaw: null
-
-
-};

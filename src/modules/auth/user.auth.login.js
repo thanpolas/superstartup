@@ -1,5 +1,5 @@
 /**
- * @fileOverview responsible for the login / logout operations.
+ * @fileoverview responsible for the login / logout operations.
  */
 goog.provide('ssd.user.AuthLogin');
 
@@ -46,13 +46,13 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
   var def = when.defer();
   var cb = optCB || ssd.noop;
 
-  def.promise.then(goog.bind(function( statusObj ) {
-    if (false === statusObj) {
+  def.promise.then(goog.bind(function( respObj ) {
+    if (false === respObj) {
       cb.call(optSelfObj, null, false);
     }
 
-    cb.call(optSelfObj, null, statusObj['authState'], statusObj['udo'],
-      statusObj['response']);
+    cb.call(optSelfObj, null, respObj['authState'], respObj['udo'],
+      respObj['response']);
 
   }, this));
 
@@ -61,15 +61,18 @@ ssd.user.AuthLogin.prototype.login = function( arg1, optCB, optSelfObj ) {
   }, this));
 
   if (goog.dom.isElement(arg1)) {
-    return when.chain( this._loginElement( arg1 ), def.resolver );
+    when( this._loginElement( arg1 )).then( def.resolve, def.reject );
+    return def.promise;
   }
 
   if (ssd.isjQ(arg1)) {
-    return when.chain( this._loginjQuery( arg1 ), def.resolver );
+    when( this._loginjQuery( arg1 ) ).then( def.resolve, def.reject );
+    return def.promise;
   }
 
   if (goog.isObject(arg1)) {
-    return when.chain( this._loginStart( arg1 ), def.resolver );
+    when( this._loginStart( arg1 ) ).then( def.resolve, def.reject );
+    return def.promise;
   }
 
   throw new TypeError('auth.login argument not Object or Element or jQuery');
@@ -150,7 +153,7 @@ ssd.user.AuthLogin.prototype.logout = function(optCb, optSelfObj) {
   var cb = optCb || ssd.noop;
 
   def.promise.then( goog.bind( function( respObj ) {
-    cb.call(optSelfObj, null, respObj.success );
+    cb.call(optSelfObj, null, respObj['success'] );
   }, this ));
   def.promise.otherwise( goog.bind( function( errMsg ) {
     cb.call(optSelfObj, errMsg, false );

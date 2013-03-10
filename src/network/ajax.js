@@ -1,7 +1,7 @@
 /*jshint camelcase:false */
 
 /**
- * @fileOverview provide an abstraction layer over any underlying xhr library.
+ * @fileoverview provide an abstraction layer over any underlying xhr library.
  *
  */
 goog.provide('ssd.ajax');
@@ -53,11 +53,11 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
     var response = new ssd.sync.Response();
 
     if ( xhr ) {
-      response.httpStatus = xhr.getStatus();
-      response.success = xhr.isSuccess();
-      response.responseRaw = xhr.getResponse();
-      response.errorMessage = xhr.getLastError();
-      response.xhr = xhr;
+      response['httpStatus'] = xhr.getStatus();
+      response['success'] = xhr.isSuccess();
+      response['responseRaw'] = xhr.getResponse();
+      response['errorMessage'] = xhr.getLastError();
+      response['xhr'] = xhr;
     }
 
     if (response.success) {

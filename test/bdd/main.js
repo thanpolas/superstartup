@@ -8,6 +8,10 @@ goog.require('ssd.test.fixture.userOne');
 goog.require('ssd.test.fixture.userOne');
 
 
+mocha.setup({
+  globals: ['fbAsyncInit', 'liveReload', 'LiveReload']
+});
+
 // goog.require('ssd.test.mock.net');
 
 var expect, assert;
@@ -33,37 +37,3 @@ window.FB = {
   api: function(what, cb){}
 };
 
-
-// stubNet = sinon.stub(ss.sync, 'send');
-// stubNet.yields( ss._getResponse( ssd.test.fixture.userOne ));
-// stubFBLogin = sinon.stub(FB, 'login')
-//   .yields(ssd.test.fixture.auth.fb.authedObj);
-// stubgetLoginStatus = sinon.stub(FB, 'getLoginStatus')
-//   .yields();
-
-// ss.config('user.auth.fb.appId', '540');
-// ss(function() {
-//   window.fbAsyncInit();
-//   var spyCB = sinon.spy.create('loginCB');
-//   ss.user.fb.login(spyCB);
-//   console.log( spyCB.callCount );
-// });
-
-
-// var cid = ss.listen('user.initialAuthState', function(){console.log('CALLED')});
-
-// ss();
-
-// var stub = sinon.stub(ss.ajax, 'send');
-// var userLoginData = {
-//   username: 'thanpolas',
-//   password: 'passpass',
-//   remember: '1'
-// };
-// stub.returns( ss._getResponse(ssd.test.fixture.userOne ));
-
-// ss.user.login(userLoginData);
-
-// console.log(ss.isAuthed());
-
-// stub.restore();

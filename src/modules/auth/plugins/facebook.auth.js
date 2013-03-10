@@ -367,8 +367,8 @@ ssd.user.auth.Facebook.prototype._promise2cb = function(cb, self, status,
     null,
     this._auth.isAuthed(),
     this._auth.getSet(),
-    respObj.serverRaw,
-    respObj.responsePluginRaw
+    respObj['serverRaw'],
+    respObj['responsePluginRaw']
   );
 };
 
@@ -425,9 +425,9 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
 
   var isAuthed = 'connected' === response['status'];
 
-  respObj.responsePluginRaw = response;
-  respObj.authStatePlugin = isAuthed;
-  respObj.source = this.SOURCEID;
+  respObj['responsePluginRaw'] = response;
+  respObj['authStatePlugin'] = isAuthed;
+  respObj['source'] = this.SOURCEID;
   // check if the response received differs from our stored state
   if (isAuthed === this._isAuthed) {
     this.logger.fine('New auth state same as old: ' + isAuthed);

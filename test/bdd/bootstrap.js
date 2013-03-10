@@ -7,9 +7,7 @@ goog.provide('ssd.test.bootstrap');
 // setup mocha
 mocha.ui('bdd');
 mocha.reporter('html');
-mocha.setup({
-  globals: ['fbAsyncInit', 'liveReload', 'LiveReload']
-});
+
 
 // sequence matters
 goog.require('ssd.test.fixture.userOne');

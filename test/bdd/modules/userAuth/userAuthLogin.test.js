@@ -43,7 +43,6 @@ describe( 'User Auth Module :: Login', function () {
         ss(done);
       });
       afterEach( function() {
-        ss.log.info('afterEach!');
         ss.user.deAuth();
         stub.restore();
         ss.removeAllListeners();

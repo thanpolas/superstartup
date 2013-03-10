@@ -38,3 +38,4 @@ goog.require('ssd.Core');
 
 // ssd.exports should be the last one to get required
 goog.require('ssd.exports');
+goog.require('ssd.user.auth.exports');

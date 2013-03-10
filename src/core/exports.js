@@ -44,13 +44,6 @@ goog.exportSymbol('ss.ajax.send', ssd.ajax.send);
 goog.exportSymbol('ss.sync', ssd.sync);
 goog.exportSymbol('ss.sync.send', ssd.sync.send);
 
-// net response object
-goog.exportSymbol('ss.sync.Response', ssd.sync.Response);
-goog.exportSymbol('ss.sync.Response.prototype.httpStatus', ssd.sync.Response.prototype.httpStatus);
-goog.exportSymbol('ss.sync.Response.prototype.success', ssd.sync.Response.prototype.success);
-goog.exportSymbol('ss.sync.Response.prototype.responseRaw', ssd.sync.Response.prototype.responseRaw);
-goog.exportSymbol('ss.sync.Response.prototype.errorMessage', ssd.sync.Response.prototype.errorMessage);
-goog.exportSymbol('ss.sync.Response.prototype.xhr', ssd.sync.Response.prototype.xhr);
 
 
 // events
@@ -59,19 +52,25 @@ goog.exportSymbol('ss.trigger', ss.trigger);
 goog.exportSymbol('ss.unlisten', ss.unlisten);
 goog.exportSymbol('ss.removeAllListeners', ss.removeAllListeners);
 
-// user
-goog.exportSymbol('ss.user', ss.user);
-goog.exportSymbol('ss.isAuthed', ss.isAuthed);
-goog.exportSymbol('ss.user.isAuthed', ss.user.isAuthed);
-goog.exportSymbol('ss.user.auth', ss.user.auth);
-goog.exportSymbol('ss.user.deAuth', ss.user.deAuth);
-goog.exportSymbol('ss.user.isExtAuthed', ss.user.isExtAuthed);
-goog.exportSymbol('ss.user.login', ss.user.login);
-goog.exportSymbol('ss.user.logout', ss.user.logout);
 
-// auth plugins
-// goog.exportSymbol('ss.user.fb.login', ss.user.fb.login);
-// goog.exportSymbol('ss.user.fb.logout', ss.user.fb.logout);
-// goog.exportSymbol('ss.user.tw.logout', ss.user.tw.logout);
-// goog.exportSymbol('ss.user.tw.logout', ss.user.tw.logout);
+//
+// Response objects
+//
+// goog.exportSymbol('ss.Response', ssd.Response);
+// goog.exportSymbol('ss.Response.prototype.extend', ssd.Response.prototype.extend);
+// goog.exportSymbol('ss.Response.prototype.event', ssd.Response.prototype.event);
+// goog.exportSymbol('ss.Response.prototype.success', ssd.Response.prototype.success);
+// goog.exportSymbol('ss.Response.prototype.errorMessage', ssd.Response.prototype.errorMessage);
+
+// // net response object
+// goog.exportSymbol('ssd.sync.Response', ssd.sync.Response);
+// //goog.exportSymbol('ssd.sync.Response.prototype.httpStatus', ssd.sync.Response.prototype.httpStatus);
+// goog.exportProperty(ssd.sync.Response.prototype, 'httpStatus', ssd.sync.Response.prototype.httpStatus);
+// goog.exportSymbol('ssd.sync.Response.prototype.responseRaw', ssd.sync.Response.prototype.responseRaw);
+// goog.exportSymbol('ssdvar .sync.Response.prototype.xhr', ssd.sync.Response.prototype.xhr);
+
+// goog.exportSymbol('ss.sync.T', ssd.sync.T);
+// //goog.exportSymbol('ss.sync.T.prototype.httpStatus', ss.sync.T.prototype.httpStatus);
+// goog.exportProperty(ssd.sync.T.prototype, 'httpStatus', ssd.sync.T.prototype.httpStatus);
+// goog.exportSymbol('ss.sync.T.prototype.responseRaw', ssd.sync.T.prototype.responseRaw);
 

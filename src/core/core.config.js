@@ -1,5 +1,5 @@
 /**
- * @fileOverview config keys used by the module
+ * @fileoverview config keys used by the module
  */
 goog.provide('ssd.core.config');
 

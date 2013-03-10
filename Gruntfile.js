@@ -76,7 +76,7 @@ module.exports = function(grunt) {
             summary_detail_level: 3,
             only_closure_dependencies: null,
             closure_entry_point: 'ssd',
-            output_wrapper: '(function(){%output%}).call(this);',
+            // output_wrapper: '(function(){%output%}).call(this);',
             formatting: 'PRETTY_PRINT',
             debug: null
           }
@@ -143,17 +143,20 @@ module.exports = function(grunt) {
      */
 
     mochaPhantom: 'node_modules/mocha-phantomjs/bin/mocha-phantomjs ' +
-      'http://localhost:4242/test/bdd/index.html',
+      'http://localhost:4242/test/',
 
     shell: {
       options: {
         stdout: true
       },
       mochaPhantom: {
-        command: '<%= mochaPhantom %> -R dot'
+        command: '<%= mochaPhantom %>bdd/index.html -R dot'
       },
       mochaPhantomCompiled: {
-        command: '<%= mochaPhantom %>?compiled=true -R dot'
+        command: '<%= mochaPhantom %>bdd/index.html?compiled=true -R dot'
+      },
+      mochaPhantomUnit: {
+        command: '<%= mochaPhantom %>unit/index.html -R dot'
       },
       mochaPhantomMin: {
         command: '<%= mochaPhantom %> -R min'
@@ -163,6 +166,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'connect:test',
+    'shell:mochaPhantomUnit',
     'shell:mochaPhantom',
     'shell:mochaPhantomCompiled'
   ]);

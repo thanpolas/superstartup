@@ -1,5 +1,5 @@
 /**
- * @fileOverview The response data object used globaly by superstartup.
+ * @fileoverview The response data object used globaly by superstartup.
  */
 goog.provide('ssd.user.auth.plugin.Response');
 
@@ -10,15 +10,21 @@ goog.require('ssd.user.auth.Response');
  * Defines the response object that will be passed on ajax.send callbaks.
  *
  * @param {ssd.Response=} optResp Another response object to augment.
- * @param {Array.Object=} optChilds An array of object with keys to use for the
- *   response Object.
  * @constructor
  * @extends {ssd.user.auth.Response}
  */
-ssd.user.auth.plugin.Response = function( optResp, optChilds ) {
-  var childs = optChilds || [];
-  childs.push( ssd.user.auth.plugin.response );
-  goog.base(this, optResp, childs);
+ssd.user.auth.plugin.Response = function( optResp ) {
+
+  /** @type {?Object|string} The raw response from the third-party API */
+  this['responsePluginRaw'] = null;
+
+  /** @type {boolean} The plugin's auth state */
+  this['authStatePlugin'] = false;
+
+  /** @type {ssd.user.types.extSourceId} The name of the plugin */
+  this['source'] = '';
+
+  goog.base(this, optResp);
 };
 goog.inherits( ssd.user.auth.plugin.Response, ssd.user.auth.Response);
 
@@ -40,20 +46,4 @@ ssd.user.auth.plugin.Response.prototype.extend = function( inst ) {
   goog.base(this, 'extend', inst);
 };
 
-/**
- * The response object.
- *
- * @type {Object}
- */
-ssd.user.auth.plugin.response = {
 
-  /** @type {?Object|string} The raw response from the third-party API */
-  responsePluginRaw: null,
-
-  /** @type {boolean} The plugin's auth state */
-  authStatePlugin: false,
-
-  /** @type {ssd.user.types.extSourceId} The name of the plugin */
-  source: ''
-
-};

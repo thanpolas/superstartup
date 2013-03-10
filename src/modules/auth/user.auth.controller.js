@@ -47,8 +47,8 @@ ssd.user.Auth = function(ssdInst) {
    */
   this.config.addAll( ssd.user.auth.config.defaults );
 
-
-  this.fb = new ssd.user.auth.Facebook(this);
+  // FIXME FIXME refactor this
+  this['fb'] = new ssd.user.auth.Facebook(this);
 
   this.getSet = goog.bind( this._dynmapUdo.getSet, this._dynmapUdo);
 
