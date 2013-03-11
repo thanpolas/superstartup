@@ -24,13 +24,14 @@
 
 goog.provide('ssd');
 
+goog.require('ssd.helpers');
+goog.require('ssd.vendor');
 goog.require('ssd.debug');
 goog.require('ssd.error');
 goog.require('ssd.sync');
 goog.require('ssd.Config');
 goog.require('ssd.user.auth.Facebook');
 goog.require('ssd.user.auth.Twitter');
-goog.require('ssd.helpers');
 
 // ssd.Core is special, is our core
 goog.require('ssd.Core');

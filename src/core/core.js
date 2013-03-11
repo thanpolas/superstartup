@@ -22,6 +22,7 @@
 goog.provide('ssd.Core');
 goog.provide('ss');
 
+goog.require('ssd.vendor');
 goog.require('ssd.Module');
 goog.require('ssd.Config');
 goog.require('ssd.metrics');
