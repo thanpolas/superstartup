@@ -10,7 +10,6 @@ goog.require('ssd.user.auth.plugin.Response');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.EventType');
 goog.require('ssd.user.auth.config');
-goog.require('ssd.register');
 
 /**
  * The Facebook auth constructor
@@ -37,6 +36,9 @@ ssd.user.auth.Facebook = function( authInst ) {
   // If this is set to false, we assume that the FB JS API was loaded
   // synchronously
   this.config(ssd.user.auth.config.Key.FB_LOAD_API, true);
+
+  /** @inheritDoc */
+  this._hasJSAPI = true;
 
   /**
    * @type {?Object} udo as provided by facebook
@@ -502,14 +504,6 @@ ssd.user.auth.Facebook.prototype.getUser = function(optCb, optSelf) {
 
   return def.promise;
 };
-
-/**
- * @return {boolean}
- */
-ssd.user.auth.Facebook.prototype.hasJSAPI = function() {
-  return true;
-};
-
 
 /**
  * @inheritDoc

@@ -25,7 +25,7 @@ goog.addDependency('../../../src/modules/auth/response.auth.js', ['ssd.user.auth
 goog.addDependency('../../../src/modules/auth/user.auth.config.js', ['ssd.user.auth.config'], []);
 goog.addDependency('../../../src/modules/auth/user.auth.controller.js', ['ssd.user.Auth', 'ssd.user.Auth.Error'], ['ssd.invocator', 'ssd.register', 'ssd.structs.DynamicMap', 'ssd.structs.Map', 'ssd.user.AuthLogin', 'ssd.user.AuthModel', 'ssd.user.OwnItem', 'ssd.user.auth.EventType', 'ssd.user.auth.config', 'ssd.user.types']);
 goog.addDependency('../../../src/modules/auth/user.auth.events.js', ['ssd.user.auth.EventType'], []);
-goog.addDependency('../../../src/modules/auth/user.auth.exports.js', ['ssd.user.auth.exports'], []);
+goog.addDependency('../../../src/modules/auth/user.auth.exports.js', ['ssd.user.auth.exports'], ['ssd.user.Auth', 'ssd.user.auth.Facebook', 'ssd.user.auth.Twitter']);
 goog.addDependency('../../../src/modules/auth/user.auth.login.js', ['ssd.user.AuthLogin'], ['goog.dom', 'goog.dom.forms', 'ssd.helpers', 'ssd.sync', 'ssd.user.AuthModel', 'ssd.user.auth.EventType', 'ssd.user.auth.config']);
 goog.addDependency('../../../src/modules/auth/user.auth.model.js', ['ssd.user.AuthModel'], ['goog.json', 'ssd.Module', 'ssd.core.config', 'ssd.sync', 'ssd.user.auth.EventType', 'ssd.user.auth.Response', 'ssd.user.auth.config']);
 goog.addDependency('../../../src/modules/metrics/googleAnalytics.js', ['ssd.metrics.ga'], []);

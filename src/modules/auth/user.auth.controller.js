@@ -58,6 +58,7 @@ ssd.user.Auth = function(ssdInst) {
 
   // FIXME FIXME refactor this
   this._capsule.fb = new ssd.user.auth.Facebook(this);
+  this._capsule.tw = new ssd.user.auth.Twitter(this);
 
   return this._capsule;
 

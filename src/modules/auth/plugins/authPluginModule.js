@@ -18,16 +18,22 @@ ssd.user.auth.PluginModule = function( authInst )
   goog.base(this);
   /**
    * The user auth Class
-   * @private
+   * @protected
    * @type {ssd.user.Auth}
    */
   this._auth = authInst;
+
+  /**
+   * @protected
+   * @type {boolean} wether the plugin as a JS API.
+   */
+  this._hasJSAPI = false;
 
   // set auth main as the parent event target
   this.setParentEventTarget( this._auth );
 
   /**
-   * @private
+   * @protected
    * @type {boolean} External source's Auth switch
    */
   this._isAuthed = false;
@@ -71,4 +77,11 @@ ssd.user.auth.PluginModule.prototype.getAccessToken = function() {
  */
 ssd.user.auth.PluginModule.prototype.getSourceId = function() {
   return this.SOURCEID;
+};
+
+/**
+ * @return {boolean}
+ */
+ssd.user.auth.PluginModule.prototype.hasJSAPI = function() {
+  return this._hasJSAPI;
 };

@@ -9,21 +9,20 @@ goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.auth.config');
 goog.require('ssd.user.Auth');
 goog.require('ssd.user.auth.EventType');
-goog.require('ssd.register');
 
 /**
  * The Twitter auth constructor
  *
- * @param {Function} authCapsule the auth module capsule.
+ * @param {Function} authInst the auth module capsule.
  * @implements {ssd.user.auth.PluginInterface}
  * @extends {ssd.user.auth.PluginModule}
  */
-ssd.user.auth.Twitter = function( authCapsule )
-{
-  goog.base(this, authCapsule);
+ssd.user.auth.Twitter = function( authInst ) {
+  this.logger.info('ctor() :: Init.');
+  goog.base(this, authInst);
 
   /** @type {ssd.Config} */
-  this.config = authCapsule._instance.config.prependPath(
+  this.config = authInst.config.prependPath(
     ssd.user.auth.Twitter.CONFIG_PATH );
 
   // set if a local auth with the server should be performed when this
@@ -35,6 +34,9 @@ ssd.user.auth.Twitter = function( authCapsule )
 
   this.config(ssd.user.auth.config.Key.TW_CALLBACK_URL, 'url');
 
+  /** @inheritDoc */
+  this._hasJSAPI = true;
+
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
 };
@@ -45,7 +47,7 @@ goog.addSingletonGetter(ssd.user.auth.Twitter);
  * String path that we'll store the config
  * @const {string}
  */
-ssd.user.auth.Twitter.CONFIG_PATH = 'twitter';
+ssd.user.auth.Twitter.CONFIG_PATH = 'tw';
 
 /**
  * A logger to help debugging
@@ -96,8 +98,8 @@ ssd.user.auth.Twitter.prototype.login = function(optCallback, optPerms) {
   // to start the authentication process
 
   // redirect the browser now
-  window.location.href = this.config( ssd.user.auth.config.Keys
-    .EXT_SOURCES_AUTH_URL ) + returnPath;
+  // window.location.href = this.config( ssd.user.auth.config.Keys
+  //   .EXT_SOURCES_AUTH_URL ) + returnPath;
 };
 
 /**
@@ -129,24 +131,25 @@ ssd.user.auth.Twitter.prototype.logout = function()
 };
 
 /**
- * If user is authed returns us a {@link ssd.user.types.extSource}
- * data object
- * @return {ssd.user.types.extSource|null} null if not authed
- */
-ssd.user.auth.Twitter.prototype.getUser = function()
-{
-
-};
-
-/**
- * Register to auth module.
+ * If user is authed returns the user data object as provided by facebook.
  *
+ * @param  {Function=} optCb Callback.
+ * @param  {Object} optSelf scope for cb.
+ * @return {when.Promise} null if not authed.
  */
-ssd.user.auth.Twitter.onPluginRun = function( authCapsule ) {
-  // twitter auth plugin
-  authCapsule['tw'] = new ssd.user.auth.Twitter( authCapsule );
+ssd.user.auth.Twitter.prototype.getUser = function(optCb, optSelf) {
+  var def = when.defer();
+
+  var cb = optCb || ssd.noop;
+
+  def.promise.then(goog.bind(cb, optSelf), goog.bind(cb, optSelf));
+
+  if ( !this.isAuthed() ) {
+    return def.resolve(null);
+  }
+
+  // FIXME
+  def.resolve({});
+
+  return def.promise;
 };
-ssd.register.plugin( ssd.user.Auth.MODULE_NAME,
-  ssd.user.auth.Twitter.onPluginRun );
-
-
