@@ -33,6 +33,7 @@ ssd.test.userAuth.genIface = function(params) {
   this.pluginSpace    = params.pluginSpace;
   this.hasJSAPI       = params.hasJSAPI;
   this.pluginResponse = params.pluginResponse;
+  this.accessToken    = params.accessToken;
   this.pluginUDO      = params.pluginUDO;
   this.eventJSLoaded  = params.eventJSLoaded;
   this.eventInitialAuthStatus = params.eventInitialAuthStatus;
@@ -255,10 +256,12 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
     });
 
     describe('utility methods', function() {
+      var spyCB;
       beforeEach(function() {
         spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
         _this.beforeEach();
+        plugin.login(spyCB);
+        _this.afterLogin();
       });
       afterEach(function() {
         _this.afterEach();
@@ -268,9 +271,9 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
         expect( plugin.hasJSAPI() ).to.equal(_this.hasJSAPI);
       });
 
-      it('should try to verify with local server', function(){
+      it('should verify with local server', function(){
         plugin.login();
-        expect( stubNet.calledOnce ).to.be.true;
+        expect( stubNet.calledOnce === plugin.hasLocalAuth() ).to.be.true;
       });
 
       it('should globally authenticate us', function(){
@@ -292,7 +295,8 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
 
       it('should return the Access Token of the plugin', function(){
         plugin.login();
-        expect( plugin.getAccessToken() ).to.equal(_this.pluginResponse.authResponse.accessToken);
+        expect( plugin.getAccessToken() ).to.equal(
+          _this.accessToken);
       });
     });
   });
