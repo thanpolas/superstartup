@@ -158,3 +158,9 @@ ssd.user.auth.PluginModule.prototype._doAuth = function (isAuthed, optRespObj) {
   return backPipe();
 };
 
+/**
+ * @return {boolean} If plugin should verify auth with local.
+ */
+ssd.user.auth.PluginModule.prototype.hasLocalAuth = function() {
+  return this.config(ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL);
+};

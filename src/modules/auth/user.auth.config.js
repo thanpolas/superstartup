@@ -4,7 +4,7 @@
 goog.provide('ssd.user.auth.config');
 
 /** @const {string} The path to prepend to all the keys. */
-ssd.user.auth.config.PATH = 'user.auth';
+ssd.user.auth.config.PATH = 'user';
 
 /**
  * auth module configuration keys

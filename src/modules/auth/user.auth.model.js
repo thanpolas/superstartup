@@ -288,7 +288,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   var extItem = this._mapSources.get(sourceId);
 
   // get plugin instance
-  var extInst = extItem.inst;
+  var plugin = extItem.inst;
 
   // dispatch event and check for cancel...
   var eventObj = {
@@ -303,10 +303,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   }
 
   // check if this auth plugin does not require authentication with the server
-  if ( extInst.config( ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL ) &&
-      // Check if auth with server is disabled
-      this.config( ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL ) ) {
-
+  if ( !plugin.hasLocalAuth() ) {
     // No verification with server is allowed by config.
     // authenticate the user.
     return this._doAuth( true );
@@ -316,7 +313,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
   // Prepare the ajax call
   //
   // get local auth url from ext plugin or use default one.
-  var url = extInst.config( ssd.user.auth.config.Key.EXT_SOURCES_AUTH_URL ) ||
+  var url = plugin.config( ssd.user.auth.config.Key.EXT_SOURCES_AUTH_URL ) ||
     this.config( ssd.user.auth.config.Key.LOGIN_URL );
 
   var data = {},
@@ -324,7 +321,7 @@ ssd.user.AuthModel.prototype.verifyExtAuthWithLocal = function( sourceId ) {
       paramAccessToken = this.config( ssd.user.auth.config.Key.PARAM_ACCESS_TOKEN );
 
   data[paramSource] = sourceId;
-  data[paramAccessToken] = extInst.getAccessToken();
+  data[paramAccessToken] = plugin.getAccessToken();
 
   return this.performLocalAuth( url, data );
 
@@ -348,15 +345,11 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
   this.logger.info('performLocalAuth() :: Init. url:' + url);
 
   // check if local auth enabled
-  if (! this.config( ssd.user.auth.config.Key.HAS_LOCAL_AUTH )) {
+  if ( !this.config( ssd.user.auth.config.Key.HAS_LOCAL_AUTH )) {
     this.logger.info('performLocalAuth() :: local auth is disabled');
-    this._doAuth( true );
-    return def.reject( true );
+    return this._doAuth( true );
   }
 
-  def.promise.otherwise(function(){
-    console.log('OTHERWIZEEEE', arguments);
-  });
 
   // dispatch event and check for cancel...
   var eventObj  = {
@@ -527,17 +520,18 @@ ssd.user.AuthModel.prototype.deAuth = function() {
 ssd.user.AuthModel.prototype._doAuth = function (isAuthed) {
   this.logger.info('_doAuth() :: Init. isAuthed:' + isAuthed);
 
-  this._isAuthed = isAuthed;
+  this._isAuthed = !!isAuthed;
+
+  var respObj = new ssd.user.auth.Response();
 
   if ( !isAuthed ) {
     // clear the dynamic map data object
     this._dynmapUdo.clear();
   }
 
-  var eventObj  = {
-    'authState': isAuthed,
-    type: ssd.user.auth.EventType.AUTH_CHANGE
-  };
+  respObj.authState = this._isAuthed;
+
+  var eventObj = respObj.event(ssd.user.auth.EventType.AUTH_CHANGE, this);
   this.dispatchEvent(eventObj);
   return when.resolve(isAuthed);
 };
