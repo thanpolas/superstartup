@@ -4,6 +4,7 @@
  */
 goog.provide('ssd.user.auth.Twitter');
 goog.provide('ssd.user.auth.twitter.EventType');
+goog.provide('ssd.user.auth.twitter.LoginOp');
 
 goog.require('ssd.user.auth.PluginModule');
 goog.require('ssd.user.auth.config');
@@ -21,21 +22,41 @@ ssd.user.auth.Twitter = function( authInst ) {
   this.logger.info('ctor() :: Init.');
   goog.base(this, authInst);
 
-  /** @type {ssd.Config} */
+  /** @type {?ssd.Config} */
   this.config = authInst.config.prependPath(
     ssd.user.auth.Twitter.CONFIG_PATH );
+
+  /**
+   * @type {ssd.user.auth.twitter.LoginOp}
+   * @private
+   */
+  this._loginOp = null;
 
   // set if a local auth with the server should be performed when this
   // plugin authenticates.
   this.config(ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL, false);
 
+  // Default endpoint for twitter auth
   this.config(ssd.user.auth.config.Key.EXT_SOURCES_AUTH_URL,
     '/auth/twitter');
 
-  this.config(ssd.user.auth.config.Key.TW_CALLBACK_URL, 'url');
+  // Default login timeout: 12s
+  this.config(ssd.user.auth.config.Key.LOGIN_TIMEOUT, 12000);
+
+
+  // login callback param
+  this.config(ssd.user.auth.config.Key.TW_CALLBACK_PARAM, null);
+
+  // login using popup
+  this.config(ssd.user.auth.config.Key.TW_LOGIN_POPUP, false);
+
+  // login popup width
+  this.config(ssd.user.auth.config.Key.LOGIN_POPUP_WIDTH, 1015);
+  // login popup height
+  this.config(ssd.user.auth.config.Key.LOGIN_POPUP_HEIGHT, 500);
 
   /** @inheritDoc */
-  this._hasJSAPI = true;
+  this._hasJSAPI = false;
 
   // register ourselves to main external auth class
   this._auth.addExtSource(this);
@@ -83,16 +104,39 @@ ssd.user.auth.Twitter.prototype.init = function() {
  * Opens the login dialog or starts the authentication flow
  *
  * @param  {Function(boolean)=} optCallback optional callback
- * @param {string=} optPerms set permissions if we need to...
- *      comma separate them
- * @return {void}
+ * @param {} [varname] [description]
+ * @return {when.Promise}
  */
-ssd.user.auth.Twitter.prototype.login = function(optCallback, optPerms) {
-  // use the current path of the user for return
-  var returnPath = '?' + this.config(ssd.user.auth.config.Key.TW_CALLBACK_URL) +
-    '=' + ssd.encURI(window.location.pathname);
+ssd.user.auth.Twitter.prototype.login = function(optCallback, optSelf) {
 
-  this.logger.info('Init login(). Return path:' + returnPath);
+  this.logger.info('login() :: Init.');
+
+  var def = when.defer();
+  var callback = optCallback || ssd.noop;
+
+  def.promise.then(
+    goog.bind(this._promise2cb, this, callback, optSelf, true),
+    goog.bind(this._promise2cb, this, callback, optSelf, false)
+  );
+
+  if ( !this._beforeLogin() ) {
+    return def.reject('canceled by event');
+  }
+
+
+  if (this.config(ssd.user.auth.config.Key.TW_LOGIN_POPUP)) {
+    this.loginPopup().then(def.resolve, def.reject);
+  } else {
+
+  }
+
+  return def.promise;
+
+  // use the current path of the user for return
+  // var returnPath = '?' + this.config(ssd.user.auth.config.Key.TW_CALLBACK_PARAM) +
+  //   '=' + ssd.encURI(window.location.pathname);
+
+  // this.logger.info('Init login(). Return path:' + returnPath);
 
   // we have to redirect user to /signup/twitter.php
   // to start the authentication process
@@ -103,19 +147,110 @@ ssd.user.auth.Twitter.prototype.login = function(optCallback, optPerms) {
 };
 
 /**
- * Twitter Login Listener.
- * We listen for the completion of the fb login modal
+ * Convert a promise outcome into a callback.
  *
+ * On error the callback expects:
+ * 1. string : error message
+ * 2. boolean : authState
+ *
+ * On Success of operation callback expects:
+ * 1. null : error message null
+ * 2. boolean : authState
+ * 3. Object : udo
+ * 4. Object|string= : Server response raw
+ * 5. Object|string= : Third Party response raw
+ *
+ * @param  {!Function} cb a function.
+ * @param  {Object|undefined} self scope.
+ * @param  {boolean} status operation status.
+ * @param  {[type]}   optRespObj [description]
+ * @param  {ssd.user.auth.plugin.Response|string=} optRespObj response object or
+ *   error message.
  * @private
- * @param {object} response
- * @param {Function(boolean)} callback
- * @return {void}
  */
-ssd.user.auth.Twitter.prototype._loginListener = function (response, callback)
-{
-  this.logger.info('Init _loginListener()');
+ssd.user.auth.Twitter.prototype._promise2cb = function(cb, self, status,
+  optRespObj) {
 
-  callback(this._isAuthedFromResponse(response));
+  this.logger.finer('_promise2cb() :: Init. Status:' + status);
+  var respObj = optRespObj || {};
+
+  if (!status) {
+    cb.call(self, respObj, this._auth.isAuthed());
+    return;
+  }
+  cb.call(self,
+    null,
+    this._auth.isAuthed(),
+    this._auth.getSet(),
+    respObj.serverRaw,
+    respObj.responsePluginRaw
+  );
+};
+
+
+/**
+ * Perform a login using a popup
+ *
+ * @return {when.Promise} a promise.
+ */
+ssd.user.auth.Twitter.prototype.loginPopup = function() {
+  this.logger.info('_loginPopup() :: Init.');
+  var def = when.defer();
+
+  var url = this.config(ssd.user.auth.config.Key.EXT_SOURCES_AUTH_URL);
+
+  var width = this.config(ssd.user.auth.config.Key.LOGIN_POPUP_WIDTH);
+  var height = this.config(ssd.user.auth.config.Key.LOGIN_POPUP_HEIGHT);
+
+  var opTimeout = this.config(ssd.user.auth.config.Key.LOGIN_TIMEOUT);
+
+  if (this._loginOp && this._loginOp.running) {
+    this._loginOp.reject();
+  }
+  this._loginOp = new ssd.user.auth.twitter.LoginOp({
+    def: def, timeout: opTimeout
+  });
+
+  open(url, 'popup', 'width=' + width + ',height=' + height);
+
+  return def.promise;
+};
+
+/**
+ * This method is called from the popup window after a login operation.
+ *
+ * @param {string} token The access token.
+ */
+ssd.user.auth.Twitter.prototype.oauthToken = function(token) {
+  this.logger.info('oauthToken() :: Init.');
+
+  this._accessToken = token;
+
+  var respObj = this._getRespObj();
+  respObj.authStatePlugin = this.isAuthed();
+  respObj.accessToken = token;
+
+  var eventObj = respObj.event(ssd.user.auth.EventType.ON_EXT_OAUTH, this);
+
+  if (false === this.dispatchEvent( eventObj )) {
+    this._accessToken = null;
+    if (this._loginOp.running) {
+      this._loginOp.reject('canceled by on oauth event');
+    }
+    return;
+  }
+
+  if (!this._loginOp.running) {
+    this.logger.severe('oauthToken() :: There is no login operation running!');
+    // nothing to do
+    return;
+  }
+
+  // perform auth
+  this._doAuth(true, respObj)
+    .then(goog.bind(this._loginOp.resolve, this._loginOp),
+      goog.bind(this._loginOp.reject, this._loginOp));
+
 };
 
 /**
@@ -131,7 +266,6 @@ ssd.user.auth.Twitter.prototype.logout = function()
 };
 
 /**
- * If user is authed returns the user data object as provided by facebook.
  *
  * @param  {Function=} optCb Callback.
  * @param  {Object} optSelf scope for cb.
@@ -152,4 +286,64 @@ ssd.user.auth.Twitter.prototype.getUser = function(optCb, optSelf) {
   def.resolve({});
 
   return def.promise;
+};
+
+
+/**
+ * A login operation object.
+ *
+ * @param {Object} params [description]
+ * @constructor
+ */
+ssd.user.auth.twitter.LoginOp = function(params) {
+
+  /**
+   * @type {when.Deferred}
+   */
+  this.def = params.def;
+
+  /**
+   * @type {boolean} if a login operation is running.
+   */
+  this.running = true;
+
+  this._timeoutIndex = setTimeout(
+    goog.bind(this.reject, this, 'Operation timeout'),
+    params.timeout
+  );
+
+};
+
+/**
+ * Will reject the login operation.
+ *
+ * @param  {string=} optErrMsg Define a message for rejecting the deferred.
+ */
+ssd.user.auth.twitter.LoginOp.prototype.reject = function(optErrMsg) {
+  console.log('REJECT!', this.running);
+  if (!this.running) {
+    return;
+  }
+  var errMsg = optErrMsg || 'Canceled by new login';
+  this.running = false;
+  clearTimeout(this._timeoutIndex);
+  this._timeoutIndex = null;
+  this.def.reject(errMsg);
+};
+
+
+/**
+ * Will resolve the login operation.
+ *
+ * @param  {ssd.user.auth.plugin.Response} respObj The response object.
+ */
+ssd.user.auth.twitter.LoginOp.prototype.resolve = function(respObj) {
+  console.log('RESOLVE!');
+  if (!this.running) {
+    return;
+  }
+  this.running = false;
+  clearTimeout(this._timeoutIndex);
+  this._timeoutIndex = null;
+  this.def.resolve(respObj);
 };

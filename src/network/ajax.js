@@ -55,7 +55,7 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
     if ( xhr ) {
       respObj.httpStatus = xhr.getStatus();
       respObj.success = xhr.isSuccess();
-      respObj.respObjRaw = xhr.getResponse();
+      respObj.responseRaw = xhr.getResponse();
       respObj.errorMessage = xhr.getLastError();
       respObj.xhr = xhr;
     }
@@ -73,7 +73,9 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
   // hijack callback
   var xhrArgs = Array.prototype.slice.call(arguments, 0);
   xhrArgs[1] = cb;
+
   goog.net.XhrIo.send.apply(null, xhrArgs);
 
+  return def;
 };
 

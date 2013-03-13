@@ -15,6 +15,7 @@ ssd.user.auth.EventType = {
   // We have a global auth change event
   // (from not authed to authed and vice verca)
   // use this eventype for authoritative changes
+  // {authState: boolean}
   AUTH_CHANGE: 'user.authChange',
 
   // When all initial auth states from all sources have reported in
@@ -27,12 +28,20 @@ ssd.user.auth.EventType = {
   // Triggers if authed user is new, first time signup
   NEWUSER: 'user.newUser',
 
+  // before a login operation with an external plugin starts.
+  // {source: string}
+  BEFORE_EXT_LOGIN: 'user.beforeExtLogin',
+  // When external auth plugin source responds
+  // {ssd.user.auth.plugin.Response}
+  ON_EXT_OAUTH: 'user.onExtOauth',
+
   // before ext source local auth
   BEFORE_EXT_LOCAL_AUTH: 'user.beforeExtLocalAuth',
 
-  // Before local Auth
-  BEFORE_LOGIN: 'user.beforeLogin',
 
+  // Before local Auth
+  // {data: Object}
+  BEFORE_LOGIN: 'user.beforeLogin',
   // before logout
   BEFORE_LOGOUT: 'user.beforeLogout',
 
@@ -44,12 +53,12 @@ ssd.user.auth.EventType = {
   AFTER_LOGIN_RESPONSE: 'user.afterLoginResponse',
   AFTER_LOGOUT_RESPONSE: 'user.afterLogoutResponse',
 
-  // own user data object before validating it's ok
-  USERDATA_BEFORE_VALIDATE: 'user.data.beforeValidate',
+  // udo before validating it's ok
+  USERDATA_BEFORE_VALIDATE: 'user.udo.beforeValidate',
 
-  // own user data object piped events (piped from structs.DynamicMap)
-  BEFORE_SET:    'user.data.beforeSet',
-  AFTER_SET:     'user.data.afterSet',
-  BEFORE_ADDALL: 'user.data.beforeAddall',
-  AFTER_ADDALL:  'user.data.afterAddall'
+  // own udo piped events (piped from structs.DynamicMap)
+  BEFORE_SET:    'user.udo.beforeSet',
+  AFTER_SET:     'user.udo.afterSet',
+  BEFORE_ADDALL: 'user.udo.beforeAddall',
+  AFTER_ADDALL:  'user.udo.afterAddall'
 };

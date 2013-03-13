@@ -28,6 +28,12 @@ ssd.user.auth.plugin.Response = function( optResp ) {
   this.authStatePlugin = false;
 
   /**
+   * @type {?string} The access token.
+   * @expose
+   */
+  this.accessToken = null;
+
+  /**
    * @type {ssd.user.types.extSourceId} The name of the plugin
    * @expose
    */

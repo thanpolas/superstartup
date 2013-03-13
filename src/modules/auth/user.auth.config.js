@@ -56,12 +56,10 @@ ssd.user.auth.config.Key = {
   //
   RESPONSE_AUTH_JSON: 'resAuthJson',
 
-  // Callback url
-  // type: string
-  TW_CALLBACK_URL: 'callbackUrl',
-
+  //
   //
   // Facebook only keys
+  //
   //
 
   // The app id key.
@@ -74,7 +72,36 @@ ssd.user.auth.config.Key = {
 
   // Load facebook's API asynchronously and listen for load finish.
   // type: boolean
-  FB_LOAD_API: 'loadAPI'
+  FB_LOAD_API: 'loadAPI',
+
+  //
+  //
+  // Twitter only keys
+  //
+  //
+
+  // Callback name used as a GET param durint the login operation.
+  // It is meant to be read by the backend server so it knows where
+  // to redirect a client after a login op.
+  // If not set, there is no default, the param will not be used.
+  // type: ?string
+  TW_CALLBACK_PARAM: 'callbackUrl',
+
+  // Login timeout in ms
+  // type: number
+  LOGIN_TIMEOUT: 'loginTimeout',
+
+  // Enable login using a new popup window
+  // type: boolean
+  TW_LOGIN_POPUP: 'loginPopup',
+
+  // Popup window width
+  // type: number
+  LOGIN_POPUP_WIDTH: 'loginPopupWidth',
+
+  // Popup window height
+  // type: number
+  LOGIN_POPUP_HEIGHT: 'loginPopupHeight'
 
 };
 

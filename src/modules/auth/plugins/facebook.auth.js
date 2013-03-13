@@ -41,12 +41,6 @@ ssd.user.auth.Facebook = function( authInst ) {
   this._hasJSAPI = true;
 
   /**
-   * @type {?Object} udo as provided by facebook
-   * @private
-   */
-  this._fbUdo = null;
-
-  /**
    * @type {string}
    * @private
    */
@@ -327,6 +321,11 @@ ssd.user.auth.Facebook.prototype.login = function(optCb, optSelf) {
     goog.bind(this._promise2cb, this, callback, optSelf, false)
   );
 
+  if ( !this._beforeLogin() ) {
+    return def.reject('canceled by event');
+  }
+
+
   var cb = ssd.cb2promise(def, this._loginListener, this);
 
   FB.login(cb, paramObj);
@@ -375,7 +374,6 @@ ssd.user.auth.Facebook.prototype._promise2cb = function(cb, self, status,
 };
 
 
-
 /**
  * Facebook Login Listener.
  * Listen for the completion of the fb login modal
@@ -398,6 +396,17 @@ ssd.user.auth.Facebook.prototype._loginListener = function (response) {
     }
 */
   this.logger.info('_loginListener() :: Init');
+
+  var respObj = this._getRespObj();
+  respObj.authStatePlugin = this.isAuthed();
+  respObj.responsePluginRaw = response;
+
+  var eventObj = respObj.event(ssd.user.auth.EventType.ON_EXT_OAUTH, this);
+
+  if (false === this.dispatchEvent( eventObj )) {
+    return when.reject('canceled by on oauth event');
+  }
+
 
   return this._isAuthedFromResponse(response);
 };
@@ -446,15 +455,9 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
 
   this.logger.info('_isAuthedFromResponse() :: Auth state changed to: ' + isAuthed);
 
-  var eventObj = respObj.event(ssd.user.auth.EventType.EXT_AUTH_CHANGE, this);
-  // add a backpipe so that auth lib will pass back a promise.
-  var backPipe = ssd.eventBackPipe( eventObj, when.defer() );
 
-  this.dispatchEvent( eventObj );
+  return this._doAuth(true, respObj);
 
-  backPipe().then( def.resolve, def.reject );
-
-  return def;
 };
 
 /**
@@ -464,9 +467,9 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
 */
 ssd.user.auth.Facebook.prototype.logout = function() {
   this.logger.info('logout() :: Init');
-  this._isAuthed = false;
-  this._fbUdo = null;
-  this.dispatchEvent(ssd.user.auth.EventType.EXT_AUTH_CHANGE);
+
+  this._doAuth(false);
+
   FB.logout(function(response) {
     this.logger.info('logout() :: callback. Deep expose of response:' + goog.debug.deepExpose(response, false, true));
   });
@@ -490,12 +493,12 @@ ssd.user.auth.Facebook.prototype.getUser = function(optCb, optSelf) {
     return def.resolve(null);
   }
 
-  if (this._fbUdo) {
-    return def.resolve( this._fbUdo );
+  if (this._udo) {
+    return def.resolve( this._udo );
   }
   FB.api('/me', goog.bind(function(response) {
     if ( goog.isObject( response )) {
-      this._fbUdo = response;
+      this._udo = response;
       def.resolve(response);
     } else {
       def.reject( response );
@@ -510,7 +513,7 @@ ssd.user.auth.Facebook.prototype.getUser = function(optCb, optSelf) {
  */
 ssd.user.auth.Facebook.prototype.getAccessToken = function() {
   if (!this.isAuthed()) {
-    return '';
+    return null;
   }
 
   return FB.getAccessToken();

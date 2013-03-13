@@ -33,10 +33,23 @@ ssd.user.auth.PluginModule = function( authInst )
   this.setParentEventTarget( this._auth );
 
   /**
+   * @type {?string} The access token of the current user.
+   * @protected
+   */
+  this._accessToken = null;
+
+  /**
    * @protected
    * @type {boolean} External source's Auth switch
    */
   this._isAuthed = false;
+
+  /**
+   * @type {?Object} udo as provided by the third party,
+   *       converted to an object literal.
+   * @protected
+   */
+  this.udo = null;
 
   /**
    * Used by our instance handlers to know if we have started
@@ -56,20 +69,14 @@ ssd.user.auth.PluginModule.prototype.isAuthed = function() {
 };
 
 /**
- * Overwrite this method
- * @return {boolean}
- */
-ssd.user.auth.PluginModule.prototype.hasJSAPI = goog.abstractMethod;
-
-/**
  * Mock the getAccessToken method. Overwrite if LOCALAUTH
  * is true
  *
  * @protected
- * @return {string} The oAuth access token
+ * @return {?string} The oAuth access token
  */
 ssd.user.auth.PluginModule.prototype.getAccessToken = function() {
-  return '';
+  return this._accessToken;
 };
 
 /**
@@ -85,3 +92,69 @@ ssd.user.auth.PluginModule.prototype.getSourceId = function() {
 ssd.user.auth.PluginModule.prototype.hasJSAPI = function() {
   return this._hasJSAPI;
 };
+
+
+/**
+ * @return {ssd.user.auth.plugin.Response} a resp object.
+ * @protected
+ */
+ssd.user.auth.PluginModule.prototype._getRespObj = function() {
+  var respObj = new ssd.user.auth.plugin.Response();
+  respObj.source = this.SOURCEID;
+  return respObj;
+};
+
+
+
+/**
+ * Will trigger a BEFORE_EXT_LOGIN event for this plugin.
+ *
+ * @return {boolean} False if preventDefault() was called.
+ * @protected
+ */
+ssd.user.auth.PluginModule.prototype._beforeLogin = function() {
+
+  var respObj = this._getRespObj();
+  respObj.authStatePlugin = this.isAuthed();
+
+  var eventObj = respObj.event(ssd.user.auth.EventType.BEFORE_EXT_LOGIN, this);
+
+  if (false === this.dispatchEvent( eventObj )) {
+    return false;
+  }
+  return true;
+};
+
+
+/**
+ * Perform an auth or deauth based on parameter
+ *
+ * @param {boolean} isAuthed
+ * @param  {ssd.user.auth.plugin.Response=}  optRespObj a resp obj to use.
+ * @protected
+ * @return {when.Promise} a promise.
+ */
+ssd.user.auth.PluginModule.prototype._doAuth = function (isAuthed, optRespObj) {
+  this.logger.info('_doAuth() :: Init. isAuthed:' + isAuthed);
+
+  this._isAuthed = isAuthed;
+
+  if ( !isAuthed ) {
+    // clear the dynamic map data object
+    this._udo = null;
+    this._accessToken = null;
+  }
+
+  var respObj = optRespObj || this._getRespObj();
+  respObj.authStatePlugin = this._isAuthed;
+
+  var eventObj = respObj.event(ssd.user.auth.EventType.EXT_AUTH_CHANGE, this);
+
+  // add a backpipe so that auth lib can pass back a promise.
+  var backPipe = ssd.eventBackPipe( eventObj, when.resolve(respObj) );
+
+  this.dispatchEvent( eventObj );
+
+  return backPipe();
+};
+

@@ -354,6 +354,9 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
     return def.reject( true );
   }
 
+  def.promise.otherwise(function(){
+    console.log('OTHERWIZEEEE', arguments);
+  });
 
   // dispatch event and check for cancel...
   var eventObj  = {
@@ -427,7 +430,7 @@ ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
   if ( this.config( ssd.user.auth.config.Key.RESPONSE_AUTH_JSON )) {
     /** @preserveTry */
     try {
-      responseParsed = goog.json.parse(respObjSync['responseRaw']);
+      responseParsed = goog.json.parse(respObjSync.responseRaw);
     } catch(ex) {
       this.logger.warning('_serverAuthResponse() :: response failed' +
         ' to parse as JSON');
