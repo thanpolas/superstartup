@@ -137,9 +137,9 @@ ssd.user.auth.PluginModule.prototype._beforeLogin = function() {
 ssd.user.auth.PluginModule.prototype._doAuth = function (isAuthed, optRespObj) {
   this.logger.info('_doAuth() :: Init. isAuthed:' + isAuthed);
 
-  this._isAuthed = isAuthed;
+  this._isAuthed = !!isAuthed;
 
-  if ( !isAuthed ) {
+  if ( !this._isAuthed ) {
     // clear the dynamic map data object
     this._udo = null;
     this._accessToken = null;

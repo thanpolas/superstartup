@@ -9,7 +9,12 @@ goog.require('ssd.test.fixture.userOne');
 
 
 mocha.setup({
-  globals: ['fbAsyncInit', 'liveReload', 'LiveReload']
+  globals: [
+    'fbAsyncInit',
+    'liveReload',
+    'LiveReload',
+    'open'
+  ]
 });
 
 // goog.require('ssd.test.mock.net');

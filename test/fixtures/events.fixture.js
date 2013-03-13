@@ -33,6 +33,14 @@ ssd.test.fixture.event.user = {
   INITIAL_AUTH_STATE: 'user.initialAuthState',
   // Triggers if authed user is new, first time signup
   NEWUSER: 'user.newUser',
+
+  // before a login operation with an external plugin starts.
+  // {source: string}
+  BEFORE_EXT_LOGIN: 'user.beforeExtLogin',
+  // When external auth plugin source responds
+  // {ssd.user.auth.plugin.Response}
+  ON_EXT_OAUTH: 'user.onExtOauth',
+
   // before ext source local auth
   BEFORE_EXT_LOCAL_AUTH: 'user.beforeExtLocalAuth',
   // before local auth

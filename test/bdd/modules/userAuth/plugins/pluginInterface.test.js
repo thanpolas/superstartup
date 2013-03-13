@@ -36,9 +36,16 @@ ssd.test.userAuth.genIface = function(params) {
   this.pluginUDO      = params.pluginUDO;
   this.eventJSLoaded  = params.eventJSLoaded;
   this.eventInitialAuthStatus = params.eventInitialAuthStatus;
+  this.loginCbArg4Type = goog.isDef(params.loginCbArg4Type) ?
+    params.loginCbArg4Type : 'object';
+  this.loginCbArg5Type = goog.isDef(params.loginCbArg5Type) ?
+    params.loginCbArg5Type : 'object';
+  this.loginCbHasUdo = goog.isDef(params.loginCbHasUdo) ?
+    params.loginCbHasUdo : true;
 
   this.beforeEach = function(){};
   this.afterEach = function(){};
+  this.afterLogin = function(){};
 
   return this;
 };
@@ -59,7 +66,14 @@ ssd.test.userAuth.genIface.prototype.setAfterEach = function(fn){
   this.afterEach = fn;
   return this;
 };
-
+/**
+ * [setAfterEach description]
+ * @param {Function} fn [description]
+ */
+ssd.test.userAuth.genIface.prototype.setAfterLogin = function(fn){
+  this.afterLogin = fn;
+  return this;
+};
 
 
 /**
@@ -115,8 +129,8 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
     it('should have a getAccessToken() method', function(){
       expect( plugin.getAccessToken ).to.be.a('function');
     });
-    it('getAccessToken() should always return string', function(){
-      expect( plugin.getAccessToken() ).to.be.a('string');
+    it('getAccessToken() should always return null', function(){
+      expect( plugin.getAccessToken() ).to.be.null;
     });
     it('should have a logout method', function(){
       expect( plugin.logout ).to.be.a('function');
@@ -185,11 +199,7 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
       stubNet = sinon.stub(ss.sync, 'send');
       stubNet.returns( ss._getResponse( fixtures.userOne ));
 
-      ss(function(){
-        _this.beforeEach();
-        done();
-      });
-
+      ss(done);
     });
 
     afterEach(function() {
@@ -197,79 +207,63 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
       ss.user.deAuth();
       plugin.logout();
       ss.removeAllListeners();
-      _this.afterEach();
     });
 
     describe('login callback tests', function() {
-      it('should have a working callback', function(){
-        var spyCB = sinon.spy.create('loginCB');
+      var spyCB;
+      beforeEach(function() {
+        _this.beforeEach();
+        spyCB = sinon.spy.create('loginCB');
         plugin.login(spyCB);
-        expect( spyCB.calledOnce ).to.be.true;
+        _this.afterLogin();
       });
-
+      afterEach(function() {
+        _this.afterEach();
+      });
       it('should have a callback', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
-
         expect(spyCB.calledOnce).to.be.true;
       });
-
       it('should have a callback with 5 arguments', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
         expect( spyCB.args[0].length ).to.equal(5);
       });
-
       it('should have a callback with arg1, the error message, null', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
         expect( spyCB.args[0][0] ).to.be.null;
       });
-
       it('should have a callback with arg2, authState, boolean', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
         expect( spyCB.args[0][1] ).to.be.a('boolean');
       });
-
       it('should have a callback with arg3, udo, object', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
         expect( spyCB.args[0][2] ).to.be.an('object');
       });
-
-      it('should have a callback with arg4, server response raw, object', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
-        expect( spyCB.args[0][3] ).to.be.an('object');
+      it('should have a callback with arg4, server response raw, ' + _this.loginCbArg4Type, function(){
+        expect( spyCB.args[0][3] ).to.be.an(_this.loginCbArg4Type);
       });
-
-      it('should have a callback with arg5, third-party response raw, object', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
-        expect( spyCB.args[0][4] ).to.be.an('object');
+      it('should have a callback with arg5, third-party response raw, ' + _this.loginCbArg5Type, function(){
+        expect( spyCB.args[0][4] ).to.be.an(_this.loginCbArg5Type);
       });
-
-      it('should have a proper user data object provided on the callback', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
-        expect( spyCB.getCall(0).args[2] ).to.deep.equal(fixtures.userOne);
-      });
-
-      it('should have a proper server response data object provided on the callback', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
-        expect( spyCB.getCall(0).args[3] ).to.deep.equal(fixtures.userOne);
-      });
-
+      if (_this.loginCbHasUdo) {
+        it('should have a proper user data object provided on the callback', function(){
+          expect( spyCB.getCall(0).args[2] ).to.deep.equal(fixtures.userOne);
+        });
+        it('should have a proper server response data object provided on the callback', function(){
+          expect( spyCB.getCall(0).args[3] ).to.deep.equal(fixtures.userOne);
+        });
+      }
       it('should have a proper 3rd party response data object provided on the callback', function(){
-        var spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
         expect( spyCB.getCall(0).args[4] ).to.deep.equal(_this.pluginResponse);
       });
     });
 
     describe('utility methods', function() {
+      beforeEach(function() {
+        spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB);
+        _this.beforeEach();
+      });
+      afterEach(function() {
+        _this.afterEach();
+      });
+
       it('should return ' + _this.hasJSAPI + ' when asked if hasJSAPI()', function(){
         expect( plugin.hasJSAPI() ).to.equal(_this.hasJSAPI);
       });

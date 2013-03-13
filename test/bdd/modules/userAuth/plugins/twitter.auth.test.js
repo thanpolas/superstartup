@@ -20,7 +20,10 @@ describe('User Auth Module Plugins :: Twitter', function () {
     pluginNameSpace: 'tw',
     hasJSAPI:        false,
     pluginUDO:       fixtures.auth.tw.udo,
-    // eventJSLoaded:   eventFB.JSAPILOADED,
+    pluginResponse:  'access_token',
+    loginCbArg4Type: 'null',
+    loginCbArg5Type: 'string',
+    loginCbHasUdo:   false,
     eventInitialAuthStatus: eventTW.INITIAL_AUTH_STATUS
   };
 
@@ -28,16 +31,26 @@ describe('User Auth Module Plugins :: Twitter', function () {
   var genTest = new ssd.test.userAuth.genIface(testConfig);
   genTest.basicTests();
 
+  var stubOpen;
+
   var loginBeforeEach = function() {
-    ss.config('user.auth.tw.appId', '540');
+    ss.config('user.tw.loginPopup', true);
+    stubOpen = sinon.stub(window, 'open');
+  };
+  var loginAfterLogin = function() {
+    ss.user.tw.oauthToken('access_token');
   };
   var loginAfterEach = function() {
+    stubOpen.restore();
   };
+
+
 
   // prepare login callback tests
   var loginTests = new ssd.test.userAuth.genIface(testConfig)
     .setBeforeEach(loginBeforeEach)
     .setAfterEach(loginAfterEach)
+    .setAfterLogin(loginAfterLogin)
     // and run the login tests
     .loginTests();
 

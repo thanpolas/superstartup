@@ -123,7 +123,6 @@ ssd.user.auth.Twitter.prototype.login = function(optCallback, optSelf) {
     return def.reject('canceled by event');
   }
 
-
   if (this.config(ssd.user.auth.config.Key.TW_LOGIN_POPUP)) {
     this.loginPopup().then(def.resolve, def.reject);
   } else {
@@ -211,7 +210,7 @@ ssd.user.auth.Twitter.prototype.loginPopup = function() {
     def: def, timeout: opTimeout
   });
 
-  open(url, 'popup', 'width=' + width + ',height=' + height);
+  window.open(url, 'popup', 'width=' + width + ',height=' + height);
 
   return def.promise;
 };
@@ -229,6 +228,7 @@ ssd.user.auth.Twitter.prototype.oauthToken = function(token) {
   var respObj = this._getRespObj();
   respObj.authStatePlugin = this.isAuthed();
   respObj.accessToken = token;
+  respObj.responsePluginRaw = token;
 
   var eventObj = respObj.event(ssd.user.auth.EventType.ON_EXT_OAUTH, this);
 
@@ -320,7 +320,6 @@ ssd.user.auth.twitter.LoginOp = function(params) {
  * @param  {string=} optErrMsg Define a message for rejecting the deferred.
  */
 ssd.user.auth.twitter.LoginOp.prototype.reject = function(optErrMsg) {
-  console.log('REJECT!', this.running);
   if (!this.running) {
     return;
   }
@@ -338,7 +337,6 @@ ssd.user.auth.twitter.LoginOp.prototype.reject = function(optErrMsg) {
  * @param  {ssd.user.auth.plugin.Response} respObj The response object.
  */
 ssd.user.auth.twitter.LoginOp.prototype.resolve = function(respObj) {
-  console.log('RESOLVE!');
   if (!this.running) {
     return;
   }

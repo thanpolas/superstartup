@@ -38,7 +38,6 @@ ssd.user.auth.EventType = {
   // before ext source local auth
   BEFORE_EXT_LOCAL_AUTH: 'user.beforeExtLocalAuth',
 
-
   // Before local Auth
   // {data: Object}
   BEFORE_LOGIN: 'user.beforeLogin',
