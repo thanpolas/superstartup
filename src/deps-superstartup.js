@@ -35,7 +35,7 @@ goog.addDependency('../../../src/modules/user/metadata.js', ['ssd.metadata'], []
 goog.addDependency('../../../src/modules/user/user.item.js', ['ssd.user.Item', 'ssd.user.Item.EventType'], ['ssd.invocator', 'ssd.structs.DynamicMap', 'ssd.structs.FancyGetSet', 'ssd.user.types']);
 goog.addDependency('../../../src/modules/user/user.ownItem.js', ['ssd.user.OwnItem'], ['ssd.user.Item', 'ssd.user.auth.EventType']);
 goog.addDependency('../../../src/modules/user/user.types.js', ['ssd.user.types'], ['ssd.structs.Map']);
-goog.addDependency('../../../src/network/ajax.js', ['ssd.ajax', 'ssd.ajax.Method'], ['goog.net.XhrIo', 'ssd.sync.Response']);
+goog.addDependency('../../../src/network/ajax.js', ['ssd.ajax', 'ssd.ajax.Method'], ['goog.Uri', 'goog.net.XhrIo', 'ssd.sync.Response']);
 goog.addDependency('../../../src/network/response.sync.js', ['ssd.sync.Response', 'ssd.sync.T'], ['goog.object', 'ssd.Response']);
 goog.addDependency('../../../src/network/sync.js', ['ssd.sync'], ['ssd.ajax', 'ssd.sync.Response']);
 goog.addDependency('../../../src/structs/dynamicLinkedMap.js', ['ssd.structs.DynamicLinkedMap', 'ssd.structs.DynamicLinkedMap.EventType'], ['goog.events.EventTarget', 'goog.object', 'ssd.structs.DynamicMap', 'ssd.structs.LinkedMap']);

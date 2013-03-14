@@ -7,7 +7,7 @@
 goog.provide('ssd.ajax');
 goog.provide('ssd.ajax.Method');
 
-
+goog.require('goog.Uri');
 goog.require('goog.net.XhrIo');
 goog.require('ssd.sync.Response');
 
@@ -73,6 +73,10 @@ ssd.ajax.send = function( url, opt_callback, opt_method, opt_content,
   // hijack callback
   var xhrArgs = Array.prototype.slice.call(arguments, 0);
   xhrArgs[1] = cb;
+
+  // hijack content
+  xhrArgs[3] = opt_content ? goog.Uri.QueryData.createFromMap(opt_content) :
+    opt_content;
 
   goog.net.XhrIo.send.apply(null, xhrArgs);
 

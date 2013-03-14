@@ -30,6 +30,10 @@ ssd.user.auth.Facebook = function( authInst ) {
   // plugin authenticates.
   this.config(ssd.user.auth.config.Key.EXT_SOURCES_TO_LOCAL, true);
 
+  // Default endpoint for facebook auth
+  this.config(ssd.user.auth.config.Key.EXT_SOURCES_AUTH_URL,
+    '/auth/facebook');
+
   // set required default configuration values
   this.config(ssd.user.auth.config.Key.FB_APP_ID, '');
   this.config(ssd.user.auth.config.Key.FB_PERMISSIONS, '');

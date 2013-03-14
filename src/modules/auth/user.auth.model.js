@@ -85,31 +85,29 @@ ssd.user.AuthModel.prototype.logger = goog.debug.Logger.getLogger('ssd.user.Auth
  * Listener for external (FB, TW ...) initial auth event
  *
  * @private
- * @param {goog.events.Event} e
+ * @param {goog.events.Event} ev
  */
-ssd.user.AuthModel.prototype._initAuthStatus = function(e) {
+ssd.user.AuthModel.prototype._initAuthStatus = function(ev) {
   this.logger.info('_initAuthStatus() :: initial auth status dispatched From:' +
-    e.target.SOURCEID + ' Source authed:' + e.target.isAuthed());
+    ev.target.SOURCEID + ' Source authed:' + ev.target.isAuthed());
 
-  var sourceItem = this._mapSources.get(e.target.SOURCEID);
+  var sourceItem = this._mapSources.get(ev.target.SOURCEID);
   sourceItem.initAuthStatus = true;
 
   // if not authed no need to go further
-  if (!e.target.isAuthed()) {
-    this._mapSources.set(e.target.SOURCEID, sourceItem);
+  if (!ev.target.isAuthed()) {
+    this._mapSources.set(ev.target.SOURCEID, sourceItem);
     this._checkInitAuthComplete();
     return;
   }
 
   // User is authed with that source. Save it to the map.
   sourceItem.isAuthed = true;
-  this._mapSources.set(e.target.SOURCEID, sourceItem);
+  this._mapSources.set(ev.target.SOURCEID, sourceItem);
 
   // check if this auth plugin requires authentication with the server
-  this.verifyExtAuthWithLocal( e.target.SOURCEID )
-    .addBoth(function(){
-      this._checkInitAuthComplete();
-    }, this);
+  this.verifyExtAuthWithLocal( ev.target.SOURCEID )
+    .always(goog.bind(this._checkInitAuthComplete, this));
 };
 
 /**
@@ -128,7 +126,7 @@ ssd.user.AuthModel.prototype._checkInitAuthComplete = function() {
 
   if (isComplete) {
     this.logger.shout('_checkInitAuthComplete() :: All initial auth ' +
-      'checks complete. Instance:' + this._ssdInst._instanceCount);
+      'checks complete.');
 
     var eventObj  = {
       'authState': this.isAuthed(),
