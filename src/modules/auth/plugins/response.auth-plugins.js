@@ -34,6 +34,12 @@ ssd.user.auth.plugin.Response = function( optResp ) {
   this.accessToken = null;
 
   /**
+   * @type {?Object} The plugin's udo.
+   * @expose
+   */
+  this.udoPlugin = null;
+
+  /**
    * @type {ssd.user.types.extSourceId} The name of the plugin
    * @expose
    */

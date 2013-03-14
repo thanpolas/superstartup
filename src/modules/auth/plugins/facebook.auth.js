@@ -116,15 +116,19 @@ ssd.user.auth.Facebook.prototype.SOURCEID = 'facebook';
  * When a definitive result is produced, dispatch the INITIAL_AUTH_STATUS
  * event.
  *
+ * @param  {boolean=} optForce Consider that the FB API has loaded and is
+ *                             available.
  * @return {when.Promise} a Promise.
  */
-ssd.user.auth.Facebook.prototype.init = function() {
+ssd.user.auth.Facebook.prototype.init = function(optForce) {
   this.logger.info('init() :: Init! FB JS API loaded:' + this._FBAPILoaded);
 
   var def = when.defer();
-
-
   def.resolve();
+
+  if (optForce) {
+    this._FBAPILoaded = true;
+  }
 
   if ( !this._FBAPILoaded ) {
     // API not loaded yet
@@ -300,8 +304,7 @@ ssd.user.auth.Facebook.prototype._sessionChange = function (response) {
       // The status of the User. One of connected, notConnected or unknown.
       status: 'connected'
     */
-}; // method _sessionChange
-
+};
 
 /**
  * Opens the login dialog or starts the authentication flow.
@@ -328,7 +331,6 @@ ssd.user.auth.Facebook.prototype.login = function(optCb, optSelf) {
   if ( !this._beforeLogin() ) {
     return def.reject('canceled by event');
   }
-
 
   var cb = ssd.cb2promise(def, this._loginListener, this);
 
@@ -411,7 +413,6 @@ ssd.user.auth.Facebook.prototype._loginListener = function (response) {
     return when.reject('canceled by on oauth event');
   }
 
-
   return this._isAuthedFromResponse(response);
 };
 
@@ -458,7 +459,6 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   }
 
   this.logger.info('_isAuthedFromResponse() :: Auth state changed to: ' + isAuthed);
-
 
   return this._doAuth(true, respObj);
 

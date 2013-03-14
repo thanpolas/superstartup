@@ -127,6 +127,31 @@ ssd.user.auth.PluginModule.prototype._beforeLogin = function() {
 
 
 /**
+ * Perform authentication with the provided udo.
+ *
+ * @param  {Object=} optUdo The User Data Object of the third party.
+ * @return {boolean} If basic data structure validations fail.
+ */
+ssd.user.auth.PluginModule.prototype.auth = function(optUdo) {
+  this.logger.info('auth() :: Init.');
+
+  this.udo = optUdo || null;
+
+  this._doAuth( true );
+
+  return true;
+};
+
+/**
+ * de-authenticate current user.
+ *
+ */
+ssd.user.auth.PluginModule.prototype.deAuth = function() {
+  this.logger.info('deAuth() :: Init.');
+  this._doAuth( false );
+};
+
+/**
  * Perform an auth or deauth based on parameter
  *
  * @param {boolean} isAuthed
@@ -147,6 +172,7 @@ ssd.user.auth.PluginModule.prototype._doAuth = function (isAuthed, optRespObj) {
 
   var respObj = optRespObj || this._getRespObj();
   respObj.authStatePlugin = this._isAuthed;
+  respObj.udoPlugin = this.udo;
 
   var eventObj = respObj.event(ssd.user.auth.EventType.EXT_AUTH_CHANGE, this);
 
