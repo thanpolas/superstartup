@@ -5,8 +5,9 @@ goog.addDependency('../../../../../test/bdd/core/core.test.js', ['ssd.test.core'
 goog.addDependency('../../../../../test/bdd/events/eventsAPI.test.js', ['ssd.test.event.api'], []);
 goog.addDependency('../../../../../test/bdd/main.js', ['ssd.test.main'], ['ssd.test.fixture.auth.fb', 'ssd.test.fixture.userOne']);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/facebook.auth.test.js', ['ssd.test.userAuth.facebook'], ['ssd.test.fixture.auth.fb', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.userAuth.genIface']);
-goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/pluginInterface.test.js', ['ssd.test.userAuth.genIface'], ['ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events']);
+goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/pluginInterface.test.js', ['ssd.test.userAuth.genIface'], ['ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events', 'ssd.test.userAuth.udoPlugin']);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/twitter.auth.test.js', ['ssd.test.userAuth.twitter'], ['ssd.test.fixture.auth.tw', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.userAuth.genIface']);
+goog.addDependency('../../../../../test/bdd/modules/userAuth/plugins/udo.plugin.auth.test.js', ['ssd.test.userAuth.udoPlugin'], []);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuth.events.test.js', ['ssd.test.userAuth.login.events'], ['ssd.test.fixture.errorCodes', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events']);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthCore.test.js', ['ssd.test.userAuth.core'], ['goog.object', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne']);
 goog.addDependency('../../../../../test/bdd/modules/userAuth/userAuthLogin.test.js', ['ssd.test.userAuth.login'], ['goog.dom', 'ssd.test.fixture.errorCodes', 'ssd.test.fixture.event', 'ssd.test.fixture.userOne', 'ssd.test.mock.net', 'ssd.test.userAuth.login.events']);

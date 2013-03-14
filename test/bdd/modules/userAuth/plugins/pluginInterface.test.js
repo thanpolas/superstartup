@@ -10,6 +10,8 @@ goog.require('ssd.test.fixture.userOne');
 goog.require('ssd.test.userAuth.login.events');
 goog.require('ssd.test.mock.net');
 
+goog.require('ssd.test.userAuth.udoPlugin');
+
 /**
  * @param  {Object} params Parameters to run the tests. Keys
  *                         contain:
