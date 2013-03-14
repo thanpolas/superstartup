@@ -313,7 +313,7 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
  */
 ssd.test.userAuth.genIface.prototype.loginEvents = function() {
   var _this = this,
-      plugin,
+      plugin = ss.user[_this.pluginNameSpace],
       stubNet,
       ev = ssd.test.fixture.event.user,
       fixtures = ssd.test.fixture;
@@ -322,13 +322,10 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
   describe('Event tests for plugin: ' + _this.pluginName, function(){
 
     beforeEach(function(done) {
-      plugin = ss.user[_this.pluginNameSpace];
-
       ss(function(){
         _this.beforeEach();
         done();
       });
-
     });
 
     afterEach(function() {
@@ -339,16 +336,17 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
     });
 
 
-
     // run the basic auth events tests
-    ssd.test.userAuth.login.events( goog.bind(
-      ss.user[_this.pluginNameSpace].login, ss.user[_this.pluginNameSpace] ));
+    ssd.test.userAuth.login.events( function() {
+      ss.user[_this.pluginNameSpace].login();
+      _this.afterLogin();
+    }, !plugin.hasLocalAuth());
 
     describe('Events emitted during 3rd party login operation. Plugin: ' +
         _this.pluginName, function(){
 
       var spyExtAuth, spyBeforeLocal, spyBeforeResponse, spyAuthResponse,
-        spyAuthChange, spyLoginCB;
+        spyAuthChange, spyLoginCB, spyBeforeExtLogin, spyOnExtAuth;
 
 
       beforeEach(function( done ){
@@ -362,15 +360,21 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
         spyAuthResponse = sinon.spy.create();
         spyAuthChange = sinon.spy.create();
         spyLoginCB = sinon.spy.create();
+        spyBeforeExtLogin = sinon.spy.create();
+        spyOnExtAuth = sinon.spy.create();
+
 
         ss.listen(ev.EXT_AUTH_CHANGE, spyExtAuth);
         ss.listen(ev.BEFORE_LOGIN, spyBeforeLocal);
         ss.listen(ev.ON_LOGIN_RESPONSE, spyBeforeResponse);
         ss.listen(ev.AFTER_LOGIN_RESPONSE, spyAuthResponse);
         ss.listen(ev.AUTH_CHANGE, spyAuthChange);
+        ss.listen(ev.BEFORE_EXT_LOGIN, spyBeforeExtLogin);
+        ss.listen(ev.ON_EXT_OAUTH, spyOnExtAuth);
 
         plugin.login(done);
 
+        _this.afterLogin();
       });
 
       afterEach(function() {
@@ -378,36 +382,52 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
         ss.removeAllListeners();
       });
 
-
+      it( 'should trigger the "' + ev.BEFORE_EXT_LOGIN + '" event', function(){
+        expect( spyBeforeExtLogin.calledOnce ).to.be.true;
+      });
+      it( 'should trigger the "' + ev.ON_EXT_OAUTH + '" event', function(){
+        expect( spyOnExtAuth.calledOnce ).to.be.true;
+      });
       it('should emit the "' + ev.EXT_AUTH_CHANGE + '" event', function() {
         expect( spyExtAuth.calledOnce        ).to.be.true;
       });
-      it('should emit the "' + ev.BEFORE_LOGIN + '" event', function() {
-        expect( spyBeforeLocal.calledOnce    ).to.be.true;
+      it('should emit the "' + ev.BEFORE_LOGIN + '" event: ' + plugin.hasLocalAuth(), function() {
+        expect( spyBeforeLocal.calledOnce === plugin.hasLocalAuth() ).to.be.true;
       });
-      it('should emit the "' + ev.ON_LOGIN_RESPONSE + '" event', function() {
-        expect( spyBeforeResponse.calledOnce ).to.be.true;
+      it('should emit the "' + ev.ON_LOGIN_RESPONSE + '" event: ' + plugin.hasLocalAuth(), function() {
+        expect( spyBeforeResponse.calledOnce === plugin.hasLocalAuth() ).to.be.true;
       });
-      it('should emit the "' + ev.AFTER_LOGIN_RESPONSE + '" event', function() {
-        expect( spyAuthResponse.calledOnce   ).to.be.true;
+      it('should emit the "' + ev.AFTER_LOGIN_RESPONSE + '" event: ' + plugin.hasLocalAuth(), function() {
+        expect( spyAuthResponse.calledOnce === plugin.hasLocalAuth()   ).to.be.true;
       });
       it('should emit the "' + ev.AUTH_CHANGE + '" event', function() {
         expect( spyAuthChange.calledOnce     ).to.be.true;
       });
 
-      it('should emit "user.extAuthChange" before "user.beforeLogin"', function() {
-        expect( spyExtAuth.calledBefore(        spyBeforeLocal    )).to.be.true;
+      it('should emit "' + ev.BEFORE_EXT_LOGIN + '" before "' + ev.ON_EXT_OAUTH + '"', function() {
+        expect( spyBeforeExtLogin.calledBefore(        spyOnExtAuth    )).to.be.true;
       });
-      it('should emit "user.beforeLogin" before "user.onLoginResponse"', function() {
-        expect( spyBeforeLocal.calledBefore(    spyBeforeResponse )).to.be.true;
+      it('should emit "' + ev.ON_EXT_OAUTH + '" before "user.extAuthChange"', function() {
+        expect( spyOnExtAuth.calledBefore(        spyExtAuth    )).to.be.true;
       });
-      it('should emit "user.onLoginResponse" before "user.afterLoginResponse"', function() {
-        expect( spyBeforeResponse.calledBefore( spyAuthResponse   )).to.be.true;
-      });
-      it('should emit "user.afterLoginResponse" before "user.authChange"', function() {
-        expect( spyAuthResponse.calledBefore(   spyAuthChange     )).to.be.true;
-      });
-
+      if (plugin.hasLocalAuth()) {
+        it('should emit "user.extAuthChange" before "user.beforeLogin"', function() {
+          expect( spyExtAuth.calledBefore(        spyBeforeLocal    )).to.be.true;
+        });
+        it('should emit "user.beforeLogin" before "user.onLoginResponse"', function() {
+          expect( spyBeforeLocal.calledBefore(    spyBeforeResponse )).to.be.true;
+        });
+        it('should emit "user.onLoginResponse" before "user.afterLoginResponse"', function() {
+          expect( spyBeforeResponse.calledBefore( spyAuthResponse   )).to.be.true;
+        });
+        it('should emit "user.afterLoginResponse" before "user.authChange"', function() {
+          expect( spyAuthResponse.calledBefore(   spyAuthChange     )).to.be.true;
+        });
+      } else {
+        it('should emit "user.extAuthChange" before "user.authChange"', function() {
+          expect( spyExtAuth.calledBefore(        spyAuthChange    )).to.be.true;
+        });
+      }
       it('should provide proper data on the extAuthChange event', function(){
         var eventObj = spyExtAuth.getCall(0).args[0];
         expect( eventObj.source ).to.be.equal( _this.pluginName );
@@ -439,7 +459,10 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
         ss.listen(ev.AFTER_LOGIN_RESPONSE, spyAuthResponse);
         ss.listen(ev.AUTH_CHANGE, spyAuthChange);
 
-        plugin.login(function(){done();});
+        plugin.login(function(){});
+        _this.afterLogin();
+        done();
+
 
       });
 
@@ -449,15 +472,17 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
       });
 
 
-      it('should not emmit the "' + ev.BEFORE_LOGIN + '" event', function(){
-        expect( spyBeforeLocal.called    ).to.be.false;
-      });
-      it('should not emmit the "' + ev.ON_LOGIN_RESPONSE + '" event', function(){
-        expect( spyBeforeResponse.called ).to.be.false;
-      });
-      it('should not emmit the "' + ev.AFTER_LOGIN_RESPONSE + '" event', function(){
-        expect( spyAuthResponse.called   ).to.be.false;
-      });
+      if (plugin.hasLocalAuth()) {
+        it('should not emmit the "' + ev.BEFORE_LOGIN + '" event', function(){
+          expect( spyBeforeLocal.called    ).to.be.false;
+        });
+        it('should not emmit the "' + ev.ON_LOGIN_RESPONSE + '" event', function(){
+          expect( spyBeforeResponse.called ).to.be.false;
+        });
+        it('should not emmit the "' + ev.AFTER_LOGIN_RESPONSE + '" event', function(){
+          expect( spyAuthResponse.called   ).to.be.false;
+        });
+      }
       it('should not emmit the "' + ev.AUTH_CHANGE + '" event', function(){
         expect( spyAuthChange.called     ).to.be.false;
       });

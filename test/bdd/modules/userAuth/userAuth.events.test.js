@@ -9,15 +9,18 @@ goog.require('ssd.test.fixture.errorCodes');
 /**
  * [events description]
  * @param  {string} loginTrigger The namespace to the function that will
+ * @param  {boolean} optNoLocalLogin If the loginTrigger does not produce local
+ *                                   login events.
  *   trigger the auth process. Ok lame but it works.
  */
-ssd.test.userAuth.login.events = function( loginTrigger ) {
+ssd.test.userAuth.login.events = function( loginTrigger, optNoLocalLogin ) {
 
   var stubNet,
       userFix = ssd.test.fixture.userOne,
       userEvent = ssd.test.fixture.event.user,
       errorCodes = ssd.test.fixture.errorCodes,
       spy;
+
 
   describe( 'Basic login events', function(){
     beforeEach( function(done) {
@@ -36,18 +39,6 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       ss.user.deAuth();
     });
 
-    it( 'should trigger the "' + userEvent.BEFORE_EXT_LOGIN + '" event', function(){
-      ss.listen( userEvent.BEFORE_EXT_LOGIN, spy);
-      loginTrigger();
-      expect( spy.calledOnce ).to.be.true;
-    });
-
-    it( 'should trigger the "' + userEvent.ON_EXT_OAUTH + '" event', function(){
-      ss.listen( userEvent.ON_EXT_OAUTH, spy);
-      loginTrigger();
-      expect( spy.calledOnce ).to.be.true;
-    });
-
     it( 'should trigger the "' + userEvent.AUTH_CHANGE + '" event', function(){
       ss.listen( userEvent.AUTH_CHANGE, spy);
       loginTrigger();
@@ -60,6 +51,12 @@ ssd.test.userAuth.login.events = function( loginTrigger ) {
       loginTrigger();
       expect( spy.getCall(0).args[0].authState ).to.be.true;
     });
+
+
+    if (optNoLocalLogin) {
+      return;
+    }
+
 
     it( 'should trigger the "' + userEvent.BEFORE_LOGIN + '" event',
       function( done ){

@@ -59,6 +59,7 @@ describe('User Auth Module Plugins :: Twitter', function () {
   var loginEventTests = new ssd.test.userAuth.genIface(testConfig)
     .setBeforeEach(loginBeforeEach)
     .setAfterEach(loginAfterEach)
+    .setAfterLogin(loginAfterLogin)
     // and run the login event tests
     .loginEvents();
 });
