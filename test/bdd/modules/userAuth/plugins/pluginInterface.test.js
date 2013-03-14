@@ -337,9 +337,10 @@ ssd.test.userAuth.genIface.prototype.loginEvents = function() {
 
 
     // run the basic auth events tests
-    ssd.test.userAuth.login.events( function() {
-      ss.user[_this.pluginNameSpace].login();
+    ssd.test.userAuth.login.events( function(args) {
+      var promise = ss.user[_this.pluginNameSpace].login(args);
       _this.afterLogin();
+      return promise;
     }, !plugin.hasLocalAuth());
 
     describe('Events emitted during 3rd party login operation. Plugin: ' +

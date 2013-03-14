@@ -20,6 +20,7 @@ describe('User Auth Module Plugins :: Facebook', function () {
     pluginNameSpace: 'fb',
     hasJSAPI:        true,
     pluginResponse:  fixtures.auth.fb.authedObj,
+    accessToken:     'ACCESS_TOKEN',
     pluginUDO:       fixtures.auth.fb.udo,
     eventJSLoaded:   eventFB.JSAPILOADED,
     eventInitialAuthStatus: eventFB.INITIAL_AUTH_STATUS
@@ -34,7 +35,7 @@ describe('User Auth Module Plugins :: Facebook', function () {
       stubFBapi;
 
   var loginBeforeEach = function() {
-    ss.config('user.auth.fb.appId', '540');
+    ss.config('user.fb.appId', '540');
     window.fbAsyncInit();
 
 

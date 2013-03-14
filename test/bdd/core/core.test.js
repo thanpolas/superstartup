@@ -43,7 +43,7 @@ describe('Core API :: ss()', function(){
         ss.listen(ssd.test.fixture.event.core.INIT, initCb);
         ss.listen(ssd.test.fixture.event.user.INITIAL_AUTH_STATE, authChangeCb);
 
-        ss.config('user.auth.fb.appId', '123');
+        ss.config('user.fb.appId', '123');
 
         ssReturn = ss( ssCallback );
 

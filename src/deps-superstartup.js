@@ -20,7 +20,7 @@ goog.addDependency('../../../src/modules/auth/plugins/authPluginInterface.js', [
 goog.addDependency('../../../src/modules/auth/plugins/authPluginModule.js', ['ssd.user.auth.PluginModule'], ['ssd.Module', 'ssd.user.Auth']);
 goog.addDependency('../../../src/modules/auth/plugins/facebook.auth.js', ['ssd.user.auth.Facebook', 'ssd.user.auth.Facebook.EventType'], ['ssd.user.Auth', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule', 'ssd.user.auth.config', 'ssd.user.auth.plugin.Response']);
 goog.addDependency('../../../src/modules/auth/plugins/response.auth-plugins.js', ['ssd.user.auth.plugin.Response'], ['goog.object', 'ssd.user.auth.Response']);
-goog.addDependency('../../../src/modules/auth/plugins/twitter.auth.js', ['ssd.user.auth.Twitter', 'ssd.user.auth.twitter.EventType'], ['ssd.user.Auth', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule', 'ssd.user.auth.config']);
+goog.addDependency('../../../src/modules/auth/plugins/twitter.auth.js', ['ssd.user.auth.Twitter', 'ssd.user.auth.twitter.EventType', 'ssd.user.auth.twitter.LoginOp'], ['ssd.user.Auth', 'ssd.user.auth.EventType', 'ssd.user.auth.PluginModule', 'ssd.user.auth.config']);
 goog.addDependency('../../../src/modules/auth/response.auth.js', ['ssd.user.auth.Response'], ['goog.object', 'ssd.Response', 'ssd.sync.Response']);
 goog.addDependency('../../../src/modules/auth/user.auth.config.js', ['ssd.user.auth.config'], []);
 goog.addDependency('../../../src/modules/auth/user.auth.controller.js', ['ssd.user.Auth', 'ssd.user.Auth.Error'], ['ssd.invocator', 'ssd.register', 'ssd.structs.DynamicMap', 'ssd.structs.Map', 'ssd.user.AuthLogin', 'ssd.user.AuthModel', 'ssd.user.OwnItem', 'ssd.user.auth.EventType', 'ssd.user.auth.config', 'ssd.user.types']);

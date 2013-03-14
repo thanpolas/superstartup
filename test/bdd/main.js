@@ -20,10 +20,11 @@ mocha.setup({
 // goog.require('ssd.test.mock.net');
 
 var expect, assert;
-expect = (typeof chai !== "undefined" && chai !== null ?
+expect = (typeof chai !== 'undefined' && chai !== null ?
   chai.expect : void 0) || require('chai').expect;
-assert = (typeof chai !== "undefined" && chai !== null ?
+assert = (typeof chai !== 'undefined' && chai !== null ?
   chai.assert : void 0) || require('chai').assert;
+
 
 /**
  * Declare all third-party namespaces that need to exist

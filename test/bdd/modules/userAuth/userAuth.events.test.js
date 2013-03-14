@@ -39,118 +39,160 @@ ssd.test.userAuth.login.events = function( loginTrigger, optNoLocalLogin ) {
       ss.user.deAuth();
     });
 
-    it( 'should trigger the "' + userEvent.AUTH_CHANGE + '" event', function(){
-      ss.listen( userEvent.AUTH_CHANGE, spy);
-      loginTrigger();
-      expect( spy.calledOnce ).to.be.true;
-    });
+    describe('standard EVENTS', function() {
 
-    it( 'should have an authState and be true when triggering the "' +
-      userEvent.AUTH_CHANGE + '" event', function(){
-      ss.listen( userEvent.AUTH_CHANGE, spy);
-      loginTrigger();
-      expect( spy.getCall(0).args[0].authState ).to.be.true;
-    });
+      var spyBeforeLocal, spyBeforeResponse, spyAuthResponse,
+          spyAuthChange, spyLoginCB;
 
+
+      beforeEach( function() {
+        spyBeforeLocal = sinon.spy.create();
+        spyBeforeResponse = sinon.spy.create();
+        spyAuthResponse = sinon.spy.create();
+        spyAuthChange = sinon.spy.create();
+        spyLoginCB = sinon.spy.create();
+
+        ss.listen(userEvent.BEFORE_LOGIN, spyBeforeLocal);
+        ss.listen(userEvent.ON_LOGIN_RESPONSE, spyBeforeResponse);
+        ss.listen(userEvent.AFTER_LOGIN_RESPONSE, spyAuthResponse);
+        ss.listen(userEvent.AUTH_CHANGE, spyAuthChange);
+
+        loginTrigger(spyLoginCB);
+      });
+
+      afterEach( function() {
+      });
+
+      it( 'should be authed', function(){
+        expect( ss.isAuthed() ).to.be.true;
+      });
+      it( 'should trigger the "' + userEvent.AUTH_CHANGE + '" event', function(){
+        expect( spyAuthChange.calledOnce ).to.be.true;
+      });
+      it( 'should have an authState and be true when triggering the "' +
+        userEvent.AUTH_CHANGE + '" event', function(){
+        expect( spyAuthChange.getCall(0).args[0].authState ).to.be.true;
+      });
+
+      if (optNoLocalLogin) {
+        return;
+      }
+
+      it( 'should trigger the "' + userEvent.BEFORE_LOGIN + '" event', function(){
+        expect( spyBeforeLocal.calledOnce ).to.be.true;
+      });
+      it('should emit the "' + userEvent.ON_LOGIN_RESPONSE + '" event.', function() {
+        expect( spyBeforeResponse.calledOnce ).to.be.true;
+      });
+      it('should emit the "' + userEvent.AFTER_LOGIN_RESPONSE + '" event.', function() {
+        expect( spyAuthResponse.calledOnce   ).to.be.true;
+      });
+    });
 
     if (optNoLocalLogin) {
       return;
     }
 
 
-    it( 'should trigger the "' + userEvent.BEFORE_LOGIN + '" event',
-      function( done ){
-      ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
-        expect( stubNet.called ).to.be.false;
-        expect( ss.isAuthed() ).to.be.false;
-        done();
+    var cancelEvents = function(eventName, using, cancelOp) {
+      describe('Cancel operations from ' + eventName + ' event,' +
+        ' using "' + using + '"', function() {
+
+        var spyLoginCB, cbArgs;
+
+        beforeEach( function() {
+          cancelOp();
+          spyLoginCB = sinon.spy.create();
+          loginTrigger(spyLoginCB);
+
+          cbArgs = spyLoginCB.getCall(0).args;
+        });
+
+        afterEach( function() {
+        });
+
+        it('should not be authed', function() {
+          expect( ss.isAuthed() ).to.be.false;
+        });
+        it('should not call sync', function() {
+          expect( stubNet.called ).to.be.false;
+        });
+        it('should have the err defined in the callback', function() {
+          expect( cbArgs[0] ).to.be.a('string');
+        });
+        it('callback arg "authState" should be false', function() {
+          expect( cbArgs[1] ).to.be.false;
+        });
       });
+    };
 
-      loginTrigger();
-    });
-
-    it( 'should cancel login if we return false at the "' +
-      userEvent.BEFORE_LOGIN + '" event', function( done ){
+    cancelEvents(userEvent.BEFORE_LOGIN, 'return false;', function() {
       ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         return false;
       });
-      loginTrigger( function( err, authState, user, response ){
-        expect( stubNet.called ).to.be.false;
-        expect( ss.isAuthed() ).to.be.false;
-        expect( authState ).to.be.false;
-
-        expect( err ).to.be.a('string');
-        done();
-      });
     });
 
-    it( 'should cancel login if we execute preventDefault at the "' +
-      userEvent.BEFORE_LOGIN + '" event', function( done ){
+    cancelEvents(userEvent.BEFORE_LOGIN, 'preventDefault();', function(){
       ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
         eventObj.preventDefault();
       });
-      loginTrigger( function( err, authState, user, response ){
-        expect( stubNet.called ).to.be.false;
-        expect( ss.isAuthed() ).to.be.false;
-        expect( authState ).to.be.false;
-
-        expect( err ).to.be.a('string');
-        done();
-      });
     });
 
-    it('should be able to change data sent to the server when "' +
-      userEvent.BEFORE_LOGIN + '" triggers',
-      function( done ) {
+    describe('Advanced event operations', function() {
+      it('should be able to change data sent to the server when "' +
+        userEvent.BEFORE_LOGIN + '" triggers',
+        function( done ) {
 
-      var funnyData = {
-        one: 1,
-        cow: 'cow',
-        gangnam: ['style', 42]
-      };
-      ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
-        eventObj.backPipe(function(data) {
-          return funnyData;
+        var funnyData = {
+          one: 1,
+          cow: 'cow',
+          gangnam: ['style', 42]
+        };
+        ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
+          eventObj.backPipe(function(data) {
+            return funnyData;
+          });
+        });
+
+        loginTrigger( function( err, authState, user, response ){
+          expect( stubNet.getCall( 0 ).args[3] ).to.deep.equal( funnyData );
+          done();
         });
       });
 
-      loginTrigger( function( err, authState, user, response ){
-        expect( stubNet.getCall( 0 ).args[3] ).to.deep.equal( funnyData );
-        done();
+      it( 'should trigger the "' + userEvent.ON_LOGIN_RESPONSE + '" event',
+        function( done ){
+        ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
+          expect( stubNet.calledOnce ).to.be.true;
+          expect( ss.isAuthed() ).to.be.false;
+          done();
+        });
+        loginTrigger();
+      });
+
+      it( 'should prevent login if we return false at the "' +
+        userEvent.ON_LOGIN_RESPONSE + '" event', function( done ){
+        ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
+          return false;
+        });
+        loginTrigger( function( err, authState, user, response ){
+          expect( stubNet.calledOnce ).to.be.true;
+          expect( ss.isAuthed() ).to.be.false;
+          expect( authState ).to.be.false;
+
+          expect( err ).to.be.a('string');
+          done();
+        });
+      });
+
+      it( 'should trigger the AFTER_LOGIN_RESPONSE event', function(){
+        var spy = sinon.spy();
+        ss.listen( userEvent.AFTER_LOGIN_RESPONSE, spy);
+        loginTrigger();
+        expect( spy.calledOnce ).to.be.true;
       });
     });
 
-    it( 'should trigger the "' + userEvent.ON_LOGIN_RESPONSE + '" event',
-      function( done ){
-      ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
-        expect( stubNet.calledOnce ).to.be.true;
-        expect( ss.isAuthed() ).to.be.false;
-        done();
-      });
-      loginTrigger();
-    });
-
-    it( 'should prevent login if we return false at the "' +
-      userEvent.ON_LOGIN_RESPONSE + '" event', function( done ){
-      ss.listen( userEvent.ON_LOGIN_RESPONSE, function( eventObj ){
-        return false;
-      });
-      loginTrigger( function( err, authState, user, response ){
-        expect( stubNet.calledOnce ).to.be.true;
-        expect( ss.isAuthed() ).to.be.false;
-        expect( authState ).to.be.false;
-
-        expect( err ).to.be.a('string');
-        done();
-      });
-    });
-
-    it( 'should trigger the AFTER_LOGIN_RESPONSE event', function(){
-      var spy = sinon.spy();
-      ss.listen( userEvent.AFTER_LOGIN_RESPONSE, spy);
-      loginTrigger();
-      expect( spy.calledOnce ).to.be.true;
-    });
 
     describe('Analyze the event object of the "' +
       userEvent.AFTER_LOGIN_RESPONSE + '" event', function() {
