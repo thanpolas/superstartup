@@ -126,23 +126,31 @@ ssd.user.auth.Twitter.prototype.login = function(optCallback, optSelf) {
   if (this.config(ssd.user.auth.config.Key.TW_LOGIN_POPUP)) {
     this.loginPopup().then(def.resolve, def.reject);
   } else {
-
+    this.loginRedirect();
   }
 
   return def.promise;
+};
 
+/**
+ * Perform a login by redirecting the user... execution stops here.
+ *
+ */
+ssd.user.auth.Twitter.prototype.loginRedirect = function() {
   // use the current path of the user for return
-  // var returnPath = '?' + this.config(ssd.user.auth.config.Key.TW_CALLBACK_PARAM) +
-  //   '=' + ssd.encURI(window.location.pathname);
+  var callbackParam = this.config(ssd.user.auth.config.Key.TW_CALLBACK_PARAM);
 
-  // this.logger.info('Init login(). Return path:' + returnPath);
+  var returnPath = '';
+  if (goog.isString(callbackParam)) {
+    returnPath = '?' + callbackParam +
+      '=' + ssd.encURI(window.location.pathname);
+  }
 
-  // we have to redirect user to /signup/twitter.php
-  // to start the authentication process
+  this.logger.info('Init loginRedirect(). Return path: ' + returnPath);
 
-  // redirect the browser now
-  // window.location.href = this.config( ssd.user.auth.config.Keys
-  //   .EXT_SOURCES_AUTH_URL ) + returnPath;
+  // redirect the browser
+  window.location.href = this.config( ssd.user.auth.config.Keys
+    .EXT_SOURCES_AUTH_URL ) + returnPath;
 };
 
 /**
