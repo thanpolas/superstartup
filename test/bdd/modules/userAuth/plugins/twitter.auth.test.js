@@ -19,7 +19,7 @@ describe('User Auth Module Plugins :: Twitter', function () {
     pluginName:      'twitter',
     pluginNameSpace: 'tw',
     hasJSAPI:        false,
-    pluginUDO:       {},//fixtures.auth.tw.udo,
+    pluginUDO:       null,//fixtures.auth.tw.udo,
     pluginResponse:  'access_token',
     accessToken:     'access_token',
     loginCbArg4Type: 'null',

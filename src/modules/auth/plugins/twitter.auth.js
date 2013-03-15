@@ -279,7 +279,7 @@ ssd.user.auth.Twitter.prototype.logout = function()
  * @param  {Object} optSelf scope for cb.
  * @return {when.Promise} null if not authed.
  */
-ssd.user.auth.Twitter.prototype.getUser = function(optCb, optSelf) {
+ssd.user.auth.Twitter.prototype.getUdo = function(optCb, optSelf) {
   var def = when.defer();
 
   var cb = optCb || ssd.noop;
@@ -290,10 +290,7 @@ ssd.user.auth.Twitter.prototype.getUser = function(optCb, optSelf) {
     return def.resolve(null);
   }
 
-  // FIXME
-  def.resolve({});
-
-  return def.promise;
+  return def.resolve(this.udo);
 };
 
 

@@ -486,7 +486,7 @@ ssd.user.auth.Facebook.prototype.logout = function() {
  * @param  {Object} optSelf scope for cb.
  * @return {when.Promise} null if not authed.
  */
-ssd.user.auth.Facebook.prototype.getUser = function(optCb, optSelf) {
+ssd.user.auth.Facebook.prototype.getUdo = function(optCb, optSelf) {
   var def = when.defer();
 
   var cb = optCb || ssd.noop;
@@ -497,12 +497,12 @@ ssd.user.auth.Facebook.prototype.getUser = function(optCb, optSelf) {
     return def.resolve(null);
   }
 
-  if (this._udo) {
-    return def.resolve( this._udo );
+  if (this.udo) {
+    return def.resolve( this.udo );
   }
   FB.api('/me', goog.bind(function(response) {
     if ( goog.isObject( response )) {
-      this._udo = response;
+      this.udo = response;
       def.resolve(response);
     } else {
       def.reject( response );

@@ -121,12 +121,12 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
       expect( plugin.isAuthed ).to.be.a('function');
       expect( plugin.isAuthed() ).to.be.a('boolean');
     });
-    it('should have a getUser() method', function(){
-      expect( plugin.getUser ).to.be.a('function');
+    it('should have a getUdo() method', function(){
+      expect( plugin.getUdo ).to.be.a('function');
     });
-    it('getUser() should return null when not authed with the plugin', function(){
+    it('getUdo() should return null when not authed with the plugin', function(){
       var spy = sinon.spy();
-      plugin.getUser(spy);
+      plugin.getUdo(spy);
       expect( spy.getCall(0).args[0] ).to.be.a('null');
     });
     it('should have a getAccessToken() method', function(){
@@ -138,6 +138,11 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
     it('should have a logout method', function(){
       expect( plugin.logout ).to.be.a('function');
     });
+  });
+
+  describe('Auth and deAuth methods for ' + _this.pluginName, function() {
+    var udoPlugin = new ssd.test.userAuth.udoPlugin(_this);
+    udoPlugin.run();
   });
 };
 
@@ -291,7 +296,7 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
       it('should return the UDO as provided by the plugin', function(){
         plugin.login();
         var spy = sinon.spy();
-        plugin.getUser( spy );
+        plugin.getUdo( spy );
         expect( spy.getCall(0).args[0] ).to.deep.equal(_this.pluginUDO);
       });
 
