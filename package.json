@@ -41,7 +41,9 @@
     "grunt-regarde": "~0.1.1",
     "grunt-contrib-livereload": "~0.1.2",
     "mocha-as-promised": "~1.2.1",
-    "chai-as-promised": "~3.2.5"
+    "chai-as-promised": "~3.2.5",
+    "grunt-mocha": "~0.2.3",
+    "matchdep": "~0.1.1"
   },
   "keywords": []
 }

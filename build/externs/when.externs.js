@@ -1,6 +1,8 @@
 /**
  * @externs
  * @license MIT License (c) copyright 2011-2013 original author or authors
+ *          Brian Cavalier https://github.com/briancavalier
+ *          Thanasis Polychronakis https://github.com/thanpolas
  */
 
 /**

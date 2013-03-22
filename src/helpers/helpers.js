@@ -60,8 +60,8 @@ ssd.eventBackPipe = function(eventObj, data) {
          // not an array, force it into one
          ar = g.object.getValues(ar);
      }
-     return g.array.find(ar, function(el, i, ar){
-         if (el[key] == value) return true;
+     return g.array.find(ar, function(el){
+         if (el[key] === value) return true;
          return false;
      });
  }; // method arFind
@@ -82,8 +82,8 @@ ssd.eventBackPipe = function(eventObj, data) {
  ssd.arFindIndex = function (ar, key, value)
  {
      if (!goog.isArray(ar)) return -1;
-     return goog.array.findIndex(ar, function(el, i, ar){
-         if (el[key] == value) return true;
+     return goog.array.findIndex(ar, function(el){
+         if (el[key] === value) return true;
          return false;
      });
  }; // method arFindIndex
@@ -105,8 +105,8 @@ ssd.eventBackPipe = function(eventObj, data) {
  ssd.arRemove = function (ar, key, value)
  {
      if (!goog.isArray(ar)) return false;
-     return goog.array.removeIf(ar, function(el, i, ar){
-         if (el[key] == value) return true;
+     return goog.array.removeIf(ar, function(el){
+         if (el[key] === value) return true;
          return false;
      });
  }; // method ssd.arRemove
@@ -134,21 +134,19 @@ ssd.eventBackPipe = function(eventObj, data) {
  /**
   * Decode a URI string
   *
-  * @param {string}
+  * @param {string} str
   * @return {string}
   */
  ssd.decURI = function(str){
-     var g = goog;
+   if (goog.isNull(str)) { return ''; }
 
-     if (g.isNull(str)) return '';
-
-     try {
-         var ret = decodeURIComponent(str);
-     }
-     catch(e){
-         return str;
-     }
-     return ret;
+   var ret;
+   try {
+     ret = decodeURIComponent(str);
+   } catch(ex){
+     return str;
+   }
+   return ret;
  };
 
  /**
@@ -157,60 +155,49 @@ ssd.eventBackPipe = function(eventObj, data) {
   * @param {string}
   * @return {string}
   */
- ssd.encURI = function(str){
-
-     var g = goog;
-     if (g.isNull(str)) return '';
-     try {
-         var ret = encodeURIComponent(str);
-     }
-     catch(e){
-         return str;
-     }
-     return ret;
-
+  ssd.encURI = function(str) {
+    if (goog.isNull(str)) return '';
+    var ret;
+    try {
+      ret = encodeURIComponent(str);
+    } catch(ex){
+      return str;
+    }
+    return ret;
  };
 
  /**
   * Decode html Entities
   *
-  * @param {string}
+  * @param {string} str
   * @return {string}
   */
  ssd.decEnt = function(str) {
-     var g = goog;
-     if (g.isNull(str)) {
-         return '';
-     }
-
-     try {
-         var ret = g.string.unescapeEntities(str);
-     }
-     catch(e){
-         return str;
-     }
-     return ret;
-
+    if (goog.isNull(str)) { return ''; }
+    var ret;
+    try {
+      ret = goog.string.unescapeEntities(str);
+    } catch(ex){
+      return str;
+    }
+    return ret;
  };
 
  /**
   * Encode html Entities
   *
-  * @param {string}
+  * @param {string} str
   * @return {string}
   */
  ssd.encEnt = function(str) {
-     var g = goog;
-     if (g.isNull(str)) return '';
-
-     try {
-         var ret = g.string.htmlEscape(str);
-     }
-     catch(e){
-         return str;
-     }
-     return ret;
-
+    if (goog.isNull(str)) { return ''; }
+    var ret;
+    try {
+      ret = goog.string.htmlEscape(str);
+    } catch(ex){
+      return str;
+    }
+    return ret;
  };
 
 
@@ -218,34 +205,33 @@ ssd.eventBackPipe = function(eventObj, data) {
   * Will return the current domain name of the site
   * e.g. ssd.local, ssd.com ...
   *
+  * WARNING: Requires goog.Uri that is not declared in this file!
+  *
   * @return {string}
   */
- ssd.getDomain = function()
- {
+ ssd.getDomain = function() {
      return new goog.Uri(document.location.href).getDomain();
- }; // method ssd.getDomain
+ };
 
 
  /**
   * Read a page's GET URL variables and return them as an associative array.
   * From: http://snipplr.com/view/799/get-url-variables/
   *
-  * @return {array}
+  * @return {Array}
   */
- ssd.getUrlVars = function()
- {
-     var vars = [], hash;
-     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+  ssd.getUrlVars = function() {
+    var vars = [], hash;
+    var hashes = window.location.href.slice(
+      window.location.href.indexOf('?') + 1).split('&');
 
-     for(var i = 0; i < hashes.length; i++)
-     {
-         hash = hashes[i].split('=');
-         vars.push(hash[0]);
-         vars[hash[0]] = hash[1];
-     }
-
-     return vars;
- }; // method ssd.getUrlVars
+    for(var i = 0, len = hashes.length; i < len; i++) {
+      hash = hashes[i].split('=');
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+    return vars;
+ };
 
  /**
   * Checks if a value (needle) is within the provided other parameters
@@ -253,23 +239,19 @@ ssd.eventBackPipe = function(eventObj, data) {
   * e.g. if (ssd.inValue('a', 'b', 'c', 'z')) is false...
   *
   * @param {mixed} needle Value we want to look for
-  * @param {...*=} opt_var_args Additional arguments that are used to compare
+  * @param {...*=} optVarArgs Additional arguments that are used to compare
   *      our needle value against
   * @return {boolean}
   */
- ssd.inValue = function (needle, opt_var_args)
- {
-     var len = arguments.length;
-     var haystack = [];
-
-     for (var start = 1; start < len ; start++)
-         haystack.push(arguments[start]);
-
-     if (-1 === haystack.indexOf(needle))
-         return false;
-
-     return true;
-
+ ssd.inValue = function (needle, optVarArgs) {
+    var len = arguments.length;
+    var haystack = [];
+    for (var start = 1; start < len ; start++) {
+      haystack.push(arguments[start]);
+    }
+    if (-1 === haystack.indexOf(needle))
+      return false;
+    return true;
  };
 
 /**
@@ -289,8 +271,6 @@ ssd.cb2promise = function(defer, cb, optSelf) {
   };
 };
 
-
-
 /**
  * Testing purposes only.
  *
@@ -305,19 +285,5 @@ ssd._getResponse = function (responseRaw) {
   syncResp.errorMessage = null;
 
   return when.resolve(syncResp);
-};
-
-
-/**
- * fake a fork to force async.
- * @param  {Function} cb The function to fork
- * @param  {Object}   optSelf scope for cb.
- * @param  {...*}   optArgs Any number of arguments to pass on the cb.
- */
-ssd.fork = function(cb, optSelf, optArgs) {
-  var args = arguments;
-  setTimeout(function(){
-    cb.apply(optSelf, Array.prototype.slice.call(args, 2));
-  }, 25);
 };
 

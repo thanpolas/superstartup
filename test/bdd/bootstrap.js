@@ -6,7 +6,7 @@ goog.provide('ssd.test.bootstrap');
 
 // setup mocha
 mocha.ui('bdd');
-mocha.reporter('html');
+mocha.reporter('markdown');
 
 
 // sequence matters

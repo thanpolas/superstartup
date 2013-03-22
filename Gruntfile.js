@@ -2,6 +2,7 @@
 
 var compiler = require('superstartup-closure-compiler'),
     path     = require('path');
+
 /**
  * [exports description]
  * @param  {[type]} grunt [description]
@@ -9,12 +10,8 @@ var compiler = require('superstartup-closure-compiler'),
  */
 module.exports = function(grunt) {
 
-  grunt.loadNpmTasks('grunt-closure-tools');
-  grunt.loadNpmTasks('grunt-contrib-livereload');
-  grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-regarde');
+  // load all grunt tasks
+  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
   var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 
@@ -144,6 +141,16 @@ module.exports = function(grunt) {
 
     mochaPhantom: 'node_modules/mocha-phantomjs/bin/mocha-phantomjs ' +
       'http://localhost:4242/test/',
+
+    mocha: {
+      all: {
+        options: {
+          run: true,
+          urls: ['http://localhost:4242/test/bdd/']
+        }
+      }
+    },
+
 
     shell: {
       options: {
