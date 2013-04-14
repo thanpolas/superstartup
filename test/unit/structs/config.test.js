@@ -289,30 +289,30 @@ suite('ssd.Config', function() {
 
       assert.throws(function(){
         config.set('aKey', {});
-        }, Error, 'cannot set an object as a value to a specific parameter');
+        }, TypeError, /cannot\sbe\sobject/, 'cannot set an object as a value to a specific parameter');
 
       assert.throws(function(){
         config.set('path', {});
-        }, Error, 'cannot overwrite a path with an object');
+        }, Error, /./, 'cannot overwrite a path with an object');
 
       assert.throws(function(){
         config.set('path', 1);
-        }, Error, 'cannot overwrite a path with a number');
+        }, Error, /./, 'cannot overwrite a path with a number');
 
       assert.throws(function(){
         config.set('another', 3);
-        }, TypeError,
+        }, TypeError, /./,
         'cannot set a conf key of a different type than the one we registered' +
         ' - string key check');
 
       assert.throws(function(){
         config.set('id', 'four');
-        }, TypeError, 'cannot set a conf key of a different type than the one' +
+        }, TypeError, /./, 'cannot set a conf key of a different type than the one' +
         ' we registered - number key check');
 
       assert.throws(function(){
         config.set('ar', {});
-        }, TypeError, 'cannot set a conf key of a different type than the one' +
+        }, TypeError, /./, 'cannot set a conf key of a different type than the one' +
         ' we registered - array key check');
     });
   });

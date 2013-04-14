@@ -65,9 +65,9 @@ module.exports = function(grunt) {
             compilation_level: 'ADVANCED_OPTIMIZATIONS',
             externs: [externsPath + '*.js', externsPath + 'when.externs.js'],
             define: [
-              "'goog.DEBUG=false'",
-              "'ss.STANDALONE=false'"
-              ],
+              '\'goog.DEBUG=false\'',
+              '\'ss.STANDALONE=false\''
+            ],
             warning_level: 'verbose',
             jscomp_off: ['checkTypes', 'fileoverviewTags'],
             summary_detail_level: 3,
@@ -91,7 +91,7 @@ module.exports = function(grunt) {
      * Live Reload
      *
      */
-   regarde: {
+    regarde: {
       compiled: {
         files: ['src/**/*.js'],
         tasks: ['build','livereload']
@@ -130,6 +130,12 @@ module.exports = function(grunt) {
         tasks: ['build']
       }
     },
+    open: {
+      server: {
+        path: 'http://localhost:<%= connect.livereload.options.port %>/test/bdd'
+      }
+    },
+
 
 
 
@@ -140,51 +146,55 @@ module.exports = function(grunt) {
      */
 
     mochaPhantom: 'node_modules/mocha-phantomjs/bin/mocha-phantomjs ' +
-      'http://localhost:4242/test/',
+      'http://localhost:<%= connect.test.options.port %>/test/',
 
     mocha: {
-      all: {
-        options: {
-          run: true,
-          urls: ['http://localhost:4242/test/bdd/']
-        }
-      }
-    },
-
-
-    shell: {
       options: {
-        stdout: true
+        run: true
       },
-      mochaPhantom: {
-        command: '<%= mochaPhantom %>bdd/index.html -R dot'
+      bdd: {
+        options: {
+          urls: ['http://localhost:<%= connect.test.options.port %>/test/bdd/']
+        }
       },
-      mochaPhantomCompiled: {
-        command: '<%= mochaPhantom %>bdd/index.html?compiled=true -R dot'
+      bddCompiled: {
+        urls: ['http://localhost:<%= connect.test.options.port %>/test/bdd/' +
+          'index.html?compiled=true']
       },
-      mochaPhantomUnit: {
-        command: '<%= mochaPhantom %>unit/index.html -R dot'
-      },
-      mochaPhantomMin: {
-        command: '<%= mochaPhantom %> -R min'
+      unit: {
+        options: {
+          urls: ['http://localhost:<%= connect.test.options.port %>/test/unit/']
+        }
       }
     }
   });
 
   grunt.registerTask('test', [
     'connect:test',
-    'shell:mochaPhantomUnit',
-    'shell:mochaPhantom',
-    'shell:mochaPhantomCompiled'
+    'mocha:bdd'
+    // 'shell:mochaPhantomUnit',
+    // 'shell:mochaPhantom',
+    // 'shell:mochaPhantomCompiled'
   ]);
-  grunt.registerTask('test:min', 'Test using mocha-phantom min Reporter', 'shell:mochaPhantomMin');
+
   grunt.registerTask('deps', 'closureDepsWriter');
   grunt.registerTask('build', 'closureBuilder:superstartup');
-  grunt.registerTask('live', ['livereload-start', 'connect:livereload', 'regarde:dev']);
-  grunt.registerTask('live:compiled', ['livereload-start', 'connect:livereload', 'regarde:compiled']);
+  grunt.registerTask('server', [
+    'livereload-start',
+    'connect:livereload',
+    'open:server',
+    'regarde:dev'
+  ]);
+
+  grunt.registerTask('server:compiled', [
+    'livereload-start',
+    'connect:livereload',
+    'open:server',
+    'regarde:compiled'
+  ]);
 
   // Default task.
-  grunt.registerTask('default', 'closureDepsWriter');
+  grunt.registerTask('default', 'test');
 
   grunt.registerTask('compile', 'debugOff closureBuilder:superstartup debugOn');
 
