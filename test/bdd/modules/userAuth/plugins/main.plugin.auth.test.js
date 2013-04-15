@@ -90,7 +90,7 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
   var _this = this;
   var plugin;
 
-  describe('Proper Interface implementation for ' + _this.pluginName, function(){
+  describe('10. Proper Interface implementation for ' + _this.pluginName, function(){
 
     beforeEach(function() {
       plugin = ss.user[_this.pluginNameSpace];
@@ -102,45 +102,48 @@ ssd.test.userAuth.genIface.prototype.basicTests = function() {
     });
 
 
-    it('should have a getSourceId() method', function(){
+    it('10.0.1 should have a getSourceId() method', function(){
       expect( plugin.getSourceId ).to.be.a('function');
     });
-    it('getSourceId() should return the plugin name', function(){
+    it('10.0.2 getSourceId() should return the plugin name', function(){
       expect( plugin.getSourceId() ).to.equal( _this.pluginName );
     });
-    it('should have a login() method', function(){
+    it('10.0.3 should have a login() method', function(){
       expect( plugin.login ).to.be.a('function');
     });
-    it('should have a hasJSAPI() method which returns boolean', function(){
+    it('10.0.4 should have a hasJSAPI() method which returns boolean', function(){
       expect( plugin.hasJSAPI() ).to.be.a.boolean;
     });
-    it('should have a logout() method', function(){
+    it('10.0.5 should have a logout() method', function(){
       expect( plugin.logout ).to.be.a('function');
     });
-    it('should have an isAuthed() method and return boolean', function(){
+    it('10.0.6 should have an isAuthed() method and return boolean', function(){
       expect( plugin.isAuthed ).to.be.a('function');
       expect( plugin.isAuthed() ).to.be.a('boolean');
     });
-    it('should have a getUdo() method', function(){
+    it('10.0.7 should have a getUdo() method', function(){
       expect( plugin.getUdo ).to.be.a('function');
     });
-    it('getUdo() should return null when not authed with the plugin', function(){
+    it('10.0.8 getUdo() should return null when not authed with the plugin',
+      function(done){
       var spy = sinon.spy();
-      plugin.getUdo(spy);
-      expect( spy.getCall(0).args[0] ).to.be.a('null');
+      plugin.getUdo(spy).then(function(){
+        expect( spy.getCall(0).args[0] ).to.be.a('null');
+        done();
+      }, done).otherwise(done);
     });
-    it('should have a getAccessToken() method', function(){
+    it('10.0.9 should have a getAccessToken() method', function(){
       expect( plugin.getAccessToken ).to.be.a('function');
     });
-    it('getAccessToken() should always return null', function(){
+    it('10.0.10 getAccessToken() should always return null', function(){
       expect( plugin.getAccessToken() ).to.be.null;
     });
-    it('should have a logout method', function(){
+    it('10.0.11 should have a logout method', function(){
       expect( plugin.logout ).to.be.a('function');
     });
   });
 
-  describe('Auth and deAuth methods for ' + _this.pluginName, function() {
+  describe('10.1 Auth and deAuth methods for ' + _this.pluginName, function() {
     var udoPlugin = new ssd.test.userAuth.udoPlugin(_this);
     udoPlugin.run();
   });
@@ -162,8 +165,8 @@ ssd.test.userAuth.genIface.prototype.basicEventsInitTests = function() {
     _this.afterEach();
   });
 
-  describe('Basic events emitted for plugin:' + _this.pluginName, function() {
-    it('should emit the initial auth status event', function(done){
+  describe('10.2 Basic events emitted for plugin:' + _this.pluginName, function() {
+    it('10.2.1 should emit the initial auth status event', function(done){
       ss.listen(_this.eventInitialAuthStatus, function(eventObj){
         expect( eventObj ).to.be.a('boolean');
         done();
@@ -172,7 +175,7 @@ ssd.test.userAuth.genIface.prototype.basicEventsInitTests = function() {
     });
 
     if (_this.hasJSAPI) {
-      it('should emit the JS API Loaded event', function(done){
+      it('10.2.2 should emit the JS API Loaded event', function(done){
         ss.listen(_this.eventJSLoaded, function(eventObj){
           done();
         });
@@ -199,14 +202,14 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
       stubNet,
       fixtures = ssd.test.fixture;
 
-  describe('Login tests for plugin: ' + _this.pluginName, function(){
+  describe('10.3 Login tests for plugin: ' + _this.pluginName, function(){
 
     beforeEach(function(done) {
       plugin = ss.user[_this.pluginNameSpace];
       if ( ss.sync.send.id ) { ss.sync.send.restore(); }
       stubNet = sinon.stub(ss.sync, 'send');
       stubNet.returns( ss._getResponse( fixtures.userOne ));
-
+      ss.user.logger.shout('TEST :: Network STUBED');
       ss(done);
     });
 
@@ -217,47 +220,51 @@ ssd.test.userAuth.genIface.prototype.loginTests = function() {
       ss.removeAllListeners();
     });
 
-    describe('login callback tests', function() {
+    describe('10.3.1 login callback tests', function() {
       var spyCB;
-      beforeEach(function() {
+      beforeEach(function(done) {
         _this.beforeEach();
-        spyCB = sinon.spy.create('loginCB');
-        plugin.login(spyCB);
         _this.afterLogin();
+        spyCB = sinon.spy.create('loginCB');
+        plugin.login(spyCB).then(function(){
+          done();
+        }, done).otherwise(done);
+
+
       });
       afterEach(function() {
         _this.afterEach();
       });
-      it('should have a callback', function(){
+      it('10.3.1.1 should have a callback', function(){
         expect(spyCB.calledOnce).to.be.true;
       });
-      it('should have a callback with 5 arguments', function(){
+      it('10.3.1.2 should have a callback with 5 arguments', function(){
         expect( spyCB.args[0].length ).to.equal(5);
       });
-      it('should have a callback with arg1, the error message, null', function(){
+      it('10.3.1.3 should have a callback with arg1, the error message, null', function(){
         expect( spyCB.args[0][0] ).to.be.null;
       });
-      it('should have a callback with arg2, authState, boolean', function(){
+      it('10.3.1.4 should have a callback with arg2, authState, boolean', function(){
         expect( spyCB.args[0][1] ).to.be.a('boolean');
       });
-      it('should have a callback with arg3, udo, object', function(){
+      it('10.3.1.5 should have a callback with arg3, udo, object', function(){
         expect( spyCB.args[0][2] ).to.be.an('object');
       });
-      it('should have a callback with arg4, server response raw, ' + _this.loginCbArg4Type, function(){
+      it('10.3.1.6 should have a callback with arg4, server response raw, ' + _this.loginCbArg4Type, function(){
         expect( spyCB.args[0][3] ).to.be.an(_this.loginCbArg4Type);
       });
-      it('should have a callback with arg5, third-party response raw, ' + _this.loginCbArg5Type, function(){
+      it('10.3.1.7 should have a callback with arg5, third-party response raw, ' + _this.loginCbArg5Type, function(){
         expect( spyCB.args[0][4] ).to.be.an(_this.loginCbArg5Type);
       });
       if (_this.loginCbHasUdo) {
-        it('should have a proper user data object provided on the callback', function(){
+        it('10.3.1.8 should have a proper user data object provided on the callback', function(){
           expect( spyCB.getCall(0).args[2] ).to.deep.equal(fixtures.userOne);
         });
-        it('should have a proper server response data object provided on the callback', function(){
+        it('10.3.1.9 should have a proper server response data object provided on the callback', function(){
           expect( spyCB.getCall(0).args[3] ).to.deep.equal(fixtures.userOne);
         });
       }
-      it('should have a proper 3rd party response data object provided on the callback', function(){
+      it('10.3.1.10 should have a proper 3rd party response data object provided on the callback', function(){
         expect( spyCB.getCall(0).args[4] ).to.deep.equal(_this.pluginResponse);
       });
     });

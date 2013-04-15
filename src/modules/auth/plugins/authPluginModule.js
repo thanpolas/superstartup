@@ -130,25 +130,24 @@ ssd.user.auth.PluginModule.prototype._beforeLogin = function() {
  * Perform authentication with the provided udo.
  *
  * @param  {Object=} optUdo The User Data Object of the third party.
- * @return {boolean} If basic data structure validations fail.
+ * @return {when.Promise} a promise.
  */
 ssd.user.auth.PluginModule.prototype.auth = function(optUdo) {
   this.logger.info('auth() :: Init.');
 
   this.udo = optUdo || null;
 
-  this._doAuth( true );
-
-  return true;
+  return this._doAuth( true );
 };
 
 /**
  * de-authenticate current user.
  *
+ * @return {when.Promise} a promise.
  */
 ssd.user.auth.PluginModule.prototype.deAuth = function() {
   this.logger.info('deAuth() :: Init.');
-  this._doAuth( false );
+  return this._doAuth( false );
 };
 
 /**
@@ -177,11 +176,12 @@ ssd.user.auth.PluginModule.prototype._doAuth = function (isAuthed, optRespObj) {
   var eventObj = respObj.event(ssd.user.auth.EventType.EXT_AUTH_CHANGE, this);
 
   // add a backpipe so that auth lib can pass back a promise.
-  var backPipe = ssd.eventBackPipe( eventObj, when.resolve(respObj) );
+  var backPipe = ssd.eventBackPipe( eventObj);
 
   this.dispatchEvent( eventObj );
 
-  return backPipe();
+  var promise = backPipe();
+  return promise;
 };
 
 /**

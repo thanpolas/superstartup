@@ -7,7 +7,7 @@ goog.require('ssd.test.fixture.auth.tw');
 goog.require('ssd.test.fixture.userOne');
 
 
-describe('User Auth Module Plugins :: Twitter', function () {
+describe('10. User Auth Module Plugins :: Twitter', function () {
   var stub;
   var userFix = ssd.test.fixture.userOne;
   var event = ssd.test.fixture.event;

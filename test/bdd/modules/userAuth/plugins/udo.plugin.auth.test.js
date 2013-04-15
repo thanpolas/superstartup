@@ -24,7 +24,7 @@ ssd.test.userAuth.udoPlugin = function( mainInst ) {
 ssd.test.userAuth.udoPlugin.prototype.run = function() {
   var _this = this;
   var stubNet;
-  describe('udo & auth / deAuth plugin tests', function() {
+  describe('12. udo & auth / deAuth plugin tests', function() {
     beforeEach(function(done) {
       if ( ss.sync.send.id ) { ss.sync.send.restore(); }
       ss.user.deAuth();
@@ -40,24 +40,28 @@ ssd.test.userAuth.udoPlugin.prototype.run = function() {
       _this.afterEach();
     });
 
-    describe('Perform auth / deauth method tests for plugin', function(){
-      it('should not be authed', function() {
+    describe('12.0 Perform auth / deauth method tests for plugin', function(){
+      it('12.0.1 should not be authed', function() {
         expect( ss.isAuthed() ).to.be.false;
       });
 
-      it('should have an auth method', function() {
+      it('12.0.2 should have an auth method', function() {
         expect( _this.plugin.auth ).to.be.a('function');
       });
-      it('should have a deAuth method', function() {
+      it('12.0.3 should have a deAuth method', function() {
         expect( _this.plugin.deAuth ).to.be.a('function');
       });
-      it('should authenticate globaly', function() {
-        _this.plugin.auth();
-        expect( ss.isAuthed() ).to.be.true;
+      it('12.0.4 should authenticate globaly', function(done) {
+        _this.plugin.auth().then(function(){
+          expect( ss.isAuthed() ).to.be.true;
+          done();
+        }, done).otherwise(done);
       });
-      it('should de-authenticate globaly', function() {
-        _this.plugin.deAuth();
-        expect( ss.isAuthed() ).to.be.false;
+      it('12.0.5 should de-authenticate globaly', function(done) {
+        _this.plugin.deAuth().then(function(){
+          expect( ss.isAuthed() ).to.be.false;
+          done();
+        }, done).otherwise(done);
       });
     });
   });

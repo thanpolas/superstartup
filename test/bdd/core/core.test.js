@@ -3,44 +3,44 @@ goog.provide('ssd.test.core');
 
 goog.require('ssd.test.fixture.event');
 
-describe('Core API :: ss()', function(){
-  describe('ss()', function(){
-    it('should be a function', function(){
+describe('0. Core API :: ss()', function(){
+  describe('0.0 ss()', function(){
+    it('0.0.1 should be a function', function(){
       expect( ss ).to.be.a('function');
     });
 
-    it('should have a listen method', function() {
+    it('0.0.2 should have a listen method', function() {
       expect( ss.listen ).to.be.a('function');
     });
 
-    it('should have an init method', function() {
+    it('0.0.3 should have an init method', function() {
       expect( ss.init ).to.be.a('function');
     });
 
-    it('should have an isReady method', function() {
+    it('0.0.4 should have an isReady method', function() {
       expect( ss.isReady ).to.be.a('function');
     });
 
-    it('should report a ready state of false', function(){
+    it('0.0.5 should report a ready state of false', function(){
       expect( ss.isReady() ).to.be.false;
     });
   });
-  describe('Invoke ss() and listen for all events and callbacks', function() {
+  describe('0.1 Invoke ss() and listen for all events and callbacks', function() {
 
-    var ssCallback = sinon.spy(),
-        initCb     = sinon.spy(),
-        authChangeCb = sinon.spy(),
-        stubSync   = sinon.stub( ss.sync, 'send' ),
-        ssReturn;
+    var ssCallback = sinon.spy();
+    var initEventCb = sinon.spy();
+    var authChangeCb = sinon.spy();
+    var stubSync = sinon.stub( ss.sync, 'send' );
+    var ssReturn;
 
     stubgetLoginStatus = sinon.stub(FB, 'getLoginStatus')
       .yields();
 
 
-    describe('Executing ss() and follow up ready methods', function() {
+    describe('0.1.1 Executing ss() and follow up ready methods', function() {
 
       it('should boot up the app and emit an init event', function(done){
-        ss.listen(ssd.test.fixture.event.core.INIT, initCb);
+        ss.listen(ssd.test.fixture.event.core.INIT, initEventCb);
         ss.listen(ssd.test.fixture.event.user.INITIAL_AUTH_STATE, authChangeCb);
 
         ss.config('user.fb.appId', '123');
@@ -51,9 +51,7 @@ describe('Core API :: ss()', function(){
 
         window.fbAsyncInit();
 
-        ssReturn.always(ss.removeAllListeners).always(function() {
-          done();
-        });
+        ssReturn.ensure(ss.removeAllListeners).ensure(done);
       });
 
       it('should have not made any sync calls', function() {
@@ -77,31 +75,12 @@ describe('Core API :: ss()', function(){
     // The returned promise
     //
     //
-    describe('The returned promise', function() {
-      it('should have a then method', function() {
-        expect( ssReturn.then ).to.be.a('function');
+    describe('0.1.2 The returned promise', function() {
+      it('0.1.2.1 should be a promise', function() {
+        expect( when.isPromise(ssReturn) ).to.be.true;
       });
-      it('should have an otherwise method', function() {
-        expect( ssReturn.otherwise ).to.be.a('function');
-      });
-      it('should have a yield method', function() {
-        expect( ssReturn.yield ).to.be.a('function');
-      });
-      it('should have a spread method', function() {
-        expect( ssReturn.spread ).to.be.a('function');
-      });
-
-      it('should immediately invoke fullfilled using then', function() {
-        var onFulfilled = sinon.spy(),
-            onRejected = sinon.spy();
-        ssReturn.then( onFulfilled, onRejected );
-        expect( onFulfilled.calledOnce ).to.be.true;
-      });
-      it('should not invoke rejected using then', function() {
-        var onFulfilled = sinon.spy(),
-            onRejected = sinon.spy();
-        ssReturn.then( onFulfilled, onRejected );
-        expect( onRejected.called ).to.be.false;
+      it('0.1.2.2 should be fulfilled', function(done) {
+        expect(ssReturn).to.be.fulfilled.notify(done);
       });
     });
 
@@ -110,9 +89,9 @@ describe('Core API :: ss()', function(){
     // init event
     //
     //
-    describe('The init event', function() {
-      it('should have triggered the init event', function() {
-        expect( initCb.calledOnce ).to.be.true;
+    describe('0.1.4 The core.init event', function() {
+      it('0.1.4.1 should have triggered the init event', function() {
+        expect( initEventCb.calledOnce ).to.be.true;
       });
     });
 
