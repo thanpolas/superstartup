@@ -154,6 +154,7 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
     plugin.SOURCEID + ' Authed:' + plugin.isAuthed());
 
   var def = when.defer();
+
   // check if a backpipe is provided and return the promise.
   var backpipe = ev[ssd.BACKPIPE_KEY];
   if ( goog.isFunction(backpipe) ) {
@@ -192,6 +193,7 @@ ssd.user.AuthModel.prototype._authChange = function( ev ) {
   // not an elegant solution, refactor
   //ssd.fork(this._authChangePayload, this, def, extItem, plugin, ev);
   this._authChangePayload( def, extItem, plugin, ev);
+
   return def.promise;
 };
 
@@ -228,8 +230,7 @@ ssd.user.AuthModel.prototype._authChangePayload = function( def, extItem,
   // (for now just passes responsePluginRaw prop)
   promise.then(function(respObjAuth){
     var respObj = new ssd.user.auth.plugin.Response( respObjAuth );
-    // 3b 4/14 not sure if that's reason for promise issue
-    //respObj.extend(ev);
+    respObj.extend(ev);
     def.resolve(respObj);
   }, def.reject);
 
@@ -366,7 +367,6 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
   data = backPipe();
 
   this.logger.fine('performLocalAuth() :: sending request...');
-
   ssd.sync.send( url, null, ssd.ajax.Method.POST, data )
     .then(goog.bind(this._serverAuthResponse, this), def.reject)
     .then(def.resolve, def.reject);
@@ -392,6 +392,7 @@ ssd.user.AuthModel.prototype.performLocalAuth = function( url, data ) {
  */
 ssd.user.AuthModel.prototype._serverAuthResponse = function( respObjSync ) {
   var def = when.defer();
+
   this.logger.info('_serverAuthResponse() :: Init');
 
   var respObj = new ssd.user.auth.Response( respObjSync );

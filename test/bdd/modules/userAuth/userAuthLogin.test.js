@@ -7,7 +7,7 @@ goog.require('ssd.test.fixture.event');
 goog.require('ssd.test.fixture.errorCodes');
 goog.require('goog.dom');
 
-describe( '5. User Auth Module :: Login', function () {
+describe( 'User Auth Module :: Login', function () {
   var stub;
   var userFix = ssd.test.fixture.userOne;
   var userEvent = ssd.test.fixture.event.user;
@@ -32,7 +32,7 @@ describe( '5. User Auth Module :: Login', function () {
    * @param  {jQuery|Object|Element} $element The element to work with
    */
   function loginTests( $element ) {
-    describe( '5.1 login operations', function() {
+    describe( 'login operations', function() {
 
       beforeEach( function(done) {
         if (ss.sync.send.id) {
@@ -48,64 +48,55 @@ describe( '5. User Auth Module :: Login', function () {
         ss.removeAllListeners();
       });
 
-      it( '5.1.1 should call ssd.ajax once', function(){
+      it( 'should call ssd.ajax once', function(){
         ss.user.login( $element );
         expect( stub.calledOnce ).to.be.true;
       });
 
-      it( '5.1.2 should login with provided argument', function(done){
-        ss.user.login( $element ).then(function(){
-          expect( ss.isAuthed() ).to.be.true;
-          done();
-        }, done).otherwise(done);
+      it( 'should login with provided argument', function(){
+        ss.user.login( $element );
+        expect( ss.isAuthed() ).to.be.true;
       });
 
-      it( '5.1.3 login passes expected name/value pairs ', function(){
+
+      it( 'login passes expected name/value pairs ', function(){
         ss.user.login( $element );
         expect( stub.getCall( 0 ).args[3] ).to.deep.equal( userLoginData );
       });
-      it( '5.1.4 should have a callback', function(done){
+      it( 'should have a callback', function(){
         var spy = sinon.spy();
-        ss.user.login( $element, spy).then(function(){
-          expect( spy.calledOnce ).to.be.true;
-          done();
-        }, done).otherwise(done);
+        ss.user.login( $element, spy);
+        expect( spy.calledOnce ).to.be.true;
       });
 
-      it( '5.1.5 should have a callback with err null', function(done){
+      it( 'should have a callback with err null', function(){
         var spy = sinon.spy();
-        ss.user.login( $element, spy).then(function(){
-          // err, authState, udo, response
-          var args = spy.getCall(0).args;
-          // err
-          expect( args[0] ).to.be.null;
-          done();
-        }, done).otherwise(done);
+        ss.user.login( $element, spy);
+        // err, authState, udo, response
+        var args = spy.getCall(0).args;
+        // err
+        expect( args[0] ).to.be.null;
       });
 
-      it( '5.1.6 should have a callback with authState', function(done){
+      it( 'should have a callback with authState', function(){
         var spy = sinon.spy();
-        ss.user.login( $element, spy).then(function(){
-          // err, authState, udo, response
-          var args = spy.getCall(0).args;
-          // authState
-          expect( args[1] ).to.be.true;
-          done();
-        }, done).otherwise(done);
+        ss.user.login( $element, spy);
+        // err, authState, udo, response
+        var args = spy.getCall(0).args;
+        // authState
+        expect( args[1] ).to.be.true;
       });
 
-      it( '5.1.7 should have a callback with the UDO', function(done){
+      it( 'should have a callback with the UDO', function(){
         var spy = sinon.spy();
-        ss.user.login( $element, spy).then(function(){
-          // err, authState, udo, response
-          var args = spy.getCall(0).args;
-          // udo
-          expect( args[2] ).to.deep.equal( userFix );
-          done();
-        }, done).otherwise(done);
+        ss.user.login( $element, spy);
+        // err, authState, udo, response
+        var args = spy.getCall(0).args;
+        // udo
+        expect( args[2] ).to.deep.equal( userFix );
       });
 
-      it( '5.1.8 should provide the data to be sent when the BEFORE_LOGIN event triggers',
+      it( 'should provide the data to be sent when the BEFORE_LOGIN event triggers',
         function( done ){
         ss.listen( userEvent.BEFORE_LOGIN, function( eventObj ){
           expect( stub.called ).to.be.false;

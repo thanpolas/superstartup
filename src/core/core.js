@@ -1,8 +1,19 @@
 /**
- * Superstartup
+ * Copyright 2000-2011 Athanasios Polychronakis. Some Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS-IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  *
- * Copyright 2000-2013 Athanasios Polychronakis.
  * createdate 10/Jul/2012
  */
 
@@ -32,7 +43,8 @@ goog.require('ssd.core.config');
  * @constructor
  * @extends {ssd.Module}
  */
-ssd.Core = function() {
+ssd.Core = function()
+{
   goog.base(this);
 
   /**
@@ -48,8 +60,9 @@ ssd.Core = function() {
   this._readyDefer = when.defer();
 
   if (goog.DEBUG) {
-    this._readyDefer.promise.ensure(goog.bind(this.logger.info, this,
-      'ctor() :: Core Deferred resolved.'));
+    this._readyDefer.promise.always(goog.bind(function(){
+      this.logger.info('ctor() :: Core Deferred resolved.');
+    }, this));
   }
 
   if (goog.DEBUG) {
@@ -132,6 +145,7 @@ ssd.Core.getInstance = function()
  * @return {when.Promise} a promise.
  */
 ssd.Core.prototype.init = function (optCallback) {
+
   this.logger.info('init() :: Kicking off SuperStartup. isReady:' + this._isReady);
   var fn = optCallback || ssd.noop;
 
@@ -140,16 +154,13 @@ ssd.Core.prototype.init = function (optCallback) {
     return this._readyDefer.promise;
   }
 
-  var initPromise = this.user.init();
-
-  initPromise.ensure(goog.bind(function(){
+  return when.chain(this.user.init(), this._readyDefer.resolver)
+    .always( goog.bind(function() {
       this._isReady = true;
       this.dispatchEvent( ssd.Core.EventType.INIT );
-    }, this));
-  initPromise.ensure(this._readyDefer.resolve);
-  initPromise.ensure(fn);
+    }, this))
+    .always( fn );
 
-  return initPromise;
 };
 
 /**

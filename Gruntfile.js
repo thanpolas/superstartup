@@ -150,15 +150,11 @@ module.exports = function(grunt) {
 
     mocha: {
       options: {
-        run: true,
-        reporter: 'Nyan'
+        run: true
       },
       bdd: {
         options: {
-          urls: ['http://localhost:<%= connect.test.options.port %>/test/bdd/'],
-          mocha: {
-            grep: ' 0.1'
-          }
+          urls: ['http://localhost:<%= connect.test.options.port %>/test/bdd/']
         }
       },
       bddCompiled: {

@@ -38,6 +38,7 @@ describe('User Auth Module Plugins :: Facebook', function () {
     ss.config('user.fb.appId', '540');
     window.fbAsyncInit();
 
+
     if (FB.login.id) { FB.login.restore(); }
     stubFBLogin = sinon.stub(FB, 'login')
       .yields(fixtures.auth.fb.authedObj);

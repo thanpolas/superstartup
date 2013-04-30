@@ -365,6 +365,7 @@ ssd.user.auth.Facebook.prototype._promise2cb = function(cb, self, status,
 
   this.logger.finer('_promise2cb() :: Init.');
   var respObj = optRespObj || {};
+
   if (!status) {
     cb.call(self, respObj, this._auth.isAuthed());
     return;
@@ -401,6 +402,7 @@ ssd.user.auth.Facebook.prototype._loginListener = function (response) {
     }
 */
   this.logger.info('_loginListener() :: Init');
+
   var respObj = this._getRespObj();
   respObj.authStatePlugin = this.isAuthed();
   respObj.responsePluginRaw = response;
@@ -457,7 +459,9 @@ ssd.user.auth.Facebook.prototype._isAuthedFromResponse = function(response) {
   }
 
   this.logger.info('_isAuthedFromResponse() :: Auth state changed to: ' + isAuthed);
+
   return this._doAuth(true, respObj);
+
 };
 
 /**
