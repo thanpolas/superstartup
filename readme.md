@@ -8,10 +8,5 @@ Superstartup is a Javascript library for the browser. It provides modules that e
 
 Built to be framework and server API agnostic, Superstartup will integrate seamlessly with any technology stack you may have.
 
-## Status
-
-The *User Authentication Module* is complete, tested and ready to ship. The focus now shifts to documentation and publishing.
-
-
 
 
